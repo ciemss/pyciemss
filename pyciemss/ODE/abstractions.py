@@ -4,7 +4,7 @@ import torch
 import torchdiffeq
 
 from torch import nn
-from pyro.nn import PyroModule
+from pyro.nn import PyroModule, pyro_method
 
 
 class ODEModel(PyroModule):
@@ -13,6 +13,7 @@ class ODEModel(PyroModule):
         self.t0 = nn.Parameter(torch.as_tensor(t0))
         self._solver = torchdiffeq.odeint_adjoint if adjoint else torchdiffeq.odeint
     
+    @pyro_method
     def solve(self, initial_state, tspan):
         '''
         TODO: add docstring

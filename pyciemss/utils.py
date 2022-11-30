@@ -9,12 +9,12 @@ def run_inference(model,
                 tspan, 
                 data, 
                 optim=Adam({'lr': 0.03}), 
-                loss=Trace_ELBO(num_particles=1), 
+                loss_f=Trace_ELBO(num_particles=1), 
                 num_iterations=250, 
                 verbose=False
                 ):
 
-    svi = SVI(model, guide, optim, loss=loss)
+    svi = SVI(model, guide, optim, loss=loss_f)
 
     pyro.clear_param_store()
 

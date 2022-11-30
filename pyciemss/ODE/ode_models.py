@@ -1,7 +1,7 @@
 import torch
 import pyro.distributions as dist
 
-from pyro.nn import PyroModule, PyroSample
+from pyro.nn import PyroModule, PyroSample, pyro_method
 
 from pyciemss.ODE.abstractions import ODEModel
 
@@ -24,6 +24,7 @@ class SVIIvR(ODEModel):
         self.gammaV = PyroSample(gammaV_prior)
         self.nu     = PyroSample(nu_prior)
         
+    @pyro_method
     def prior_sample(self):
         self.beta
         self.betaV
