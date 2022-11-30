@@ -21,6 +21,11 @@ class ODEModel(PyroModule):
         return self._solver(self, initial_state, tspan)
 
     def prior_sample(self):
+
+        '''
+        TODO: add docstring
+        '''
+
         raise NotImplementedError
 
     def forward(self, t: torch.Tensor, state: Iterable[torch.Tensor]) -> Iterable[torch.Tensor]:
