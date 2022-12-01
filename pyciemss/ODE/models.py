@@ -12,10 +12,10 @@ class SVIIvR(ODE):
                 N,
                 noise_prior=dist.Uniform(1., 10.),
                 beta_prior=dist.Uniform(0.15, 0.25), 
-                betaV_prior=dist.Uniform(0.1, 0.2),
+                betaV_prior=dist.Uniform(0.05, 0.1),
                 gamma_prior=dist.Uniform(0.05, 0.15),
                 gammaV_prior=dist.Uniform(0.1, 0.2),
-                nu_prior=dist.Uniform(0.02, 0.08),
+                nu_prior=dist.Uniform(0.02, 0.05),
                 ):
         super().__init__()
 
