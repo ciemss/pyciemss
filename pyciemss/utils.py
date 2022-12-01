@@ -22,5 +22,5 @@ def run_inference(model,
         # calculate the loss and take a gradient step
         loss = svi.step(initial_state, tspan, data)
         if verbose:
-            if j % 5 == 0:
+            if j % 25 == 0:
                 print("[iteration %04d] loss: %.4f" % (j + 1, loss))
