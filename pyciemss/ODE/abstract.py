@@ -14,7 +14,7 @@ class ODE(PyroModule):
     def __init__(self):
         super().__init__()
 
-    def forward(self, t, state):
+    def deriv(self, t, state):
         '''
         TODO: add a docstring
         '''
@@ -35,13 +35,13 @@ class ODE(PyroModule):
         raise NotImplementedError
 
     @pyro_method
-    def simulate(self, initial_state, tspan, data=None):
+    def forward(self, initial_state, tspan, data=None):
         
         # Sample parameters from the prior
         self.param_prior()
 
         # Simulate from ODE
-        solution = odeint(self, initial_state, tspan)
+        solution = odeint(self.deriv, initial_state, tspan)
         
         # Add Observation noise
         observations = self.observation_model(solution, data)

@@ -27,7 +27,7 @@ class SVIIvR(ODE):
         self.gammaV_prior = gammaV_prior
         self.nu_prior     = nu_prior
         
-    def forward(self, t, state):
+    def deriv(self, t, state):
         S, V, I, Iv, R = state
         dSdt  = -self.beta  * S * I  / self.N - self.beta  * S * Iv / self.N - self.nu * S 
         dVdt  = -self.betaV * V * Iv / self.N - self.betaV * V * I  / self.N + self.nu * S
