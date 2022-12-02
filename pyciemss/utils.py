@@ -1,3 +1,4 @@
+import torch
 import pyro
 
 from pyro.infer import SVI, Trace_ELBO
@@ -24,3 +25,24 @@ def run_inference(model,
         if verbose:
             if j % 25 == 0:
                 print("[iteration %04d] loss: %.4f" % (j + 1, loss))
+
+def state_flux_constraint(S, dSdt):
+    '''
+    Enforce the constraint that the state value is always positive.
+    Enforce the constraint the the state flux is always negative.
+    If either of these conditions do not hold, set the resulting state flux to be 0.
+    '''
+    if S.item() < 0 or dSdt.item() > 0:
+        return torch.zeros_like(dSdt)
+    else:
+        return dSdt
+
+
+def elvis(first, last):
+    '''
+    Check if `first` value isnan(). If so, return `last`. Otherwise, return `first`.
+    '''
+    if first.isnan():
+        return last
+    else:
+        return first
