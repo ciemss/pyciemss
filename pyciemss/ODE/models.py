@@ -34,13 +34,14 @@ class SVIIvR(ODE):
 
         # Local fluxes exposed to pyro for interventions.
         # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
-        # positive/negative constraints ensure that we don't have vaccinated people become susceptible, etc.
         SV_flux_  = pyro.deterministic("SV_flux %f" % (t),  -self.nu * S)
         SI_flux_  = pyro.deterministic("SI_flux %f" % (t),  -self.beta  * S * (I + Iv) / self.N)
         VIv_flux_ = pyro.deterministic("VIv_flux %f" % (t), -self.betaV * V * (I + Iv) / self.N)
         IR_flux_  = pyro.deterministic("IR_flux %f" % (t),  -self.gamma * I)
         IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), -self.gammaV * Iv)
 
+        # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
+        # This is a hacky way of giving global interventions precedence over local assignment of flux.
         SV_flux = state_flux_constraint(S, elvis(self.SV_flux, SV_flux_))
         SI_flux = state_flux_constraint(S, elvis(self.SI_flux, SI_flux_))
         VIv_flux = state_flux_constraint(V, elvis(self.VIv_flux, VIv_flux_))
@@ -48,6 +49,7 @@ class SVIIvR(ODE):
         IvR_flux = state_flux_constraint(Iv, elvis(self.IvR_flux, IvR_flux_))
 
 
+        # Where the real magic happens.
         dSdt  = SI_flux + SV_flux
         dVdt  = VIv_flux - SV_flux
         dIdt  = -SI_flux + IR_flux
