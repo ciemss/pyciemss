@@ -26,16 +26,16 @@ def run_inference(model,
             if j % 25 == 0:
                 print("[iteration %04d] loss: %.4f" % (j + 1, loss))
 
-def state_flux_constraint(S, dSdt):
+def state_flux_constraint(S, flux):
     '''
     Enforce the constraint that the state value is always positive.
     Enforce the constraint the the state flux is always negative.
     If either of these conditions do not hold, set the resulting state flux to be 0.
     '''
-    if S.item() < 0 or dSdt.item() > 0:
-        return torch.zeros_like(dSdt)
+    if S.item() < 0 or flux.item() < 0:
+        return torch.zeros_like(flux)
     else:
-        return dSdt
+        return flux
 
 
 def elvis(first, last):
@@ -46,3 +46,6 @@ def elvis(first, last):
         return last
     else:
         return first
+
+def get_tspan(start, end, steps):
+    return torch.linspace(float(start), float(end), steps)

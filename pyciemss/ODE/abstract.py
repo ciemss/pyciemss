@@ -46,4 +46,4 @@ class ODE(PyroModule):
         # Add Observation noise
         observations = self.observation_model(solution, data)
 
-        return observations
+        return solution, observations
