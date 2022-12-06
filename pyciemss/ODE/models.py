@@ -8,6 +8,9 @@ from pyciemss.ODE.abstract import ODE
 from pyciemss.utils import state_flux_constraint, elvis
 
 
+SVIIvR = make_model(petri, prior, query)
+
+
 class SVIIvR(ODE):
     def __init__(self, 
                 N,
@@ -53,7 +56,7 @@ class SVIIvR(ODE):
         dSdt  = SI_flux + SV_flux
         dVdt  = VIv_flux - SV_flux
         dIdt  = -SI_flux + IR_flux
-        dIvdt =  -VIv_flux + IvR_flux
+        dIvdt = -VIv_flux + IvR_flux
         dRdt  = -IR_flux - IvR_flux
         
         return dSdt, dVdt, dIdt, dIvdt, dRdt
@@ -83,6 +86,8 @@ class SVIIvR(ODE):
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
         if data == None:
             data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
+
+        # TODO: Make sure observations are strictly greater than 0.
 
         S_obs = pyro.sample("S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"])
         V_obs = pyro.sample("V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"])
