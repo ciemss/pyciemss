@@ -7,10 +7,6 @@ from pyro.nn import PyroModule, PyroSample, pyro_method
 from pyciemss.ODE.abstract import ODE
 from pyciemss.utils import state_flux_constraint, elvis
 
-
-SVIIvR = make_model(petri, prior, query)
-
-
 class SVIIvR(ODE):
     def __init__(self, 
                 N,
@@ -19,7 +15,7 @@ class SVIIvR(ODE):
                 betaV_prior=dist.Uniform(0.05, 0.1),
                 gamma_prior=dist.Uniform(0.05, 0.15),
                 gammaV_prior=dist.Uniform(0.1, 0.2),
-                nu_prior=dist.Uniform(0.02, 0.05),
+                nu_prior=dist.Uniform(0.02, 0.03),
                 ):
         super().__init__()
 
