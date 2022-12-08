@@ -11,11 +11,11 @@ class SVIIvR(ODE):
     def __init__(self, 
                 N,
                 noise_prior=dist.Uniform(5., 10.),
-                beta_prior=dist.Uniform(0.1, 0.2), 
-                betaV_prior=dist.Uniform(0.05, 0.1),
-                gamma_prior=dist.Uniform(0.02, 0.07),
-                gammaV_prior=dist.Uniform(0.05, 0.1),
-                nu_prior=dist.Uniform(0.01, 0.02),
+                beta_prior=dist.Uniform(0.1, 0.3), 
+                betaV_prior=dist.Uniform(0.025, 0.05),
+                gamma_prior=dist.Uniform(0.05, 0.35),
+                gammaV_prior=dist.Uniform(0.1, 0.4),
+                nu_prior=dist.Uniform(0.001, 0.01)
                 ):
         super().__init__()
 
