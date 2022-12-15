@@ -1,10 +1,12 @@
+from typing import Dict, Optional
+
 import torch
 import pyro
 import pyro.distributions as dist
 
-from pyro.nn import PyroModule, PyroSample, pyro_method
+from pyro.nn import pyro_method
 
-from pyciemss.ODE.abstract import ODE
+from pyciemss.ODE.abstract import ODE, Time, State, Solution, Observation
 from pyciemss.utils import state_flux_constraint
 
 class SVIIvR(ODE):
@@ -28,7 +30,7 @@ class SVIIvR(ODE):
         self.nu_prior     = nu_prior
     
     @pyro_method    
-    def deriv(self, t, state):
+    def deriv(self, t: Time, state: State) -> State:
         S, V, I, Iv, R = state
 
         # Local fluxes exposed to pyro for interventions.
@@ -40,7 +42,6 @@ class SVIIvR(ODE):
         IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
 
         # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
-        # This is a hacky way of giving global interventions precedence over local assignment of flux.
         SV_flux = state_flux_constraint(S,  SV_flux_)
         SI_flux = state_flux_constraint(S,  SI_flux_)
         VIv_flux = state_flux_constraint(V,  VIv_flux_)
@@ -57,7 +58,7 @@ class SVIIvR(ODE):
         return dSdt, dVdt, dIdt, dIvdt, dRdt
 
     @pyro_method
-    def param_prior(self):
+    def param_prior(self) -> None:
 
         self.noise_var = pyro.sample("noise_var", self.noise_prior)
         self.beta      = pyro.sample("beta", self.beta_prior)
@@ -67,7 +68,7 @@ class SVIIvR(ODE):
         self.nu        = pyro.sample("nu", self.nu_prior)
 
     @pyro_method
-    def observation_model(self, solution, data):
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
         S, V, I, Iv, R = solution
 
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
