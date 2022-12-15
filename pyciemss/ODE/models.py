@@ -5,7 +5,7 @@ import pyro.distributions as dist
 from pyro.nn import PyroModule, PyroSample, pyro_method
 
 from pyciemss.ODE.abstract import ODE
-from pyciemss.utils import state_flux_constraint, elvis
+from pyciemss.utils import state_flux_constraint
 
 class SVIIvR(ODE):
     def __init__(self, 
@@ -47,14 +47,13 @@ class SVIIvR(ODE):
         IR_flux = state_flux_constraint(I, IR_flux_)
         IvR_flux = state_flux_constraint(Iv, IvR_flux_)
 
-
         # Where the real magic happens.
         dSdt  = -SI_flux - SV_flux
         dVdt  = -VIv_flux + SV_flux
         dIdt  = SI_flux - IR_flux
         dIvdt = VIv_flux - IvR_flux
         dRdt  = IR_flux + IvR_flux
-        
+
         return dSdt, dVdt, dIdt, dIvdt, dRdt
 
     @pyro_method
