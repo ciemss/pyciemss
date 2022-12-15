@@ -14,6 +14,10 @@ def run_inference(model,
                 num_iterations=250, 
                 verbose=False
                 ):
+    '''
+    Run stochastic variational inference. 
+    This is just a very thin abstraction around Pyro's SVI class.
+    '''
 
     svi = SVI(model, guide, optim, loss=loss_f)
 
@@ -28,26 +32,17 @@ def run_inference(model,
 
 def state_flux_constraint(S, flux):
     '''
-    Enforce the constraint that the state value is always positive.
-    Enforce the constraint the the state flux is always negative.
+    Check the constraint that the state value is always positive.
+    Check the constraint that the state flux is always negative.
     If either of these conditions do not hold, set the resulting state flux to be 0.
     '''
-    if S.item() < 0 or flux.item() < 0:
-        return torch.zeros_like(flux)
-    else:
-        return flux
-
-
-def elvis(first, last):
-    '''
-    Check if `first` value isnan(). If so, return `last`. Otherwise, return `first`.
-    '''
-    if first.isnan():
-        return last
-    else:
-        return first
+    satisfied_index = torch.logical_and(S > 0, flux > 0)
+    return torch.where(satisfied_index, flux, torch.zeros_like(flux))
 
 def get_tspan(start, end, steps):
+    '''
+    Thin wrapper around torch.linspace.
+    '''
     return torch.linspace(float(start), float(end), steps)
 
 
