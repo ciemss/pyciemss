@@ -1,8 +1,10 @@
 import numpy as np
 
-def rolling_average_infected(I, Iv=None, tf=90, ndays=7, dt=1.):
+def rolling_average_infected(I: np.ndarray, Iv=None, tf=90, ndays=7, dt=1.) -> np.ndarray:
     '''
     Return estimate of n-day average of total infections.
+    I is a numpy array of shape (num_samples, num_time_steps).
+    Iv is optionally a numpy array of shape (num_samples, num_time_steps).
     '''
     # Estimate n-day average of cases
     if Iv is None:
