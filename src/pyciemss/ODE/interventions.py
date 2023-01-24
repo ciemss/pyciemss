@@ -21,3 +21,4 @@ def parameter_intervention(name, intervention_assignment):
     `intervention_assignment` is a torch.tensor of the same size as the variable at `name`.
     '''
     return {name: intervention_assignment}
+    
