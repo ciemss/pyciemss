@@ -92,5 +92,7 @@ class solveOUU():
                 minimizer_kwargs=self.minimizer_kwargs,
                 **self.kwargs
             )
+        else:
+            pass # TODO: implement other optimizers
 
         return result
