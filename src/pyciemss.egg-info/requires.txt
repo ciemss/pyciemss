@@ -1,6 +1,0 @@
-matplotlib
-torch
-pyro-ppl
-numpy
-scipy
-torchdiffeq
