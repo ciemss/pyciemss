@@ -1,0 +1,28 @@
+{
+    "initials": {
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": null
+        },
+        "I": {
+            "name": "I",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {},
+            "value": null
+        },
+        "R": {
+            "name": "R",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

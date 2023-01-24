@@ -1,0 +1,3 @@
+{
+    "description": "The JHUAPL-Bucky model is a COVID-19 metapopulation compartment model initially designed to estimate medium-term (on the order of weeks) case incidence and healthcare usage at the second administrative (admin-2, ADM2) level (counties in the United States; cities or districts in various countries). It is documented at https://docs.buckymodel.com/en/latest/."
+}

@@ -1,0 +1,77 @@
+{
+    "initials": {
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": null
+        },
+        "E": {
+            "name": "E",
+            "identifiers": {
+                "apollosv": "00000154"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_asym": {
+            "name": "I_asym",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C3833"
+            },
+            "value": null
+        },
+        "I_mild": {
+            "name": "I_mild",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269"
+            },
+            "value": null
+        },
+        "I_hosp": {
+            "name": "I_hosp",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269",
+                "hospitalization_status": "ncit:C25179"
+            },
+            "value": null
+        },
+        "R_hosp": {
+            "name": "R_hosp",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "hospitalization_status": "ncit:C25179"
+            },
+            "value": null
+        },
+        "R": {
+            "name": "R",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": null
+        },
+        "D": {
+            "name": "D",
+            "identifiers": {
+                "ido": "0000512"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}
