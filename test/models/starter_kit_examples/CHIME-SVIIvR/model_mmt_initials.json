@@ -1,0 +1,50 @@
+{
+    "initials": {
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "vaccination_status": "vo:0001377"
+            },
+            "value": null
+        },
+        "V": {
+            "name": "V",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "vaccination_status": "vo:0001376"
+            },
+            "value": null
+        },
+        "I": {
+            "name": "I",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_v": {
+            "name": "I_v",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "vaccination_status": "ncit:C28385"
+            },
+            "value": null
+        },
+        "R": {
+            "name": "R",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

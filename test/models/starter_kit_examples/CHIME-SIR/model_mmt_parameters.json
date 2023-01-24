@@ -1,0 +1,20 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {
+                "askemo": "0000005"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {
+                "askemo": "0000013"
+            },
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

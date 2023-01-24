@@ -1,0 +1,246 @@
+{
+    "templates": [
+        {
+            "rate_law": "I*S*beta_1",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001377"
+                }
+            },
+            "outcome": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_v*S*beta_2",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_v",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "vaccination_status": "ncit:C28385"
+                }
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001377"
+                }
+            },
+            "outcome": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S*v_r",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001377"
+                }
+            },
+            "outcome": {
+                "name": "V",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001376"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*V*v_s1",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001376"
+                }
+            },
+            "outcome": {
+                "name": "I_v",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "vaccination_status": "ncit:C28385"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_v*V*v_s2",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_v",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "vaccination_status": "ncit:C28385"
+                }
+            },
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "vaccination_status": "vo:0001376"
+                }
+            },
+            "outcome": {
+                "name": "I_v",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "vaccination_status": "ncit:C28385"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*gamma_1",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_v*gamma_2",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "I_v",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "vaccination_status": "ncit:C28385"
+                }
+            },
+            "outcome": {
+                "name": "R",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "beta_1": {
+            "name": "beta_1",
+            "identifiers": {
+                "askemo": "0000005"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "beta_2": {
+            "name": "beta_2",
+            "identifiers": {
+                "askemo": "0000005"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "v_r": {
+            "name": "v_r",
+            "identifiers": {
+                "askemo": "0000012"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "v_s1": {
+            "name": "v_s1",
+            "identifiers": {
+                "askemo": "0000005"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "v_s2": {
+            "name": "v_s2",
+            "identifiers": {
+                "askemo": "0000005"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "gamma_1": {
+            "name": "gamma_1",
+            "identifiers": {
+                "ncit": "C173781"
+            },
+            "context": {},
+            "value": 1.0
+        },
+        "gamma_2": {
+            "name": "gamma_2",
+            "identifiers": {
+                "ncit": "C173781"
+            },
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {}
+}
