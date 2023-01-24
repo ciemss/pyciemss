@@ -63,10 +63,34 @@ class solveOUU():
     Solve the optimization under uncertainty problem. The core of this class is a wrapper around an appropriate SciPy optimization algorithm.
     '''
     def __init__(self,
-                 variable: str,
+                 x0: np.ndarray,
                  objfun: callable,
-                 
-                 
+                 constraints: dict,
+                 minimizer_kwargs: dict,
+                 optimizer_algorithm: str = "basinhopping",
+                 maxiter: int = 100,
+                 **kwargs
                 ):
-        self.variable = variable
+        self.x0 = x0
         self.objfun = objfun
+        self.constraints = constraints
+        self.minimizer_kwargs = minimizer_kwargs
+        self.optimizer_algorithm = optimizer_algorithm
+        self.maxiter = maxiter
+        
+        self.kwargs = kwargs
+
+    def solve(self):
+        # Thin wrapper around SciPy optimizer(s).
+        # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call must interface with the SciPy optimizer which is not consistent across algorithms.
+        
+        if self.optimizer_algorithm == "basinhopping":
+            result = basinhopping(
+                func=self.objfun,
+                x0=self.x0,
+                niter=self.maxiter,
+                minimizer_kwargs=self.minimizer_kwargs,
+                **self.kwargs
+            )
+
+        return result
