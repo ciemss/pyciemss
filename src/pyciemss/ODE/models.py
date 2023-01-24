@@ -83,4 +83,9 @@ class SVIIvR(ODE):
         I_obs = pyro.sample("I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"])
         R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
 
+<<<<<<< HEAD
         return (S_obs, V_obs, I_obs, R_obs)
+=======
+        return (S_obs, V_obs, I_obs, R_obs)
+        
+>>>>>>> main

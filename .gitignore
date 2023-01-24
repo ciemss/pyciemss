@@ -3,3 +3,4 @@
 *.vscode
 *.ipynb_checkpoints*
 *.DS_Store
+*.egg-info
