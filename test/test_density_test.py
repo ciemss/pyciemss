@@ -35,11 +35,11 @@ class TestDensityTest(unittest.TestCase):
 
 
 
-        def model5():
-            x = pyro.sample("x", pyro.distributions.Normal(0, 1))
-            y = pyro.deterministic("y", x)
-            z = pyro.sample("z", pyro.distributions.Normal(x - y, 1))
-            return z
+        # def model5():
+        #     x = pyro.sample("x", pyro.distributions.Normal(0, 1))
+        #     y = pyro.deterministic("y", x)
+        #     z = pyro.sample("z", pyro.distributions.Normal(x - y, 1))
+        #     return z
 
         def model6():
             x = pyro.sample("x", pyro.distributions.Normal(0, 1))
@@ -59,11 +59,13 @@ class TestDensityTest(unittest.TestCase):
         def model9():
             y = pyro.sample("y", pyro.distributions.Normal(0, torch.sqrt(torch.tensor([2]))))
             x = pyro.sample("x", pyro.distributions.Normal(y/2, torch.sqrt(torch.tensor([2]))/2))
-            return x,y
+            return x, y
 
         def model10():
             x = pyro.sample("x", pyro.distributions.Normal(0, 1))
             y = pyro.sample("y", pyro.distributions.Normal(x, 1))
+            return x, y
+
         # Define the number of samples
         num_samples = 1000
         # Define the loss function
@@ -93,10 +95,12 @@ class TestDensityTest(unittest.TestCase):
         self.assertFalse(is_density_equal(pyro.do(model3, data={"x": 1}),
                                       pyro.do(model4, data={"x": 1})))          
         #self.assertTrue(is_density_equal(model5, model6))
+        
         #self.assertFalse(is_density_equal(do(model5, data={'y': 0 }), 
         #                              do(model6, data={'y': 0 })))
-        #self.assertFalse(is_density_equal(model7, model8))
+        # The marginals are equal, but not the density.
+        self.assertFalse(is_density_equal(model7, model8))
         self.assertFalse(is_density_equal(pyro.do(model7, data={'x': 1}), 
                                       pyro.do(model8, data={'x': 1})))
-        #self.assertTrue(is_density_equal(model9, model10))
+        self.assertTrue(is_density_equal(model9, model10))
         self.assertFalse(is_density_equal(pyro.do(model9, data={'x': 1}),pyro.do(model10, data={'x': 1})))
