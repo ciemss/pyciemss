@@ -30,43 +30,43 @@
 	{
 	    "tname": "t1",
 	    "template_type": "ControlledConversion",
-	    "parameter_name": "beta_1",
+	    "parameter_name": "beta",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t2",
 	    "template_type": "ControlledConversion",
-	    "parameter_name": "beta_2",
+	    "parameter_name": "betaV",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t3",
 	    "template_type": "NaturalConversion",
-	    "parameter_name": "v_r",
+	    "parameter_name": "nu",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t4",
 	    "template_type": "ControlledConversion",
-	    "parameter_name": "v_s1",
+	    "parameter_name": "beta",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t5",
 	    "template_type": "ControlledConversion",
-	    "parameter_name": "v_s2",
+	    "parameter_name": "betaV",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t6",
 	    "template_type": "NaturalConversion",
-	    "parameter_name": "gamma_1",
+	    "parameter_name": "gamma",
 	    "parameter_value": 1.0
 	},
 	{
 	    "tname": "t7",
 	    "template_type": "NaturalConversion",
-	    "parameter_name": "gamma_2",
+	    "parameter_name": "gammaV",
 	    "parameter_value": 1.0
 	}
     ],
