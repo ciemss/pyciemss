@@ -9,7 +9,7 @@
 7. use your gitlab username, then as password use the Personal Access Token you kept
 8. Clone pyciemss repository: `git clone https://gitlab.pnnl.gov/ciemss/pyciemss.git`
 (you should only need to login once, but just in case) For username <gitlab username>, password the Personal Access Token
-9. Install anaconda distribution of ython 3.10 https://docs.anaconda.com/anaconda/install/index.html
+9. Install anaconda distribution of Python 3.10 https://docs.anaconda.com/anaconda/install/index.html
 10. Create and activate a conda virtual environment `conda create -n CIEMSS_ENV python=3.10; conda activate CIEMSS_ENV` (if prompted to Proceed ([y]/n)? type y and enter)
 11. Install causal pyro dependencies. `pip install -e causal_pyro/`
 12. Install pyciemss dependencies. `pip install -r pyciemss/requirements.txt`
