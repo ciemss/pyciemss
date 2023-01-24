@@ -30,7 +30,8 @@ class computeRisk():
                  num_samples: int,
                  model_state: tuple,
                  tspan: np.ndarray,
-                 guide=None
+                 guide=None,
+                 compartment: str = None,
                 ):
         self.model = model
         self.intervention_fun = intervention_fun
@@ -40,7 +41,9 @@ class computeRisk():
         self.model_state = model_state
         self.tspan = tspan
         self.guide = guide
-    
+        self.compartment = compartment
+
+
     def __call__(self, x):
         # Apply intervention to model
         intervened_model = do(self.model, self.intervention_fun(x))
@@ -51,6 +54,10 @@ class computeRisk():
         else:
             samples = Predictive(intervened_model, num_samples=self.num_samples)(self.model_state, self.tspan)
         
+        # TODO: add generality for QoI dealing with multiple compartments
+        if self.compartment is not None:
+            samples = samples[self.compartment].detach().numpy()
+
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
         
@@ -83,7 +90,7 @@ class solveOUU():
     def solve(self):
         # Thin wrapper around SciPy optimizer(s).
         # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call must interface with the SciPy optimizer which is not consistent across algorithms.
-        
+
         if self.optimizer_algorithm == "basinhopping":
             result = basinhopping(
                 func=self.objfun,
