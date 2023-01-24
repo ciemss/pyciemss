@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/pyciemss/__init__.py
+src/pyciemss/utils.py
+src/pyciemss.egg-info/PKG-INFO
+src/pyciemss.egg-info/SOURCES.txt
+src/pyciemss.egg-info/dependency_links.txt
+src/pyciemss.egg-info/not-zip-safe
+src/pyciemss.egg-info/requires.txt
+src/pyciemss.egg-info/top_level.txt
