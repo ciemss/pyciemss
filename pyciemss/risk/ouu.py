@@ -37,7 +37,7 @@ class computeRisk():
         self.qoi = qoi
         self.risk_measure = risk_measure
         self.num_samples = num_samples
-        self.model_state = model_state,
+        self.model_state = model_state
         self.tspan = tspan
         self.guide = guide
     
@@ -67,4 +67,6 @@ class solveOUU():
                  objfun: callable,
                  
                  
-                )
+                ):
+        self.variable = variable
+        self.objfun = objfun
