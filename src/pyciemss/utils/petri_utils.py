@@ -2,7 +2,7 @@ import json
 import functools
 import collections
 import numbers
-from typing import TypedDict, Literal, TypeVar, Optional, Callable, List, Tuple, Dict, Union, NamedTuple
+from typing import TypedDict, Literal, TypeVar, Optional, Callable, List, Tuple, Dict, Union, NamedTuple, TYPE_CHECKING
 
 import torch
 import numpy
@@ -12,6 +12,8 @@ import networkx as nx
 from itertools import groupby
 import urllib.request
 
+if TYPE_CHECKING:
+    import mira.metamodel
 
 __all__ = ['seq_id_suffix',
            'load_sim_result',
@@ -89,6 +91,17 @@ def load_sim_result(results_file, petrisource, orient="wide")  -> pd.DataFrame:
         df = wide
 
     return df
+
+
+def load_mira(template_model: "mira.metamodel.TemplateModel") -> nx.MultiDiGraph:
+    """Generate a NetworkX output from a MIRA metamodel template specification."""
+    from mira.modeling import Model
+    from mira.modeling.petri import PetriNetModel
+
+    model = Model(template_model)
+    petri_net_model = PetriNetModel(model)
+    petri_net_json = petri_net_model.to_json()
+    return load(petri_net_json)
 
 
 def load(petrisource=None, uniquer=seq_id_suffix) -> nx.MultiDiGraph:
