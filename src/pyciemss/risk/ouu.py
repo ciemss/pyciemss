@@ -43,25 +43,35 @@ class computeRisk():
         self.compartment = compartment
 
 
+    # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
     def __call__(self, x):
         # Apply intervention to model
         intervened_model = do(self.model, self.intervention_fun(x))
         
         # Perform forward uncertainty propagation
-        if self.guide is not None:
-            samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-        else:
-            samples = Predictive(intervened_model, num_samples=self.num_samples)(self.model_state, self.tspan)
-        
-        # TODO: add generality for QoI dealing with multiple compartments
-        if self.compartment is not None:
-            samples = samples[self.compartment].detach().numpy()
+        samples = self.propagate_uncertainty(intervened_model)
 
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
         
         # Compute risk measure
         return self.risk_measure(sample_qoi)
+    
+    
+    def propagate_uncertainty(self, model: callable):
+        '''
+        Perform forward uncertainty propagation.
+        '''
+        if self.guide is not None:
+            samples = Predictive(model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
+        else:
+            samples = Predictive(model, num_samples=self.num_samples)(self.model_state, self.tspan)
+            
+        # TODO: add generality for QoI dealing with multiple compartments
+        if self.compartment is not None:
+            samples = samples[self.compartment].detach().numpy()
+            
+        return samples
 
 
 class solveOUU():
