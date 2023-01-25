@@ -112,3 +112,7 @@ class solveOUU():
             pass # TODO: implement other optimizers
 
         return result
+    
+    # TODO: implement logging callback for optimizer
+    def _save(self):
+        pass
