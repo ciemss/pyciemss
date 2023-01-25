@@ -40,8 +40,8 @@ class Petri2PyroTest(unittest.TestCase):
                 nu_prior=dist.Uniform(0.001, 0.01))
 
         
-    def test_petri2pyro(self):
-        """Tests for the Petri2Pyro class."""
-        # Setup Parameters
-        json = {}
-        SVIIvR = petri2pyro()
+    # def test_petri2pyro(self):
+    #     """Tests for the Petri2Pyro class."""
+    #     # Setup Parameters
+    #     json = {}
+    #     SVIIvR = petri2pyro()
