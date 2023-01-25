@@ -1,5 +1,3 @@
-import sys
-sys.path.append("../")
 from pyciemss.utils import is_density_equal, is_intervention_density_equal
 import pyro
 import torch
@@ -98,3 +96,4 @@ class TestDensityTest(unittest.TestCase):
         self.assertFalse(is_intervention_density_equal(model7, model8, intervention={'x': 1}))
         self.assertTrue(is_density_equal(model9, model10))
         self.assertFalse(is_intervention_density_equal(model9, model10, intervention={'x': 1}))
+
