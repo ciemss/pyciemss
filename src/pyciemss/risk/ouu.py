@@ -4,6 +4,8 @@ from scipy.optimize import basinhopping
 from causal_pyro.query.do_messenger import do
 from pyro.infer import Predictive
 
+from pyciemss.risk.risk_measures import alpha_superquantile
+
 class RandomDisplacementBounds():
     '''
     Callable to take random displacement step within bounds
@@ -25,10 +27,10 @@ class computeRisk():
                  model: callable,
                  intervention_fun: callable,
                  qoi: callable,
-                 risk_measure: callable,
-                 num_samples: int,
                  model_state: tuple,
                  tspan: np.ndarray,
+                 risk_measure: callable = alpha_superquantile,
+                 num_samples: int = 1000,
                  guide=None,
                  compartment: str = None,
                 ):
