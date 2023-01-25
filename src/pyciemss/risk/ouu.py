@@ -84,7 +84,12 @@ class solveOUU():
                  x0: np.ndarray,
                  objfun: callable,
                  constraints: dict,
-                 minimizer_kwargs: dict,
+                 minimizer_kwargs: dict = dict(
+                        method="COBYLA",
+                        options={
+                                 "disp": False,
+                                },
+                       ),
                  optimizer_algorithm: str = "basinhopping",
                  maxiter: int = 100,
                  **kwargs
@@ -92,7 +97,7 @@ class solveOUU():
         self.x0 = x0
         self.objfun = objfun
         self.constraints = constraints
-        self.minimizer_kwargs = minimizer_kwargs
+        self.minimizer_kwargs = minimizer_kwargs.update({"constraints": self.constraints})
         self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
         
