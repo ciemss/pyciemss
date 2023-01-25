@@ -84,4 +84,3 @@ class SVIIvR(ODE):
         R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
 
         return (S_obs, V_obs, I_obs, R_obs)
-        

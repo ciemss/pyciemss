@@ -60,4 +60,3 @@ class ODE(PyroModule):
         observations = self.observation_model(solution, data)
 
         return solution, observations
-        
