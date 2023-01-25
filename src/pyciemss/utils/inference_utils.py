@@ -1,21 +1,28 @@
 import torch
 import pyro
-
+from causal_pyro.query.do_messenger import do
 from pyro.infer import SVI, Trace_ELBO
 from pyro.optim import Adam
+import numpy as np
 
-def run_inference(model, 
-                guide, 
+__all__ = ['is_density_equal',
+           'is_intervention_density_equal',
+           'get_tspan',
+           'state_flux_constraint',
+           'run_inference']
+
+def run_inference(model,
+                guide,
                 initial_state,
-                tspan, 
-                data, 
-                optim=Adam({'lr': 0.03}), 
-                loss_f=Trace_ELBO(num_particles=1), 
-                num_iterations=250, 
+                tspan,
+                data,
+                optim=Adam({'lr': 0.03}),
+                loss_f=Trace_ELBO(num_particles=1),
+                num_iterations=250,
                 verbose=False
                 ):
     '''
-    Run stochastic variational inference. 
+    Run stochastic variational inference.
     This is just a very thin abstraction around Pyro's SVI class.
     '''
 
@@ -46,3 +53,29 @@ def get_tspan(start, end, steps):
     return torch.linspace(float(start), float(end), steps)
 
 
+
+def is_density_equal(model1: callable , model2: callable, num_samples:int=1000):
+    """
+    Test the density of two models.
+
+    Args: model1: The first model.
+          model2: The second model.
+          num_samples: The number of samples to use.
+    Returns: True if the density of the two models is the same.
+    """
+    elbo = Trace_ELBO(num_particles=num_samples, vectorize_particles=False)
+
+    # compare the density of the two models
+    return np.allclose( elbo.loss(model1, model2), elbo.loss(model2, model1), atol=1e-6)
+
+def is_intervention_density_equal( model1: callable, model2: callable, intervention: dict, num_samples:int=1000):
+    """Test the density of two models after intervention.
+
+            Args: model1: The first model.
+                    model2: The second model.
+                    intervention: The intervention.
+                    num_samples: The number of samples to use.
+            Returns: True if the density of the two models is the same after intervention.
+    """
+
+    return is_density_equal(do(model1, intervention), do(model2, intervention), num_samples)
