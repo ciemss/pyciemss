@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 __all__ = ['seq_id_suffix',
            'load_sim_result',
            'load',
+           'load_mira',
            'draw_petri',
            'natural_order',
            'add_state_indicies',
