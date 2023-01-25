@@ -10,10 +10,10 @@ from pyciemss.ODE.abstract import ODE, Time, State, Solution, Observation
 from pyciemss.utils import state_flux_constraint
 
 class SVIIvR(ODE):
-    def __init__(self, 
+    def __init__(self,
                 N,
                 noise_prior=dist.Uniform(5., 10.),
-                beta_prior=dist.Uniform(0.1, 0.3), 
+                beta_prior=dist.Uniform(0.1, 0.3),
                 betaV_prior=dist.Uniform(0.025, 0.05),
                 gamma_prior=dist.Uniform(0.05, 0.35),
                 gammaV_prior=dist.Uniform(0.1, 0.4),
@@ -28,8 +28,8 @@ class SVIIvR(ODE):
         self.gamma_prior  = gamma_prior
         self.gammaV_prior = gammaV_prior
         self.nu_prior     = nu_prior
-    
-    @pyro_method    
+
+    @pyro_method
     def deriv(self, t: Time, state: State) -> State:
         S, V, I, Iv, R = state
 
@@ -83,9 +83,4 @@ class SVIIvR(ODE):
         I_obs = pyro.sample("I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"])
         R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
 
-<<<<<<< HEAD
         return (S_obs, V_obs, I_obs, R_obs)
-=======
-        return (S_obs, V_obs, I_obs, R_obs)
-        
->>>>>>> main
