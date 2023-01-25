@@ -19,7 +19,6 @@ class RandomDisplacementBounds():
 
 class computeRisk():
     '''
-    Objective for minimizing vaccination rate.
     Implements necessary forward uncertainty propagation, quantity of interest and risk measure computation.
     '''
     def __init__(self,
