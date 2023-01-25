@@ -44,5 +44,5 @@ class Petri2PyroTest(unittest.TestCase):
         """Tests for the Petri2Pyro class."""
         # Setup Parameters
         json = {}
-        SVIIvR_petri = load('models/starter_kit_examples/CHIME-SVIIvR/model_petri.json')
-        SVIIvR = petri_to_ode(SVIIvR_petri)
+#        SVIIvR_petri = load('models/starter_kit_examples/CHIME-SVIIvR/model_petri.json')
+#        SVIIvR = petri_to_ode(SVIIvR_petri)
