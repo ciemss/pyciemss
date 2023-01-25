@@ -1,0 +1,3 @@
+[submodule "causal_pyro"]
+	path = causal_pyro
+	url = https://github.com/BasisResearch/causal_pyro.git
