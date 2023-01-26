@@ -92,7 +92,7 @@ class SVIIvR(ODE):
 class SVIIvR_simple(ODE):
     def __init__(self,
                 N,
-                noise_prior=dist.Uniform(5., 10.),
+                noise_var_prior=dist.Uniform(5., 10.),
                 betaSI_prior=dist.Uniform(0.1, 0.3),
                 betaSIv_prior=dist.Uniform(0.1, 0.3),
                 betaVI_prior=dist.Uniform(0.025, 0.05),
@@ -104,7 +104,7 @@ class SVIIvR_simple(ODE):
         super().__init__()
 
         self.N = N
-        self.noise_prior  = noise_prior
+        self.noise_var_prior  = noise_var_prior
         self.betaSI_prior   = betaSI_prior
         self.betaSIv_prior  = betaSIv_prior
         self.betaVI_prior   = betaVI_prior
@@ -148,7 +148,7 @@ class SVIIvR_simple(ODE):
     @pyro_method
     def param_prior(self) -> None:
 
-        self.noise_var = pyro.sample("noise_var", self.noise_prior)
+        self.noise_var = pyro.sample("noise_var", self.noise_var_prior)
         self.betaSI      = pyro.sample("betaSI", self.beta_prior)
         self.betaSIv      = pyro.sample("betaSIv", self.beta_prior)
         self.betaVI     = pyro.sample("betaVI", self.betaV_prior)
