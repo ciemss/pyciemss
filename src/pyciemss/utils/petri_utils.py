@@ -402,5 +402,5 @@ def set_mira_parameter_values( petri_net, parameter_values ):
     for node, data in petri_net.nodes(data=True):
         if node in parameter_values:
             data['parameter_name'] = parameter_values[node]['parameter_name']
-            data['parameter_value'] = parameter_values[node]['parameter_values']
+            data['parameter_value'] = parameter_values[node]['parameter_value']
     return petri_net
