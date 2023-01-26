@@ -1,4 +1,5 @@
 import numpy as np
+from pyciemss.risk.risk_measures import pof
 
 def nday_rolling_average(samples: np.ndarray, tf=90., ndays=7, dt=1.) -> np.ndarray:
     '''
@@ -14,9 +15,11 @@ def fraction_infected(samples: np.ndarray) -> np.ndarray:
     return np.elementwise_division(samples["I_obs"], samples["N"])
 
 
-# TODO: rewrite this so it's not pseudocode
-def exceedence_threshold(samples, threshold):
-    if np.any(samples < threshold):
-        return 1
-    else:
-        return 0
+def probability_of_exceedence(samples, threshold, contexts: list=None):
+    '''
+    Thin wrapper around risk.risk_measures.pof
+    # TODO: extend to handle multiple contexts
+    '''
+    if contexts is not None:
+        samples = samples[contexts[0]]
+    return pof(samples, threshold)
