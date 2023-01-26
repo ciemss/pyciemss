@@ -15,7 +15,7 @@ import urllib.request
 from pyro.nn import pyro_method
 import pyro.distributions as dist
 
-from pyciemss.utils import state_flux_constraint
+from pyciemss.utils.inference_utils import state_flux_constraint
 # from pyciemss.ODE.abstract import Time, State, Solution, Observation
 
 __all__ = ['seq_id_suffix',

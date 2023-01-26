@@ -12,7 +12,7 @@ from torchdiffeq import odeint
 Time = TypeVar('Time', torch.tensor, float)
 State = TypeVar('State', torch.tensor, float)
 Solution = TypeVar('Solution', Tuple[State], State)
-Observation = Solution
+Observation = TypeVar('Observation', Tuple[State], State)
 
 class ODE(PyroModule):
     '''
