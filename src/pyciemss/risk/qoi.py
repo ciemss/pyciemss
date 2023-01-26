@@ -21,5 +21,5 @@ def probability_of_exceedence(samples, threshold, contexts: list=None):
     # TODO: extend to handle multiple contexts
     '''
     if contexts is not None:
-        samples = samples[contexts[0]]
+        samples = samples[contexts[0]].detach().numpy()
     return pof(samples, threshold)
