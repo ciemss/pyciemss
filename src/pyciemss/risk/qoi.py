@@ -15,11 +15,12 @@ def fraction_infected(samples: np.ndarray) -> np.ndarray:
     return np.elementwise_division(samples["I_obs"], samples["N"])
 
 
-def probability_of_exceedence(samples, threshold, contexts: list=None):
+def threshold_exceedence(samples, threshold: float, contexts: list=None):
     '''
-    Thin wrapper around risk.risk_measures.pof
     # TODO: extend to handle multiple contexts
     '''
     if contexts is not None:
         samples = samples[contexts[0]].detach().numpy()
-    return pof(samples, threshold)
+    
+    # Return how many samples exceeded the threshold at ANY point
+    return np.any(samples >= threshold, axis=1).astype(int)
