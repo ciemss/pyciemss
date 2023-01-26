@@ -4,10 +4,8 @@ import unittest
 
 import pyro.distributions as dist
 
-
 from pyciemss.ODE.models import SVIIvR, SVIIvR_simple
-from pyciemss.utils import petri_to_ode, load, add_state_indicies
-
+from pyciemss.utils import load, add_state_indicies, is_density_equal, is_intervention_density_equal
 from pyciemss.ODE.frontend import compile_pp
 
 class Petri2PyroTest(unittest.TestCase):
@@ -53,6 +51,9 @@ class Petri2PyroTest(unittest.TestCase):
         petri_G = add_state_indicies(petri_G)
 
         model_compiled = compile_pp(petri_G, prior_json)
+        model = SVIIvR_simple
 
-        SVIIvR_petri = load('models/starter_kit_examples/CHIME-SVIIvR/model_petri.json')
-        SVIIvR = petri_to_ode(SVIIvR_petri)
+        num_samples = 100
+
+        self.assertFalse(is_density_equal(model, model_compiled, num_samples=num_samples))
+        self.assertFalse(is_intervention_density_equal(model, model_compiled, intervention={'x': 1}, num_samples=num_samples))
