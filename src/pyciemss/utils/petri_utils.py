@@ -345,8 +345,7 @@ def petri_to_deriv_and_observation(
         for name, s in solutions.items():
             obs_name = f"{name}_obs"
             obs = None if data is None else data[obs_name]
-            # TODO: make this a bit less brittle by asserting that any model has a noise variance.
-            observations[name] = pyro.sample(obs_name, dist.Normal(s, self.noise).to_event(1), obs=obs)
+            observations[name] = pyro.sample(obs_name, dist.Normal(s, self.noise_var).to_event(1), obs=obs)
         
         return order_state(G, **observations)
 

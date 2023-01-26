@@ -16,6 +16,8 @@ def prior_annotate(name):
 
 def parse_prior(prior_json):
 
+    assert "noise_var" in prior_json.keys()
+
     prior_attributes = {}
 
     for key, val in prior_json.items():
@@ -26,7 +28,7 @@ def parse_prior(prior_json):
     @pyro_method
     def prior_pyro_method(self):
         '''
-        TODO: document
+        Sample parameters from their prior distributions.
         '''
         for key in prior_json.keys():
             # Programmatic represention of `self.var = pyro.sample("var", self.var_prior)`
