@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 __all__ = ['seq_id_suffix',
            'load_sim_result',
            'load',
+           'encode',
            'load_mira',
            'draw_petri',
            'natural_order',
@@ -35,7 +36,6 @@ __all__ = ['seq_id_suffix',
            'duplicate_petri_net',
            'intervene_petri_net',
            'get_mira_initial_values',
-           'encode',
            'get_mira_parameter_values',
            'set_mira_initial_values',
            'set_mira_parameter_values'
@@ -109,7 +109,6 @@ def load_mira(template_model: "mira.metamodel.TemplateModel") -> nx.MultiDiGraph
     petri_net_json = petri_net_model.to_json()
     return load(petri_net_json)
 
-
 def load(petrisource=None, uniquer=seq_id_suffix) -> nx.MultiDiGraph:
     """ Create a newtworkx output from a petri-net specification
 
@@ -157,6 +156,9 @@ def load(petrisource=None, uniquer=seq_id_suffix) -> nx.MultiDiGraph:
     G.add_edges_from(input_edges + output_edges)
 
     return G
+
+
+
 
 
 def draw_petri(G: nx.MultiDiGraph, ax=None) -> None:
@@ -382,7 +384,12 @@ def unorder_state(G: nx.MultiDiGraph, *states: T) -> Dict[str, T]:
 
 
 def duplicate_petri_net(G: nx.MultiDiGraph, *, suffix: str = "cf") -> nx.MultiDiGraph:
-    """Duplicate a petri-net graph.
+    """Make a petrinet with *duplicate* intervention nodes.
+    The resulting graph has all of the nodes/edges/attributes of the passed petrinet
+    and a new set of nodes/edges/attributes that duplicate the originals BUT have a suffix added.
+
+    NOTE: This method will DUPLICATE the unique IDs added by `add_state_indicies`, so that
+    function *may* need to be re-run.
 
     Args:
         G (nx.MultiDiGraph): Petri-net graph
