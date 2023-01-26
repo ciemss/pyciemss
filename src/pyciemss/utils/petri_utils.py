@@ -34,7 +34,11 @@ __all__ = ['seq_id_suffix',
            'unorder_state',
            'duplicate_petri_net',
            'intervene_petri_net',
-           ]
+           'get_mira_initial_values',
+           'get_mira_parameter_values',
+           'set_mira_initial_values',
+           'get_mira_parameter_values'
+]
 
 
 def seq_id_suffix(df):
