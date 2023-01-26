@@ -55,7 +55,7 @@ class ODE(PyroModule):
         # Simulate from ODE.
         # Constant deltaT method like `euler` necessary to get interventions without name collision.
         solution = odeint(self.deriv, initial_state, tspan, method="euler")
-
+        
         # Add Observation noise
         observations = self.observation_model(solution, data)
 

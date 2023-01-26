@@ -122,17 +122,17 @@ class SVIIvR_simple(ODE):
         SI_flux_  = pyro.deterministic("SI_flux %f" % (t),  self.betaSI  * S * I / self.N)
         SIv_flux_  = pyro.deterministic("SIv_flux %f" % (t),  self.betaSIv  * S * Iv / self.N)
         VI_flux_ = pyro.deterministic("VI_flux %f" % (t), self.betaVI * V * I / self.N)
-        VIv_flux_ = pyro.deterministic("VIv_flux %f" % (t), self.betaV * V * Iv / self.N)
+        VIv_flux_ = pyro.deterministic("VIv_flux %f" % (t), self.betaVIv * V * Iv / self.N)
         IR_flux_  = pyro.deterministic("IR_flux %f" % (t),  self.gamma * I)
         IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
 
         # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
-        SV_flux = state_flux_constraint(S,  SV_flux_)
-        SI_flux = state_flux_constraint(S,  SI_flux_)
+        SV_flux  = state_flux_constraint(S,  SV_flux_)
+        SI_flux  = state_flux_constraint(S,  SI_flux_)
         SIv_flux = state_flux_constraint(S,  SIv_flux_)
-        VI_flux = state_flux_constraint(V,  VI_flux_)
+        VI_flux  = state_flux_constraint(V,  VI_flux_)
         VIv_flux = state_flux_constraint(V,  VIv_flux_)
-        IR_flux = state_flux_constraint(I, IR_flux_)
+        IR_flux  = state_flux_constraint(I,  IR_flux_)
         IvR_flux = state_flux_constraint(Iv, IvR_flux_)
 
         # Where the real magic happens.
@@ -148,10 +148,10 @@ class SVIIvR_simple(ODE):
     def param_prior(self) -> None:
 
         self.noise_var = pyro.sample("noise_var", self.noise_var_prior)
-        self.betaSI      = pyro.sample("betaSI", self.beta_prior)
-        self.betaSIv      = pyro.sample("betaSIv", self.beta_prior)
-        self.betaVI     = pyro.sample("betaVI", self.betaV_prior)
-        self.betaVIv     = pyro.sample("betaVIv", self.betaV_prior)
+        self.betaSI    = pyro.sample("betaSI", self.betaSI_prior)
+        self.betaSIv   = pyro.sample("betaSIv", self.betaSIv_prior)
+        self.betaVI    = pyro.sample("betaVI", self.betaVI_prior)
+        self.betaVIv   = pyro.sample("betaVIv", self.betaVIv_prior)
         self.gamma     = pyro.sample("gamma", self.gamma_prior)
         self.gammaV    = pyro.sample("gammaV", self.gammaV_prior)
         self.nu        = pyro.sample("nu", self.nu_prior)

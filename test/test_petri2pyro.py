@@ -4,6 +4,13 @@ import unittest
 
 import pyro.distributions as dist
 
+import os
+
+print(os.getcwd())
+
+import sys
+sys.path.append("/src/")
+
 from pyciemss.ODE.models import SVIIvR, SVIIvR_simple
 from pyciemss.utils import load, add_state_indicies, is_density_equal, is_intervention_density_equal, get_tspan
 from pyciemss.ODE.frontend import compile_pp
@@ -44,7 +51,7 @@ class Petri2PyroTest(unittest.TestCase):
 
         intervention = constant_intervention("SV_flux", torch.tensor([0.0001]), self.tspan)
 
-        model_kwargs = {"initial_state":self.initial_state, "tspan":self.tspan}
+        model_args = (self.initial_state, self.tspan)
 
-        self.assertFalse(is_density_equal(model, model_compiled, num_samples=self.num_samples, **model_kwargs))
-        self.assertFalse(is_intervention_density_equal(model, model_compiled, intervention=intervention, num_samples=self.num_samples, **model_kwargs))
+        self.assertFalse(is_density_equal(model, model_compiled, self.num_samples, *model_args))
+        self.assertFalse(is_intervention_density_equal(model, model_compiled, self.num_samples, intervention, *model_args))
