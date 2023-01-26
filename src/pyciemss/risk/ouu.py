@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.optimize import basinhopping
+from scipy.optimize import basinhopping, minimize
 
 from causal_pyro.query.do_messenger import do
 from pyro.infer import Predictive
@@ -116,7 +116,14 @@ class solveOUU():
                 **self.kwargs
             )
         else:
-            pass # TODO: implement other optimizers
+            # TODO: extend so as not just to be a pass through to minimize
+            result = minimize(
+                fun=self.objfun,
+                x0=self.x0,
+                method=self.optimizer_algorithm,
+                constraints=self.constraints,
+                **self.kwargs
+            )
 
         return result
     
