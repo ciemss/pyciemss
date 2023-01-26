@@ -301,6 +301,8 @@ def petri_to_ode(
 
 
 def order_state(G: nx.MultiDiGraph, **states: T) -> Tuple[T, ...]:
+    if not states:
+        raise ValueError
     state2ind = {node: data["state_index"] for node, data in G.nodes(data=True)
                  if data["type"] == "state"}
     return tuple(states[name] for name in sorted(states.keys(), key=lambda k: state2ind[k]))
@@ -369,3 +371,34 @@ def intervene_petri_net(
             G2.add_edge(u, v, **data)
 
     return G2
+
+
+def get_mira_initial_values(petri_net):
+    return {
+        node: torch.tensor(
+            data['mira_initial_value'])
+        for node, data in petri_net.nodes(data=True)
+        if 'mira_initial_value' in data
+    }
+
+def get_mira_parameter_values(petri_net):
+    return {
+        data['parameter_name']: torch.tensor(
+            data['parameter_value'])
+        for node, data in petri_net.nodes(data=True)
+        if 'parameter_name' in data and 'parameter_value' in data
+    }
+
+def set_mira_initial_values( petri_net, initial_values ):
+    for node, data in petri_net.nodes(data=True):
+        if node in initial_values:
+            data['mira_initial_value'] = initial_values[node]
+    return petri_net
+
+
+def set_mira_parameter_values( petri_net, parameter_values ):
+    for node, data in petri_net.nodes(data=True):
+        if node in parameter_values:
+            data['parameter_name'] = parameter_values[node]['parameter_name']
+            data['parameter_value'] = parameter_values[node]['parameter_values']
+    return petri_net
