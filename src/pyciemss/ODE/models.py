@@ -60,7 +60,7 @@ class SVIIvR(ODE):
     @pyro_method
     def param_prior(self) -> None:
 
-        self.noise_var = pyro.sample("noise_var", self.noise_prior)
+        self.noise     = pyro.sample("noise", self.noise_prior)
         self.beta      = pyro.sample("beta", self.beta_prior)
         self.betaV     = pyro.sample("betaV", self.betaV_prior)
         self.gamma     = pyro.sample("gamma", self.gamma_prior)
@@ -77,10 +77,10 @@ class SVIIvR(ODE):
 
         # TODO: Make sure observations are strictly greater than 0.
 
-        S_obs = pyro.sample("S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"])
-        V_obs = pyro.sample("V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"])
+        S_obs = pyro.sample("S_obs", dist.Normal(S, self.noise).to_event(1), obs=data["S_obs"])
+        V_obs = pyro.sample("V_obs", dist.Normal(V, self.noise).to_event(1), obs=data["V_obs"])
         # We only observe the total number of infected people we don't know which of them are vaccinated.
-        I_obs = pyro.sample("I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"])
-        R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
+        I_obs = pyro.sample("I_obs", dist.Normal(I + Iv, self.noise).to_event(1), obs=data["I_obs"])
+        R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise).to_event(1), obs=data["R_obs"])
 
         return (S_obs, V_obs, I_obs, R_obs)

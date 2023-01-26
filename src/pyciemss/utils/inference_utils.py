@@ -52,8 +52,6 @@ def get_tspan(start, end, steps):
     '''
     return torch.linspace(float(start), float(end), steps)
 
-
-
 def is_density_equal(model1: callable , model2: callable, num_samples:int=1000):
     """
     Test the density of two models.

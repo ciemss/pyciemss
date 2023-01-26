@@ -5,9 +5,9 @@ import pyro.distributions as dist
 
 from pyro.nn import pyro_method
 
+from pyciemss.utils.petri_utils import petri_to_deriv_and_observation
 
-# Keys here are names in the JSON template, values are the pyro
-# distribution.
+# Keys here are names in the JSON template, values are the pyro distribution.
 PRIOR_MAPPING = {"Uniform" : dist.Uniform, 
                  "Normal" : dist.Normal}
 
@@ -25,19 +25,25 @@ def parse_prior(prior_json):
 
     @pyro_method
     def prior_pyro_method(self):
+        '''
+        TODO: document
+        '''
         for key in prior_json.keys():
             # Programmatic represention of `self.var = pyro.sample("var", self.var_prior)`
             setattr(self, key, pyro.sample(key, getattr(self, prior_annotate(key))))
 
     return prior_attributes, prior_pyro_method
 
-def compile_pp(petri_net, prior_json):
+
+def compile_pp(petri_G, prior_json):
 
     prior_attributes, prior_pyro_method = parse_prior(prior_json)
 
     PyroODE = type("PyroODE", (ODE,), prior_attributes)
 
     PyroODE.param_prior = prior_pyro_method
+
+    PyroODE.deriv, PyroODE.observation_model = petri_to_deriv_and_observation(petri_G)
 
     init_args = []
     init_kwargs = {}

@@ -12,6 +12,9 @@ import networkx as nx
 from itertools import groupby
 import urllib.request
 
+from pyro.nn import pyro_method
+import pyro.distributions as dist
+# from pyciemss.ODE.abstract import Time, State, Solution, Observation
 
 __all__ = ['seq_id_suffix',
            'load_sim_result',
@@ -27,6 +30,7 @@ __all__ = ['seq_id_suffix',
            'grouped_controlled_conversion',
            'deterministic',
            'petri_to_ode',
+           'petri_to_deriv',
            'order_state',
            'unorder_state',
            'duplicate_petri_net',
@@ -284,6 +288,66 @@ def petri_to_ode(
         return order_state(G, **{name: deterministic(f"d{name}_dt", dx_dt) for name, dx_dt in derivs.items()})
 
     return dX_dt
+
+def petri_to_deriv_and_observation(
+    G: nx.MultiDiGraph,
+    funcs: Optional[Dict[str, Callable[[Tuple[T, ...], T], Tuple[T, ...]]]] = None,
+) -> Callable[[T, Tuple[T, ...]], Tuple[T, ...]]:
+    """Create a deriv method for a PyroODE system from a petri-net definition.
+
+    Args:
+        G (nx.MultiDiGraph): Petri-net graph
+
+    Returns
+        Callable: Function that takes a list of state values and returns a list of derivatives.
+    """
+    state2ind = {node: data["state_index"] for node, data in G.nodes(data=True)
+                 if data["type"] == "state"}
+
+    if funcs is None:
+        funcs = {}
+
+    for node, data in G.nodes(data=True):
+        if data["type"] == "transition" and node not in funcs:
+            # TODO: Ask Eli if removing the partial evaluation is going to be a problem
+                funcs[node] = _TEMPLATES[data["template_type"]]
+
+    # TODO: add constraints on flux...
+
+    @pyro_method
+    def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
+        states = unorder_state(G, *(state[i] for i in range(len(state2ind))))
+        derivs = {k: 0. for k in state2ind}
+        for node, data in G.nodes(data=True):
+            if data["type"] == "transition":
+                node_input_names = {e[0] for e in G.in_edges(node, data=True)} | \
+                    {e[1] for e in G.out_edges(node, data=True)}
+                node_inputs = order_state(G, **{k: states[k] for k in node_input_names})
+                parameters = {data['parameter_name']: getattr(self, data['parameter_name'])}
+                du_dts = funcs[node](parameters, t, node_inputs)
+                for i, name in enumerate(sorted(node_input_names, key=lambda k: state2ind[k])):
+                    derivs[name] += deterministic(f"partial_{node}_{name}", du_dts[i])
+
+        return order_state(G, **{name: deterministic(f"d{name}_dt", dx_dt) for name, dx_dt in derivs.items()})
+
+
+    # TODO: add types (tried using custom Solution, etc. types, but ran into cirular imports.) 
+    # Also, not sure I got the T right here. I still need to grok python type signatures.
+    @pyro_method
+    def observation_model(self, solution, data: Optional[Dict[str, T]] = None):
+
+        solutions = unorder_state(G, *(solution[i] for i in range(len(state2ind))))
+        observations = {k: 0. for k in state2ind}
+        
+        for name, s in solutions.items():
+            obs_name = f"{name}_obs"
+            obs = None if data is None else data[obs_name]
+            # TODO: make this a bit less brittle by asserting that any model has a noise variance.
+            observations[name] = pyro.sample(obs_name, dist.Normal(s, self.noise).to_event(1), obs=obs)
+        
+        return order_state(G, **observations)
+
+    return deriv, observation_model
 
 
 def order_state(G: nx.MultiDiGraph, **states: T) -> Tuple[T, ...]:
