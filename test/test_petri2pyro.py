@@ -30,8 +30,8 @@ class Petri2PyroTest(unittest.TestCase):
         """Tests for the Petri2Pyro class."""
         # Setup Parameters
         
-        prior_path = "./test/models/SVIIvR_simple/prior.json"
-        petri_path = "./test/models/SVIIvR_simple/petri.json"
+        prior_path = "test/models/SVIIvR_simple/prior.json"
+        petri_path = "test/models/SVIIvR_simple/petri.json"
 
         with open(prior_path) as f:
             prior_json = json.load(f)
@@ -44,6 +44,7 @@ class Petri2PyroTest(unittest.TestCase):
 
         intervention = constant_intervention("SV_flux", torch.tensor([0.0001]), self.tspan)
 
-        self.assertFalse(is_density_equal(model, model_compiled, num_samples=self.num_samples, initial_state=self.initial_state, tspan=self.tspan))
-        self.assertFalse(is_intervention_density_equal(model, model_compiled, intervention={'VI_flux': 1}, 
-                                                    num_samples=self.num_samples, initial_state=self.initial_state, tspan=self.tspan))
+        model_kwargs = {"initial_state":self.initial_state, "tspan":self.tspan}
+
+        self.assertFalse(is_density_equal(model, model_compiled, num_samples=self.num_samples, **model_kwargs))
+        self.assertFalse(is_intervention_density_equal(model, model_compiled, intervention=intervention, num_samples=self.num_samples, **model_kwargs))
