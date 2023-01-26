@@ -1,9 +1,14 @@
+import torch
+import json
+import unittest
+
+import pyro.distributions as dist
+
+
 from pyciemss.ODE.models import SVIIvR, SVIIvR_simple
-from pyciemss.utils import petri_to_ode, load
+from pyciemss.utils import petri_to_ode, load, add_state_indicies
 
 from pyciemss.ODE.frontend import compile_pp
-
-import json
 
 class Petri2PyroTest(unittest.TestCase):
     """Tests for the Petri2Pyro class."""
@@ -44,8 +49,8 @@ class Petri2PyroTest(unittest.TestCase):
         with open(prior_path) as f:
             prior_json = json.load(f)
 
-        petri_G = utils.load(petri_path)
-        petri_G = utils.add_state_indicies(petri_G)
+        petri_G = load(petri_path)
+        petri_G = add_state_indicies(petri_G)
 
         model_compiled = compile_pp(petri_G, prior_json)
 
