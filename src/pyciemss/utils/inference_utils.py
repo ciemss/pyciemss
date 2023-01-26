@@ -52,7 +52,7 @@ def get_tspan(start, end, steps):
     '''
     return torch.linspace(float(start), float(end), steps)
 
-def is_density_equal(model1: callable , model2: callable, num_samples:int=1000):
+def is_density_equal(model1: callable , model2: callable, num_samples:int=1000, *args, **kwargs):
     """
     Test the density of two models.
 
@@ -64,7 +64,7 @@ def is_density_equal(model1: callable , model2: callable, num_samples:int=1000):
     elbo = Trace_ELBO(num_particles=num_samples, vectorize_particles=False)
 
     # compare the density of the two models
-    return np.allclose( elbo.loss(model1, model2), elbo.loss(model2, model1), atol=1e-6)
+    return np.allclose( elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs), atol=1e-6)
 
 def is_intervention_density_equal( model1: callable, model2: callable, intervention: dict, num_samples:int=1000):
     """Test the density of two models after intervention.
