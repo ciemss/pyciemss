@@ -16,6 +16,7 @@ import urllib.request
 __all__ = ['seq_id_suffix',
            'load_sim_result',
            'load',
+           'encode',
            'draw_petri',
            'natural_order',
            'add_state_indicies',
@@ -91,6 +92,9 @@ def load_sim_result(results_file, petrisource, orient="wide")  -> pd.DataFrame:
     return df
 
 
+def dump(petrinet, target):
+    pass
+
 def load(petrisource=None, uniquer=seq_id_suffix) -> nx.MultiDiGraph:
     """ Create a newtworkx output from a petri-net specification
 
@@ -138,6 +142,69 @@ def load(petrisource=None, uniquer=seq_id_suffix) -> nx.MultiDiGraph:
     G.add_edges_from(input_edges + output_edges)
 
     return G
+
+
+def encode(petrinet):
+    """Encode petrinet as a dictionary with the following keys:
+    S -- List of state nodes (with attributes)
+    T -- List of transition nodes (with attributes)
+    I -- Edges from state to transition (essentially pairs of indicies in S & T)
+    O -- Edges from transition to state (essentially pairs of indicies in T & S)
+        
+    returns dictionary encoding of graph, suitable for dumping to a file as JSON.
+
+    It is intended that a round-trip encoding yields an isomorphic graph.  In code:
+       `import networkx.algorithms.isomorphism as iso
+       G1 = load(<file>)
+       G2 = load(encode(G))
+       atts = {*petri_G.nodes["S"].keys()} | {*petri_G.nodes["t1"].keys()}
+       defaults = [None for _ in atts]
+       assert(nx.is_isomorphic(petri_G, petri_G2, iso.categorical_node_match(atts, defaults)))
+       `
+    """
+    
+    # Node lists------
+    def _clean(d, remove=["type"]):
+        d = d.copy()
+        for k in remove:
+            del d[k]
+        return d
+
+    _k = lambda v: v[1]
+    types = sorted(nx.get_node_attributes(petrinet, "type").items(), key=_k)
+    types = {t: [v[0] for v in nodes]
+             for t,nodes
+             in groupby(types, _k)}
+
+    S = [_clean(petrinet.nodes[n]) for n in types["state"]]
+    T = [_clean(petrinet.nodes[n]) for n in types["transition"]]
+    
+    
+    # Edge lists ------
+    s_order = [e["sname"] for e in S]
+    t_order = [e["tname"] for e in T]    
+    def _build_pairs(a,b):
+        if a in s_order:
+            return {"is": s_order.index(a)+1,
+                    "it": t_order.index(b)+1
+                   }
+        else:
+            return {"os": s_order.index(b)+1,
+                    "ot": t_order.index(a)+1
+                   }
+
+    pairs = [_build_pairs(a, b) for a, b in petrinet.edges()]
+    _k = lambda v: "I" if "is" in v.keys() else "O"
+    edge_types = sorted(pairs, key=_k)
+    edge_types = {t:[*edges]
+                     for t, edges
+                     in groupby(edge_types, _k)}    
+    json = {"S": S,
+            "T": T,
+            "I": edge_types["I"],
+            "O": edge_types["O"]
+           }
+    return json
 
 
 def draw_petri(G: nx.MultiDiGraph, ax=None) -> None:
@@ -299,7 +366,12 @@ def unorder_state(G: nx.MultiDiGraph, *states: T) -> Dict[str, T]:
 
 
 def duplicate_petri_net(G: nx.MultiDiGraph, *, suffix: str = "cf") -> nx.MultiDiGraph:
-    """Duplicate a petri-net graph.
+    """Make a petrinet with *duplicate* intervention nodes.
+    The resulting graph has all of the nodes/edges/attributes of the passed petrinet
+    and a new set of nodes/edges/attributes that duplicate the originals BUT have a suffix added.
+
+    NOTE: This method will DUPLICATE the unique IDs added by `add_state_indicies`, so that
+    function *may* need to be re-run.
 
     Args:
         G (nx.MultiDiGraph): Petri-net graph
