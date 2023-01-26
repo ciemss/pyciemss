@@ -14,6 +14,8 @@ import urllib.request
 
 from pyro.nn import pyro_method
 import pyro.distributions as dist
+
+from pyciemss.utils import state_flux_constraint
 # from pyciemss.ODE.abstract import Time, State, Solution, Observation
 
 __all__ = ['seq_id_suffix',
@@ -228,7 +230,7 @@ def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T, name:
 def natural_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (I, R) -> (I - 1, R + 1)
     rate = params["gamma"]
-    flux = deterministic(name, rate * states[0])
+    flux = state_flux_constraint(states[0], deterministic(name, rate * states[0]))
     return -flux, flux
 
 
@@ -236,7 +238,7 @@ def natural_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: 
 def controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (S, I) -> (S - 1, I + 1)
     rate = params["beta"]
-    flux = deterministic(name, rate * states[0] * states[1])
+    flux = state_flux_constraint(states[0], deterministic(name, rate * states[0] * states[1]))
     return -flux, flux
 
 
@@ -313,8 +315,6 @@ def petri_to_deriv_and_observation(
         if data["type"] == "transition" and node not in funcs:
             # TODO: Ask Eli if removing the partial evaluation is going to be a problem
                 funcs[node] = _TEMPLATES[data["template_type"]]
-
-    # TODO: add constraints on flux
 
     @pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
