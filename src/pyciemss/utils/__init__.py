@@ -19,8 +19,10 @@ from .petri_utils import (seq_id_suffix,
            intervene_petri_net,
            get_mira_initial_values,
            get_mira_parameter_values,
+           get_mira_parameter_names,
            set_mira_initial_values,
-           set_mira_parameter_values,
+           set_mira_parameters,
+           get_mira_parameters,
            encode
 
 )

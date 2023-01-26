@@ -37,8 +37,10 @@ __all__ = ['seq_id_suffix',
            'intervene_petri_net',
            'get_mira_initial_values',
            'get_mira_parameter_values',
+           'get_mira_parameter_names',
+           'get_mira_parameters',
            'set_mira_initial_values',
-           'set_mira_parameter_values'
+           'set_mira_parameters'
 ]
 
 
@@ -240,6 +242,7 @@ def encode(petrinet):
     # Edge lists ------
     s_order = [e["sname"] for e in S]
     t_order = [e["tname"] for e in T]
+    print(t_order)
     def _build_pairs(a,b):
         if a in s_order:
             return {"is": s_order.index(a)+1,
@@ -461,6 +464,13 @@ def get_mira_parameter_values(petri_net):
         if 'parameter_name' in data and 'parameter_value' in data
     }
 
+def get_mira_parameter_names(petri_net):
+    return {
+        node: data['parameter_name']
+               for node, data in petri_net.nodes(data=True)
+               if 'parameter_name' in data
+        }
+
 def set_mira_initial_values( petri_net, initial_values ):
     for node, data in petri_net.nodes(data=True):
         if node in initial_values:
@@ -468,9 +478,16 @@ def set_mira_initial_values( petri_net, initial_values ):
     return petri_net
 
 
-def set_mira_parameter_values( petri_net, parameter_values ):
+def set_mira_parameters( petri_net, parameter_values ):
     for node, data in petri_net.nodes(data=True):
         if node in parameter_values:
             data['parameter_name'] = parameter_values[node]['parameter_name']
             data['parameter_value'] = parameter_values[node]['parameter_value']
     return petri_net
+
+def get_mira_parameters( petri_net ):
+    return {
+        node: {data['parameter_name']: data['parameter_value']}
+        for node, data in petri_net.nodes(data=True)
+        if 'parameter_name' in data and 'parameter_value' in data
+        }
