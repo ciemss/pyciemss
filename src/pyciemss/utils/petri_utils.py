@@ -220,26 +220,28 @@ def register_template(name: str, func: Optional[Template[T]] = None):
 
 
 @register_template("NaturalDegradation")
-def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T) -> Tuple[T, ...]:
+def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T, name: str) -> Tuple[T, ...]:
     raise NotImplementedError  # TODO
 
 
 @register_template("NaturalConversion")
-def natural_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...]) -> Tuple[T, ...]:
+def natural_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (I, R) -> (I - 1, R + 1)
     rate = params["gamma"]
-    return -rate * states[0], rate * states[0]
+    flux = deterministic(name, rate * states[0])
+    return -flux, flux
 
 
 @register_template("ControlledConversion")
-def controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...]) -> Tuple[T, ...]:
+def controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (S, I) -> (S - 1, I + 1)
     rate = params["beta"]
-    return -rate * states[0] * states[1], rate * states[0] * states[1]
+    flux = deterministic(name, rate * states[0] * states[1])
+    return -flux, flux
 
 
 @register_template("GroupedControlledConversion")
-def grouped_controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...]) -> Tuple[T, ...]:
+def grouped_controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     raise NotImplementedError  # TODO
 
 
@@ -312,7 +314,7 @@ def petri_to_deriv_and_observation(
             # TODO: Ask Eli if removing the partial evaluation is going to be a problem
                 funcs[node] = _TEMPLATES[data["template_type"]]
 
-    # TODO: add constraints on flux...
+    # TODO: add constraints on flux
 
     @pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
@@ -324,11 +326,12 @@ def petri_to_deriv_and_observation(
                     {e[1] for e in G.out_edges(node, data=True)}
                 node_inputs = order_state(G, **{k: states[k] for k in node_input_names})
                 parameters = {data['parameter_name']: getattr(self, data['parameter_name'])}
-                du_dts = funcs[node](parameters, t, node_inputs)
-                for i, name in enumerate(sorted(node_input_names, key=lambda k: state2ind[k])):
-                    derivs[name] += deterministic(f"partial_{node}_{name}", du_dts[i])
+                du_dts = funcs[node](parameters, t, node_inputs, f"{data['tname']} {t:.5f}")
 
-        return order_state(G, **{name: deterministic(f"d{name}_dt", dx_dt) for name, dx_dt in derivs.items()})
+                for i, name in enumerate(sorted(node_input_names, key=lambda k: state2ind[k])):
+                    derivs[name] += du_dts[i]
+
+        return order_state(G, **{name: dx_dt for name, dx_dt in derivs.items()})
 
 
     # TODO: add types (tried using custom Solution, etc. types, but ran into cirular imports.) 
