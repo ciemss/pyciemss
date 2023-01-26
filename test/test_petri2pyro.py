@@ -1,20 +1,14 @@
-from pyciemss.ODE.models import SVIIvR
+from pyciemss.ODE.models import SVIIvR, SVIIvR_simple
 from pyciemss.utils import petri_to_ode, load
-import torch
 
-import pyro
-import numpy as np
-import pyro.distributions as dist
-from pyro.poutine import trace, replay, block
-from pyro.infer.autoguide.guides import AutoDelta, AutoNormal
-from pyro.infer import SVI, Trace_ELBO, Predictive
-import unittest
+from pyciemss.ODE.frontend import compile_pp
+
+import json
 
 class Petri2PyroTest(unittest.TestCase):
     """Tests for the Petri2Pyro class."""
     def setUp(self):
         """Setup for the Petri2Pyro class."""
-
 
         self.num_samples = 500
 
@@ -43,6 +37,17 @@ class Petri2PyroTest(unittest.TestCase):
     def test_petri2pyro(self):
         """Tests for the Petri2Pyro class."""
         # Setup Parameters
-        json = {}
-#        SVIIvR_petri = load('models/starter_kit_examples/CHIME-SVIIvR/model_petri.json')
-#        SVIIvR = petri_to_ode(SVIIvR_petri)
+        
+        prior_path = "./test/models/SVIIvR_simple/prior.json"
+        petri_path = "./test/models/SVIIvR_simple/petri.json"
+
+        with open(prior_path) as f:
+            prior_json = json.load(f)
+
+        petri_G = utils.load(petri_path)
+        petri_G = utils.add_state_indicies(petri_G)
+
+        model_compiled = compile_pp(petri_G, prior_json)
+
+        SVIIvR_petri = load('models/starter_kit_examples/CHIME-SVIIvR/model_petri.json')
+        SVIIvR = petri_to_ode(SVIIvR_petri)

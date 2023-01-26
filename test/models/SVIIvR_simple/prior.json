@@ -1,0 +1,10 @@
+{
+    "noise_var" : ["Uniform", 5.0, 10.0],
+    "betaSI"    : ["Uniform", 0.1, 0.3], 
+    "betaSIv"   : ["Uniform", 0.1, 0.3], 
+    "betaVI"    : ["Uniform", 0.025, 0.05],
+    "betaVIv"   : ["Uniform", 0.025, 0.05],
+    "gamma"     : ["Uniform", 0.05, 0.35],
+    "gammaV"    : ["Uniform", 0.1, 0.4],
+    "nu"        : ["Uniform", 0.001, 0.01]
+}

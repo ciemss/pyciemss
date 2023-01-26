@@ -227,19 +227,23 @@ def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T, name:
 
 
 @register_template("NaturalConversion")
-def natural_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
+def natural_conversion(rate: T, t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (I, R) -> (I - 1, R + 1)
-    rate = params["gamma"]
     flux = state_flux_constraint(states[0], deterministic(name, rate * states[0]))
-    return -flux, flux
+    # Adding additional output when natural conversion is the following
+    # (S, I, Iv) -> (S - 1, I + 1, Iv)
+    # When it's autolytic, 0 isn't used.
+    return -flux, flux, 0.
 
 
 @register_template("ControlledConversion")
-def controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
+def controlled_conversion(rate: T, t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (S, I) -> (S - 1, I + 1)
-    rate = params["beta"]
     flux = state_flux_constraint(states[0], deterministic(name, rate * states[0] * states[1]))
-    return -flux, flux
+    # Adding additional output when natural conversion is the following
+    # (S, I, Iv) -> (S - 1, I + 1, Iv)
+    # When it's autolytic, 0 isn't used.
+    return -flux, flux, 0.
 
 
 @register_template("GroupedControlledConversion")
@@ -314,7 +318,7 @@ def petri_to_deriv_and_observation(
     for node, data in G.nodes(data=True):
         if data["type"] == "transition" and node not in funcs:
             # TODO: Ask Eli if removing the partial evaluation is going to be a problem
-                funcs[node] = _TEMPLATES[data["template_type"]]
+            funcs[node] = _TEMPLATES[data["template_type"]]
 
     @pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
@@ -325,8 +329,8 @@ def petri_to_deriv_and_observation(
                 node_input_names = {e[0] for e in G.in_edges(node, data=True)} | \
                     {e[1] for e in G.out_edges(node, data=True)}
                 node_inputs = order_state(G, **{k: states[k] for k in node_input_names})
-                parameters = {data['parameter_name']: getattr(self, data['parameter_name'])}
-                du_dts = funcs[node](parameters, t, node_inputs, f"{data['tname']} {t:.5f}")
+                param = getattr(self, data['parameter_name'])
+                du_dts = funcs[node](param, t, node_inputs, f"{data['tname']} {t:.5f}")
 
                 for i, name in enumerate(sorted(node_input_names, key=lambda k: state2ind[k])):
                     derivs[name] += du_dts[i]
