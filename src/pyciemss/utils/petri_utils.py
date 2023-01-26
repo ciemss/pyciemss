@@ -379,16 +379,14 @@ def intervene_petri_net(
 
 def get_mira_initial_values(petri_net):
     return {
-        node: torch.tensor(
-            data['mira_initial_value'])
+        node: data['mira_initial_value']
         for node, data in petri_net.nodes(data=True)
         if 'mira_initial_value' in data
     }
 
 def get_mira_parameter_values(petri_net):
     return {
-        data['parameter_name']: torch.tensor(
-            data['parameter_value'])
+        data['parameter_name']: data['parameter_value']
         for node, data in petri_net.nodes(data=True)
         if 'parameter_name' in data and 'parameter_value' in data
     }
