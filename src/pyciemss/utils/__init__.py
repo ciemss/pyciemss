@@ -20,7 +20,8 @@ from .petri_utils import (seq_id_suffix,
            get_mira_initial_values,
            get_mira_parameter_values,
            set_mira_initial_values,
-           set_mira_parameter_values
+           set_mira_parameter_values,
+           encode
 
 )
 from .inference_utils import (get_tspan,
