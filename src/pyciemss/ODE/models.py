@@ -90,7 +90,6 @@ class SVIIvR(ODE):
 
 class SVIIvR_simple(ODE):
     def __init__(self,
-                N,
                 noise_var_prior=dist.Uniform(5., 10.),
                 betaSI_prior=dist.Uniform(0.1, 0.3),
                 betaSIv_prior=dist.Uniform(0.1, 0.3),
@@ -102,7 +101,6 @@ class SVIIvR_simple(ODE):
                 ):
         super().__init__()
 
-        self.N = N
         self.noise_var_prior  = noise_var_prior
         self.betaSI_prior   = betaSI_prior
         self.betaSIv_prior  = betaSIv_prior
@@ -119,10 +117,10 @@ class SVIIvR_simple(ODE):
         # Local fluxes exposed to pyro for interventions.
         # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
         SV_flux_  = pyro.deterministic("SV_flux %f" % (t),  self.nu * S)
-        SI_flux_  = pyro.deterministic("SI_flux %f" % (t),  self.betaSI  * S * I / self.N)
-        SIv_flux_  = pyro.deterministic("SIv_flux %f" % (t),  self.betaSIv  * S * Iv / self.N)
-        VI_flux_ = pyro.deterministic("VI_flux %f" % (t), self.betaVI * V * I / self.N)
-        VIv_flux_ = pyro.deterministic("VIv_flux %f" % (t), self.betaVIv * V * Iv / self.N)
+        SI_flux_  = pyro.deterministic("SI_flux %f" % (t),  self.betaSI * S * I)
+        SIv_flux_  = pyro.deterministic("SIv_flux %f" % (t),  self.betaSIv * S * Iv)
+        VI_flux_ = pyro.deterministic("VI_flux %f" % (t), self.betaVI * V * I)
+        VIv_flux_ = pyro.deterministic("VIv_flux %f" % (t), self.betaVIv * V * Iv)
         IR_flux_  = pyro.deterministic("IR_flux %f" % (t),  self.gamma * I)
         IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
 
@@ -138,8 +136,8 @@ class SVIIvR_simple(ODE):
         # Where the real magic happens.
         dSdt  = -SI_flux - SV_flux - SIv_flux
         dVdt  = -VIv_flux + SV_flux - VI_flux
-        dIdt  = SI_flux - IR_flux + VI_flux
-        dIvdt = VIv_flux - IvR_flux + SIv_flux
+        dIdt  = SI_flux - IR_flux + SIv_flux
+        dIvdt = VIv_flux - IvR_flux + VI_flux
         dRdt  = IR_flux + IvR_flux
 
         return dSdt, dVdt, dIdt, dIvdt, dRdt
@@ -162,14 +160,14 @@ class SVIIvR_simple(ODE):
 
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
         if data == None:
-            data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
+            data = {k: None for k in ["S_obs", "V_obs", "I_obs", "Iv_obs", "R_obs"]}
 
         # TODO: Make sure observations are strictly greater than 0.
 
-        S_obs = pyro.sample("S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"])
-        V_obs = pyro.sample("V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"])
-        # We only observe the total number of infected people we don't know which of them are vaccinated.
-        I_obs = pyro.sample("I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"])
-        R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
+        S_obs  = pyro.sample("S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"])
+        V_obs  = pyro.sample("V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"])
+        I_obs  = pyro.sample("I_obs", dist.Normal(I, self.noise_var).to_event(1), obs=data["I_obs"])
+        Iv_obs = pyro.sample("Iv_obs", dist.Normal(Iv, self.noise_var).to_event(1), obs=data["Iv_obs"])
+        R_obs  = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
 
-        return (S_obs, V_obs, I_obs, R_obs)
+        return (S_obs, V_obs, I_obs, Iv_obs, R_obs)

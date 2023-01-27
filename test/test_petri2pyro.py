@@ -53,5 +53,5 @@ class Petri2PyroTest(unittest.TestCase):
 
         model_args = (self.initial_state, self.tspan)
 
-        self.assertFalse(is_density_equal(model, model_compiled, self.num_samples, *model_args))
-        self.assertFalse(is_intervention_density_equal(model, model_compiled, self.num_samples, intervention, *model_args))
+        self.assertTrue(is_density_equal(model, model_compiled, self.num_samples, *model_args))
+        self.assertTrue(is_intervention_density_equal(model, model_compiled, self.num_samples, intervention, *model_args))
