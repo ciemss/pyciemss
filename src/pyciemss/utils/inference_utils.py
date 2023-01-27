@@ -77,14 +77,6 @@ def is_density_equal(model1: callable , model2: callable, *args, **kwargs):
 
     return isclose(d_m1_tr1, d_m2_tr1, rel_tol=rel_tol) and isclose(d_m1_tr2, d_m2_tr2, rel_tol=rel_tol)
 
-
-    elbo = Trace_ELBO(num_particles=num_samples, vectorize_particles=False)
-
-    print(elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs))
-
-    # compare the density of the two models
-    return np.allclose(elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs), atol=1e-6)
-
 def is_intervention_density_equal( model1: callable, model2: callable, intervention: dict, *args, **kwargs):
     """Test the density of two models after intervention.
 
