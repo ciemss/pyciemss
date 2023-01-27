@@ -2,7 +2,7 @@ from pyciemss.utils import is_density_equal, is_intervention_density_equal
 import pyro
 import torch
 import unittest
-from pyro.infer import  Trace_ELBO
+from pyro.infer import Trace_ELBO
 
 class TestDensityTest(unittest.TestCase):
     """Tests for comparing the density of two models."""

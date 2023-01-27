@@ -41,20 +41,20 @@ def compile_pp(petri_G: PetriNet,
 
     return PyroODE(*init_args, **init_kwargs)
 
-def sample(ode_model: PriorPP, 
-            inferred_parameters: Optional[InferredParameters],
-            num_samples: float, 
+def sample(ode_model: PriorPP,
+            num_samples: int, 
             initial_state: State, 
-            tspan: TSpan) -> DataCube:
+            tspan: TSpan,
+            inferred_parameters: Optional[InferredParameters] = None) -> DataCube:
     
     '''
     Sample `num_samples` trajectories from the prior distribution over ODE models.
     '''
 
-    return Predictive(ode_model, guidee=inferred_parameters, num_samples=num_samples)(initial_state, tspan)
+    return Predictive(ode_model, guide=inferred_parameters, num_samples=num_samples)(initial_state, tspan)
 
 def infer_parameters(ode_model: PriorPP, 
-                     num_iterations: float, 
+                     num_iterations: int, 
                      hidden_observations: Iterable[str], 
                      data: Data,
                      initial_state: State,
@@ -66,8 +66,7 @@ def infer_parameters(ode_model: PriorPP,
 
     guide = AutoNormal(block(ode_model, hide=hidden_observations))
     run_inference(ode_model, guide, initial_state, observed_tspan, data, num_iterations=num_iterations)
-    conditioned_ode_model = (ode_model, guide)
-    return conditioned_ode_model
+    return guide
 
 def intervene(ode_model: PriorPP, 
             intervention_spec: InterventionSpec) -> PriorPP:
