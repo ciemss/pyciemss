@@ -1,26 +1,30 @@
 import numpy as np
 from pyciemss.risk.risk_measures import pof
 
-def nday_rolling_average(samples: np.ndarray, tf=90., ndays=7, dt=1.) -> np.ndarray:
+def nday_rolling_average(dataCube: np.ndarray, tf: float=90., ndays: int=7, dt: float =1., contexts: list=None) -> np.ndarray:
     '''
     Return estimate of n-day average of samples.
-    samples is a numpy array of shpae (num_samples, num_times_steps).
+    dataCube is is the output from a Pyro Predictive object.
     '''
-    samples_ndays = samples[int(tf/dt)-ndays+1:int(tf/dt)+1, :]
-    return np.mean(samples_ndays, axis=0)
+    # Extract specific context response to compute on.
+    if contexts is not None:
+        data = dataCube[contexts[0]].detach().numpy()
+
+    ndayavg = dataCube[int(tf/dt)-ndays+1:int(tf/dt)+1, :]
+    return np.mean(ndayavg, axis=0)
 
 
 # TODO: rewrite this so it's not pseudocode
-def fraction_infected(samples: np.ndarray) -> np.ndarray:
-    return np.elementwise_division(samples["I_obs"], samples["N"])
+def fraction_infected(dataCube) -> np.ndarray:
+    return np.elementwise_division(dataCube["I_obs"], dataCube["N"])
 
 
-def threshold_exceedence(samples, threshold: float, contexts: list=None):
+def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
     '''
     # TODO: extend to handle multiple contexts
     '''
     if contexts is not None:
-        samples = samples[contexts[0]].detach().numpy()
+        data = dataCube[contexts[0]].detach().numpy()
     
     # Return how many samples exceeded the threshold at ANY point
-    return np.any(samples >= threshold, axis=1).astype(int)
+    return np.any(data >= threshold, axis=1).astype(int)

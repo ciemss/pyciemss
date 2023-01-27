@@ -32,7 +32,6 @@ class computeRisk():
                  risk_measure: callable = alpha_superquantile,
                  num_samples: int = 1000,
                  guide=None,
-                 compartment: str = None,
                 ):
         self.model = model
         self.intervention_fun = intervention_fun
@@ -42,7 +41,6 @@ class computeRisk():
         self.model_state = model_state
         self.tspan = tspan
         self.guide = guide
-        self.compartment = compartment
 
 
     # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
@@ -68,10 +66,6 @@ class computeRisk():
             samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
         else:
             samples = Predictive(intervened_model, num_samples=self.num_samples)(self.model_state, self.tspan)
-            
-        # TODO: add generality for QoI dealing with multiple compartments
-        if self.compartment is not None:
-            samples = samples[self.compartment].detach().numpy()
             
         return samples
 
