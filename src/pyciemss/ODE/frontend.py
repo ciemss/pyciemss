@@ -1,10 +1,5 @@
 from pyciemss.ODE.abstract import ODE
 
-import pyro
-import pyro.distributions as dist
-
-from pyro.nn import pyro_method
-
 from pyciemss.utils.petri_utils import petri_to_deriv_and_observation
 from pyciemss.utils.prior_utils import parse_prior
 

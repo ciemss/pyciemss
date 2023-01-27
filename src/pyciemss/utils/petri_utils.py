@@ -230,7 +230,6 @@ def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T, name:
 def natural_conversion(rate: T, t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (I, R) -> (I - 1, R + 1)
     flux = state_flux_constraint(states[0], deterministic(name, rate * states[0]))
-    print(flux)
     # Adding additional output when natural conversion is the following
     # (S, I, Iv) -> (S - 1, I + 1, Iv)
     # When it's autolytic, 0 isn't used.

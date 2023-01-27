@@ -73,8 +73,6 @@ def is_density_equal(model1: callable , model2: callable, *args, **kwargs):
     d_m1_tr2 = trace(replay(model1, trace=tr2)).get_trace(*args, **kwargs).log_prob_sum()
     d_m2_tr2 = trace(replay(model2, trace=tr2)).get_trace(*args, **kwargs).log_prob_sum()
 
-    print(d_m1_tr1, d_m2_tr1, d_m1_tr2, d_m2_tr2)
-
     rel_tol = 1e-2
 
     return isclose(d_m1_tr1, d_m2_tr1, rel_tol=rel_tol) and isclose(d_m1_tr2, d_m2_tr2, rel_tol=rel_tol)
