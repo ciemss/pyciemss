@@ -1,15 +1,16 @@
 import numpy as np
 from pyciemss.risk.risk_measures import pof
 
-def nday_rolling_average(dataCube: np.ndarray, tf: float=90., ndays: int=7, dt: float =1., contexts: list=None) -> np.ndarray:
+def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, dt: float =1., contexts: list=None) -> np.ndarray:
     '''
     Return estimate of n-day average of samples.
     dataCube is is the output from a Pyro Predictive object.
     dataCube[VARIABLE] is expected to have dimension (nreplicates, ntimepoints)
+    note: tf is set to be consistent with the tspan.
     '''
     # Extract specific context response to compute on.
     if contexts is not None:
-        data = dataCube[contexts[0]].detach().numpy()
+        dataCube = dataCube[contexts[0]].detach().numpy()
 
     ndayavg = dataCube[:, int(tf/dt)-ndays:int(tf/dt)]
     return np.mean(ndayavg, axis=1)
