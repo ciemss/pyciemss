@@ -11,6 +11,9 @@ import pandas as pd
 import networkx as nx
 from itertools import groupby
 import urllib.request
+import matplotlib.pyplot as plt
+
+from .petri_layout import hierarchy_pos
 
 
 __all__ = ['seq_id_suffix',
@@ -207,23 +210,25 @@ def encode(petrinet):
     return json
 
 
-def draw_petri(G: nx.MultiDiGraph, ax=None) -> None:
+def draw_petri(G: nx.MultiDiGraph, ax=None, *, LR:bool=True, layout=False, width=8) -> None:
     """Convenience utility to draw a networkx graph, assuming it represents a petrinet.
 
     Assumes the graph has a "type" attribute and that the type are "state" and "transition" (case sensitive).
+    
+    LR -- If true (default), layout is left-to-right.  Otherwise it is top-to-bottom.
+    layout -- If false (true), produce a figure; if true, just return the layout
 
     TODO: Does not proerly handle multiple links between the same nodes (will overplot right now).
     TODO: Improve so it accounts for the size of the text involved.
     """
-    G2 = nx.MultiDiGraph()
-    G2.add_nodes_from(G.nodes(data=False))
-    G2.add_edges_from(G.edges)
-    G2 = nx.convert_node_labels_to_integers(G2, ordering="default")
-    mapping = dict(zip(G2.nodes, sorted(G.nodes)))
 
-    pos = nx.nx_pydot.graphviz_layout(G2)
-    pos = {mapping[int(n)]: values for n, values in pos.items()}
-
+    pos = hierarchy_pos(G)
+    if LR:
+        pos = {n:(-y, x) for n, (x,y) in pos.items()}
+    
+    if layout:
+        return pos
+    
     _k = lambda v: v[1]
     types = sorted(nx.get_node_attributes(G, "type").items(), key=_k)
     types = {t: [v[0] for v in nodes]
@@ -241,6 +246,15 @@ def draw_petri(G: nx.MultiDiGraph, ax=None) -> None:
 
     labels = {n:_get_id(n, d) for n, d in G.nodes(data=True)}
     print(types)
+
+    if ax is None:
+        xs, ys = zip(*pos.values())
+        xspan = max(max(xs) - min(xs), .1)
+        yspan = max(max(ys) - min(ys), .1)
+        aspect = xspan/yspan
+        print(aspect, xspan, yspan)
+        fig, ax = plt.subplots(1,1, figsize = (width, width/aspect))
+    
     nx.draw_networkx_edges(G, pos=pos, ax=ax)
     nx.draw_networkx_nodes(G, pos=pos, nodelist=types["state"], node_color="lightblue", node_shape="o", ax=ax)
     nx.draw_networkx_nodes(G, pos=pos, nodelist=types["transition"], node_color="darkorange", node_shape="s", ax=ax)
