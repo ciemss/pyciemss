@@ -39,7 +39,6 @@ class Petri2PyroTest(unittest.TestCase):
                 gammaV_prior=dist.Uniform(0.1, 0.4),
                 nu_prior=dist.Uniform(0.001, 0.01))
 
-
     def test_petri2pyro(self):
         """Tests for the Petri2Pyro class."""
         # Setup Parameters
