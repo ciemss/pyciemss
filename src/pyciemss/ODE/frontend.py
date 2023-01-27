@@ -3,7 +3,21 @@ from pyciemss.ODE.abstract import ODE
 from pyciemss.utils.petri_utils import petri_to_deriv_and_observation
 from pyciemss.utils.prior_utils import parse_prior
 
-def compile_pp(petri_G, prior_json):
+from typing import Dict, Tuple, TypeVar, Optional, Tuple, Union
+
+# Declare types
+PetriNet               = TypeVar('PetriNet')
+PriorJSON              = TypeVar('PriorJSON')
+PriorPP                = TypeVar('PriorPP')
+VariationalPosteriorPP = TypeVar('VariationalPosteriorPP')
+PP                     = Union[PriorPP, VariationalPosteriorPP]
+Data                   = TypeVar('Data')
+Intervention           = TypeVar('Intervention')
+Variable               = TypeVar('Variable')
+OptimizationAlgorithm  = TypeVar('OptimizationAlgorithm')
+DataCube               = TypeVar('DataCube')
+
+def compile_pp(petri_G: PetriNet, prior_json: PriorJSON) -> PriorPP:
 
     prior_attributes, prior_pyro_method = parse_prior(prior_json)
 
@@ -18,22 +32,19 @@ def compile_pp(petri_G, prior_json):
 
     return PyroODE(*init_args, **init_kwargs)
 
-# TODO: Add types and fill out arguments
-
-def vi_condition(ode_model, data):
+def vi_condition(ode_model: PriorPP, data: Data) -> VariationalPosteriorPP:
     raise NotImplementedError # TODO
 
-def sample(ode_model):
+def sample(ode_model: PP):
     raise NotImplementedError # TODO
 
-def intervention_builder(intervention_spec):
+# TODO: make the type signature more refined. PriorPP -> PriorPP, etc.
+def intervene(ode_model: PP, intervention: Intervention) -> PP:
     raise NotImplementedError # TODO
 
-def intervene(ode_model, intervention):
-    raise NotImplementedError # TODO
-
+#TODO: wait until we merge UT code.
 def ouu():
-    raise NotImplementedError # TODO
+    raise NotImplementedError
 
 
 
