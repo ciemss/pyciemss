@@ -62,10 +62,7 @@ class computeRisk():
         # Apply intervention to model
         intervened_model = do(self.model, self.intervention_fun(x))
         
-        if self.guide is not None:
-            samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-        else:
-            samples = Predictive(intervened_model, num_samples=self.num_samples)(self.model_state, self.tspan)
+        samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
             
         return samples
 
