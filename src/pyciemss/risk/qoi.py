@@ -5,13 +5,14 @@ def nday_rolling_average(dataCube: np.ndarray, tf: float=90., ndays: int=7, dt: 
     '''
     Return estimate of n-day average of samples.
     dataCube is is the output from a Pyro Predictive object.
+    dataCube[VARIABLE] is expected to have dimension (nreplicates, ntimepoints)
     '''
     # Extract specific context response to compute on.
     if contexts is not None:
         data = dataCube[contexts[0]].detach().numpy()
 
-    ndayavg = dataCube[int(tf/dt)-ndays+1:int(tf/dt)+1, :]
-    return np.mean(ndayavg, axis=0)
+    ndayavg = dataCube[:, int(tf/dt)-ndays:int(tf/dt)]
+    return np.mean(ndayavg, axis=1)
 
 
 # TODO: rewrite this so it's not pseudocode
