@@ -1,3 +1,5 @@
+import torch
+
 from pyro.infer import Predictive
 from pyro.infer.autoguide.guides import AutoNormal
 from pyro.poutine import block
@@ -22,8 +24,11 @@ TSpan                  = TypeVar('TSpan')
 Data                   = TypeVar('Data')
 InterventionSpec       = TypeVar('InterventionSpec')
 Variable               = TypeVar('Variable')
+ObjectiveFunction      = TypeVar('ObjectiveFunction')
+Constraints            = TypeVar('Constraints')
 OptimizationAlgorithm  = TypeVar('OptimizationAlgorithm')
 DataCube               = TypeVar('DataCube')
+OptimizationResult     = TypeVar('OptimizationResult')
 
 def compile_pp(petri_G: PetriNet, 
                prior_json: PriorJSON) -> PriorPP:
@@ -72,8 +77,11 @@ def intervene(ode_model: PriorPP,
             intervention_spec: InterventionSpec) -> PriorPP:
     return do(ode_model, intervention_spec)
 
-#TODO: wait until we merge UT code.
-def ouu():
+# TODO: finish optimization frontend
+def optimization(initial_guess: torch.tensor,
+        objective_function: ObjectiveFunction,
+        constrains: Constraints,
+        optimizer: OptimizationAlgorithm):
     raise NotImplementedError
 
 
