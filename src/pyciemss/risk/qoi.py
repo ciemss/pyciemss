@@ -16,9 +16,9 @@ def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, dt
     return np.mean(ndayavg, axis=1)
 
 
-# TODO: rewrite this so it's not pseudocode
 def fraction_infected(dataCube) -> np.ndarray:
-    return np.elementwise_division(dataCube["I_obs"], dataCube["N"])
+    # return np.elementwise_division(dataCube["I_obs"], dataCube["N"])
+    raise NotImplementedError
 
 
 def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
