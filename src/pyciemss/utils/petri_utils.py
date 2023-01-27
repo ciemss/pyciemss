@@ -230,6 +230,7 @@ def natural_degradation(params: Dict[str, T], states: Tuple[T, ...], t: T, name:
 def natural_conversion(rate: T, t: T, states: Tuple[T, ...], name: str) -> Tuple[T, ...]:
     # e.g. (I, R) -> (I - 1, R + 1)
     flux = state_flux_constraint(states[0], deterministic(name, rate * states[0]))
+    print(flux)
     # Adding additional output when natural conversion is the following
     # (S, I, Iv) -> (S - 1, I + 1, Iv)
     # When it's autolytic, 0 isn't used.
@@ -330,7 +331,7 @@ def petri_to_deriv_and_observation(
                     {e[1] for e in G.out_edges(node, data=True)}
                 node_inputs = order_state(G, **{k: states[k] for k in node_input_names})
                 param = getattr(self, data['parameter_name'])
-                du_dts = funcs[node](param, t, node_inputs, f"{data['tname']} {t:.5f}")
+                du_dts = funcs[node](param, t, node_inputs, f"{data['tname']} {t:.6f}")
 
                 for i, name in enumerate(sorted(node_input_names, key=lambda k: state2ind[k])):
                     derivs[name] += du_dts[i]

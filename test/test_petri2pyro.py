@@ -21,7 +21,7 @@ class Petri2PyroTest(unittest.TestCase):
     def setUp(self):
         """Setup for the Petri2Pyro class."""
 
-        self.num_samples = 500
+        self.num_samples = 5
 
         # Total population, N.
         self.N = 1.
@@ -31,7 +31,7 @@ class Petri2PyroTest(unittest.TestCase):
         self.S0 = self.N - self.I0 - self.Iv0 - self.V0 - self.R0
 
         self.initial_state = tuple(torch.as_tensor(s) for s in  (self.S0, self.V0, self.I0, self.Iv0, self.R0))
-        self.tspan = get_tspan(1, 7, 7)
+        self.tspan = get_tspan(1, 100, 100)
 
     def test_petri2pyro(self):
         """Tests for the Petri2Pyro class."""
@@ -47,11 +47,11 @@ class Petri2PyroTest(unittest.TestCase):
         petri_G = add_state_indicies(petri_G)
 
         model_compiled = compile_pp(petri_G, prior_json)
-        model = SVIIvR_simple
+        model = SVIIvR_simple()
 
-        intervention = constant_intervention("SV_flux", torch.tensor([0.0001]), self.tspan)
+        intervention = constant_intervention("SV_flux", torch.tensor(0.0), self.tspan)
 
         model_args = (self.initial_state, self.tspan)
 
-        self.assertTrue(is_density_equal(model, model_compiled, self.num_samples, *model_args))
-        self.assertTrue(is_intervention_density_equal(model, model_compiled, self.num_samples, intervention, *model_args))
+        self.assertTrue(is_density_equal(model, model_compiled, *model_args))
+        self.assertTrue(is_intervention_density_equal(model, model_compiled, intervention, *model_args))

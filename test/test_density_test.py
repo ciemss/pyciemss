@@ -70,29 +70,29 @@ class TestDensityTest(unittest.TestCase):
         elbo = Trace_ELBO(num_particles=num_samples, vectorize_particles=False)
 
         # Sample from both models
-        self.assertAlmostEqual( elbo.loss(model1, model1),elbo.loss(model1, model1))
+        self.assertAlmostEqual(elbo.loss(model1, model1), elbo.loss(model1, model1))
         self.assertNotEqual(elbo.loss(model1, model2), elbo.loss(model2, model1))
         self.assertAlmostEqual(elbo.loss(model2, model3), elbo.loss(model3, model2))
         self.assertNotEqual(elbo.loss(model3, model4), elbo.loss(model4, model3))
 
-        self.assertTrue(is_density_equal(model1, model1, num_samples=num_samples))
-        self.assertFalse(is_density_equal(model1, model2, num_samples=num_samples))
-        self.assertTrue(is_density_equal(model2, model3, num_samples=num_samples))
-        self.assertFalse(is_density_equal(model3, model4, num_samples=num_samples))
+        self.assertTrue(is_density_equal(model1, model1))
+        self.assertFalse(is_density_equal(model1, model2))
+        self.assertTrue(is_density_equal(model2, model3))
+        self.assertFalse(is_density_equal(model3, model4))
 
         self.assertTrue(is_intervention_density_equal(model1,
-                                     model1, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model1,model1, intervention={"x": 1}, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model1, model2, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model2, model3, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model3, model4, intervention={"x": 0}, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model3, model4, intervention={"x": 1}, num_samples=num_samples))
+                                     model1, intervention={"x": 0}))
+        self.assertTrue(is_intervention_density_equal(model1, model1, intervention={"x": 1}))
+        self.assertFalse(is_intervention_density_equal(model1, model2, intervention={"x": 0}))
+        self.assertTrue(is_intervention_density_equal(model2, model3, intervention={"x": 0}))
+        self.assertTrue(is_intervention_density_equal(model3, model4, intervention={"x": 0}))
+        self.assertFalse(is_intervention_density_equal(model3, model4, intervention={"x": 1}))
         #self.assertTrue(is_density_equal(model5, model6))
 
         #self.assertFalse(is_density_equal(do(model5, intervention={'y': 0 }),
         #                              do(model6, intervention={'y': 0 })))
         # The marginals are equal, but not the density.
-        self.assertFalse(is_density_equal(model7, model8, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model7, model8, intervention={'x': 1}, num_samples=num_samples))
-        self.assertTrue(is_density_equal(model9, model10, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model9, model10, intervention={'x': 1}, num_samples=num_samples))
+        self.assertFalse(is_density_equal(model7, model8))
+        self.assertFalse(is_intervention_density_equal(model7, model8, intervention={'x': 1}))
+        self.assertTrue(is_density_equal(model9, model10))
+        self.assertFalse(is_intervention_density_equal(model9, model10, intervention={'x': 1}))

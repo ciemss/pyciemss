@@ -3,7 +3,10 @@ import pyro
 from causal_pyro.query.do_messenger import do
 from pyro.infer import SVI, Trace_ELBO
 from pyro.optim import Adam
+from pyro.poutine import trace, replay
 import numpy as np
+
+from math import isclose
 
 __all__ = ['is_density_equal',
            'is_intervention_density_equal',
@@ -52,21 +55,39 @@ def get_tspan(start, end, steps):
     '''
     return torch.linspace(float(start), float(end), steps)
 
-def is_density_equal(model1: callable , model2: callable, num_samples: int, *args, **kwargs):
+def is_density_equal(model1: callable , model2: callable, *args, **kwargs):
     """
-    Test the density of two models.
+    Test the equality of the density of two models for samples drawn from their priors.
 
     Args: model1: The first model.
           model2: The second model.
           num_samples: The number of samples to use.
     Returns: True if the density of the two models is the same.
     """
+    
+    tr1 = trace(model1).get_trace(*args, **kwargs)
+    tr2 = trace(model2).get_trace(*args, **kwargs)
+
+    d_m1_tr1 = trace(replay(model1, trace=tr1)).get_trace(*args, **kwargs).log_prob_sum()
+    d_m2_tr1 = trace(replay(model2, trace=tr1)).get_trace(*args, **kwargs).log_prob_sum()
+    d_m1_tr2 = trace(replay(model1, trace=tr2)).get_trace(*args, **kwargs).log_prob_sum()
+    d_m2_tr2 = trace(replay(model2, trace=tr2)).get_trace(*args, **kwargs).log_prob_sum()
+
+    print(d_m1_tr1, d_m2_tr1, d_m1_tr2, d_m2_tr2)
+
+    rel_tol = 1e-2
+
+    return isclose(d_m1_tr1, d_m2_tr1, rel_tol=rel_tol) and isclose(d_m1_tr2, d_m2_tr2, rel_tol=rel_tol)
+
+
     elbo = Trace_ELBO(num_particles=num_samples, vectorize_particles=False)
 
-    # compare the density of the two models
-    return np.allclose( elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs), atol=1e-6)
+    print(elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs))
 
-def is_intervention_density_equal( model1: callable, model2: callable, num_samples: int, intervention: dict, *args, **kwargs):
+    # compare the density of the two models
+    return np.allclose(elbo.loss(model1, model2, *args, **kwargs), elbo.loss(model2, model1, *args, **kwargs), atol=1e-6)
+
+def is_intervention_density_equal( model1: callable, model2: callable, intervention: dict, *args, **kwargs):
     """Test the density of two models after intervention.
 
             Args: model1: The first model.
@@ -76,4 +97,4 @@ def is_intervention_density_equal( model1: callable, model2: callable, num_sampl
             Returns: True if the density of the two models is the same after intervention.
     """
 
-    return is_density_equal(do(model1, intervention), do(model2, intervention), num_samples, *args, **kwargs)
+    return is_density_equal(do(model1, intervention), do(model2, intervention), *args, **kwargs)
