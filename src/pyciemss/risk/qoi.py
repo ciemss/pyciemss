@@ -25,7 +25,7 @@ def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
     # TODO: extend to handle multiple contexts
     '''
     if contexts is not None:
-        data = dataCube[contexts[0]].detach().numpy()
+        dataCube = dataCube[contexts[0]].detach().numpy()
     
     # Return how many samples exceeded the threshold at ANY point
-    return np.any(data >= threshold, axis=1).astype(int)
+    return np.any(dataCube >= threshold, axis=1).astype(int)
