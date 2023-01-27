@@ -123,4 +123,4 @@ class solveOUU():
     
     # TODO: implement logging callback for optimizer
     def _save(self):
-        pass
+        raise NotImplementedError
