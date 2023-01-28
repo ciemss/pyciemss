@@ -7,44 +7,8 @@ import importlib
 import json
 
 _resource_root = importlib.resources.files("pyciemss.workflow")
-histogram_static_schema = _resource_root.joinpath("histogram_static_bins.vg.json")
 histogram_multi_schema = _resource_root.joinpath("histogram_static_bins_multi.vg.json")
 
-def histogram_static(data, *, 
-                     xref=[],
-                     yref=[],
-                     bins=50, 
-                     return_bins=False):
-    """
-    Create a histogram with server-side binning.
-    
-    data - Data to plot
-    xref - List of values in the bin-range to highlight as vertical lines 
-    yref - List of values in the count-range to highlight as horizontal lines 
-    bins - Number of bins to divide into
-    """
-    subset = data["state_values"]
-    counts, edges = np.histogram(subset, bins=bins)
-    spans = [*(zip(edges, edges[1:]))]
-    desc = [{"bin0": l.item(), "bin1": h.item(), "count": c.item()} 
-            for ((l, h), c) in zip(spans, counts)]
-    
-    with open(histogram_static_schema) as f:
-        schema = json.load(f)
-
-    #TODO: This index-based setting seems fragine beyond belief!  I would like to do it as
-    # 'search this dict-of-dicts and replace the innder-dict that has name-key Y'
-    schema["data"][0] = {"name": "binned", "values": desc}
-    schema["data"][1] = {"name": "xref", 
-                         "values": [{"value": v} for v in xref]}
-    schema["data"][2] = {"name": "yref", 
-                         "values": [{"count": v} for v in yref]}
-    
-    if return_bins:
-        return pd.DataFrame(desc), schema
-    else: 
-        return schema
-    
     
 def histogram_multi(*, xref=[],
                      yref=[],
