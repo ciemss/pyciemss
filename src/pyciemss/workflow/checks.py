@@ -47,8 +47,8 @@ def KL(max_acceptable):
     return KL
 
         
-def prior_predictive(data, lower, upper, *, label="data", tests=[], combiner=all, **kwargs):
-    args = {**{label: data}, **kwargs}
+def prior_predictive(posterior, lower, upper, *, label="posterior", tests=[], combiner=all, **kwargs):
+    args = {**{label: posterior}, **kwargs}
     bins, schema = vega.histogram_multi(xrefs=[lower, upper], 
                                          return_bins=True, **kwargs)
     checks = [test(bins) for test in tests]
