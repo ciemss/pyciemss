@@ -9,9 +9,9 @@ from pyro.nn import PyroModule, pyro_method
 
 from torchdiffeq import odeint
 
-Time = TypeVar('Time', torch.tensor, float)
-State = TypeVar('State', torch.tensor, float)
-Solution = TypeVar('Solution', Tuple[State], State)
+Time = TypeVar('Time')
+State = TypeVar('State')
+Solution = TypeVar('Solution')
 Observation = Solution
 
 class ODE(PyroModule):
