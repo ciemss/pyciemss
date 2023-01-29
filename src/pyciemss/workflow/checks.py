@@ -45,11 +45,11 @@ def KL(max_acceptable):
 
         return np.sum(np.where(a != 0, a * np.log(a / b), 0)) <= max_acceptable
     return KL
-    
-    
+
         
-def prior_predictive(data, lower, upper, *, tests=[], combiner=all, **kwargs):
-    bins, schema = vega.histogram_static(data, xref=[lower, upper], 
+def prior_predictive(data, lower, upper, *, label="data", tests=[], combiner=all, **kwargs):
+    args = {**{label: data}, **kwargs}
+    bins, schema = vega.histogram_multi(xrefs=[lower, upper], 
                                          return_bins=True, **kwargs)
     checks = [test(bins) for test in tests]
     
