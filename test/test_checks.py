@@ -1,4 +1,5 @@
 from pyciemss.workflow import checks
+from pyciemss.workflow import vega
 import unittest
 
 class TestCheck(unittest.TestCase):
@@ -6,10 +7,37 @@ class TestCheck(unittest.TestCase):
         pass
     
     def test_contains(self):
-        pass
+        _, bins = vega.histogram_multi(range=[*range(25)], return_bins=True)
 
+        checker = checks.contains(3, 10)
+        self.assertTrue(checker(bins), "In range")
+
+        checker = checks.contains(-1, 10)
+        self.assertFalse(checker(bins), "Out lower")
+                         
+        checker = checks.contains(3, 100)
+        self.assertFalse(checker(bins), "Out upper")
+                         
+                         
+        checker = checks.contains(-10, 40)
+        self.assertFalse(checker(bins), "Out both")
+                                 
+        
     def test_contains_pct(self):
-        pass
+        _, bins = vega.histogram_multi(range=[*range(20)], return_bins=True, bins=20)
+
+        checker = checks.contains(0, 20, 1)
+        self.assertTrue(checker(bins), "Full range")
+
+        checker = checks.contains(5, 15, .5)
+        self.assertTrue(checker(bins), "Half middle")
+
+        checker = checks.contains(15, 20, .25)
+        self.assertTrue(checker(bins), ".25 upper")
+
+        checker = checks.contains(0, 15, .75)
+        self.assertTrue(checker(bins), ".75 lower")
+        
     
     def test_prior_predictive(self):
         pass
