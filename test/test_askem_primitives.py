@@ -4,7 +4,7 @@ import torch
 import json
 
 from pyciemss.utils import load, add_state_indicies, get_tspan
-from pyciemss.ODE.interventions import constant_intervention
+from pyciemss.ODE.interventions import constant_intervention_builder
 
 from pyciemss.ODE.askem_primitives import sample, infer_parameters, intervene, optimization
 from pyciemss.ODE.models import SVIIvR
@@ -53,7 +53,7 @@ class TestDensityTest(unittest.TestCase):
         self.assertIsNotNone(inferred_parameters)
 
         # External inputs
-        INTERVENTION = constant_intervention("SV_flux", torch.tensor(0.), TSPAN)
+        INTERVENTION = constant_intervention_builder("SV_flux", torch.tensor(0.), TSPAN)
 
         intervened_ode_model = intervene(ode_model, INTERVENTION)
         self.assertIsNotNone(intervened_ode_model)
@@ -69,7 +69,7 @@ class TestDensityTest(unittest.TestCase):
 
         # Control action / intervention.
         INITIAL_GUESS = 0.75
-        INTERVENTION = lambda x: constant_intervention("nu", x, TSPAN)
+        INTERVENTION = lambda x: constant_intervention_builder("nu", x, TSPAN)
 
         # Objective function.
         OBJECTIVE_FUNCTION = lambda x: x  # minimize the scalar value itself.
