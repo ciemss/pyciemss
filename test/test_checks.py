@@ -1,8 +1,29 @@
 from pyciemss.workflow import checks
 from pyciemss.workflow import vega
+from pathlib import Path
 import unittest
+import xarray as xr
+
+_data_file = Path(__file__).parent/"data"/"ciemss_datacube.nc"
+
 
 class TestCheck(unittest.TestCase):
+    def setUp(self):
+        def read_cube(file):
+            ds = xr.open_mfdataset([file])
+            real_data  = ds.to_dataframe().reset_index()
+            real_data.rename(columns={'timesteps': 'time', 
+                                      'experimental conditions': 'conditions', 
+                                      'attributes': 'state_names', 
+                                      '__xarray_dataarray_variable__': "state_values"}, 
+                             inplace=True)
+            return real_data
+
+        raw_data = read_cube(_data_file)
+        self.s30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "S")]
+        self.r30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "R")]        
+        self.i30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "I")]    
+    
     def test_KL(self):
         pass
     
@@ -40,8 +61,13 @@ class TestCheck(unittest.TestCase):
         
     
     def test_prior_predictive(self):
-        pass
+        lower, upper = 70_000, 94_000
+        result, schema = checks.prior_predictive(
+                    self.s30, lower, upper,
+                    label="s30",
+                    tests=[checks.contains(lower, upper), 
+                           checks.contains(lower, upper, .99)])
 
     def test_posterior_predictive(self):
-        pass
+        result, schema = checks.posterior_predictive(self.r30, self.i30, tests=[checks.KL(1)])
     
