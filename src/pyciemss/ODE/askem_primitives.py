@@ -16,7 +16,7 @@ from typing import TypeVar, Iterable, Optional, Union
 # Declare types
 PetriNet               = TypeVar('PetriNet')
 PriorJSON              = TypeVar('PriorJSON')
-PriorPP                = TypeVar('PriorPP')
+ProbProg               = TypeVar('ProbProg')
 InferredParameters     = TypeVar('InferredParameters')
 State                  = TypeVar('State')
 TSpan                  = TypeVar('TSpan')
@@ -30,11 +30,11 @@ DataCube               = TypeVar('DataCube')
 OptimizationResult     = TypeVar('OptimizationResult')
 
 def compile_pp(petri_G: PetriNet, 
-               prior_json: PriorJSON) -> PriorPP:
+               prior_json: PriorJSON) -> ProbProg:
 
     raise NotImplementedError
 
-def sample(ode_model: PriorPP,
+def sample(ode_model: ProbProg,
             num_samples: int, 
             initial_state: State, 
             tspan: TSpan,
@@ -46,7 +46,7 @@ def sample(ode_model: PriorPP,
 
     return Predictive(ode_model, guide=inferred_parameters, num_samples=num_samples)(initial_state, tspan)
 
-def infer_parameters(ode_model: PriorPP, 
+def infer_parameters(ode_model: ProbProg, 
                      num_iterations: int, 
                      hidden_observations: Iterable[str], 
                      data: Data,
@@ -61,8 +61,8 @@ def infer_parameters(ode_model: PriorPP,
     run_inference(ode_model, guide, initial_state, observed_tspan, data, num_iterations=num_iterations)
     return guide
 
-def intervene(ode_model: PriorPP, 
-            intervention_spec: InterventionSpec) -> PriorPP:
+def intervene(ode_model: ProbProg, 
+            intervention_spec: InterventionSpec) -> ProbProg:
     return do(ode_model, intervention_spec)
 
 def optimization(initial_guess: torch.tensor,
