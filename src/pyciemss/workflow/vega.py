@@ -26,7 +26,11 @@ def histogram_multi(*, xrefs=[],
     bins - Number of bins to divide into
     """
     def hist(label, subset):
-        subset = subset["state_values"]
+        try:
+            subset = subset["state_values"]
+        except:
+            subset = subset
+            
         counts, edges = np.histogram(subset, bins=bins)
         spans = [*(zip(edges, edges[1:]))]
         desc = [{"bin0": l.item(), "bin1": h.item(), "count": c.item(), "label": label} 
