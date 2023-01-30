@@ -13,7 +13,7 @@ from pyro.infer import SVI, Trace_ELBO, Predictive
 from pyciemss.ODE.base import PetriNetODESystem
 
 
-MIRA_PATH = os.environ["MIRA_PATH"]
+MIRA_PATH = os.environ.get("MIRA_PATH", "test/models/evaluation_examples/")
 
 
 @pytest.mark.parametrize("filename", [
