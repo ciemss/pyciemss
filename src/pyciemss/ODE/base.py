@@ -2,7 +2,7 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, Tuple, TypeVar, Optional, Tuple
+from typing import Dict, Tuple, Type, TypeVar, Optional, Tuple, Union
 
 import networkx
 import numpy
@@ -72,26 +72,21 @@ class ODE(PyroModule):
 
 
 class PetriNetODESystem(ODE):
-    """Create an ODE system from a petri-net definition.
-
-    Args:
-        G: Petri-net graph
-
-    Returns
-        Callable: Function that takes a list of state values and returns a list of derivatives.
     """
-    def __init__(self, Gm: mira.modeling.Model, *, noise_var: float = 1):
+    Create an ODE system from a petri-net specification.
+    """
+    def __init__(self, G: mira.modeling.Model, *, noise_var: float = 1):
         super().__init__()
-        self.Gm = Gm
+        self.G = G
         self.register_buffer("noise_var", torch.as_tensor(noise_var))
 
-        self.var_order = [v.key[0] for v in sorted(Gm.variables.values(), key=lambda v: v.key)]
+        self.var_order = [v.key[0] for v in sorted(G.variables.values(), key=lambda v: v.key)]
         self.transitions = {
             "".join([k[0] for k in t_key if isinstance(k, tuple)]): transition
-            for t_key, transition in Gm.transitions.items()
+            for t_key, transition in G.transitions.items()
         }
 
-        for param_name, param_info in self.Gm.parameters.items():
+        for param_name, param_info in self.G.parameters.items():
             param_value = param_info.value
             if isinstance(param_value, torch.nn.Parameter):
                 setattr(self, param_name, pyro.nn.PyroParam(param_value))
@@ -127,11 +122,25 @@ class PetriNetODESystem(ODE):
 
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
-        return load(mira.modeling.petri.PetriNetModel(self.Gm).to_json())
+        return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
+
+    def set_prior_from_spec(self, prior_json: Union[dict, str]) -> None:
+        if isinstance(prior_json, str):
+            prior_json_path = prior_json
+            if not os.path.exists(prior_json_path):
+                raise ValueError(f"Prior file not found: {prior_json_path}")
+            with open(prior_json_path, "r") as f:
+                prior_json = json.load(f)
+        for param_name, prior_spec in prior_json.items():
+            if param_name not in self.G.parameters:
+                raise ValueError(f"Tried to set prior for non-existent param: {param_name}")
+            dist_type: Type[pyro.distributions.Distribution] = getattr(pyro.distributions, prior_spec[0])
+            dist_params: Dict[str, Union[float, int]] = prior_spec[1]
+            setattr(self, param_name, pyro.nn.PyroSample(dist_type(**dist_params)))
 
     @pyro.nn.pyro_method
     def param_prior(self):
-        for param_name in self.Gm.parameters.keys():
+        for param_name in self.G.parameters.keys():
             getattr(self, param_name)
 
     @pyro.nn.pyro_method
