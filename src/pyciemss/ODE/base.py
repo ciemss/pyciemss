@@ -148,4 +148,4 @@ class PetriNetODESystem(ODE):
                     f"{name}_obs",
                     pyro.distributions.Normal(value, self.noise_var).to_event(1),
                 )
-            return output
+            return tuple(output[v] for v in self.var_order)
