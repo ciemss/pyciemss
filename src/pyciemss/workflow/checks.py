@@ -1,5 +1,6 @@
 import pyciemss.workflow.vega as vega
 import numpy as np
+from scipy.spatial.distance import jensenshannon
 
 #TODO: Look at scipy's KL and JS
 
@@ -32,24 +33,23 @@ def contains(ref_lower, ref_upper, pct=None):
     else:
         return simple_test
     
-def KL(max_acceptable, *, verbose=False):
-    """Check-generator function. Returns a function that performs a test.
+    
+def JS(max_acceptable, *, verbose=False):
+    """Check-generator function. Returns a function that performs a test against jensen-shannon distance.
     
     max_acceptable -- Threshold for the returned check
-    returns -- Returns a function that checks if KL/divergence of two lists of bin-counts is less than max_acceptable.
+    returns -- Returns a function that checks if JS distance of two lists of bin-counts is less than max_acceptable.
                Returned function takes two lists of bins-counts and returns a boolean result.  The signature
                is roughly (list[Number], list[Number]) -> bool.    
     """
-    def KL(a, b):
-        a = np.asarray(a, dtype=np.float32)+1
-        b = np.asarray(b, dtype=np.float32)+1
-
-        kl = np.sum(np.where(a != 0, a * np.log(a / b), 0)) 
+    def _inner(a, b):
+        a = np.asarray(a, dtype=np.float32)
+        b = np.asarray(b, dtype=np.float32)
+        js = jensenshannon(a,b)
         if verbose:
-            print(f"KL divergence is {kl}")
-        return kl <= max_acceptable
-    return KL
-
+            print(f"JS distance is {js}")
+        return js <= max_acceptable
+    return _inner
         
 def prior_predictive(posterior, lower, upper, *, label="posterior", tests=[], combiner=all, **kwargs):
     combined_args = {**{label: posterior}, **kwargs}
@@ -73,12 +73,15 @@ def prior_predictive(posterior, lower, upper, *, label="posterior", tests=[], co
 def posterior_predictive(posterior, data,  *, tests=[], combiner=all, **kwargs):
     schema, bins = vega.histogram_multi(Posterior=posterior, Reference=data,
                                   return_bins=True, **kwargs)
-    
+
     groups = dict([*bins.groupby("label")])
-    posterior_dist = groups["Posterior"]["count"].values
-    reference_dist = groups["Reference"]["count"].values
-    
-    checks = [test(reference_dist, posterior_dist) for test in tests]
+    posterior_dist = groups["Posterior"].rename(columns={"count": "post"}).drop(columns=["label"])
+    reference_dist = groups["Reference"].rename(columns={"count": "ref"}).drop(columns=["label"])
+    aligned = (posterior_dist.set_index(["bin0", "bin1"])
+                   .join(reference_dist.set_index(["bin0", "bin1"]), how="outer")
+                   .fillna(0))
+
+    checks = [test(aligned["ref"].values, aligned["post"].values) for test in tests]
     status = combiner(checks)
     
     if not status:

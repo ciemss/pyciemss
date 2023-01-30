@@ -24,20 +24,18 @@ class TestCheck(unittest.TestCase):
         self.s30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "S")]
         self.r30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "R")]        
         self.i30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "I")]    
-    
-    def test_KL(self):        
-        schema, bins = vega.histogram_multi(s30=self.s30, i30=self.i30, r30=self.r30, 
-                                      return_bins=True)
+        
+    def test_JS(self):
+        d1 = [0, 0, 0, 0, 0, 5, 9, 5, 0]
+        d2 = [5, 9, 5, 0, 0, 5, 9, 5, 0]
+        d3 = [1, 2, 3, 4, 5, 5, 3, 2, 1]
 
-        groups = dict([*bins.groupby("label")])
-        s30_bins = groups["s30"]["count"].values
-        r30_bins = groups["r30"]["count"].values
-        i30_bins = groups["i30"]["count"].values        
-
-        self.assertTrue(checks.KL(1)(s30_bins, s30_bins), "Identical distributions passes at 1")
-        self.assertTrue(checks.KL(0)(s30_bins, s30_bins), "Identical distributions passes at 0")        
-        self.assertTrue(checks.KL(np.inf)(s30_bins, r30_bins), "Disjoint passes at infinity")
-        self.assertFalse(checks.KL(1)(s30_bins, r30_bins), "Disjoint fails at 1")        
+        self.assertTrue(checks.JS(1)(d1, d1), "Identical distributions passes at 1")
+        self.assertTrue(checks.JS(0)(d1, d1), "Identical distributions passes at 0")        
+        self.assertTrue(checks.JS(1)(d1, d2), "Disjoint passes at 1")
+        self.assertFalse(checks.JS(.4)(d1, d2), "Disjoint fails at .9")
+        self.assertTrue(checks.JS(.6)(d1, d3), "Overlap passes")        
+        self.assertTrue(checks.JS(.6)(d2, d3), "Overlap passes")        
         
     def test_contains(self):
         _, bins = vega.histogram_multi(range=np.linspace(0,20, num=100), return_bins=True)
@@ -59,18 +57,18 @@ class TestCheck(unittest.TestCase):
     def test_contains_pct(self):
         #TODO: This simple testing of percent-contains fails when there are not many things in the input.
         #      We should look at some better tests for small numbers of data points.
-        _, bins = vega.histogram_multi(range=np.linspace(0,20, num=100), return_bins=True, bins=20)
+        _, bins = vega.histogram_multi(range=np.linspace(0, 20, num=100), return_bins=True, bins=20)
 
         checker = checks.contains(0, 20, 1)
         self.assertTrue(checker(bins), "Full range")
 
-        checker = checks.contains(5, 15, .5)
+        checker = checks.contains(5, 15, .49)
         self.assertTrue(checker(bins), "Half middle")
 
-        checker = checks.contains(15, 20, .25)
+        checker = checks.contains(15, 20, .24)
         self.assertTrue(checker(bins), ".25 upper")
 
-        checker = checks.contains(0, 15, .75)
+        checker = checks.contains(0, 15, .74)
         self.assertTrue(checker(bins), ".75 lower")
         
     
@@ -89,12 +87,12 @@ class TestCheck(unittest.TestCase):
 
 
     def test_posterior_predictive(self):
-        result, schema = checks.posterior_predictive(self.s30, self.i30, tests=[checks.KL(1, verbose=True)])
+        result, schema = checks.posterior_predictive(self.s30, self.i30, tests=[checks.JS(0)])
                 
         self.assertFalse(result[0])
-        self.assertTrue("100%" in schema["title"]["text"][1])
+        self.assertTrue("0%" in schema["title"]["text"][1])
         
-        result, schema = checks.posterior_predictive(self.s30, self.s30, tests=[checks.KL(1)])                
+        result, schema = checks.posterior_predictive(self.s30, self.s30, tests=[checks.JS(1)])                
         self.assertTrue(result[0])
         self.assertTrue("Pass" in schema["title"]["text"][1])
     

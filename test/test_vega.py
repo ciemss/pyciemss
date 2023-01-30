@@ -30,12 +30,11 @@ class TestVega(unittest.TestCase):
         self.i30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "I")]
         
     def test_histogram(self):
-        for bin_count in range(10, 500, 10):
-            hist, bins = vega.histogram_multi(s30=self.s30,
-                                              bins=bin_count,
-                                              return_bins=True)
-            
-            self.assertEqual(bin_count, len(bins))
+        hist, bins = vega.histogram_multi(s30=self.s30,
+                                          return_bins=True)
+        
+        self.assertTrue(all(bins["bin0"].value_counts()==1), "Duplicated bins found")
+        self.assertTrue(all(bins["bin1"].value_counts()==1), "Duplicated bins found")        
             
         hist_data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         self.assertTrue(all(bins==hist_data))

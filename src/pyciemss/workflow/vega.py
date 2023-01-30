@@ -9,36 +9,56 @@ import json
 _resource_root = importlib.resources.files("pyciemss.workflow")
 histogram_multi_schema = _resource_root.joinpath("histogram_static_bins_multi.vg.json")
 
+
+def sturges_bin(data):
+    """Determine number of bin susing sturge's rule.  
+    TODO: Consider a Freedman-Diaconis rule (larger data sizes, large spread in data...)
+    """
+    return int(np.ceil(np.log2(len(data))) + 1)
+
+
 def histogram_multi(*, xrefs=[],
-                     yrefs=[],
-                     bins=50, 
+                     yrefs=[], 
+                     bin_rule=sturges_bin,
                      return_bins=False,
                    **data):
     """
     Create a histogram with server-side binning.
+
     
     TODO: Maybe compute overlap in bins explicitly and visualize as stacked?
           Limits (practically) to two distributions, but legend is more clear.
     
-    data - Data to plot
+    TODO: Need to align histogram bin size between groups to make the visual representation more interpretable
+    
+    **data -- Keyword-tagged datasets.  Key will become a label.
+    bin_rule -- Determines bins width using this function. Will received a joint dataframe of all data passed
     xrefs - List of values in the bin-range to highlight as vertical lines 
     yrefs - List of values in the count-range to highlight as horizontal lines 
     bins - Number of bins to divide into
     """
-    def hist(label, subset):
-        try:
-            subset = subset["state_values"]
-        except:
-            subset = subset
-            
-        counts, edges = np.histogram(subset, bins=bins)
+    def hist(label, subset, edges):
+        assignments = np.digitize(subset, edges)-1
+        counts = np.bincount(assignments)
         spans = [*(zip(edges, edges[1:]))]
         desc = [{"bin0": l.item(), "bin1": h.item(), "count": c.item(), "label": label} 
                 for ((l, h), c) in zip(spans, counts)]
         return desc
     
-    hists = [hist(label, group) for label, group in data.items()]
-    desc = [item for sublist in hists
+    def as_value_list(label, data):
+        try:
+            return data["state_values"].rename(label)
+        except:
+            return pd.Series(data).rename(label)
+
+    data = {k: as_value_list(k, subset) for k, subset in data.items()}
+
+    joint = pd.concat(data)
+    bins_count = sturges_bin(joint)
+    counts, edges = np.histogram(joint, bins=bins_count)
+
+    hists = {k: hist(k, subset, edges) for k, subset in data.items()}
+    desc = [item for sublist in hists.values()
              for item in sublist]
     
     with open (histogram_multi_schema) as f:
