@@ -7,9 +7,9 @@ from pyciemss.ODE.interventions import constant_intervention_builder, parameter_
 from pyciemss.ODE.models import SVIIvR
 from pyciemss.ODE.askem_primitives import sample, intervene
 
-class TestOUU(unittest.TestCase):
+class TestInterventions(unittest.TestCase):
     '''
-    Test for the risk-based OUU methods and classes.
+    Test for the intervention builders
     '''
     def setUp(self):
         
