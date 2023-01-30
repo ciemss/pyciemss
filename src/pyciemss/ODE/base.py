@@ -212,6 +212,6 @@ class PetriNetODESystem(ODE):
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
         with pyro.condition(data=data if data is not None else {}):
             return tuple(
-                pyro.deterministic(f"{var}_obs", sol, event_dim=1)
+                pyro.deterministic(f"{get_name(var)}_obs", sol, event_dim=1)
                 for var, sol in zip(self.var_order, solution)
             )
