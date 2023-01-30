@@ -27,26 +27,6 @@ def test_load_starterkit_scenarios_from_json(filename):
     assert len(model.var_order) > 0
 
 
-@pytest.mark.xfail(reason="mira cannot load these without annotations")
-@pytest.mark.parametrize("filename", [
-    "sir_age3.json",
-    "sir_age16.json",
-    "sir.json",
-    "sird.json",
-    "sirh.json",
-    "sirhd_renew_vax_age16.json",
-    "sirhd_renew_vax.json",
-    "sirhd_renew.json",
-    "sirhd_vax_age16.json",
-    "sirhd_vax.json",
-    "sirhd.json",
-])
-def test_load_stratified_acset_evaluation_examples_from_json(filename):
-    filename = os.path.join("test/models/evaluation_examples", filename)
-    model = PetriNetODESystem.from_mira(filename)
-    assert len(model.var_order) > 0
-
-
 @pytest.mark.parametrize("filename", [
     "scenario1_all_ages.json",
     "scenario1_sir.json",
