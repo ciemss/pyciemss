@@ -12,6 +12,8 @@ import mira
 import mira.modeling
 import mira.modeling.petri
 import mira.metamodel
+import mira.sources
+import mira.sources.petri
 
 from torch import nn
 from pyro.nn import PyroModule, pyro_method
@@ -77,11 +79,16 @@ class PetriNetODESystem(ODE):
     Returns
         Callable: Function that takes a list of state values and returns a list of derivatives.
     """
-    def __init__(self, Gm: mira.modeling.Model):
+    def __init__(self, Gm: mira.modeling.Model, *, noise_var: float = 1):
         super().__init__()
         self.Gm = Gm
+        self.register_buffer("noise_var", torch.as_tensor(noise_var))
 
-        self.var_order = [v.key[0] for v in sorted(Gm.variables, key=lambda v: v.key)]
+        self.var_order = [v.key[0] for v in sorted(Gm.variables.values(), key=lambda v: v.key)]
+        self.transitions = {
+            "".join([k[0] for k in t_key if isinstance(k, tuple)]): transition
+            for t_key, transition in Gm.transitions.items()
+        }
 
         for param_name, param_info in self.Gm.parameters.items():
             param_value = param_info.value
@@ -96,17 +103,17 @@ class PetriNetODESystem(ODE):
 
     @functools.singledispatchmethod
     @classmethod
-    def from_model(cls, model: mira.modeling.Model) -> "PetriNetODESystem":
+    def from_mira(cls, model: mira.modeling.Model) -> "PetriNetODESystem":
         return cls(model)
 
-    @from_model.register
+    @from_mira.register
     @classmethod
     def _from_template_model(cls, model: mira.metamodel.TemplateModel):
         return cls(mira.modeling.Model(model))
 
-    @from_model.register
+    @from_mira.register
     @classmethod
-    def _from_json_string(cls, model: str):
+    def _from_json_string(cls, model: dict):
         model = mira.sources.petri.template_model_from_petri_json(model)
         return cls(mira.modeling.Model(model))
 
@@ -124,14 +131,21 @@ class PetriNetODESystem(ODE):
         states = {k: state[i] for i, k in enumerate(self.var_order)}
         derivs = {k: 0. for k in states}
 
-        for transition in self.Gm.transitions.values():
+        N = functools.reduce(operator.add, states.values(), 0)
+
+        for transition_name, transition in self.transitions.items():
             rate_param = getattr(self, transition.rate.key)
             flux = rate_param * functools.reduce(
-                operator.mul, [states[k] for k in transition.consumed], 1
-            ) * functools.reduce(
-                operator.mul, [states[k] for k in transition.control], 1
+                operator.mul, [states[k.key[0]] for k in transition.consumed], 1
             )
-            flux = pyro.deterministic(f"{transition.name}_flux {t}", flux, event_dim=0)
+            if len(transition.control) > 0:
+                flux = flux * sum([states[k.key[0]] for k in transition.control]) / N
+
+            flux = pyro.deterministic(f"{transition_name}_flux {t}", flux, event_dim=0)
+
+            satisfied_index = torch.logical_and(states[transition.consumed[0].key[0]] > 0, flux > 0)
+            flux = torch.where(satisfied_index, flux, torch.zeros_like(flux))
+
             for c in transition.consumed:
                 derivs[c.key[0]] -= flux
             for p in transition.produced:
@@ -142,10 +156,15 @@ class PetriNetODESystem(ODE):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
         with pyro.condition(data=data if data is not None else {}):
-            output = {}
-            for name, value in zip(self.var_order, solution):
+            output = {} 
+            named_solution = dict(zip(self.var_order, solution))
+            for name, value in named_solution.items():
+                if name == "I_v":
+                    continue
+                if name == "I":
+                    value = value + named_solution["I_v"]
                 output[name] = pyro.sample(
                     f"{name}_obs",
                     pyro.distributions.Normal(value, self.noise_var).to_event(1),
                 )
-            return tuple(output[v] for v in self.var_order)
+            return tuple(output.get(v, named_solution[v]) for v in self.var_order)
