@@ -4,9 +4,9 @@ import operator
 from typing import Dict, Tuple, TypeVar, Optional, Tuple
 
 import networkx
+import numpy
 import torch
 import pyro
-import torchdiffeq
 
 import mira
 import mira.modeling
@@ -85,13 +85,14 @@ class PetriNetODESystem(ODE):
 
         for param_name, param_info in self.Gm.parameters.items():
             param_value = param_info.value
-            if isinstance(param_value, (numbers.Number, torch.Tensor)):
-                param_value = pyro.nn.PyroParam(torch.as_tensor(param_value))
+            if isinstance(param_value, torch.nn.Parameter):
+                setattr(self, param_name, pyro.nn.PyroParam(param_value))
             elif isinstance(param_value, pyro.distributions.Distribution):
-                param_value = pyro.nn.PyroSample(param_value)
+                setattr(self, param_name, pyro.nn.PyroSample(param_value))
+            elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
+                self.register_buffer(param_name, torch.as_tensor(param_value))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
-            setattr(self, param_name, param_value)
 
     @functools.singledispatchmethod
     @classmethod
@@ -100,7 +101,7 @@ class PetriNetODESystem(ODE):
 
     @from_model.register
     @classmethod
-    def _from_template_model(cls, model: mira.modeling.TemplateModel):
+    def _from_template_model(cls, model: mira.metamodel.TemplateModel):
         return cls(mira.modeling.Model(model))
 
     @from_model.register
@@ -137,3 +138,14 @@ class PetriNetODESystem(ODE):
                 derivs[p.key[0]] += flux
 
         return tuple(pyro.deterministic(f"d{v}_dt_{t}", derivs[v], event_dim=0) for v in self.var_order)
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
+        with pyro.condition(data=data if data is not None else {}):
+            output = {}
+            for name, value in zip(self.var_order, solution):
+                output[name] = pyro.sample(
+                    f"{name}_obs",
+                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
+                )
+            return output
