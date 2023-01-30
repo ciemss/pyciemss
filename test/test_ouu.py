@@ -10,7 +10,7 @@ from pyciemss.risk.ouu import computeRisk
 from pyciemss.risk.qoi import threshold_exceedence
 from pyciemss.risk.risk_measures import alpha_quantile
 from pyciemss.ODE.models import SVIIvR
-from pyciemss.ODE.interventions import constant_intervention
+from pyciemss.ODE.interventions import constant_intervention_builder
 
 class TestOUU(unittest.TestCase):
     '''
@@ -49,7 +49,7 @@ class TestOUU(unittest.TestCase):
     def test_computeRisk(self):
         self.Risk = computeRisk(
             model=self.model,
-            intervention_fun=lambda x: constant_intervention("nu", x, self.tspan),
+            intervention_fun=lambda x: constant_intervention_builder("nu", x, self.tspan),
             qoi=lambda y: threshold_exceedence(y, threshold=1000.0, contexts=["I_obs"]),
             model_state=self.initial_state,
             tspan=self.tspan,
