@@ -13,6 +13,9 @@ from pyro.infer import SVI, Trace_ELBO, Predictive
 from pyciemss.ODE.base import PetriNetODESystem
 
 
+MIRA_PATH = os.environ["MIRA_PATH"]
+
+
 @pytest.mark.parametrize("filename", [
     "CHIME-SVIIvR/model_petri.json",
     "CHIME-SIR/model_petri.json",
@@ -50,7 +53,7 @@ def test_load_stratified_acset_evaluation_examples_from_json(filename):
     "scenario1_three_ages.json",
 ])
 def test_load_evaluation_scenario1_from_json(filename):
-    filename = os.path.join("test/models/evaluation_examples", filename)
+    filename = os.path.join(MIRA_PATH, "scenario_1/ta_2", filename)
     model = PetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     if hasattr(model, "default_initial_state"):
@@ -65,7 +68,7 @@ def test_load_evaluation_scenario1_from_json(filename):
     "scenario2_sidarthe_v.json",
 ])
 def test_load_evaluation_scenario2_from_json(filename):
-    filename = os.path.join("test/models/evaluation_examples", filename)
+    filename = os.path.join(MIRA_PATH, "scenario_2/ta_2", filename)
     model = PetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     assert hasattr(model, "default_initial_state")
@@ -80,7 +83,7 @@ def test_load_evaluation_scenario2_from_json(filename):
     "scenario3_biomd960.json",
 ])
 def test_load_evaluation_scenario3_from_json(filename):
-    filename = os.path.join("test/models/evaluation_examples", filename)
+    filename = os.path.join(MIRA_PATH, "scenario_3/ta_2", filename)
     model = PetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     if hasattr(model, "default_initial_state"):
