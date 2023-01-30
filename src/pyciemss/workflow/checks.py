@@ -31,7 +31,7 @@ def contains(ref_lower, ref_upper, pct=None):
         return simple_test
     
 
-def KL(max_acceptable):
+def KL(max_acceptable, *, verbose=False):
     """Check-generator function. Returns a function that performs a test.
     
     max_acceptable -- Threshold for the returned check
@@ -43,7 +43,10 @@ def KL(max_acceptable):
         a = np.asarray(a, dtype=np.float32)+1
         b = np.asarray(b, dtype=np.float32)+1
 
-        return np.sum(np.where(a != 0, a * np.log(a / b), 0)) <= max_acceptable
+        kl = np.sum(np.where(a != 0, a * np.log(a / b), 0)) 
+        if verbose:
+            print(f"KL divergence is {kl}")
+        return kl <= max_acceptable
     return KL
 
         

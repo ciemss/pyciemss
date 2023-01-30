@@ -2,6 +2,7 @@ from pyciemss.workflow import checks
 from pyciemss.workflow import vega
 from pathlib import Path
 import unittest
+import numpy as np
 import xarray as xr
 
 _data_file = Path(__file__).parent/"data"/"ciemss_datacube.nc"
@@ -24,11 +25,22 @@ class TestCheck(unittest.TestCase):
         self.r30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "R")]        
         self.i30 = raw_data.loc[(raw_data['time']== 30) & (raw_data['state_names'] == "I")]    
     
-    def test_KL(self):
-        pass
-    
+    def test_KL(self):        
+        schema, bins = vega.histogram_multi(s30=self.s30, i30=self.i30, r30=self.r30, 
+                                      return_bins=True)
+
+        groups = dict([*bins.groupby("label")])
+        s30_bins = groups["s30"]["count"].values
+        r30_bins = groups["r30"]["count"].values
+        i30_bins = groups["i30"]["count"].values        
+
+        self.assertTrue(checks.KL(1)(s30_bins, s30_bins), "Identical distributions passes at 1")
+        self.assertTrue(checks.KL(0)(s30_bins, s30_bins), "Identical distributions passes at 0")        
+        self.assertTrue(checks.KL(np.inf)(s30_bins, r30_bins), "Disjoint passes at infinity")
+        self.assertFalse(checks.KL(1)(s30_bins, r30_bins), "Disjoint fails at 1")        
+        
     def test_contains(self):
-        _, bins = vega.histogram_multi(range=[*range(25)], return_bins=True)
+        _, bins = vega.histogram_multi(range=np.linspace(0,20, num=100), return_bins=True)
 
         checker = checks.contains(3, 10)
         self.assertTrue(checker(bins), "In range")
@@ -45,7 +57,7 @@ class TestCheck(unittest.TestCase):
                                  
         
     def test_contains_pct(self):
-        _, bins = vega.histogram_multi(range=[*range(20)], return_bins=True, bins=20)
+        _, bins = vega.histogram_multi(range=np.linspace(0,20, num=100), return_bins=True, bins=20)
 
         checker = checks.contains(0, 20, 1)
         self.assertTrue(checker(bins), "Full range")
