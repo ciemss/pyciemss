@@ -6,7 +6,7 @@ import pyro.distributions as dist
 
 from pyro.nn import pyro_method
 
-from pyciemss.ODE.abstract import ODE, Time, State, Solution, Observation
+from pyciemss.ODE.base import ODE, Time, State, Solution, Observation
 from pyciemss.utils import state_flux_constraint
 
 class SVIIvR(ODE):
