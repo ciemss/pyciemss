@@ -38,7 +38,7 @@ def test_load_starterkit_scenarios_from_json(filename):
     "sirhd_vax.json",
     "sirhd.json",
 ])
-def test_load_stratified_acset_evaluation_scenarios_from_json(filename):
+def test_load_stratified_acset_evaluation_examples_from_json(filename):
     filename = os.path.join("test/models/evaluation_examples", filename)
     model = PetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0

@@ -88,7 +88,7 @@ class PetriNetODESystem(ODE):
 
             param_value = param_info.value
 
-            if param_value is None:  # TODO what is sensible default behavior here
+            if param_value is None:  # TODO remove this placeholder when MIRA is updated
                 param_value = torch.nn.Parameter(torch.tensor(1.))
 
             if isinstance(param_value, torch.nn.Parameter):
@@ -171,6 +171,7 @@ class PetriNetODESystem(ODE):
             rate_param_name = transition.rate.key
             if not isinstance(rate_param_name, str):
                 rate_param_name = f"rate_{str(rate_param_name)}"
+
             rate_param = getattr(self, rate_param_name)
             flux = rate_param * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
