@@ -102,17 +102,17 @@ class PetriNetODESystem(ODE):
     def from_mira(cls, model: mira.modeling.Model) -> "PetriNetODESystem":
         return cls(model)
 
-    @from_mira.register
+    @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
         return cls.from_mira(mira.modeling.Model(model_template))
 
-    @from_mira.register
+    @from_mira.register(dict)
     @classmethod
     def _from_json(cls, model_json: dict):
         return cls.from_mira(mira.sources.petri.template_model_from_petri_json(model_json))
 
-    @from_mira.register
+    @from_mira.register(str)
     @classmethod
     def _from_json_file(cls, model_json_path: str):
         if not os.path.exists(model_json_path):
