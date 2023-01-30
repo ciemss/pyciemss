@@ -1,6 +1,7 @@
 import functools
-import numbers
+import json
 import operator
+import os
 from typing import Dict, Tuple, TypeVar, Optional, Tuple
 
 import networkx
@@ -96,7 +97,7 @@ class PetriNetODESystem(ODE):
                 setattr(self, param_name, pyro.nn.PyroParam(param_value))
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.nn.PyroSample(param_value))
-            elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
+            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
                 self.register_buffer(param_name, torch.as_tensor(param_value))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
@@ -108,14 +109,21 @@ class PetriNetODESystem(ODE):
 
     @from_mira.register
     @classmethod
-    def _from_template_model(cls, model: mira.metamodel.TemplateModel):
-        return cls(mira.modeling.Model(model))
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
+        return cls.from_mira(mira.modeling.Model(model_template))
 
     @from_mira.register
     @classmethod
-    def _from_json_string(cls, model: dict):
-        model = mira.sources.petri.template_model_from_petri_json(model)
-        return cls(mira.modeling.Model(model))
+    def _from_json(cls, model_json: dict):
+        return cls.from_mira(mira.sources.petri.template_model_from_petri_json(model_json))
+
+    @from_mira.register
+    @classmethod
+    def _from_json_file(cls, model_json_path: str):
+        if not os.path.exists(model_json_path):
+            raise ValueError(f"Model file not found: {model_json_path}")
+        with open(model_json_path, "r") as f:
+            return cls.from_mira(json.load(f))
 
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
@@ -142,9 +150,6 @@ class PetriNetODESystem(ODE):
                 flux = flux * sum([states[k.key[0]] for k in transition.control]) / N
 
             flux = pyro.deterministic(f"{transition_name}_flux {t}", flux, event_dim=0)
-
-            satisfied_index = torch.logical_and(states[transition.consumed[0].key[0]] > 0, flux > 0)
-            flux = torch.where(satisfied_index, flux, torch.zeros_like(flux))
 
             for c in transition.consumed:
                 derivs[c.key[0]] -= flux
