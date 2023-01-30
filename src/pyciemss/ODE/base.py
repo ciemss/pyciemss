@@ -71,6 +71,34 @@ class ODE(PyroModule):
         return solution, observations
 
 
+@functools.singledispatch
+def get_name(obj) -> str:
+    """
+    Function to get a string-valued name for a MIRA object for use in a Pyro model.
+    """
+    raise NotImplementedError
+
+
+@get_name.register
+def _get_name_str(name: str) -> str:
+    return name
+
+
+@get_name.register
+def _get_name_variable(var: mira.modeling.Variable) -> str:
+    return f"var_{var.key}"
+
+
+@get_name.register
+def _get_name_transition(trans: mira.modeling.Transition) -> str:
+    return f"trans_{trans.key}"
+
+
+@get_name.register
+def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
+    return f"{param.key[-1]}_{param.key}"
+
+
 class PetriNetODESystem(ODE):
     """
     Create an ODE system from a petri-net specification.
@@ -82,14 +110,12 @@ class PetriNetODESystem(ODE):
 
         self.var_order = tuple(sorted(G.variables.values(), key=lambda v: v.key))
 
-        for param_name, param_info in self.G.parameters.items():
-            if not isinstance(param_name, str):
-                param_name = f"rate_{str(param_name)}"
+        for param_info in self.G.parameters.values():
+            param_name = get_name(param_info)
 
             param_value = param_info.value
-
             if param_value is None:  # TODO remove this placeholder when MIRA is updated
-                param_value = torch.nn.Parameter(torch.tensor(1.))
+                param_value = torch.nn.Parameter(torch.tensor(0.1))
 
             if isinstance(param_value, torch.nn.Parameter):
                 setattr(self, param_name, pyro.nn.PyroParam(param_value))
@@ -155,10 +181,8 @@ class PetriNetODESystem(ODE):
 
     @pyro.nn.pyro_method
     def param_prior(self):
-        for param_name in self.G.parameters.keys():
-            if not isinstance(param_name, str):
-                param_name = f"rate_{str(param_name)}"
-            getattr(self, param_name)
+        for param_info in self.G.parameters.values():
+            getattr(self, get_name(param_info))
 
     @pyro.nn.pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
@@ -167,26 +191,22 @@ class PetriNetODESystem(ODE):
 
         N = functools.reduce(operator.add, states.values(), 0)
 
-        for transition_name, transition in self.G.transitions.items():
-            rate_param_name = transition.rate.key
-            if not isinstance(rate_param_name, str):
-                rate_param_name = f"rate_{str(rate_param_name)}"
-
-            rate_param = getattr(self, rate_param_name)
+        for transition in self.G.transitions.values():
+            rate_param = getattr(self, get_name(transition.rate))
             flux = rate_param * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
             if len(transition.control) > 0:
                 flux = flux * sum([states[k] for k in transition.control]) / N
 
-            flux = pyro.deterministic(f"{transition_name}_flux {t}", flux, event_dim=0)
+            flux = pyro.deterministic(f"{get_name(transition)}_flux {t}", flux, event_dim=0)
 
             for c in transition.consumed:
                 derivs[c] -= flux
             for p in transition.produced:
                 derivs[p] += flux
 
-        return tuple(pyro.deterministic(f"d{v}_dt_{t}", derivs[v], event_dim=0) for v in self.var_order)
+        return tuple(pyro.deterministic(f"d[{get_name(v)}]_dt_{t}", derivs[v], event_dim=0) for v in self.var_order)
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
