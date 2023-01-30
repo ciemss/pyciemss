@@ -80,14 +80,17 @@ class PetriNetODESystem(ODE):
         self.G = G
         self.register_buffer("noise_var", torch.as_tensor(noise_var))
 
-        self.var_order = [v.key[0] for v in sorted(G.variables.values(), key=lambda v: v.key)]
-        self.transitions = {
-            "".join([k[0] for k in t_key if isinstance(k, tuple)]): transition
-            for t_key, transition in G.transitions.items()
-        }
+        self.var_order = tuple(sorted(G.variables.values(), key=lambda v: v.key))
 
         for param_name, param_info in self.G.parameters.items():
+            if not isinstance(param_name, str):
+                param_name = f"rate_{str(param_name)}"
+
             param_value = param_info.value
+
+            if param_value is None:  # TODO what is sensible default behavior here
+                param_value = torch.nn.Parameter(torch.tensor(1.))
+
             if isinstance(param_value, torch.nn.Parameter):
                 setattr(self, param_name, pyro.nn.PyroParam(param_value))
             elif isinstance(param_value, pyro.distributions.Distribution):
@@ -96,6 +99,17 @@ class PetriNetODESystem(ODE):
                 self.register_buffer(param_name, torch.as_tensor(param_value))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
+
+        if all(var.data.get("initial_value", None) is not None for var in self.var_order):
+            for var in self.var_order:
+                self.register_buffer(
+                    f"default_initial_state_{var.key}",
+                    torch.as_tensor(var.data["initial_value"])
+                )
+            self.default_initial_state = tuple(
+                getattr(self, f"default_initial_state_{var.key}")
+                for var in self.var_order
+            )
 
     @functools.singledispatchmethod
     @classmethod
@@ -142,6 +156,8 @@ class PetriNetODESystem(ODE):
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_name in self.G.parameters.keys():
+            if not isinstance(param_name, str):
+                param_name = f"rate_{str(param_name)}"
             getattr(self, param_name)
 
     @pyro.nn.pyro_method
@@ -151,19 +167,30 @@ class PetriNetODESystem(ODE):
 
         N = functools.reduce(operator.add, states.values(), 0)
 
-        for transition_name, transition in self.transitions.items():
-            rate_param = getattr(self, transition.rate.key)
+        for transition_name, transition in self.G.transitions.items():
+            rate_param_name = transition.rate.key
+            if not isinstance(rate_param_name, str):
+                rate_param_name = f"rate_{str(rate_param_name)}"
+            rate_param = getattr(self, rate_param_name)
             flux = rate_param * functools.reduce(
-                operator.mul, [states[k.key[0]] for k in transition.consumed], 1
+                operator.mul, [states[k] for k in transition.consumed], 1
             )
             if len(transition.control) > 0:
-                flux = flux * sum([states[k.key[0]] for k in transition.control]) / N
+                flux = flux * sum([states[k] for k in transition.control]) / N
 
             flux = pyro.deterministic(f"{transition_name}_flux {t}", flux, event_dim=0)
 
             for c in transition.consumed:
-                derivs[c.key[0]] -= flux
+                derivs[c] -= flux
             for p in transition.produced:
-                derivs[p.key[0]] += flux
+                derivs[p] += flux
 
         return tuple(pyro.deterministic(f"d{v}_dt_{t}", derivs[v], event_dim=0) for v in self.var_order)
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
+        with pyro.condition(data=data if data is not None else {}):
+            return tuple(
+                pyro.deterministic(f"{var}_obs", sol, event_dim=1)
+                for var, sol in zip(self.var_order, solution)
+            )

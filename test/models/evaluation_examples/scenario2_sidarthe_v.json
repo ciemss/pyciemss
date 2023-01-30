@@ -1,0 +1,283 @@
+{
+ "S": [
+  {
+   "sname": "Susceptible",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Infected",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('disease_status', 'ncit:C3833'), ('property', 'ncit:C113725')]"
+  },
+  {
+   "sname": "Diagnosed",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('property', 'ncit:C15220')]"
+  },
+  {
+   "sname": "Ailing",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('disease_status', 'ncit:C25269'), ('property', 'ncit:C113725')]"
+  },
+  {
+   "sname": "Recognized",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('disease_status', 'ncit:C25269'), ('property', 'ncit:C25587')]"
+  },
+  {
+   "sname": "Healed",
+   "mira_ids": "[('identity', 'ido:0000592')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Threatened",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('disease_status', 'ncit:C25269'), ('property', 'ncit:C15220')]"
+  },
+  {
+   "sname": "Extinct",
+   "mira_ids": "[('identity', 'ncit:C28554')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "vaccinated",
+   "mira_ids": "[('identity', 'vo:0001376')]",
+   "mira_context": "[]"
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "phi",
+   "parameter_value": 1.0
+  },
+  {
+   "tname": "t2",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_2",
+   "parameter_value": null
+  },
+  {
+   "tname": "t3",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_3",
+   "parameter_value": null
+  },
+  {
+   "tname": "t4",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_4",
+   "parameter_value": null
+  },
+  {
+   "tname": "t5",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_5",
+   "parameter_value": null
+  },
+  {
+   "tname": "t6",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_6",
+   "parameter_value": null
+  },
+  {
+   "tname": "t7",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_7",
+   "parameter_value": null
+  },
+  {
+   "tname": "t8",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_8",
+   "parameter_value": null
+  },
+  {
+   "tname": "t9",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_9",
+   "parameter_value": null
+  },
+  {
+   "tname": "t10",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_10",
+   "parameter_value": null
+  },
+  {
+   "tname": "t11",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_11",
+   "parameter_value": null
+  },
+  {
+   "tname": "t12",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_12",
+   "parameter_value": null
+  },
+  {
+   "tname": "t13",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_13",
+   "parameter_value": null
+  },
+  {
+   "tname": "t14",
+   "template_type": "NaturalConversion",
+   "parameter_name": "phi",
+   "parameter_value": 1.0
+  }
+ ],
+ "I": [
+  {
+   "is": 3,
+   "it": 1
+  },
+  {
+   "is": 4,
+   "it": 1
+  },
+  {
+   "is": 5,
+   "it": 1
+  },
+  {
+   "is": 2,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 2,
+   "it": 2
+  },
+  {
+   "is": 2,
+   "it": 3
+  },
+  {
+   "is": 2,
+   "it": 4
+  },
+  {
+   "is": 3,
+   "it": 5
+  },
+  {
+   "is": 3,
+   "it": 6
+  },
+  {
+   "is": 4,
+   "it": 7
+  },
+  {
+   "is": 4,
+   "it": 8
+  },
+  {
+   "is": 4,
+   "it": 9
+  },
+  {
+   "is": 5,
+   "it": 10
+  },
+  {
+   "is": 5,
+   "it": 11
+  },
+  {
+   "is": 7,
+   "it": 12
+  },
+  {
+   "is": 7,
+   "it": 13
+  },
+  {
+   "is": 1,
+   "it": 14
+  }
+ ],
+ "O": [
+  {
+   "os": 3,
+   "ot": 1
+  },
+  {
+   "os": 4,
+   "ot": 1
+  },
+  {
+   "os": 5,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  },
+  {
+   "os": 4,
+   "ot": 3
+  },
+  {
+   "os": 6,
+   "ot": 4
+  },
+  {
+   "os": 5,
+   "ot": 5
+  },
+  {
+   "os": 6,
+   "ot": 6
+  },
+  {
+   "os": 5,
+   "ot": 7
+  },
+  {
+   "os": 6,
+   "ot": 8
+  },
+  {
+   "os": 7,
+   "ot": 9
+  },
+  {
+   "os": 7,
+   "ot": 10
+  },
+  {
+   "os": 6,
+   "ot": 11
+  },
+  {
+   "os": 8,
+   "ot": 12
+  },
+  {
+   "os": 6,
+   "ot": 13
+  },
+  {
+   "os": 9,
+   "ot": 14
+  }
+ ]
+}
