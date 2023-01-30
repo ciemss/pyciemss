@@ -2,7 +2,7 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, Tuple, Type, TypeVar, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union
 
 import networkx
 import numpy
@@ -124,7 +124,7 @@ class PetriNetODESystem(ODE):
         from pyciemss.utils.petri_utils import load
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
 
-    def set_prior_from_spec(self, prior_json: Union[dict, str]) -> None:
+    def set_priors_from_spec(self, prior_json: Union[dict, str]) -> None:
         if isinstance(prior_json, str):
             prior_json_path = prior_json
             if not os.path.exists(prior_json_path):
@@ -135,8 +135,9 @@ class PetriNetODESystem(ODE):
             if param_name not in self.G.parameters:
                 raise ValueError(f"Tried to set prior for non-existent param: {param_name}")
             dist_type: Type[pyro.distributions.Distribution] = getattr(pyro.distributions, prior_spec[0])
-            dist_params: Dict[str, Union[float, int]] = prior_spec[1]
-            setattr(self, param_name, pyro.nn.PyroSample(dist_type(**dist_params)))
+            dist_params: List[Union[float, int]] = prior_spec[1:]
+            prior_dist = dist_type(*dist_params)
+            setattr(self, param_name, pyro.nn.PyroSample(prior_dist))
 
     @pyro.nn.pyro_method
     def param_prior(self):
