@@ -52,78 +52,96 @@
  "T": [
   {
    "tname": "t1",
-   "template_type": "GroupedControlledConversion",
-   "parameter_name": "p_petri_1",
-   "parameter_value": null
+   "template_type": "ControlledConversion",
+   "parameter_name": "beta",
+   "parameter_value": 0.011
   },
   {
    "tname": "t2",
+   "template_type": "ControlledConversion",
+   "parameter_name": "gamma",
+   "parameter_value": 0.456
+  },
+  {
+   "tname": "t3",
+   "template_type": "ControlledConversion",
+   "parameter_name": "delta",
+   "parameter_value": 0.011
+  },
+  {
+   "tname": "t4",
+   "template_type": "ControlledConversion",
+   "parameter_name": "alpha",
+   "parameter_value": 0.57
+  },
+  {
+   "tname": "t5",
    "template_type": "NaturalConversion",
    "parameter_name": "epsilon",
    "parameter_value": 0.171
   },
   {
-   "tname": "t3",
+   "tname": "t6",
    "template_type": "NaturalConversion",
    "parameter_name": "zeta",
    "parameter_value": 0.125
   },
   {
-   "tname": "t4",
+   "tname": "t7",
    "template_type": "NaturalConversion",
    "parameter_name": "lambda",
    "parameter_value": 0.034
   },
   {
-   "tname": "t5",
+   "tname": "t8",
    "template_type": "NaturalConversion",
    "parameter_name": "eta",
    "parameter_value": 0.125
   },
   {
-   "tname": "t6",
+   "tname": "t9",
    "template_type": "NaturalConversion",
    "parameter_name": "rho",
    "parameter_value": 0.034
   },
   {
-   "tname": "t7",
+   "tname": "t10",
    "template_type": "NaturalConversion",
    "parameter_name": "theta",
    "parameter_value": 0.371
   },
   {
-   "tname": "t8",
+   "tname": "t11",
    "template_type": "NaturalConversion",
    "parameter_name": "kappa",
    "parameter_value": 0.017
   },
   {
-   "tname": "t9",
+   "tname": "t12",
    "template_type": "NaturalConversion",
    "parameter_name": "mu",
    "parameter_value": 0.017
   },
   {
-   "tname": "t10",
+   "tname": "t13",
    "template_type": "NaturalConversion",
    "parameter_name": "nu",
    "parameter_value": 0.027
   },
   {
-   "tname": "t11",
+   "tname": "t14",
    "template_type": "NaturalConversion",
    "parameter_name": "xi",
    "parameter_value": 0.017
   },
   {
-   "tname": "t12",
+   "tname": "t15",
    "template_type": "NaturalConversion",
    "parameter_name": "tau",
    "parameter_value": 0.01
   },
   {
-   "tname": "t13",
+   "tname": "t16",
    "template_type": "NaturalConversion",
    "parameter_name": "sigma",
    "parameter_value": 0.017
@@ -135,27 +153,23 @@
    "it": 1
   },
   {
-   "is": 4,
-   "it": 1
-  },
-  {
-   "is": 5,
-   "it": 1
-  },
-  {
-   "is": 2,
-   "it": 1
-  },
-  {
    "is": 1,
    "it": 1
   },
   {
-   "is": 2,
+   "is": 4,
    "it": 2
   },
   {
-   "is": 2,
+   "is": 1,
+   "it": 2
+  },
+  {
+   "is": 5,
+   "it": 3
+  },
+  {
+   "is": 1,
    "it": 3
   },
   {
@@ -163,40 +177,56 @@
    "it": 4
   },
   {
-   "is": 3,
+   "is": 1,
+   "it": 4
+  },
+  {
+   "is": 2,
    "it": 5
   },
   {
-   "is": 3,
+   "is": 2,
    "it": 6
   },
   {
-   "is": 4,
+   "is": 2,
    "it": 7
   },
   {
-   "is": 4,
+   "is": 3,
    "it": 8
   },
   {
-   "is": 4,
+   "is": 3,
    "it": 9
   },
   {
-   "is": 5,
+   "is": 4,
    "it": 10
   },
   {
-   "is": 5,
+   "is": 4,
    "it": 11
   },
   {
-   "is": 7,
+   "is": 4,
    "it": 12
   },
   {
-   "is": 7,
+   "is": 5,
    "it": 13
+  },
+  {
+   "is": 5,
+   "it": 14
+  },
+  {
+   "is": 7,
+   "it": 15
+  },
+  {
+   "is": 7,
+   "it": 16
   }
  ],
  "O": [
@@ -205,55 +235,55 @@
    "ot": 1
   },
   {
+   "os": 2,
+   "ot": 1
+  },
+  {
    "os": 4,
-   "ot": 1
-  },
-  {
-   "os": 5,
-   "ot": 1
-  },
-  {
-   "os": 2,
-   "ot": 1
-  },
-  {
-   "os": 2,
-   "ot": 1
-  },
-  {
-   "os": 3,
    "ot": 2
   },
   {
-   "os": 4,
+   "os": 2,
+   "ot": 2
+  },
+  {
+   "os": 5,
    "ot": 3
   },
   {
-   "os": 6,
+   "os": 2,
+   "ot": 3
+  },
+  {
+   "os": 2,
    "ot": 4
   },
   {
-   "os": 5,
+   "os": 2,
+   "ot": 4
+  },
+  {
+   "os": 3,
    "ot": 5
   },
   {
-   "os": 6,
+   "os": 4,
    "ot": 6
   },
   {
-   "os": 5,
+   "os": 6,
    "ot": 7
   },
   {
-   "os": 6,
+   "os": 5,
    "ot": 8
   },
   {
-   "os": 7,
+   "os": 6,
    "ot": 9
   },
   {
-   "os": 7,
+   "os": 5,
    "ot": 10
   },
   {
@@ -261,12 +291,24 @@
    "ot": 11
   },
   {
-   "os": 8,
+   "os": 7,
    "ot": 12
   },
   {
-   "os": 6,
+   "os": 7,
    "ot": 13
+  },
+  {
+   "os": 6,
+   "ot": 14
+  },
+  {
+   "os": 8,
+   "ot": 15
+  },
+  {
+   "os": 6,
+   "ot": 16
   }
  ]
 }
