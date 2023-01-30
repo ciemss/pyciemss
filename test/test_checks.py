@@ -57,6 +57,8 @@ class TestCheck(unittest.TestCase):
                                  
         
     def test_contains_pct(self):
+        #TODO: This simple testing of percent-contains fails when there are not many things in the input.
+        #      We should look at some better tests for small numbers of data points.
         _, bins = vega.histogram_multi(range=np.linspace(0,20, num=100), return_bins=True, bins=20)
 
         checker = checks.contains(0, 20, 1)
@@ -79,7 +81,20 @@ class TestCheck(unittest.TestCase):
                     label="s30",
                     tests=[checks.contains(lower, upper), 
                            checks.contains(lower, upper, .99)])
+        
+        self.assertTrue(result[0])
+        self.assertFalse(result[1])
+        self.assertTrue("Fail" in schema["title"]["text"][1])
+        self.assertTrue("50%" in schema["title"]["text"][1])
+
 
     def test_posterior_predictive(self):
-        result, schema = checks.posterior_predictive(self.r30, self.i30, tests=[checks.KL(1)])
+        result, schema = checks.posterior_predictive(self.s30, self.i30, tests=[checks.KL(1, verbose=True)])
+                
+        self.assertFalse(result[0])
+        self.assertTrue("100%" in schema["title"]["text"][1])
+        
+        result, schema = checks.posterior_predictive(self.s30, self.s30, tests=[checks.KL(1)])                
+        self.assertTrue(result[0])
+        self.assertTrue("Pass" in schema["title"]["text"][1])
     

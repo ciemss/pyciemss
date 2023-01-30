@@ -1,6 +1,8 @@
 import pyciemss.workflow.vega as vega
 import numpy as np
 
+#TODO: Look at scipy's KL and JS
+
 def contains(ref_lower, ref_upper, pct=None):
     """Check-generator function. Returns a function that performs a test.
     
@@ -30,7 +32,6 @@ def contains(ref_lower, ref_upper, pct=None):
     else:
         return simple_test
     
-
 def KL(max_acceptable, *, verbose=False):
     """Check-generator function. Returns a function that performs a test.
     
@@ -60,7 +61,7 @@ def prior_predictive(posterior, lower, upper, *, label="posterior", tests=[], co
     
     status = combiner(checks)
     if not status:
-        status = f"Failed ({sum(checks)/len(checks):.2%} passing)"
+        status = f"Failed ({sum(checks)/len(checks):.0%} passing)"
     else:
         status = "Passed"
     
@@ -81,7 +82,7 @@ def posterior_predictive(posterior, data,  *, tests=[], combiner=all, **kwargs):
     status = combiner(checks)
     
     if not status:
-        status = f"Failed ({sum(checks)/len(checks):.2%} passing)"
+        status = f"Failed ({sum(checks)/len(checks):.0%} passing)"
     else:
         status = "Passed"
     
