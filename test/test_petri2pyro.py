@@ -68,11 +68,11 @@ def test_load_evaluation_scenario2_from_json(filename):
     filename = os.path.join("test/models/evaluation_examples", filename)
     model = PetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
-    if hasattr(model, "default_initial_state"):
-        tspan = torch.linspace(0, 100, 100)
-        solution, _ = model(model.default_initial_state, tspan)
-        assert len(solution) == len(model.default_initial_state)
-        assert solution[0].shape[0] == tspan.shape[0]
+    assert hasattr(model, "default_initial_state")
+    tspan = torch.linspace(0, 100, 100)
+    solution, _ = model(model.default_initial_state, tspan)
+    assert len(solution) == len(model.default_initial_state)
+    assert solution[0].shape[0] == tspan.shape[0]
 
 
 @pytest.mark.parametrize("filename", [

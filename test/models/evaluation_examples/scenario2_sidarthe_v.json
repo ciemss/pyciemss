@@ -51,7 +51,8 @@
   {
    "sname": "vaccinated",
    "mira_ids": "[('identity', 'vo:0001376')]",
-   "mira_context": "[]"
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
   }
  ],
  "T": [
