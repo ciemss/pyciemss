@@ -90,7 +90,6 @@ class SVIIvR(ODE):
 class SIDARTHE(ODE):
     def __init__(self,
                  N=1,
-                 noise_prior=dist.Uniform(5., 10.),
                  alpha_prior=dist.LogNormal(torch.log(torch.tensor(0.570)), torch.tensor(0.5)),
                  beta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.5)),
                  gamma_prior=dist.LogNormal(torch.log(torch.tensor(0.0456)), torch.tensor(0.5)),
@@ -111,7 +110,6 @@ class SIDARTHE(ODE):
         super().__init__()
 
         self.N = N
-        self.noise_prior=noise_prior
         self.alpha_prior= alpha_prior
         self.beta_prior= beta_prior
         self.gamma_prior= gamma_prior
@@ -196,11 +194,10 @@ class SIDARTHE(ODE):
 
     @pyro_method
     def param_prior(self) -> None:
-        self.noise_prior = pyro.sample("noise_prior", self.noise_prior)
-        self.alpha_prior = pyro.sample(" alpha_prior", self. alpha_prior)
-        self.beta_prior = pyro.sample(" beta_prior", self. beta_prior)
-        self.gamma_prior = pyro.sample(" gamma_prior", self. gamma_prior)
-        self.delta_prior = pyro.sample(" delta_prior", self. delta_prior)
+        self.alpha = pyro.sample(" alpha_prior", self. alpha_prior)
+        self.beta = pyro.sample(" beta_prior", self. beta_prior)
+        self.gamma = pyro.sample(" gamma_prior", self. gamma_prior)
+        self.delta = pyro.sample(" delta_prior", self. delta_prior)
         self.epsilon_prior  = pyro.sample(" epsilon_prior", self. epsilon_prior)
         self.lamb_prior   = pyro.sample(" lamb_prior", self. lamb_prior)
         self.zeta_prior  = pyro.sample(" zeta_prior", self. zeta_prior)
@@ -212,4 +209,4 @@ class SIDARTHE(ODE):
         self.sigma_prior  = pyro.sample(" sigma_prior", self. sigma_prior)
         self.mu_prior  = pyro.sample(" mu_prior", self. mu_prior)
         self.nu_prior  = pyro.sample(" nu_prior", self. nu_prior)
-        self.tau_prior = pyro.sample("tau_prior", self.tau_prior)
+        self.tau = pyro.sample("tau_prior", self.tau_prior)
