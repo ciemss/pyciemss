@@ -157,14 +157,3 @@ class PetriNetODESystem(ODE):
                 derivs[p.key[0]] += flux
 
         return tuple(pyro.deterministic(f"d{v}_dt_{t}", derivs[v], event_dim=0) for v in self.var_order)
-
-    @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
-        with pyro.condition(data=data if data is not None else {}):
-            output = {}
-            for name, value in zip(self.var_order, solution):
-                output[name] = pyro.sample(
-                    f"{name}_obs",
-                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
-                )
-            return tuple(output[v] for v in self.var_order)
