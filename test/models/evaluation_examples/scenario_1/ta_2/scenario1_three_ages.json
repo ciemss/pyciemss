@@ -1,0 +1,295 @@
+{
+ "S": [
+  {
+   "sname": "susceptible_population_young",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[('age', 'young')]"
+  },
+  {
+   "sname": "infected_population_young",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('age', 'young')]"
+  },
+  {
+   "sname": "infected_population_middle",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('age', 'middle')]"
+  },
+  {
+   "sname": "infected_population_old",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[('age', 'old')]"
+  },
+  {
+   "sname": "susceptible_population_middle",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[('age', 'middle')]"
+  },
+  {
+   "sname": "susceptible_population_old",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[('age', 'old')]"
+  },
+  {
+   "sname": "immune_population_young",
+   "mira_ids": "[('identity', 'ido:0000592')]",
+   "mira_context": "[('age', 'young')]"
+  },
+  {
+   "sname": "immune_population_middle",
+   "mira_ids": "[('identity', 'ido:0000592')]",
+   "mira_context": "[('age', 'middle')]"
+  },
+  {
+   "sname": "immune_population_old",
+   "mira_ids": "[('identity', 'ido:0000592')]",
+   "mira_context": "[('age', 'old')]"
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_0",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t2",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_0",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t3",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_0",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t4",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_1",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t5",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_1",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t6",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_1",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t7",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_2",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t8",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_2",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t9",
+   "template_type": "ControlledConversion",
+   "parameter_name": "mira_param_strat_2",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t10",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_10",
+   "parameter_value": null
+  },
+  {
+   "tname": "t11",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_11",
+   "parameter_value": null
+  },
+  {
+   "tname": "t12",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_12",
+   "parameter_value": null
+  }
+ ],
+ "I": [
+  {
+   "is": 2,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 3,
+   "it": 2
+  },
+  {
+   "is": 1,
+   "it": 2
+  },
+  {
+   "is": 4,
+   "it": 3
+  },
+  {
+   "is": 1,
+   "it": 3
+  },
+  {
+   "is": 3,
+   "it": 4
+  },
+  {
+   "is": 5,
+   "it": 4
+  },
+  {
+   "is": 2,
+   "it": 5
+  },
+  {
+   "is": 5,
+   "it": 5
+  },
+  {
+   "is": 4,
+   "it": 6
+  },
+  {
+   "is": 5,
+   "it": 6
+  },
+  {
+   "is": 4,
+   "it": 7
+  },
+  {
+   "is": 6,
+   "it": 7
+  },
+  {
+   "is": 2,
+   "it": 8
+  },
+  {
+   "is": 6,
+   "it": 8
+  },
+  {
+   "is": 3,
+   "it": 9
+  },
+  {
+   "is": 6,
+   "it": 9
+  },
+  {
+   "is": 2,
+   "it": 10
+  },
+  {
+   "is": 3,
+   "it": 11
+  },
+  {
+   "is": 4,
+   "it": 12
+  }
+ ],
+ "O": [
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  },
+  {
+   "os": 2,
+   "ot": 2
+  },
+  {
+   "os": 4,
+   "ot": 3
+  },
+  {
+   "os": 2,
+   "ot": 3
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 2,
+   "ot": 5
+  },
+  {
+   "os": 3,
+   "ot": 5
+  },
+  {
+   "os": 4,
+   "ot": 6
+  },
+  {
+   "os": 3,
+   "ot": 6
+  },
+  {
+   "os": 4,
+   "ot": 7
+  },
+  {
+   "os": 4,
+   "ot": 7
+  },
+  {
+   "os": 2,
+   "ot": 8
+  },
+  {
+   "os": 4,
+   "ot": 8
+  },
+  {
+   "os": 3,
+   "ot": 9
+  },
+  {
+   "os": 4,
+   "ot": 9
+  },
+  {
+   "os": 7,
+   "ot": 10
+  },
+  {
+   "os": 8,
+   "ot": 11
+  },
+  {
+   "os": 9,
+   "ot": 12
+  }
+ ]
+}

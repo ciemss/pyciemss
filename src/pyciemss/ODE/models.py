@@ -6,7 +6,7 @@ import pyro.distributions as dist
 
 from pyro.nn import pyro_method
 
-from pyciemss.ODE.base import ODE, Time, State, Solution, Observation
+from pyciemss.ODE.base import PetriNetODESystem, ODE, Time, State, Solution, Observation
 from pyciemss.utils import state_flux_constraint
 
 class SVIIvR(ODE):
@@ -84,7 +84,6 @@ class SVIIvR(ODE):
         R_obs = pyro.sample("R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"])
 
         return (S_obs, V_obs, I_obs, R_obs)
-
 
 
 class SIDARTHE(ODE):
@@ -230,3 +229,25 @@ class SIDARTHE(ODE):
         E_obs = pyro.deterministic("E_obs", E)
 
         return (S_obs, I_obs, D_obs, A_obs,  R_obs, T_obs, H_obs, E_obs)
+
+class MIRA_SVIIvR(PetriNetODESystem):
+
+    def __init__(self, G, *, noise_var: float = 1):
+        super().__init__(G)
+        self.register_buffer("noise_var", torch.as_tensor(noise_var))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
+        with pyro.condition(data=data if data is not None else {}):
+            output = {}
+            named_solution = dict(zip(self.var_order, solution))
+            for name, value in named_solution.items():
+                if name == "I_v":
+                    continue
+                if name == "I":
+                    value = value + named_solution["I_v"]
+                output[name] = pyro.sample(
+                    f"{name}_obs",
+                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
+                )
+            return tuple(output.get(v, named_solution[v]) for v in self.var_order)
