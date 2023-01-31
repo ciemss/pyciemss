@@ -1,0 +1,216 @@
+{
+ "S": [
+  {
+   "sname": "Susceptible",
+   "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 9900000.0
+  },
+  {
+   "sname": "Exposed",
+   "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 36600.0
+  },
+  {
+   "sname": "Infectious",
+   "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 732.0
+  },
+  {
+   "sname": "Asymptomatic",
+   "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[('disease_status', 'ncit:C3833')]",
+   "mira_initial_value": 2196.0
+  },
+  {
+   "sname": "Hospitalized",
+   "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C168447')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Recovered",
+   "mira_ids": "[('identity', 'ido:0000621'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Deceased",
+   "mira_ids": "[('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "p_petri_1",
+   "parameter_value": null
+  },
+  {
+   "tname": "t2",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_2",
+   "parameter_value": null
+  },
+  {
+   "tname": "t3",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_3",
+   "parameter_value": null
+  },
+  {
+   "tname": "t4",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_4",
+   "parameter_value": null
+  },
+  {
+   "tname": "t5",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_5",
+   "parameter_value": null
+  },
+  {
+   "tname": "t6",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_6",
+   "parameter_value": null
+  },
+  {
+   "tname": "t7",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_7",
+   "parameter_value": null
+  },
+  {
+   "tname": "t8",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_8",
+   "parameter_value": null
+  },
+  {
+   "tname": "t9",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_9",
+   "parameter_value": null
+  },
+  {
+   "tname": "t10",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_10",
+   "parameter_value": null
+  }
+ ],
+ "I": [
+  {
+   "is": 3,
+   "it": 1
+  },
+  {
+   "is": 4,
+   "it": 1
+  },
+  {
+   "is": 5,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 2,
+   "it": 2
+  },
+  {
+   "is": 2,
+   "it": 3
+  },
+  {
+   "is": 3,
+   "it": 4
+  },
+  {
+   "is": 3,
+   "it": 5
+  },
+  {
+   "is": 3,
+   "it": 6
+  },
+  {
+   "is": 4,
+   "it": 7
+  },
+  {
+   "is": 4,
+   "it": 8
+  },
+  {
+   "is": 5,
+   "it": 9
+  },
+  {
+   "is": 5,
+   "it": 10
+  }
+ ],
+ "O": [
+  {
+   "os": 3,
+   "ot": 1
+  },
+  {
+   "os": 4,
+   "ot": 1
+  },
+  {
+   "os": 5,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  },
+  {
+   "os": 4,
+   "ot": 3
+  },
+  {
+   "os": 5,
+   "ot": 4
+  },
+  {
+   "os": 6,
+   "ot": 5
+  },
+  {
+   "os": 7,
+   "ot": 6
+  },
+  {
+   "os": 6,
+   "ot": 7
+  },
+  {
+   "os": 7,
+   "ot": 8
+  },
+  {
+   "os": 7,
+   "ot": 9
+  },
+  {
+   "os": 6,
+   "ot": 10
+  }
+ ]
+}
