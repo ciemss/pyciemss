@@ -125,12 +125,12 @@ class PetriNetODESystem(ODE):
         if all(var.data.get("initial_value", None) is not None for var in self.var_order):
             for var in self.var_order:
                 self.register_buffer(
-                    f"default_initial_state_{var.key}",
+                    f"default_initial_state_{get_name(var)}",
                     torch.as_tensor(var.data["initial_value"])
                 )
 
             self.default_initial_state = tuple(
-                getattr(self, f"default_initial_state_{var.key}", None)
+                getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order
             )
 
