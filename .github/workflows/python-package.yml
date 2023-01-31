@@ -32,7 +32,7 @@ jobs:
         pip install -e .[tests]
     - name: Lint
       run: |
-        mypy --ignore-missing-imports src/pyciemss/ test/
+        mypy src/pyciemss/ test/
         isort --check --profile black --diff src/pyciemss/ test/
         black --check src/pyciemss/ test/
         flake8 src/pyciemss/ test/
