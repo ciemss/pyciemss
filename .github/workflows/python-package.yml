@@ -38,4 +38,4 @@ jobs:
         flake8 src/pyciemss/ test/
     - name: Test with pytest
       run: |
-        pytest
+        pytest test/ -v -n auto
