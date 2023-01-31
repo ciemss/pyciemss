@@ -87,7 +87,7 @@ def _get_name_str(name: str) -> str:
 
 @get_name.register
 def _get_name_variable(var: mira.modeling.Variable) -> str:
-    return f"{var.key[0]}"
+    return var.data["name"]
 
 
 @get_name.register
