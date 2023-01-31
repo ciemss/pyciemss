@@ -21,11 +21,14 @@ def sturges_bin(data):
     return int(np.ceil(np.log2(len(data))) + 1)
 
 
-def histogram_multi(*, xrefs: List[Number] = [],
-                    yrefs: List[Number] = [],
-                    bin_rule: Callable = sturges_bin,
-                    return_bins: bool = False,
-                    **data):
+def histogram_multi(
+    *,
+    xrefs: List[Number] = [],
+    yrefs: List[Number] = [],
+    bin_rule: Callable = sturges_bin,
+    return_bins: bool = False,
+    **data
+):
     """
     Create a histogram with server-side binning.
 
@@ -46,11 +49,13 @@ def histogram_multi(*, xrefs: List[Number] = [],
     schema = _histogram_multi_schema()
 
     def hist(label, subset, edges):
-        assignments = np.digitize(subset, edges)-1
+        assignments = np.digitize(subset, edges) - 1
         counts = np.bincount(assignments)
         spans = [*(zip(edges, edges[1:]))]
-        desc = [{"bin0": l.item(), "bin1": h.item(), "count": c.item(), "label": label}
-                for ((l, h), c) in zip(spans, counts)]
+        desc = [
+            {"bin0": l.item(), "bin1": h.item(), "count": c.item(), "label": label}
+            for ((l, h), c) in zip(spans, counts)
+        ]
         return desc
 
     def as_value_list(label, data):
@@ -66,16 +71,13 @@ def histogram_multi(*, xrefs: List[Number] = [],
     counts, edges = np.histogram(joint, bins=bins_count)
 
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
-    desc = [item for sublist in hists.values()
-            for item in sublist]
+    desc = [item for sublist in hists.values() for item in sublist]
 
     # TODO: This index-based setting seems fragine beyond belief!  I would like to do it as
     # 'search this dict-of-dicts and replace the innder-dict that has name-key Y'
     schema["data"][0] = {"name": "binned", "values": desc}
-    schema["data"][1] = {"name": "xref",
-                         "values": [{"value": v} for v in xrefs]}
-    schema["data"][2] = {"name": "yref",
-                         "values": [{"count": v} for v in yrefs]}
+    schema["data"][1] = {"name": "xref", "values": [{"value": v} for v in xrefs]}
+    schema["data"][2] = {"name": "yref", "values": [{"count": v} for v in yrefs]}
 
     if return_bins:
         return schema, pd.DataFrame(desc)
@@ -84,14 +86,14 @@ def histogram_multi(*, xrefs: List[Number] = [],
 
 
 # --- Utlity functions for working with Vega ----
-def ipy_display(spec:  Dict[str, Any], *, lite=False):
+def ipy_display(spec: Dict[str, Any], *, lite=False):
     """Wrap for dispaly in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
     """
     if lite:
-        bundle = {'application/vnd.vegalite.v5+json': spec}
+        bundle = {"application/vnd.vegalite.v5+json": spec}
     else:
-        bundle = {'application/vnd.vega.v5+json': spec}
+        bundle = {"application/vnd.vega.v5+json": spec}
 
     return IPython.display.display(bundle, raw=True)
 
