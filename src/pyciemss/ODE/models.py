@@ -88,6 +88,10 @@ class SVIIvR(ODE):
 
 class MIRA_SVIIvR(PetriNetODESystem):
 
+    def __init__(self, G, *, noise_var: float = 1):
+        super().__init__(G)
+        self.register_buffer("noise_var", torch.as_tensor(noise_var))
+
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
         with pyro.condition(data=data if data is not None else {}):

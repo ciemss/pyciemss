@@ -100,11 +100,9 @@ class PetriNetODESystem(ODE):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model, *, noise_var: float = 1):
+    def __init__(self, G: mira.modeling.Model):
         super().__init__()
         self.G = G
-        self.register_buffer("noise_var", torch.as_tensor(noise_var))
-
         self.var_order = tuple(sorted(G.variables.values(), key=lambda v: v.key))
 
         for param_info in self.G.parameters.values():
