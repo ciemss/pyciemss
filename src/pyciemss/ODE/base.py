@@ -132,8 +132,9 @@ class PetriNetODESystem(ODE):
                     f"default_initial_state_{var.key}",
                     torch.as_tensor(var.data["initial_value"])
                 )
+
             self.default_initial_state = tuple(
-                getattr(self, f"default_initial_state_{var.key}")
+                getattr(self, f"default_initial_state_{var.key}", None)
                 for var in self.var_order
             )
 
@@ -189,15 +190,14 @@ class PetriNetODESystem(ODE):
         states = {k: state[i] for i, k in enumerate(self.var_order)}
         derivs = {k: 0. for k in states}
 
-        N = functools.reduce(operator.add, states.values(), 0)
+        population_size = functools.reduce(operator.add, states.values(), 0)
 
         for transition in self.G.transitions.values():
-            rate_param = getattr(self, get_name(transition.rate))
-            flux = rate_param * functools.reduce(
+            flux = getattr(self, get_name(transition.rate)) * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
             if len(transition.control) > 0:
-                flux = flux * sum([states[k] for k in transition.control]) / N
+                flux = flux * sum([states[k] for k in transition.control]) / population_size
 
             flux = pyro.deterministic(f"flux_{get_name(transition)} {t}", flux, event_dim=0)
 
