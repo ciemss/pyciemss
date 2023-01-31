@@ -1,0 +1,250 @@
+{
+ "S": [
+  {
+   "sname": "Susceptible",
+   "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 43994.0
+  },
+  {
+   "sname": "Exposed",
+   "mira_ids": "[('identity', 'ido:0000597'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Infectious",
+   "mira_ids": "[('identity', 'ido:0000463'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 1.0
+  },
+  {
+   "sname": "Hospitalised",
+   "mira_ids": "[('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Super_spreaders",
+   "mira_ids": "[('identity', 'ido:0000463'), ('identity', 'ncit:0000511')]",
+   "mira_context": "[]",
+   "mira_initial_value": 5.0
+  },
+  {
+   "sname": "Asymptomatic",
+   "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[('disease_status', 'ncit:C3833')]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Fatalities",
+   "mira_ids": "[('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  },
+  {
+   "sname": "Recovered",
+   "mira_ids": "[('identity', 'ncit:C171133')]",
+   "mira_context": "[]",
+   "mira_initial_value": 0.0
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "p_petri_1",
+   "parameter_value": null
+  },
+  {
+   "tname": "t2",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_2",
+   "parameter_value": null
+  },
+  {
+   "tname": "t3",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_3",
+   "parameter_value": null
+  },
+  {
+   "tname": "t4",
+   "template_type": "NaturalConversion",
+   "parameter_name": "p_petri_4",
+   "parameter_value": null
+  },
+  {
+   "tname": "t5",
+   "template_type": "NaturalConversion",
+   "parameter_name": "delta_p",
+   "parameter_value": 1.0
+  },
+  {
+   "tname": "t6",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_a",
+   "parameter_value": 0.94
+  },
+  {
+   "tname": "t7",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_i",
+   "parameter_value": 0.27
+  },
+  {
+   "tname": "t8",
+   "template_type": "NaturalConversion",
+   "parameter_name": "delta_i",
+   "parameter_value": 0.035
+  },
+  {
+   "tname": "t9",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_a",
+   "parameter_value": 0.94
+  },
+  {
+   "tname": "t10",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_i",
+   "parameter_value": 0.27
+  },
+  {
+   "tname": "t11",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_r",
+   "parameter_value": 0.5
+  },
+  {
+   "tname": "t12",
+   "template_type": "NaturalConversion",
+   "parameter_name": "delta_h",
+   "parameter_value": 0.085
+  }
+ ],
+ "I": [
+  {
+   "is": 3,
+   "it": 1
+  },
+  {
+   "is": 4,
+   "it": 1
+  },
+  {
+   "is": 5,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 2,
+   "it": 2
+  },
+  {
+   "is": 2,
+   "it": 3
+  },
+  {
+   "is": 2,
+   "it": 4
+  },
+  {
+   "is": 5,
+   "it": 5
+  },
+  {
+   "is": 5,
+   "it": 6
+  },
+  {
+   "is": 5,
+   "it": 7
+  },
+  {
+   "is": 3,
+   "it": 8
+  },
+  {
+   "is": 3,
+   "it": 9
+  },
+  {
+   "is": 3,
+   "it": 10
+  },
+  {
+   "is": 4,
+   "it": 11
+  },
+  {
+   "is": 4,
+   "it": 12
+  }
+ ],
+ "O": [
+  {
+   "os": 3,
+   "ot": 1
+  },
+  {
+   "os": 4,
+   "ot": 1
+  },
+  {
+   "os": 5,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 6,
+   "ot": 2
+  },
+  {
+   "os": 5,
+   "ot": 3
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 7,
+   "ot": 5
+  },
+  {
+   "os": 4,
+   "ot": 6
+  },
+  {
+   "os": 8,
+   "ot": 7
+  },
+  {
+   "os": 7,
+   "ot": 8
+  },
+  {
+   "os": 4,
+   "ot": 9
+  },
+  {
+   "os": 8,
+   "ot": 10
+  },
+  {
+   "os": 8,
+   "ot": 11
+  },
+  {
+   "os": 7,
+   "ot": 12
+  }
+ ]
+}
