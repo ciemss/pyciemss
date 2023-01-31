@@ -1,3 +1,4 @@
+import collections
 import functools
 import json
 import operator
@@ -72,6 +73,9 @@ class ODE(pyro.nn.PyroModule):
 def get_name(obj) -> str:
     """
     Function to get a string-valued name for a MIRA object for use in a Pyro model.
+
+    Guaranteed to be human-readable and unique for Variables,
+    and merely unique for everything else.
     """
     raise NotImplementedError
 
@@ -103,8 +107,9 @@ class PetriNetODESystem(ODE):
     def __init__(self, G: mira.modeling.Model):
         super().__init__()
         self.G = G
-        self.var_order = tuple(sorted(G.variables.values(), key=get_name))
-        self.named_variables = {get_name(var): var for var in self.var_order}
+        self.var_order = collections.OrderedDict(
+            (get_name(var), var) for var in sorted(G.variables.values(), key=get_name)
+        )
 
         for param_info in self.G.parameters.values():
             param_name = get_name(param_info)
@@ -122,8 +127,8 @@ class PetriNetODESystem(ODE):
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
-        if all(var.data.get("initial_value", None) is not None for var in self.var_order):
-            for var in self.var_order:
+        if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
+            for var in self.var_order.values():
                 self.register_buffer(
                     f"default_initial_state_{get_name(var)}",
                     torch.as_tensor(var.data["initial_value"])
@@ -131,7 +136,7 @@ class PetriNetODESystem(ODE):
 
             self.default_initial_state = tuple(
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
-                for var in self.var_order
+                for var in self.var_order.values()
             )
 
     @functools.singledispatchmethod
@@ -168,7 +173,7 @@ class PetriNetODESystem(ODE):
 
     @pyro.nn.pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
-        states = {k: state[i] for i, k in enumerate(self.var_order)}
+        states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 
         population_size = sum(states.values())
@@ -187,12 +192,12 @@ class PetriNetODESystem(ODE):
             for p in transition.produced:
                 derivs[p] += flux
 
-        return tuple(pyro.deterministic(f"ddt_{get_name(v)} {t}", derivs[v], event_dim=0) for v in self.var_order)
+        return tuple(pyro.deterministic(f"ddt_{get_name(v)} {t}", derivs[v], event_dim=0) for v in self.var_order.values())
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
         with pyro.condition(data=data if data is not None else {}):
             return tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
-                for var, sol in zip(self.var_order, solution)
+                for var, sol in zip(self.var_order.values(), solution)
             )
