@@ -83,7 +83,7 @@ def _get_name_str(name: str) -> str:
 
 @get_name.register
 def _get_name_variable(var: mira.modeling.Variable) -> str:
-    return f"var_{var.key}"
+    return f"{var.key[0]}"
 
 
 @get_name.register
@@ -103,7 +103,8 @@ class PetriNetODESystem(ODE):
     def __init__(self, G: mira.modeling.Model):
         super().__init__()
         self.G = G
-        self.var_order = tuple(sorted(G.variables.values(), key=lambda v: v.key))
+        self.var_order = tuple(sorted(G.variables.values(), key=get_name))
+        self.named_variables = {get_name(var): var for var in self.var_order}
 
         for param_info in self.G.parameters.values():
             param_name = get_name(param_info)
