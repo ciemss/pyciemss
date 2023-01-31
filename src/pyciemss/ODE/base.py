@@ -16,9 +16,6 @@ import mira.metamodel
 import mira.sources
 import mira.sources.petri
 
-from torch import nn
-from pyro.nn import PyroModule, pyro_method
-
 from torchdiffeq import odeint
 
 T = TypeVar('T')
@@ -27,7 +24,7 @@ State = TypeVar('State')
 Solution = TypeVar('Solution')
 Observation = Solution
 
-class ODE(PyroModule):
+class ODE(pyro.nn.PyroModule):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
@@ -37,7 +34,7 @@ class ODE(PyroModule):
         '''
         raise NotImplementedError
 
-    @pyro_method
+    @pyro.nn.pyro_method
     def param_prior(self) -> None:
         '''
         Inplace method defining the prior distribution over model parameters.
@@ -45,7 +42,7 @@ class ODE(PyroModule):
         '''
         raise NotImplementedError
 
-    @pyro_method
+    @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
         '''
         Conditional distribution of observations given true state trajectory.
