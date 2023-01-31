@@ -107,3 +107,39 @@ class MIRA_SVIIvR(PetriNetODESystem):
                     pyro.distributions.Normal(value, self.noise_var).to_event(1),
                 )
             return tuple(output.get(v, named_solution[v]) for v in self.var_order)
+
+
+class MIRA_SIDARTHE(PetriNetODESystem):
+
+    def __init__(self, G, *, noise_var: float = 1):
+        super().__init__(G)
+        self.register_buffer("noise_var", torch.as_tensor(noise_var))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
+        with pyro.condition(data=data if data is not None else {}):
+            named_solution = dict(zip(map(get_name, self.var_order), solution))
+            total_infections = named_solution['Infected'] + named_solution['Diagnosed'] + named_solution['Ailing'] + named_solution['Recognized'] + named_solution['Threatened']
+            return tuple(
+                pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
+                for var, sol in zip(self.var_order, solution)
+            ) + (pyro.deterministic(f"obs_total_infections", total_infections),)
+
+
+        S, I, D, A, R, T, H, E = solution
+        if data == None:
+            data = {k: None for k in ["S_obs", "I_obs", "D_obs", "A_obs", "R_obs", "T_obs", "H_obs", "E_obs"]}
+
+        # TODO: Make sure observations are strictly greater than 0.
+
+        S_obs = pyro.deterministic("S_obs", S)
+        I_obs = pyro.deterministic("I_obs", I)
+        I_total_obs = pyro.deterministic("I_total_obs", I + D + A + R + T)
+        D_obs = pyro.deterministic("D_obs", D)
+        A_obs = pyro.deterministic("A_obs", A)
+        R_obs = pyro.deterministic("R_obs", R)
+        T_obs = pyro.deterministic("T_obs", T)
+        H_obs = pyro.deterministic("H_obs", H)
+        E_obs = pyro.deterministic("E_obs", E)
+
+        return (S_obs, I_obs, D_obs, A_obs,  R_obs, T_obs, H_obs, E_obs, I_total_obs)
