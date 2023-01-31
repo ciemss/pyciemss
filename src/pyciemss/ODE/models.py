@@ -90,22 +90,22 @@ class SVIIvR(ODE):
 class SIDARTHE(ODE):
     def __init__(self,
                  N=1,
-                 alpha_prior=dist.LogNormal(torch.log(torch.tensor(0.570)), torch.tensor(0.5)),
-                 beta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.5)),
-                 gamma_prior=dist.LogNormal(torch.log(torch.tensor(0.0456)), torch.tensor(0.5)),
-                 delta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.5)),
-                 epsilon_prior=dist.LogNormal(torch.log(torch.tensor(0.171)), torch.tensor(0.5)),
-                 lamb_prior =dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.5)),
-                 zeta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.5)),
-                 eta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.5)),
-                 kappa_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.5)),
-                 theta_prior=dist.LogNormal(torch.log(torch.tensor(0.371)), torch.tensor(0.5)),
-                 rho_prior=dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.5)),
-                 xi_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.5)),
-                 sigma_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.5)),
-                 mu_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.5)),
-                 nu_prior=dist.LogNormal(torch.log(torch.tensor(0.027)), torch.tensor(0.5)),
-                 tau_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.5)),
+                 alpha_prior=dist.LogNormal(torch.log(torch.tensor(0.570)), torch.tensor(0.01)),
+                 beta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
+                 gamma_prior=dist.LogNormal(torch.log(torch.tensor(0.0456)), torch.tensor(0.01)),
+                 delta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
+                 epsilon_prior=dist.LogNormal(torch.log(torch.tensor(0.171)), torch.tensor(0.01)),
+                 lamb_prior =dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
+                 zeta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
+                 eta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
+                 kappa_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
+                 theta_prior=dist.LogNormal(torch.log(torch.tensor(0.371)), torch.tensor(0.01)),
+                 rho_prior=dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
+                 xi_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
+                 sigma_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
+                 mu_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
+                 nu_prior=dist.LogNormal(torch.log(torch.tensor(0.027)), torch.tensor(0.01)),
+                 tau_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
                 ):
         super().__init__()
 
@@ -221,6 +221,7 @@ class SIDARTHE(ODE):
 
         S_obs = pyro.deterministic("S_obs", S)
         I_obs = pyro.deterministic("I_obs", I)
+        I_total_obs = pyro.deterministic("I_total_obs", I + D + A + R + T)
         D_obs = pyro.deterministic("D_obs", D)
         A_obs = pyro.deterministic("A_obs", A)
         R_obs = pyro.deterministic("R_obs", R)
