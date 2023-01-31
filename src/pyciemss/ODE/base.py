@@ -160,21 +160,6 @@ class PetriNetODESystem(ODE):
         from pyciemss.utils.petri_utils import load
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
 
-    def set_priors_from_spec(self, prior_json: Union[dict, str]) -> None:
-        if isinstance(prior_json, str):
-            prior_json_path = prior_json
-            if not os.path.exists(prior_json_path):
-                raise ValueError(f"Prior file not found: {prior_json_path}")
-            with open(prior_json_path, "r") as f:
-                prior_json = json.load(f)
-        for param_name, prior_spec in prior_json.items():
-            if param_name not in self.G.parameters:
-                raise ValueError(f"Tried to set prior for non-existent param: {param_name}")
-            dist_type: Type[pyro.distributions.Distribution] = getattr(pyro.distributions, prior_spec[0])
-            dist_params: List[Union[float, int]] = prior_spec[1:]
-            prior_dist = dist_type(*dist_params)
-            setattr(self, param_name, pyro.nn.PyroSample(prior_dist))
-
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_info in self.G.parameters.values():
@@ -185,7 +170,7 @@ class PetriNetODESystem(ODE):
         states = {k: state[i] for i, k in enumerate(self.var_order)}
         derivs = {k: 0. for k in states}
 
-        population_size = functools.reduce(operator.add, states.values(), 0)
+        population_size = sum(states.values())
 
         for transition in self.G.transitions.values():
             flux = getattr(self, get_name(transition.rate)) * functools.reduce(
