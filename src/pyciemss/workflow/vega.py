@@ -3,11 +3,11 @@ import IPython.display
 import pandas as pd
 import numpy as np
 
-import importlib.resources
+import pkgutil
 import json
 
-_resource_root = importlib.resources.files("pyciemss.workflow")
-histogram_multi_schema = _resource_root.joinpath("histogram_static_bins_multi.vg.json")
+def _histogram_multi_schema():
+    return json.loads(pkgutil.get_data(__name__, "histogram_static_bins_multi.vg.json"))
 
 
 def sturges_bin(data):
@@ -37,6 +37,9 @@ def histogram_multi(*, xrefs=[],
     yrefs - List of values in the count-range to highlight as horizontal lines 
     bins - Number of bins to divide into
     """
+    
+    schema = _histogram_multi_schema()
+    
     def hist(label, subset, edges):
         assignments = np.digitize(subset, edges)-1
         counts = np.bincount(assignments)
@@ -61,8 +64,6 @@ def histogram_multi(*, xrefs=[],
     desc = [item for sublist in hists.values()
              for item in sublist]
     
-    with open (histogram_multi_schema) as f:
-        schema = json.load(f)
 
     #TODO: This index-based setting seems fragine beyond belief!  I would like to do it as
     # 'search this dict-of-dicts and replace the innder-dict that has name-key Y'
