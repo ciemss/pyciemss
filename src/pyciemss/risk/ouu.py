@@ -34,6 +34,8 @@ class computeRisk():
                  guide=None,
                 ):
         self.model = model
+        # TODO: do it outside
+        # self.model = do(self.model, {"noise_var": torch.tensor([0.000001])})
         self.intervention_fun = intervention_fun
         self.qoi = qoi
         self.risk_measure = risk_measure
