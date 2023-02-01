@@ -1,0 +1,460 @@
+{
+    "success": {
+        "v": 1,
+        "data": [
+            {
+                "type": "fulltext",
+                "_gddid": "611d772e67467f72698b7249",
+                "title": "The Impact of COVID-19 Testing on College Campuses",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2021.08.16.21262153v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>Background: After moving instruction online for more than a year, many colleges and universities are preparing to reopen and offering fully in-person classes for the Fall 2021 semester. In this paper, we study the impact of weekly testing protocols on college campuses. \n\nMethods: An extended susceptible-infectious-removed (SIR) compartmental model was used to simulate COVID-19 spread on a college campus setting. Seven scenarios were evaluated which considered polymerase chain reaction (PCR) and rapid antigen testing kits available at various levels of supply. The infection attack rate (IAR), the number of infections, and the number of tests utilized by the end of the simulation semester are reported and compared. \n\nResults: Weekly testing significantly reduces the number of infections compared to when testing is not available. The use of PCR tests results in the lowest infection attack rate and the total number of cases; however, using rapid antigen tests with higher coverage is more effective than using PCR tests with lower coverage.   \n\nConclusions: The implementation of COVID-19 testing protocols should be considered and evaluated as using testing allows for identification and isolation of cases which reduces the spread of COVID-19 on college campuses. Even if testing capacity is limited, its partial implementation can be beneficial.</p>",
+                "author": [
+                    {
+                        "name": "Zhuoting Yu"
+                    },
+                    {
+                        "name": "Akane B. Fujimoto"
+                    },
+                    {
+                        "name": "Pinar Keskinocak"
+                    },
+                    {
+                        "name": "Julie L Swann"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2021.08.16.21262153"
+                    }
+                ],
+                "year": "2021"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "60fdb70d67467f726910b5d4",
+                "title": "A cluster randomised trial of the impact of a policy of daily testing for contacts of COVID-19 cases on attendance and COVID-19 transmission in English secondary schools and colleges",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2021.07.23.21260992v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>Background\nSchool-based COVID-19 contacts in England are asked to self-isolate at home. However, this has led to large numbers of missed school days. Therefore, we trialled daily testing of contacts as an alternative, to investigate if it would affect transmission in schools.\n\nMethods\nWe performed an open-label cluster randomised controlled trial in students and staff from secondary schools and further education colleges in England (ISRCTN18100261). Schools were randomised to self-isolation of COVID-19 contacts for 10 days (control) or to voluntary daily lateral flow device (LFD) testing for school contacts with LFD-negative contacts remaining at school (intervention). Household contacts were excluded from participation.\n\nCo-primary outcomes in all students and staff were symptomatic COVID-19, adjusted for community case rates, to estimate within-school transmission (non-inferiority margin: &lt;50% relative increase), and COVID-19-related school absence. Analyses were performed on an intention to treat (ITT) basis using quasi-Poisson regression, also estimating complier average causal effects (CACE). Secondary outcomes included participation rates, PCR results in contacts and performance characteristics of LFDs vs. PCR.\n\nFindings\nOf 99 control and 102 intervention schools, 76 and 86 actively participated (19-April-2021 to 27-June-2021); additional national data allowed most non-participating schools to be included in the co-primary outcomes. 2432/5763 (42.4%) intervention arm contacts participated. There were 657 symptomatic PCR-confirmed infections during 7,782,537 days-at-risk (59.1/100k/week) and 740 during 8,379,749 days-at-risk (61.8/100k/week) in the control and intervention arms respectively (ITT adjusted incidence rate ratio, aIRR=0.96 [95%CI 0.75-1.22;p=0.72]) (CACE-aIRR=0.86 [0.55-1.34]). There were 55,718 COVID-related absences during 3,092,515 person-school-days (1.8%) and 48,609 during 3,305,403 person-school-days (1.5%) in the control and intervention arms (ITT-aIRR=0.80 [95%CI 0.53-1.21;p=0.29]) (CACE-aIRR 0.61 [0.30-1.23]). 14/886(1.6%) control contacts providing an asymptomatic PCR sample tested positive compared to 44/2981(1.5%) intervention contacts (adjusted odds ratio, aOR=0.73 [95%CI 0.33-1.61;p=0.44]). Rates of symptomatic infection in contacts were 44/4665 (0.9%) and 79/5955 (1.3%), respectively (aOR=1.21 [0.82-1.79;p=0.34]). \n\nInterpretation\nDaily contact testing of school-based contacts was non-inferior to self-isolation for control of COVID-19 transmission. COVID-19 rates in school-based contacts in both intervention and control groups were &lt;2%. Daily contact testing is a safe alternative to home isolation following school-based exposures.</p>",
+                "author": [
+                    {
+                        "name": "Bernadette C Young"
+                    },
+                    {
+                        "name": "David W Eyre"
+                    },
+                    {
+                        "name": "Saroj Kendrick"
+                    },
+                    {
+                        "name": "Chris White"
+                    },
+                    {
+                        "name": "Sylvester Smith"
+                    },
+                    {
+                        "name": "George Beveridge"
+                    },
+                    {
+                        "name": "Toby Nonnenmacher"
+                    },
+                    {
+                        "name": "Fegor Ichofu"
+                    },
+                    {
+                        "name": "Joseph Hillier"
+                    },
+                    {
+                        "name": "Ian Diamond"
+                    },
+                    {
+                        "name": "Emma Rourke"
+                    },
+                    {
+                        "name": "Fiona Dawe"
+                    },
+                    {
+                        "name": "Ieuan Day"
+                    },
+                    {
+                        "name": "Lisa Davies"
+                    },
+                    {
+                        "name": "Paul Staite"
+                    },
+                    {
+                        "name": "Andrea Lacey"
+                    },
+                    {
+                        "name": "James McCrae"
+                    },
+                    {
+                        "name": "Ffion Jones"
+                    },
+                    {
+                        "name": "Joseph Kelly"
+                    },
+                    {
+                        "name": "Urszula Bankiewicz"
+                    },
+                    {
+                        "name": "Sarah Tunkel"
+                    },
+                    {
+                        "name": "Richard Ovens"
+                    },
+                    {
+                        "name": "David Chapman"
+                    },
+                    {
+                        "name": "Peter Marks"
+                    },
+                    {
+                        "name": "Nick Hicks"
+                    },
+                    {
+                        "name": "Tom Fowler"
+                    },
+                    {
+                        "name": "Susan Hopkins"
+                    },
+                    {
+                        "name": "Lucy Yardley"
+                    },
+                    {
+                        "name": "Tim EA Peto"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2021.07.23.21260992"
+                    }
+                ],
+                "year": "2021"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "61cc501c03cbbf5cb78d8044",
+                "title": "Estimating the impact of implementation and timing of COVID-19 vaccination program in Brazil: a counterfactual analysis",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2021.12.24.21268384v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>The vaccines developed in 2020-2021 against the SARS-CoV-2 virus were designed to prevent severity and deaths due to COVID-19. However, how effective this vaccination campaign was at saving lives remains a methodological challenge. In this work, we developed a Bayesian statistical model to estimate the number of deaths and hospitalizations in individuals above 60 years old in Brazil. Using the actual number of hospitalized and deaths from the Brazilian database, and also the coverage of second dose according to the National Immunization Program, we rebuilt the realized scenario as well as the hypothetical scenario without vaccination in Brazil in order to perform a counterfactual analysis. By computing the difference between the hypothetical and realized scenarios, we were able to estimate the direct effect of COVID-19 vaccination in Brazil. We also evaluated two other hypothetical, but not impossible, scenarios considering earlier vaccination roll-outs. We estimated that more than 165 thousand of 60+ years old individuals were not hospitalized due to COVID-19 until August 28, 2021, and other approximately 100 thousand individuals could not have been hospitalized if the immunization started as soon it was approved in Brazil. We also estimate that more than 75 thousand lives were saved in the period analysed for the same age group, and additional 48 thousand lives could have been saved if the Brazilian Government started the immunization 8 weeks earlier.</p>",
+                "author": [
+                    {
+                        "name": "Leonardo Souto Ferreira"
+                    },
+                    {
+                        "name": "Flávia Maria Darcie Marquitti"
+                    },
+                    {
+                        "name": "Rafael Lopes Paixão da Silva"
+                    },
+                    {
+                        "name": "Marcelo Eduardo Borges"
+                    },
+                    {
+                        "name": "Marcelo F C Gomes"
+                    },
+                    {
+                        "name": "Oswaldo G Cruz"
+                    },
+                    {
+                        "name": "Roberto André Kraenkel"
+                    },
+                    {
+                        "name": "Renato Mendes Coutinho"
+                    },
+                    {
+                        "name": "Paulo Inácio Prado"
+                    },
+                    {
+                        "name": "Leonardo S Bastos"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2021.12.24.21268384"
+                    }
+                ],
+                "year": "2021"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "618d53fc67467f726960ca7d",
+                "title": "Spatial simulation of COVID-19 new cases development",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2021.09.19.21263799v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<h3>Abstract</h3>\n<p>The time dependent SIR model is extended to simulate infection across spatial boundaries. We used New Jersey data as an example to test the extended SIR model. Infection from neighboring counties are modelled by connectivity matrix where each pair of neighboring counties has an element in the connectivity matrix. The magnitude of this matrix element represents the degree to which the infected from one county can affect the susceptible in one of its neighboring counties. Simulated result from the extended spatial SIR model is compared with observed new COVID-19 cases measured in the 21 counties in New Jersey. The extended model has to solve 84 simulated functions simultaneously and the large number of parameters involved in the spatial SIR model are auto tuned using genetic algorithm.</p>",
+                "author": [
+                    {
+                        "name": "Isaac Chen"
+                    },
+                    {
+                        "name": "F. Liu"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2021.09.19.21263799"
+                    }
+                ],
+                "year": "2021"
+            },               
+            {
+                "type": "fulltext",
+                "_gddid": "616e372467467f7269d2de14",
+                "title": "Agent-Based Modeling and Simulation in Mathematics and Biology Education",
+                "volume": "82",
+                "journal": "Bulletin of Mathematical Biology",
+                "link": [
+                    {
+                        "url": "https://link.springer.com/10.1007/s11538-020-00778-z",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "Springer Science and Business Media LLC",
+                "abstract": "",
+                "author": [
+                    {
+                        "name": "Bodine, Erin N."
+                    },
+                    {
+                        "name": "Panoff, Robert M."
+                    },
+                    {
+                        "name": "Voit, Eberhard O."
+                    },
+                    {
+                        "name": "Weisstein, Anton E."
+                    }
+                ],
+                "pages": "",
+                "number": "8",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1007/s11538-020-00778-z"
+                    }
+                ],
+                "year": "2020"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "616e615867467f7269d39592",
+                "title": "SARS, a challenge from the South",
+                "volume": "423",
+                "journal": "Nature",
+                "link": [
+                    {
+                        "url": "http://www.nature.com/articles/423585a",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "Springer Science and Business Media LLC",
+                "abstract": "",
+                "author": [
+                    {
+                        "name": "Singh, Jerome. A."
+                    }
+                ],
+                "pages": "585--585",
+                "number": "6940",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1038/423585a"
+                    }
+                ],
+                "year": "2003"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "6261e44c2688b71135af64fc",
+                "title": "Accuracy of US CDC COVID-19 Forecasting Models",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2022.04.20.22274097v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>Accurate predictive modeling of pandemics is essential for optimally distributing resources and setting policy. Dozens of case predictions models have been proposed but their accuracy over time and by model type remains unclear.  In this study, we analyze all US CDC COVID-19 forecasting models, by first categorizing them and then calculating their mean absolute percent error, both wave-wise and on the complete timeline. We compare their estimates to government-reported case numbers, one another, as well as two baseline models wherein case counts remain static or follow a simple linear trend. The comparison reveals that more than one-third of models fail to outperform a simple static case baseline and two-thirds fail to outperform a simple linear trend forecast. A wave-by-wave comparison of models revealed that no overall modeling approach was superior to others, including ensemble models, and error in modeling has increased over time during the pandemic. This study raises concerns about hosting these models on official public platforms of health organizations including the US-CDC which risks giving them an official imprimatur and further raising concerns if utilized to formulate policy. By offering a universal evaluation method for pandemic forecasting models, we expect this work to serve as the starting point towards the development of more sophisticated models.</p>",
+                "author": [
+                    {
+                        "name": "Aviral Chharia"
+                    },
+                    {
+                        "name": "Govind Jeevan"
+                    },
+                    {
+                        "name": "Rajat Aayush Jha"
+                    },
+                    {
+                        "name": "Meng Liu"
+                    },
+                    {
+                        "name": "Jonathan M Berman"
+                    },
+                    {
+                        "name": "Christin A Glorioso"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2022.04.20.22274097"
+                    }
+                ],
+                "year": "2022"
+            },            
+            {
+                "type": "fulltext",
+                "_gddid": "628bbfec7e0e8837a6dabc62",
+                "title": "Social divisions and risk perception can drive divergent epidemic dynamics and large second and third waves",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2022.05.20.22275407v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>During infectious disease outbreaks, individuals may adopt protective measures like vaccination and physical distancing in response to awareness of disease burden. Prior work showed how feedback between epidemic intensity and awareness-based behavior shapes disease dynamics (e.g., producing plateaus and oscillations). These models often overlook social divisions, where population subgroups may be disproportionately impacted by a disease and more responsive to the effects of disease within their group. We hypothesize that socially divided awareness-based behavior could fundamentally alter epidemic dynamics and shift disease burden between groups.\nWe develop a compartmental model of disease transmission in a population split into two groups to explore the impacts of awareness separation (relatively greater in- versus out-group awareness of epidemic severity) and mixing separation (relatively greater in- versus out-group contact rates). Protective measures are adopted based on awareness of recent disease-linked mortality. Using simulations, we show that groups that are more separated in awareness have smaller differences in mortality. Fatigue-driven abandonment of protective behavior can drive additional infection waves that can even exceed the size of the initial wave, particularly if uniform awareness drives early protection in one group, leaving that group largely susceptible to future infection. Finally, vaccine or infection-acquired immunity that is more protective against transmission and mortality may indirectly lead to more infections by reducing perceived risk of infection, and thereby reducing vaccine uptake. The dynamics of awareness-driven protective behavior, including relatively greater awareness of epidemic conditions in one9s own group, can dramatically impact protective behavior uptake and the course of epidemics.</p>",
+                "author": [
+                    {
+                        "name": "Mallory J Harris"
+                    },
+                    {
+                        "name": "Erin A. Mordecai"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2022.05.20.22275407"
+                    }
+                ],
+                "year": "2022"
+            },
+            {
+                "type": "fulltext",
+                "_gddid": "627f97852688b71135c308c1",
+                "title": "Immunotherapy and vaccination against infectious diseases",
+                "volume": "133",
+                "journal": "Wiener klinische Wochenschrift",
+                "link": [
+                    {
+                        "url": "https://link.springer.com/10.1007/s00508-020-01746-2",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "Springer Science and Business Media LLC",
+                "abstract": "",
+                "author": [
+                    {
+                        "name": "Ebbers, Meinolf"
+                    },
+                    {
+                        "name": "Hemmer, Christoph J."
+                    },
+                    {
+                        "name": "Müller-Hilke, Brigitte"
+                    },
+                    {
+                        "name": "Reisinger, Emil C."
+                    }
+                ],
+                "pages": "714--720",
+                "number": "13-14",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1007/s00508-020-01746-2"
+                    }
+                ],
+                "year": "2021"
+            },   
+            {
+                "type": "fulltext",
+                "_gddid": "60ef52b167467f7269d80905",
+                "title": "Mapping First to Second wave transition of covid19 Indian data via Sigmoid function and prediction of Third wave",
+                "volume": "",
+                "journal": "Cold Spring Harbor Laboratory Press",
+                "link": [
+                    {
+                        "url": "https://www.medrxiv.org/content/10.1101/2021.07.11.21260325v1",
+                        "type": "publisher"
+                    }
+                ],
+                "publisher": "medRxiv",
+                "abstract": "<p>Understanding first and second wave of covid19 Indian data along with its few selective states,\nwe have realized a transition between two Sigmoid pattern with twice larger growth parameter\nand maximum values of cumulative data. As a result of those transition, time duration of\nsecond wave shrink to half of that first wave with four times larger peak values. It is really\ninteresting that the facts can be easily understood by simple algebraic expressions of Sigmoid\nfunction. After understanding the crossing zone between first and second wave curves, a third\nwave Sigmoid pattern is guessed.</p>",
+                "author": [
+                    {
+                        "name": "SUPRIYA MONDAL"
+                    },
+                    {
+                        "name": "Sabyasachi Ghosh"
+                    }
+                ],
+                "pages": "",
+                "number": "",
+                "identifier": [
+                    {
+                        "type": "doi",
+                        "id": "10.1101/2021.07.11.21260325"
+                    }
+                ],
+                "year": "2021"
+            }
+        ]
+    }
+}
+           

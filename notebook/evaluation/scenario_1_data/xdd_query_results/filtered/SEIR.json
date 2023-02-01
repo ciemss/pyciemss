@@ -1,0 +1,1029 @@
+{
+	"success": {
+		"v": 1,
+		"data": [
+			{
+				"type": "fulltext",
+				"_gddid": "60f9deaf67467f7269fafd3f",
+				"title": "Global predictions of short- to medium-term COVID-19 transmission trends : a retrospective assessment",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.07.19.21260746v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Background: As of July 2021, more than 180,000,000 cases of COVID-19 have been reported across the world, with more than 4 million deaths. Mathematical modelling and forecasting efforts have been widely used to inform policy-making and to create situational awareness.\n\nMethods and Findings: From 8th March to 29th November 2020, we produced weekly estimates of SARS-CoV-2 transmissibility and forecasts of deaths due to COVID-19 for countries with evidence of sustained transmission. The estimates and forecasts were based on an ensemble model comprising of three models that were calibrated using only the reported number of COVID-19 cases and deaths in each country. We also developed a novel heuristic to combine weekly estimates of transmissibility and potential changes in population immunity due to infection to produce forecasts over a 4-week horizon. We evaluated the robustness of the forecasts using relative error, coverage probability, and comparisons with null models.\n\nConclusions: During the 39-week period covered by this study, we produced short- and medium-term forecasts for 81 countries. Both the short- and medium-term forecasts captured well the epidemic trajectory across different waves of COVID-19 infections with small relative errors over the forecast horizon. The model was well\ncalibrated with 56.3% and 45.6% of the observations lying in the 50% Credible Interval in 1-week and 4-week ahead forecasts respectively.\nWe could accurately characterise the overall phase of the epidemic up to 4-weeks ahead in 84.9% of country-days. The medium-term forecasts can be used in conjunction with the short-term forecasts of COVID-19 mortality as a useful planning tool as countries continue to relax stringent public health measures that were implemented to contain the pandemic.</p>",
+				"author": [
+					{
+						"name": "Sangeeta Bhatia"
+					},
+					{
+						"name": "Kris V Parag"
+					},
+					{
+						"name": "Jack Wardle"
+					},
+					{
+						"name": "Natsuko Imai"
+					},
+					{
+						"name": "Sabine L Van Elsland"
+					},
+					{
+						"name": "Britta Lassmann"
+					},
+					{
+						"name": "Gina Cuomo-Dannenburg"
+					},
+					{
+						"name": "Elita Jauneikaite"
+					},
+					{
+						"name": "H. Juliette T Unwin"
+					},
+					{
+						"name": "Steven Riley"
+					},
+					{
+						"name": "Neil Ferguson"
+					},
+					{
+						"name": "Christl A Donnelly"
+					},
+					{
+						"name": "Anne Cori"
+					},
+					{
+						"name": "Pierre Nouvellet"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.07.19.21260746"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60c0ce2c3f2ac7e70172d61d",
+				"title": "Editorial: Advances in multi-source information fusion for epidemic diseases",
+				"volume": "",
+				"journal": "Information Fusion",
+				"link": [
+					{
+						"url": "https://www.sciencedirect.com/science/article/pii/S1566253521001238?v=s5",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Elsevier",
+				"abstract": "",
+				"author": [],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1016/j.inffus.2021.05.016"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60c2d40d3f2ac7e7017778af",
+				"title": "Evaluating the utility of high-resolution proximity metrics in predicting the spread of COVID-19",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.06.07.21258492v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>High resolution mobility datasets have become increasingly available in the past few years and have enabled detailed models for infectious disease spread including those for COVID-19. However, there are open questions on how such a mobility data can be used effectively within epidemic models and for which tasks they are best suited. In this paper, we extract a number of graph-based proximity metrics from high resolution cellphone trace data from X-Mode and use it to study COVID-19 epidemic spread in 50 land grant university counties in the US. We present an approach to estimate the effect of mobility on cases by fitting an ODE based model and performing multivariate linear regression to explain the estimated time varying transmissibility. We find that, while mobility plays a significant role, the contribution is heterogeneous across the counties, as exemplified by a subsequent correlation analysis. We subsequently evaluate the metrics9 utility for case surge prediction defined as a supervised classification problem, and show that the learnt model can predict surges with 95% accuracy and 87% F1-score.</p>",
+				"author": [
+					{
+						"name": "Zakaria Mehrab"
+					},
+					{
+						"name": "Aniruddha Adiga"
+					},
+					{
+						"name": "Madhav Marathe"
+					},
+					{
+						"name": "Srinivasan Venkatramanan"
+					},
+					{
+						"name": "Samarth Swarup"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.06.07.21258492"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60d6462af7f6fdf73f7c8bd1",
+				"title": "Microsimulation based quantitative analysis of COVID-19 management strategies",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.06.20.21259214v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Background\nPandemic management includes a variety of control measures, such as social distancing, testing/quarantining and vaccination applied to a population where the virus is circulating. The COVID 19 (SARS-CoV-2) pandemic is mitigated by several non-pharmaceutical interventions, but it is hard to predict which of these regulations are the most effective for a given population.\nMethods\nWe developed a computationally effective and scalable, agent-based microsimulation framework. This unified framework was fitted to realistic data to enable us to test control measures (closures, quarantining, testing, vaccination) in multiple infection waves caused by the spread of a new virus variant in a city-sized societal environment. Our framework is capable of simulating nine billion agent steps per minute, allowing us to model interactions in populations with up to 90 million individuals.\nFindings\nWe show that vaccination strategies prioritising occupational risk groups minimise the number of infections but allow higher mortality while prioritising vulnerable groups minimises mortality but implies increased infection rate. We also found that intensive vaccination and non-pharmaceutical interventions can substantially suppress the spread of the virus, while low levels of vaccination and premature reopening may easily revert the epidemic to an uncontrolled state.\nInterpretation\nOur analysis highlights that while vaccination protects the elderly from COVID-19, a large percentage of children will contract and spread the virus, and we also show the benefits and limitations of various quarantine and testing scenarios.\nFunding\nThis work was carried out within the framework of the Hungarian National  Development,  Research,  and  Innovation  (NKFIH) Fund 2020-2.1.1-ED-2020-00003.</p>",
+				"author": [
+					{
+						"name": "Istvan Z Reguly"
+					},
+					{
+						"name": "David Csercsik"
+					},
+					{
+						"name": "Janos Juhasz"
+					},
+					{
+						"name": "Kalman Tornai"
+					},
+					{
+						"name": "Zsofia Bujtar"
+					},
+					{
+						"name": "Gergely Horvath"
+					},
+					{
+						"name": "Bence Keomley-Horvath"
+					},
+					{
+						"name": "Tamas Kos"
+					},
+					{
+						"name": "Gyorgy Cserey"
+					},
+					{
+						"name": "Kristof Ivan"
+					},
+					{
+						"name": "Sandor Pongor"
+					},
+					{
+						"name": "Gabor Szederkenyi"
+					},
+					{
+						"name": "Gergely Rost"
+					},
+					{
+						"name": "Attila Csikasz-Nagy"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.06.20.21259214"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "61b5761c67467f7269a47f70",
+				"title": "SARS-CoV-2 variant dynamics across US states show consistent differences in effective reproduction numbers",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.12.09.21267544v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Accurately estimating relative transmission rates of SARS-CoV-2 Variant of Concern and Variant of Interest viruses remains a scientific and public health priority. Recent studies have used the sample proportions of different variants from sequence data to describe variant frequency dynamics and relative transmission rates, but frequencies alone cannot capture the rich epidemiological behavior of SARS-CoV-2. Here, we extend methods for inferring the effective reproduction number of an epidemic using confirmed case data to jointly estimate variant-specific effective reproduction numbers and frequencies of co-circulating variants using case data and genetic sequences across states in the US from January to October 2021. Our method can be used to infer structured relationships between effective reproduction numbers across time series which may be amendable to various analyses including other features related to the effective reproductive number such as non-pharmaceutical interventions or build up of population immunity. We use this model to estimate the effective reproduction number of SARS-CoV-2 Variants of Concern and Variants of Interest in the United States and estimate consistent growth advantages of particular variants across different locations.</p>",
+				"author": [
+					{
+						"name": "Marlin D Figgins"
+					},
+					{
+						"name": "Trevor Bedford"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.12.09.21267544"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d540167467f726960d490",
+				"title": "Extreme COVID-19 waves reveal hyperexponential growth and finite-time singularity",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.10.15.21265037v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Coronavirus disease 2019 (COVID-19) has rapidly spread throughout our planet, bringing human lives to a standstill. Understanding the early transmission dynamics helps plan intervention strategies such as lockdowns that mitigate further spread, minimizing the adverse impact on humanity and the economy. Exponential growth of infections was thought to be the defining feature of an epidemic in its initial growth phase. Contrary to common belief, early stages of extreme COVID-19 waves display an unbounded growth and finite-time singularity accompanying a hyperexponential power-law. The faster than exponential growth phase is hazardous and would entail stricter regulations. Such power-law description allows us to characterize COVID-19 waves with single power-law exponents, better than piecewise exponentials. Furthermore, we identify the presence of log-periodic patterns decorating the power-law growth. These log-periodic oscillations may enable better prediction of the finite-time singularity. We anticipate that our findings of hyperexponential growth and log-periodicity will help model the COVID-19 transmission more accurately.</p>",
+				"author": [
+					{
+						"name": "Induja Pavithran"
+					},
+					{
+						"name": "R. I. Sujith"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.10.15.21265037"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d94bf67467f726962a534",
+				"title": "A prototype vaccination model for endemic Covid-19 under waning immunity and imperfect vaccine take-up",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.11.06.21266002v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>In this paper, for an infectious disease such as Covid-19, we present a SIR model which examines the impact of waning immunity, vaccination rates, vaccine efficacy, and the proportion of the susceptible population who aspire to be vaccinated. Under an assumed constant control reproduction number, we provide simple conditions for the disease to be eliminated, and conversely for it to exhibit the more likely endemic behaviour. With regard to Covid-19, it is shown that if the control reproduction number is set to the basic reproduction number (say 6) of the dominant delta (B1.617.2) variant, vaccination alone, even under the most optimistic of assumptions about vaccine efficacy and high vaccine coverage, is very unlikely to lead to elimination of the disease. The model is not intended to be predictive but more an aid to understanding the relative importance of various biological and control parameters. For example, from a long-term perspective, it may be found that in the UK, through changes in societal behaviour (such as mask use, ventilation, and level of homeworking), without formal government interventions such as on-off lockdowns, the control reproduction number can still be maintained at a level significantly below the basic reproduction number. Even so, our simulations show that endemic behaviour ensues. The model obtains equilibrium values of the state variables such as the infection prevalence and mortality rate under various scenarios.</p>",
+				"author": [
+					{
+						"name": "John S Dagpunar"
+					},
+					{
+						"name": "ChenChen Wu"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.11.06.21266002"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "6138e78167467f7269ed4b1e",
+				"title": "Spatial-temporal modeling of initial COVID-19 diffusion: The cases of the Chinese Mainland and Conterminous United States",
+				"volume": "",
+				"journal": "Geo-spatial Information Science",
+				"link": [
+					{
+						"url": "https://www.tandfonline.com/doi/full/10.1080/10095020.2021.1937338",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Informa UK Limited",
+				"abstract": "",
+				"author": [
+					{
+						"name": "Griffith, Daniel"
+					},
+					{
+						"name": "Li, Bin"
+					}
+				],
+				"pages": "1--23",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1080/10095020.2021.1937338"
+					}
+				]
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "616c4d4c67467f7269ca4997",
+				"title": "Stability Analysis and Optimal Control for Yellow Fever Model with Vertical Transmission",
+				"volume": "6",
+				"journal": "International Journal of Applied and Computational Mathematics",
+				"link": [
+					{
+						"url": "https://link.springer.com/10.1007/s40819-020-00860-z",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Springer Science and Business Media LLC",
+				"abstract": "",
+				"author": [
+					{
+						"name": "Danbaba, UA"
+					},
+					{
+						"name": "Garba, SM"
+					}
+				],
+				"pages": "",
+				"number": "4",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1007/s40819-020-00860-z"
+					}
+				],
+				"year": "2020"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "616e7fcd67467f7269d41897",
+				"title": "Egyptian rousette bats maintain long-term protective immunity against Marburg virus infection despite diminished antibody levels",
+				"volume": "7",
+				"journal": "Scientific Reports",
+				"link": [
+					{
+						"url": "http://www.nature.com/articles/s41598-017-07824-2",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Springer Science and Business Media LLC",
+				"abstract": "",
+				"author": [
+					{
+						"name": "Schuh, Amy J."
+					},
+					{
+						"name": "Amman, Brian R."
+					},
+					{
+						"name": "Sealy, Tara K."
+					},
+					{
+						"name": "Spengler, Jessica R."
+					},
+					{
+						"name": "Nichol, Stuart T."
+					},
+					{
+						"name": "Towner, Jonathan S."
+					}
+				],
+				"pages": "",
+				"number": "1",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1038/s41598-017-07824-2"
+					}
+				],
+				"year": "2017"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "61bf757e03cbbf5cb75dec89",
+				"title": "COVID-19 endgame: from pandemic to endemic? Vaccination, reopening and evolution in a well-vaccinated population",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.12.18.21268002v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>COVID-19 remains a major public health concern, with large resurgences even where there has been widespread uptake of vaccines. Waning immunity and the emergence of new variants will shape the long-term burden and dynamics of COVID-19. We explore the transition to the endemic state, and the endemic incidence, using a combination of modelling approaches. We compare gradual and rapid reopening and reopening at different vaccination levels. We examine how the eventual endemic state depends on  the duration of immunity, the rate of importations, the efficacy of vaccines and the transmissibility. These depend on the evolution of the virus, which continues to undergo selection. Slower reopening leads to a lower peak level of incidence and fewer overall infections: as much as a 60% lower peak and a 10% lower total in some illustrative simulations; under realistic parameters, reopening when 70% of the population is vaccinated leads to a large resurgence in cases. The long-term endemic behaviour may stabilize as late as January 2023, with further waves of high incidence occurring depending on the transmissibility of the prevalent variant, duration of immunity,  and antigenic drift. We find that long term endemic levels are not necessarily lower than current pandemic levels: in a population of 100,000 with representative parameter settings (Reproduction number 5, 1-year duration of immunity, vaccine efficacy at 80% and importations at 3 cases per 100K per day) there are over 100 daily incident cases in the model. The consequent burden on health care systems depends on the severity of infection in immunized or previously infected individuals.</p>",
+				"author": [
+					{
+						"name": "Elisha B. Are"
+					},
+					{
+						"name": "Yexuan Song"
+					},
+					{
+						"name": "Jessica E. Stockdale"
+					},
+					{
+						"name": "Paul Tupper"
+					},
+					{
+						"name": "Caroline Colijn"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.12.18.21268002"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60ee012c67467f7269d3dbf0",
+				"title": "Indications that Stockholm has reached herd immunity, given limited restrictions, against several variants of SARS-CoV-2",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.07.07.21260167v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>\"When COVID-19 cases go up, public compliance with restrictions is poor, when cases go down, public compliance\nis good.\" In this article, we question this explanation and show that relatively low levels of sero-prevalence helps to keep\ncases down. In other words, the herd-immunity threshold appears to be much lower than previously thought. We construct\na mathematical model taking pre-immunity, antibody waning and more infectious variants of concern into consideration,\nthereby providing a theoretical framework in which the cases in Stockholm county can be fully predicted without relying\non neither oscillations in restrictions (and public compliance thereof) nor vaccination roll-out. We also show that it is very\ndifficult to match the data from Stockholm without including pre-immunity, or, which turns out to be equivalent, great\nvariations in susceptibility.</p>",
+				"author": [
+					{
+						"name": "Marcus Carlsson"
+					},
+					{
+						"name": "Cecilia Soderberg-Naucler"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.07.07.21260167"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60fd2a6c67467f72690ef895",
+				"title": "A Wastewater-Based Epidemic Model for SARS-CoV-2 with Application to Three Canadian Cities",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.07.19.21260773v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>The COVID-19 pandemic has stimulated wastewater-based surveillance, allowing public health to track the epidemic by monitoring the concentration of the genetic fingerprints of SARS-CoV-2 shed in wastewater by infected individuals. \nWastewater-based surveillance for COVID-19 is still in its infancy. In particular, the quantitative link between clinical cases observed through traditional surveillance and the signals from viral concentrations in wastewater is still developing and hampers interpretation of the data and actionable public-health decisions. \nWe present a modelling framework that includes both SARS-CoV-2 transmission at the population level and the fate of SARS-CoV-2 RNA particles in the sewage system after faecal shedding by infected persons in the population. \nUsing our mechanistic representation of the combined  clinical/wastewater system, we perform exploratory simulations to quantify the effect of surveillance effectiveness, public-health interventions and vaccination on the discordance between clinical and wastewater signals. \nWe also apply our model to surveillance data from three Canadian cities to provide wastewater-informed estimates for the actual prevalence, the effective reproduction number and incidence forecasts. \nWe find that wastewater-based surveillance, paired with this model, can complement clinical surveillance by supporting the estimation of key epidemiological metrics and hence better triangulate the state of an epidemic using this alternative data source.</p>",
+				"author": [
+					{
+						"name": "Shokoofeh Nourbakhsh"
+					},
+					{
+						"name": "Aamir Fazil"
+					},
+					{
+						"name": "Michael Li"
+					},
+					{
+						"name": "Chand S. Mangat"
+					},
+					{
+						"name": "Shelley W Peterson"
+					},
+					{
+						"name": "Jade Daigle"
+					},
+					{
+						"name": "Stacie Langner"
+					},
+					{
+						"name": "Jayson Shurgold"
+					},
+					{
+						"name": "Patrick M D'Aoust"
+					},
+					{
+						"name": "Robert Delatolla"
+					},
+					{
+						"name": "Elisabeth Mercier"
+					},
+					{
+						"name": "Xiao-Li Pang"
+					},
+					{
+						"name": "Bonita E. Lee"
+					},
+					{
+						"name": "Rebecca Stuart"
+					},
+					{
+						"name": "Shinthuja Wijayasri"
+					},
+					{
+						"name": "David CHAMPREDON"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.07.19.21260773"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d53fd67467f726960cde5",
+				"title": "Analysis of overdispersion in airborne transmission of Covid-19",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.09.28.21263801v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Superspreading events and overdispersion are hallmarks of the Covid-19 pandemic. To gain insight into the nature and controlling factors of these superspreading events and heterogeneity in transmission, we conducted mechanistic modeling of SARS-CoV-2 transmission by infectious aerosols using  real-world occupancy data from a large number of full-service restaurants in  ten US metropolises. Including a large number of factors that influence disease transmission in these settings, we demonstrate the emergence of a stretched tail in the probability density function of secondary infection numbers indicating strong heterogeneity in individual infectivity. Derived analytical results further demonstrate that variability in viral loads and variability in occupancy, together, lead to overdispersion in the number of secondary infections arising from individual index cases. Our analysis, connecting mechanistic understanding of SARS-CoV-2 transmission by aerosols with observed large-scale epidemiological characteristics of Covid-19 outbreaks, adds an important dimension to the mounting body of evidence with regards to the determinants of airborne transmission of SARS-CoV-2 by aerosols in indoor settings.</p>",
+				"author": [
+					{
+						"name": "Swetaprovo Chaudhuri"
+					},
+					{
+						"name": "Prasad Kasibhatla"
+					},
+					{
+						"name": "Arnab Mukherjee"
+					},
+					{
+						"name": "William Pan"
+					},
+					{
+						"name": "Glenn Morrison"
+					},
+					{
+						"name": "Sharmistha Mishra"
+					},
+					{
+						"name": "Vijaya Kumar Murty"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.09.28.21263801"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d53fe67467f726960d003",
+				"title": "A twelve-month projection to September 2022 of the Covid-19 epidemic in the UK using a Dynamic Causal Model",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.10.04.21262827v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Objectives\nPredicting the future UK Covid-19 epidemic allows other countries to compare their epidemic with one unfolding without public health measures except a vaccine programme.\nMethods\nA Dynamic Causal Model (DCM) is used to estimate the model parameters of the epidemic such as vaccine effectiveness and increased transmissibility of alpha and delta variants, the vaccine programme roll-out and changes in contact rates.  The model predicts the future trends in infections, long-Covid, hospital admissions and deaths.\nResults\nTwo dose vaccination given to 66% of the UK population prevents transmission following infection by 44%, serious illness by 86% and death by 93%.  Despite this, with no other public health measures used, cases will increase from 37 million to 61 million, hospital admission from 536,000 to 684,000 and deaths from 136,000 to 142,000 over twelve months.\nDiscussion\nVaccination alone will not control the epidemic.  Relaxation of mitigating public health measures carries several risks including overwhelming the health services, the creation of vaccine resistant variants and the economic cost of huge numbers of acute and chronic cases.</p>",
+				"author": [
+					{
+						"name": "Cam Bowie"
+					},
+					{
+						"name": "Karl Friston"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.10.04.21262827"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d540067467f726960d26f",
+				"title": "Inferring age-specific differences in susceptibility to and infectiousness upon SARS-CoV-2 infection based on Belgian social contact data",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.10.10.21264753v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Several important aspects related to SARS-CoV-2 transmission are not well known due to a lack of appropriate data. However, mathematical and computational tools can be used to extract part of this information from the available data, like some hidden age-related characteristics. In this paper, we investigate age-specific differences in susceptibility to and infectiousness upon contracting SARS-CoV-2 infection. More specifically, we use panel-based social contact data from diary-based surveys conducted in Belgium combined with the next generation principle to infer the relative incidence and we compare this to real-life incidence data. Comparing these two allows for the estimation of age-specific transmission parameters. Our analysis implies the susceptibility in children to be around half of the susceptibility in adults, and even lower for very young children (preschooler). However, the probability of adults and the elderly to contract the infection is decreasing throughout the vaccination campaign, thereby modifying the picture over time.</p>",
+				"author": [
+					{
+						"name": "Nicolas Franco"
+					},
+					{
+						"name": "Pietro Coletti"
+					},
+					{
+						"name": "Lander Willem"
+					},
+					{
+						"name": "Leonardo Angeli"
+					},
+					{
+						"name": "Adrien Lajot"
+					},
+					{
+						"name": "Steven Abrams"
+					},
+					{
+						"name": "Philippe Beutels"
+					},
+					{
+						"name": "Christel Faes"
+					},
+					{
+						"name": "Niel Hens"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.10.10.21264753"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "618d540067467f726960d357",
+				"title": "The impact of heating, ventilation, and air conditioning design features on the transmission of viruses, including the 2019 novel coronavirus: a systematic review of ultraviolet radiation",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.10.12.21264904v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Respiratory viruses are capable of transmitting via an aerosol route. Emerging evidence suggests that SARS-CoV-2 which causes COVID-19 can be spread through airborne transmission, particularly in indoor environments with poor ventilation. Heating, ventilation, and air conditioning (HVAC) systems can play a role in mitigating airborne virus transmission. We conducted a systematic review of the scientific literature examining the effectiveness of HVAC design features in reducing virus transmission; here we report results for ultraviolet (UV) radiation. Following international standards for systematic reviews, we conducted a comprehensive search and synthesized findings from 32 relevant studies published between 1936 and 2020. Research demonstrates that: viruses and bacteriophages are inactivated by UV radiation; increasing UV dose is associated with decreasing survival fraction of viruses and bacteriophages; increasing relative humidity is associated with decreasing susceptibility to UV radiation; UV dose and corresponding survival fraction are affected by airflow pattern, air changes per hour, and UV device location; and UV radiation is associated with decreased transmission in both animal and human studies. This comprehensive synthesis of the scientific evidence examining the impact of UV radiation on virus transmission can be used to guide implementation of systems to mitigate airborne spread and identify priorities for future research.</p>",
+				"author": [
+					{
+						"name": "Gail M. Thornton"
+					},
+					{
+						"name": "Brian A. Fleck"
+					},
+					{
+						"name": "Natalie Fleck"
+					},
+					{
+						"name": "Emily Kroeker"
+					},
+					{
+						"name": "Dhyey Dandnayak"
+					},
+					{
+						"name": "Lexuan Zhong"
+					},
+					{
+						"name": "Lisa Hartling"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.10.12.21264904"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "61b0140067467f72698cb274",
+				"title": "SIR Modeling the Dual Disaster Impacts of Omicron B.1.1.529 and Natural Disaster Events on Simulated 6 Months (from December 2021 to May 2022) Healthcare System Resiliences in Fragile SE Asia Ring of Fire Ecosystems",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.12.07.21267405v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>For some countries that have experienced numerous natural disasters, including massive earthquakes and tsunamis, managing the COVID-19 pandemic can be very challenging. This situation arises considering that the disaster can directly and indirectly affect the healthcare system9s capacity to serve the COVID-19 cases. With severely damaged healthcare facilities due to the disaster, there will be severely ill COVID-19 cases unmanaged. The coupling and interplay between these two phenomena can indeed be catastrophic. One of the regions where this issue becomes concerned is in Southeast Asia, where most of the Asian countries lie in the fragile ring of fire ecosystem, contributing to the high tsunami and earthquake disasters in the world. At the same time, Asia is one of the regions that have been severely impacted due to the current COVID-19 Delta Variant. Recently, a more contagious Omicron Variant has emerged and put a more massive burden on the healthcare facilities that are impacted by disasters. Then, in this situation, this paper aims to assess healthcare resilience in managing the Omicron pandemic amid disaster impacts. SIR simulation was used to determine whether severely ill Omicron cases were below or above healthcare and ICU capacity under different vaccination coverage. Our result confirms that vaccination coverage was the imminent factor in reducing the severely ill cases in every healthcare facility, whether the facilities were damaged or not. Increasing vaccination coverage from 30% to 60% will significantly reduce the number of severely ill cases that fall below the capacity of healthcare. Based on the current SIR model on the Omicron epidemic variables and Ro, it is estimated that the Omicron will reach its peak after 180 days in February 2022 and will totally disappear in May 2022 in this modeled area. When healthcare system facilities were fully operational and no disaster happened, combined with 60% vaccination rates, all Omicron case numbers were below and under the available hospital beds and even available ICU beds. While the situation is changed when a disaster occurs and causes 30% damage or reduction to healthcare facilities. In this situation, there are portions of Omicron cases that cannot be managed by the healthcare system since the cases have exceeded the available beds. The situations become more apparent where the healthcare facilities are severely damaged and lose 60% of their functionality. In this situation, all modeled Omicron cases and even the severe cases have exceeded the ICU capacity.</p>",
+				"author": [
+					{
+						"name": "Andri A Wibowo"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.12.07.21267405"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "60d0abd13f2ac7e701976294",
+				"title": "Comparative performance of between-population allocation strategies for SARS-CoV-2 vaccines.",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2021.06.18.21259137v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Vaccine allocation decisions during the ongoing COVID-19 pandemic have proven to be challenging due to competing ethical, practical, and political considerations. Complicating decision making, policy makers need to consider vaccine allocation strategies that balance needs both within and between populations. Due to limited vaccine stockpiles, vaccine doses should be allocated in locations where their impact will be maximized. Using a susceptible-exposed-infectious-recovered (SEIR) model we examine optimal SARS-CoV-2 vaccine allocation decisions across two populations considering the impact of population size, underlying immunity, continuous vaccine roll-out, and heterogeneous population risk structure. We find that in the context of an emerging pathogen, where many epidemiologic characteristics might not be known, equal vaccine allocation between populations performs optimally in most scenarios. In the specific case considering heterogeneous population risk structure, first targeting individuals at higher risk of transmission or death due to infection leads to equitable resource allocation across populations.</p>",
+				"author": [
+					{
+						"name": "Keya Joshi"
+					},
+					{
+						"name": "Eva Rumpler"
+					},
+					{
+						"name": "Lee Kennedy-Shaffer"
+					},
+					{
+						"name": "Rafia Bosan"
+					},
+					{
+						"name": "Marc Lipsitch"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2021.06.18.21259137"
+					}
+				],
+				"year": "2021"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "6261e44c2688b71135af64fc",
+				"title": "Accuracy of US CDC COVID-19 Forecasting Models",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2022.04.20.22274097v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Accurate predictive modeling of pandemics is essential for optimally distributing resources and setting policy. Dozens of case predictions models have been proposed but their accuracy over time and by model type remains unclear.  In this study, we analyze all US CDC COVID-19 forecasting models, by first categorizing them and then calculating their mean absolute percent error, both wave-wise and on the complete timeline. We compare their estimates to government-reported case numbers, one another, as well as two baseline models wherein case counts remain static or follow a simple linear trend. The comparison reveals that more than one-third of models fail to outperform a simple static case baseline and two-thirds fail to outperform a simple linear trend forecast. A wave-by-wave comparison of models revealed that no overall modeling approach was superior to others, including ensemble models, and error in modeling has increased over time during the pandemic. This study raises concerns about hosting these models on official public platforms of health organizations including the US-CDC which risks giving them an official imprimatur and further raising concerns if utilized to formulate policy. By offering a universal evaluation method for pandemic forecasting models, we expect this work to serve as the starting point towards the development of more sophisticated models.</p>",
+				"author": [
+					{
+						"name": "Aviral Chharia"
+					},
+					{
+						"name": "Govind Jeevan"
+					},
+					{
+						"name": "Rajat Aayush Jha"
+					},
+					{
+						"name": "Meng Liu"
+					},
+					{
+						"name": "Jonathan M Berman"
+					},
+					{
+						"name": "Christin A Glorioso"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2022.04.20.22274097"
+					}
+				],
+				"year": "2022"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "62a8dd0e8bea6dc8235187e4",
+				"title": "Assessing COVID-19 vaccination strategies in varied demographics using an individual-based model",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2022.06.11.22276248v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>Background: New variants of SARS-CoV-2 are constantly discovered. Administration of COVID-19 vaccines and booster doses, combined with applications of non-pharmaceutical interventions (NPIs), is often used to prevent outbreaks of emerging variants. Such outbreak dynamics are further complicated by the population9s behavior and demographic composition. Hence, realistic simulations are needed to estimate the efficiency of proposed vaccination strategies in conjunction with NPIs.\nMethods: We developed an individual-based model of COVID-19 dynamics that considers age-dependent parameters such as contact matrices, probabilities of symptomatic and severe disease, and households9 age distribution. As a case study, we simulate outbreak dynamics under the demographic compositions of two Israeli cities with different household sizes and age distributions. We compare two vaccination strategies: vaccinate individuals in a currently prioritized age group, or dynamically prioritize neighborhoods with a high estimated reproductive number. Total infections and hospitalizations are used to compare the efficiency of the vaccination strategies under the two demographic structures, in conjunction with different NPIs.\nResults: We demonstrate the effectiveness of vaccination strategies targeting highly infected localities and of NPIs actively detecting asymptomatic infections. We further show that there are different optimal vaccination strategies for each demographic composition of sub-populations, and that their application is superior to a uniformly applied strategy.\nConclusion: Our study emphasizes the importance of tailoring vaccination strategies to subpopulations9 infection rates and to the unique characteristics of their demographics (e.g., household size and age distributions). The presented simulation framework and our findings can help better design future responses against the following emerging variants.</p>",
+				"author": [
+					{
+						"name": "Noam Ben-Zuk"
+					},
+					{
+						"name": "Yair Daon"
+					},
+					{
+						"name": "Amit Sasson"
+					},
+					{
+						"name": "Dror Ben-Adi"
+					},
+					{
+						"name": "Amit Huppert"
+					},
+					{
+						"name": "Daniel Nevo"
+					},
+					{
+						"name": "Uri Obolski"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2022.06.11.22276248"
+					}
+				],
+				"year": "2022"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "62e024b82cc8300dbb04b3a2",
+				"title": "Improving performance of deep learning predictive models for COVID-19 by incorporating environmental parameters",
+				"volume": "",
+				"journal": "Gondwana Research",
+				"link": [
+					{
+						"url": "https://www.sciencedirect.com/science/article/pii/S1342937X22001083",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Elsevier",
+				"abstract": "",
+				"author": [
+					{
+						"name": "Rawlekar, Samyak"
+					},
+					{
+						"name": "Anjum, Saima"
+					},
+					{
+						"name": "Gupta, Ankit"
+					},
+					{
+						"name": "Bherwani, Hemant"
+					},
+					{
+						"name": "Labhasetwar, Nitin"
+					},
+					{
+						"name": "Kumar, Rakesh"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1016/j.gr.2022.03.014"
+					}
+				],
+				"year": "2022"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "636949fd74bed2df5c06e621",
+				"title": "The relationship between controllability, optimal testing resource allocation, and incubation-latent period mismatch as revealed by COVID-19",
+				"volume": "",
+				"journal": "Cold Spring Harbor Laboratory Press",
+				"link": [
+					{
+						"url": "https://www.medrxiv.org/content/10.1101/2022.11.06.22281984v1",
+						"type": "publisher"
+					}
+				],
+				"publisher": "medRxiv",
+				"abstract": "<p>The severe shortfall in testing supplies during the initial phases of the COVID-19 pandemic and ensuing struggle to control disease spread have affirmed the need to plan rigorous optimized supply-constrained resource allocation strategies for the next inevitable novel disease epidemic.  To address the challenge of optimizing limited resource usage in the face of complicated disease dynamics, we develop an integro partial differential equation disease model which incorporates realistic latent, incubation, and infectious period distributions along with limited testing supplies for identifying and quarantining infected individuals, and we analyze the influence of these elements on controllability and optimal resource allocation between two testing strategies, `clinical9 targeting symptomatic individuals and `non-clinical9 targeting non-symptomatic individuals, for reducing total infection sizes. We apply our model to not only the original, delta, and omicron COVID-19 variants, but also to generic diseases which have different offsets between latent and incubation period distributions which allow for or prevent varying degrees of presymptomatic transmission or preinfectiousness symptom onset.  We find that factors which reduce controllability generally call for reduced levels of non-clinical testing, while the relationship between symptom onset, controllability, and optimal strategies is complicated.  Although greater degrees of presymptomatic transmission reduce disease controllability, they may enhance or reduce the role of non-clinical testing in optimal strategies depending on other disease factors like overall transmissibility and latent period length. Our model allows a spectrum of diseases to be compared under the same lens such that the lessons learned from COVID-19 can be adapted to resource constraints in the next emerging epidemic and analyzed for optimal strategies under a consistent mathematical framework.</p>",
+				"author": [
+					{
+						"name": "Jeffery Demers"
+					},
+					{
+						"name": "William F Fagan"
+					},
+					{
+						"name": "Sryia Potluri"
+					},
+					{
+						"name": "Justin M Calabrese"
+					}
+				],
+				"pages": "",
+				"number": "",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1101/2022.11.06.22281984"
+					}
+				],
+				"year": "2022"
+			},
+			{
+				"type": "fulltext",
+				"_gddid": "632b7b731683212d9e9e5062",
+				"title": "Spatiotemporal cluster analysis of COVID-19 and its relationship with environmental factors at the city level in mainland China",
+				"volume": "29",
+				"journal": "Environmental Science and Pollution Research",
+				"link": [
+					{
+						"url": "https://link.springer.com/10.1007/s11356-021-16600-9",
+						"type": "publisher"
+					}
+				],
+				"publisher": "Springer Science and Business Media LLC",
+				"abstract": "",
+				"author": [
+					{
+						"name": "Yang, Shu-qin"
+					},
+					{
+						"name": "Fang, Zheng-gang"
+					},
+					{
+						"name": "Lv, Cai-xia"
+					},
+					{
+						"name": "An, Shu-yi"
+					},
+					{
+						"name": "Guan, Peng"
+					},
+					{
+						"name": "Huang, De-sheng"
+					},
+					{
+						"name": "Wu, Wei"
+					}
+				],
+				"pages": "13386--13395",
+				"number": "9",
+				"identifier": [
+					{
+						"type": "doi",
+						"id": "10.1007/s11356-021-16600-9"
+					}
+				],
+				"year": "2022"
+			}
+		]
+	}
+
+}
