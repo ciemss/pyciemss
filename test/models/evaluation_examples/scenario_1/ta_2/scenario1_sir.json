@@ -1,0 +1,64 @@
+{
+ "S": [
+  {
+   "sname": "susceptible_population",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[]",
+   "mira_initial_value": 1.0
+  },
+  {
+   "sname": "infected_population",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[]",
+   "mira_initial_value": 2.0
+  },
+  {
+   "sname": "immune_population",
+   "mira_ids": "[('identity', 'ido:0000592')]",
+   "mira_context": "[]",
+   "mira_initial_value": 3.0
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "template_type": "ControlledConversion",
+   "parameter_name": "beta",
+   "parameter_value": 0.1
+  },
+  {
+   "tname": "t2",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma",
+   "parameter_value": 0.2
+  }
+ ],
+ "I": [
+  {
+   "is": 2,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 2,
+   "it": 2
+  }
+ ],
+ "O": [
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  }
+ ]
+}
