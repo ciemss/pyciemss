@@ -290,7 +290,9 @@ class SIDARTHEV(ODE):
                  sigma_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
                  mu_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
                  nu_prior=dist.LogNormal(torch.log(torch.tensor(0.027)), torch.tensor(0.01)),
-                 tau_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
+                 # tau1_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
+                 tau2_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
+                 phi_prior=dist.LogNormal(torch.log(torch.tensor(0.0)), torch.tensor(0.01)),
                 ):
         super().__init__()
 
@@ -310,7 +312,9 @@ class SIDARTHEV(ODE):
         self.sigma_prior = sigma_prior
         self.mu_prior = mu_prior
         self.nu_prior = nu_prior
-        self.tau_prior=tau_prior
+        # self.tau1_prior = tau1_prior
+        self.tau2_prior = tau2_prior
+        self.phi_prior = phi_prior
 
 
     @pyro_method
@@ -323,7 +327,7 @@ class SIDARTHEV(ODE):
         # T, threatened (infected with life-threatening symptoms,  detected);
         # H, healed (recovered);
         # E, extinct (dead).
-        S, I, D, A, R, T, H, E = state
+        S, I, D, A, R, T, H, E, V = state
 
         # Local fluxes exposed to pyro for interventions.
         # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
@@ -397,8 +401,9 @@ class SIDARTHEV(ODE):
         self.sigma  = pyro.sample("sigma", self. sigma_prior)
         self.mu  = pyro.sample("mu", self. mu_prior)
         self.nu  = pyro.sample("nu", self. nu_prior)
-        self.tau_1 = pyro.sample("tau_1", self.tau_1_prior)
-        self.tau_2 = pyro.sample("tau_2", self.tau_2_prior)
+        # self.tau_1 = pyro.sample("tau_1", self.tau1_prior)
+        self.tau_2 = pyro.sample("tau_2", self.tau2_prior)
+        self.tau_1 = self.tau_2/3.
         self.phi = pyro.sample("phi", self.phi_prior)
 
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
@@ -419,4 +424,5 @@ class SIDARTHEV(ODE):
         H_obs = pyro.deterministic("H_obs", H)
         E_obs = pyro.deterministic("E_obs", E)
         V_obs = pyro.deterministic("V_obs", V)
+        Rt_obs = pyro.deterministic("Rt_obs", )
         return (S_obs, I_obs, D_obs, A_obs,  R_obs, T_obs, H_obs, E_obs, V_obs, I_total_obs)
