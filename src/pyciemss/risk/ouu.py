@@ -31,7 +31,7 @@ class computeRisk():
                  tspan: np.ndarray,
                  risk_measure: callable = alpha_superquantile,
                  num_samples: int = 1000,
-                 guide=None,
+                 guide=None
                 ):
         self.model = model
         # TODO: do it outside
@@ -78,7 +78,7 @@ class solveOUU():
     def __init__(self,
                  x0: np.ndarray,
                  objfun: callable,
-                 constraints: dict,
+                 constraints: tuple,
                  minimizer_kwargs: dict = dict(
                         method="COBYLA",
                         tol=1e-5, options={'disp': False, 'maxiter':  10},

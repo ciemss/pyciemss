@@ -21,7 +21,7 @@ def fraction_infected(dataCube) -> np.ndarray:
     raise NotImplementedError
 
 
-def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
+def threshold_exceedance(dataCube, threshold: float, contexts: list=None):
     '''
     # TODO: extend to handle multiple contexts
     '''

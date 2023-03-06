@@ -1,6 +1,6 @@
 import unittest
 
-from pyciemss.risk.qoi import nday_rolling_average, threshold_exceedence
+from pyciemss.risk.qoi import nday_rolling_average, threshold_exceedance
 import numpy as np
 
 class TestQOIs(unittest.TestCase):
@@ -14,8 +14,8 @@ class TestQOIs(unittest.TestCase):
         self.assertTrue(np.array_equal(actual, expected))
 
     
-    def test_qoi_threshold_exceedence(self):
+    def test_qoi_threshold_exceedance(self):
         dataCube = np.array([[0, 1, 2, 3, 4], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6]])
-        actual = threshold_exceedence(dataCube, threshold=5)
+        actual = threshold_exceedance(dataCube, threshold=5)
         expected = np.array([0, 1, 1])
         self.assertTrue(np.array_equal(actual, expected))
