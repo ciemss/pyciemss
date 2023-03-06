@@ -21,15 +21,15 @@ def fraction_infected(dataCube) -> np.ndarray:
     raise NotImplementedError
 
 
-def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
-    '''
-    # TODO: extend to handle multiple contexts
-    '''
-    if contexts is not None:
-        dataCube = dataCube[contexts[0]].detach().numpy()
+# def threshold_exceedence(dataCube, threshold: float, contexts: list=None):
+#     '''
+#     # TODO: extend to handle multiple contexts
+#     '''
+#     if contexts is not None:
+#         dataCube = dataCube[contexts[0]].detach().numpy()
     
-    # Return how many samples exceeded the threshold at ANY point
-    return np.any(dataCube-threshold, axis=1).astype(int)
+#     # Return how many samples exceeded the threshold at ANY point
+#     return np.any(dataCube-threshold, axis=1).astype(int)
 
 
 # def total_infections_SIDARTHE(dataCube: np.ndarray, contexts: list=None) -> np.ndarray:
