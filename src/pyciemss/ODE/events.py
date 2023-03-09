@@ -1,5 +1,6 @@
 import torch
 from torch import Tensor, nn
+from typing import Dict, str
 
 class Event(nn.Module):
     def __init__():
@@ -9,7 +10,7 @@ class Event(nn.Module):
         raise NotImplementedError
 
 class ObservationEvent(Event):
-    def __init__(self, time: Tensor, observation: Tensor):
+    def __init__(self, time: Tensor, observation: Dict[str, Tensor]):
         self.time = time
         self.observation = observation
 
