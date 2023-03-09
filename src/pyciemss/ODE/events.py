@@ -1,11 +1,8 @@
 import torch
 from torch import Tensor, nn
-from typing import Dict, str
+from typing import Dict
 
 class Event(nn.Module):
-    def __init__():
-        raise NotImplementedError
-    
     def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor: 
         raise NotImplementedError
 
@@ -16,3 +13,14 @@ class ObservationEvent(Event):
 
     def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor:
         return t - self.time
+
+class StaticStopEvent(Event):
+    def __init__(self, time: Tensor):
+        self.time = time
+
+    def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor:
+        return t - self.time
+    
+class DynamicStopEvent(Event):
+    def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor:
+        raise NotImplementedError
