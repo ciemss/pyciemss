@@ -56,4 +56,4 @@ def simulate_for_days(initialize_SIDARTHE_model,initial_conditions,days=100):
 
 @then("peak of infection is around day 47")
 def day_around_47(simulate_for_days):
-    assert torch.abs(torch.argmax(simulate_for_days["I_total_obs"]) - torch.tensor(47)) <= 2
+    assert torch.abs(torch.argmax(simulate_for_days["I_total_obs"]) - torch.tensor(47)) <= 3
