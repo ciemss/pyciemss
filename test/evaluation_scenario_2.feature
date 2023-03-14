@@ -9,3 +9,14 @@ Feature: Evaluation Scenario 2
 	When simulating the model for 100 days
 
 	Then peak of infection is around day 47
+
+    Scenario: Unit test 2
+        Given initial conditions
+        And parameters
+        And SIDARTHE model
+        And interventions
+
+        When applying all interventions
+
+        Then peak of infection is around day 50
+        And percent infected is around 0.2%
