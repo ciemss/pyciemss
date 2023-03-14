@@ -17,6 +17,7 @@ Feature: Evaluation Scenario 2
         And interventions
 
         When applying all interventions
+	And simulating the intervened model for 100 days
 
         Then peak of infection is around day 50
         And percent infected is around 0.2%
