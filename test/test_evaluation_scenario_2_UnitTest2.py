@@ -158,8 +158,8 @@ def apply_intervention(initialize_SIDARTHE_model, parameter_intervention):
     return   intervene(initialize_SIDARTHE_model, parameter_intervention)
 
 @when("simulating the model for 100 days", target_fixture="simulate_for_days")
-def simulate_for_days(initialize_SIDARTHE_model,initial_conditions,days=100):
-    return sample(initialize_SIDARTHE_model, 1, initial_conditions["initial_state"], get_tspan(1, days, days))
+def simulate_for_days(intervened_model,initial_conditions,days=100):
+    return sample(intervened_model, 1, initial_conditions["initial_state"], get_tspan(1, days, days))
 
 
 @then("peak of infection is around day 50")
