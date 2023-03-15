@@ -24,12 +24,13 @@ class StaticEvent(Event):
         return t - self.time
 
 class ObservationEvent(StaticEvent):
-    def __init__(self, time: Tensor, observation: Dict[str, Tensor]):
+    def __init__(self, time: Tensor, var_name: str, observation: Tensor):
+        self.var_name = var_name
         self.observation = observation
         super().__init__(time)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(time={self.time}, observation={self.observation})"
+        return f"{self.__class__.__name__}(time={self.time}, var_name={self.var_name}, observation={self.observation})"
 
 class StartEvent(StaticEvent):
     def __init__(self, time: Tensor, initial_state: Dict[str, Tensor]):

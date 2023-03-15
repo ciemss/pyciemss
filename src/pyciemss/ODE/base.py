@@ -3,7 +3,8 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union, OrderedDict
+
 
 import networkx
 import numpy
@@ -17,7 +18,13 @@ import mira.metamodel
 import mira.sources
 import mira.sources.petri
 
+import heapq
+
+import torch
+
 from torchdiffeq import odeint
+
+from pyciemss.ODE.events import StaticEvent, StartEvent, ObservationEvent, LoggingEvent, DynamicStopEvent
 
 T = TypeVar('T')
 Time = TypeVar('Time')
@@ -29,6 +36,51 @@ class ODE(pyro.nn.PyroModule):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
+
+    def __init__(self):
+        super().__init__()
+
+        self.start_event = None
+        self.observation_events = []
+        self.logging_events = []
+        self.static_events = []
+        self.dynamic_stop_events = []
+
+    @functools.singledispatchmethod
+    def load_start_event(self, start_event: StartEvent) -> None:
+        '''
+        Loads a start event into the model.
+        '''
+        self.start_event = start_event
+
+    @load_start_event.register
+    def _load_start_event_float(self, time: float, state: Dict[str, Union[float, int, torch.Tensor]]) -> None:
+        state = {k: torch.tensor(v) for k, v in state.items()}
+        self.load_start_event(StartEvent(time, state))
+
+    @load_start_event.register
+    def _load_start_event_int(self, time: int, state: Dict[str, Union[float, int, torch.Tensor]]) -> None:
+        state = {k: torch.tensor(v) for k, v in state.items()}
+        self.load_start_event(StartEvent(float(time), state))
+        self._construct_static_events()
+
+    def load_logging_events(self, times: Union[torch.Tensor, List]) -> None:
+        '''
+        Loads a list of logging events into the model.
+        '''
+        logging_events = [LoggingEvent(t) for t in times]
+        self.logging_events = sorted(logging_events)
+        self._construct_static_events()
+
+    def _construct_static_events(self):
+        '''
+        Returns a list of static events sorted by time.
+        This will be called again when we condition the model on new observations.
+        '''
+
+        # Sort the static events by time. This is linear in the number of events. Assumes each are already sorted.
+        self.static_events = [e for e in heapq.merge(*[[self.start_event], self.logging_events, self.observation_events])]
+
     def deriv(self, t: Time, state: State) -> State:
         '''
         Returns a derivate of `state` with respect to `t`.
@@ -44,29 +96,52 @@ class ODE(pyro.nn.PyroModule):
         raise NotImplementedError
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
+    def observation_model(self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor], var: str) -> None:
         '''
         Conditional distribution of observations given true state trajectory.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
+        This needs to be called once for each `var` in the set of observed variables.
         '''
         raise NotImplementedError
 
-    def forward(self, initial_state: State, tspan: torch.tensor, data: Optional[Dict[str, Solution]] = None) -> Tuple[Solution, Observation]:
+    def var_order(self) -> OrderedDict[str, int]:
+        '''
+        Returns a dictionary mapping variable names to their order in the state vector.
+        '''
+        raise NotImplementedError
+
+    def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
         '''
         Joint distribution over model parameters, trajectories, and noisy observations.
         '''
-
         # Sample parameters from the prior
         self.param_prior()
 
-        # Simulate from ODE.
-        # Constant deltaT method like `euler` necessary to get interventions without name collision.
-        solution = odeint(self.deriv, initial_state, tspan, method="euler")
+        # Check that the start event is the first event
+        assert isinstance(self.static_events[0], StartEvent)
 
-        # Add Observation noise
-        observations = self.observation_model(solution, data)
+        # Get initial state from start event
+        # TODO: sample start event from prior
+        initial_state = tuple(self.static_events[0].initial_state[v] for v in self.var_order.keys())
 
-        return solution, observations
+        # Get tspan from static events
+        tspan = torch.tensor([e.time for e in self.static_events])
+
+        # Simulate from ODE
+        solution = odeint(self.deriv, initial_state, tspan, method=method, **kwargs)
+        solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
+    
+        observation_var_names = set([event.var_name for event in self.static_events if isinstance(event, ObservationEvent)])
+
+        # Compute likelihoods for observations
+        for var_name in observation_var_names:
+            observation_indices = [i for i, event in enumerate(self.static_events) if isinstance(event, ObservationEvent) and event.var_name == var_name]
+            observation_values = torch.stack([self.static_events[i].observation for i in observation_indices])
+            filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
+
+            self.observation_model(filtered_solution, observation_values, var_name)
+
+        return solution
 
 
 @functools.singledispatch
@@ -201,3 +276,12 @@ class PetriNetODESystem(ODE):
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
+
+class GaussianNoisePetriNetODESystem(PetriNetODESystem):
+    def __init__(self, G: mira.modeling.Model, noise_var: float = 1):
+        super().__init__(G)
+        self.register_buffer("noise_var", torch.as_tensor(noise_var))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Dict[str, torch.Tensor], data: torch.Tensor, var: str) -> None:
+        pyro.sample(var, pyro.distributions.Normal(solution[var], self.noise_var).to_event(1), obs=data)
