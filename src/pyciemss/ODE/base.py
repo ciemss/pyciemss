@@ -306,23 +306,20 @@ class PetriNetODESystem(ODE):
             if len(transition.control) > 0:
                 flux = flux * sum([states[k] for k in transition.control]) / population_size
 
-            # flux = pyro.deterministic(f"flux_{get_name(transition)} {t}", flux, event_dim=0)
-
             for c in transition.consumed:
                 derivs[c] -= flux
             for p in transition.produced:
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-        # return tuple(pyro.deterministic(f"ddt_{get_name(v)} {t}", derivs[v], event_dim=0) for v in self.var_order.values())
 
-    # @pyro.nn.pyro_method
-    # def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
-    #     with pyro.condition(data=data if data is not None else {}):
-    #         return tuple(
-    #             pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
-    #             for var, sol in zip(self.var_order.values(), solution)
-    #         )
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
+        with pyro.condition(data=data if data is not None else {}):
+            return tuple(
+                pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
+                for var, sol in zip(self.var_order.values(), solution)
+            )
 
 class GaussianNoisePetriNetODESystem(PetriNetODESystem):
     '''
