@@ -170,7 +170,7 @@ class ODE(pyro.nn.PyroModule):
         # Check that the start event is the first event
         assert isinstance(self._static_events[0], StartEvent)
 
-        # Sample initial state from the prior
+        # Load initial state
         initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
 
         # Get tspan from static events
