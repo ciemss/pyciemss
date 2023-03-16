@@ -2,12 +2,18 @@ import unittest
 
 import os
 import torch
+from copy import deepcopy
 
 from pyro.distributions import Uniform
 
 from pyciemss.ODE.base import PetriNetODESystem, GaussianNoisePetriNetODESystem
 from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent, DynamicStopEvent
 import pyciemss
+
+from pyro.infer.autoguide import AutoNormal
+from pyro.infer import SVI, Trace_ELBO, Predictive
+from pyro.optim import Adam
+import pyro
 
 class TestODE(unittest.TestCase):
     '''Tests for the ODE module.'''
@@ -94,4 +100,77 @@ class TestODE(unittest.TestCase):
         self.assertEqual(self.model._observation_var_names, [])
         self.assertEqual(self.model._observation_indices, {})
         self.assertEqual(self.model._observation_values, {})
+
+    def test_integration(self):
+
+        model = self.model
+
+        # Load the start event
+        model.load_start_event(0.0, {"S": 0.9, "I": 0.1, "R": 0.0})
+
+        # Load the logging events
+        tspan = [i for i in range(1, 10)]
+        model.load_logging_events(tspan)
+
+        # Run the model without observations
+        solution = model()
+
+        self.assertEqual(len(solution["I"]), len(solution["R"]))
+        self.assertEqual(len(solution["I"]), len(solution["S"]))
+        self.assertEqual(len(solution["I"]), len(tspan))
+
+        # Susceptible individuals should decrease over time
+        self.assertTrue(torch.all(solution["S"][:-1] > solution["S"][1:]))
+
+        # Recovered individuals should increase over time
+        self.assertTrue(torch.all(solution["R"][:-1] < solution["R"][1:]))
+
+        # Remove the logs
+        model.delete_logging_events()
+
+        # Load the observation events
+        observations = {1.3: {"R": 0.2, "I":0.15}, 2.3: {"I": 0.1}}
+        model.load_observation_events(observations)
+
+        solution = model()
+
+        # No logging events, so we don't return anything.
+        self.assertEqual(len(solution["I"]), len(solution["R"]))
+        self.assertEqual(len(solution["I"]), len(solution["S"]))
+        self.assertEqual(len(solution["I"]), 0)
+
+        # Run inference
+        guide = AutoNormal(model)
+
+        optim = Adam({'lr': 0.03})
+        loss_f = Trace_ELBO(num_particles=1)
+
+        svi = SVI(model, guide, optim, loss=loss_f)
+
+        pyro.clear_param_store()
+
+        # Step once to setup parameters
+        svi.step()
+        old_params = deepcopy(list(guide.parameters()))
+
+        # Check that the parameters have been set
+        self.assertEqual(len(old_params), 4)
+
+        # Step again to update parameters
+        svi.step()
+
+        # Check that the parameters have been updated
+        for (i, p) in enumerate(guide.parameters()):
+
+            self.assertNotEqual(p, old_params[i])
         
+        # Remove the observation events and add logging events.
+        model.delete_observation_events()
+        model.load_logging_events(tspan)  
+
+        # Sample from the posterior predictive distribution  
+        predictions = Predictive(model, guide=guide, num_samples=2)()
+
+        self.assertEqual(predictions['I_sol'].shape, predictions['R_sol'].shape)
+        self.assertEqual(predictions['I_sol'].shape, predictions['S_sol'].shape)
+        self.assertEqual(predictions['I_sol'].shape, torch.Size([2, 9]))
