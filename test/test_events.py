@@ -49,6 +49,15 @@ class TestEvents(unittest.TestCase):
         self.assertIsNotNone(logging_event)
         self.assertEqual(logging_event.time, time)
 
+    def test_lt(self):
+        '''Test the __lt__ method.'''
+        time1 = torch.tensor(1.)
+        time2 = torch.tensor(2.)
+        static_event1 = StaticEvent(time1)
+        static_event2 = StaticEvent(time2)
+        self.assertTrue(static_event1 < static_event2)
+        self.assertFalse(static_event2 < static_event1)
+
     
 
         
