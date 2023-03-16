@@ -64,10 +64,15 @@ class computeRisk():
         Perform forward uncertainty propagation.
         '''
         # Apply intervention to model
-        intervened_model = do(self.model, self.intervention_fun(x))
-        
+        if isinstance(self.intervention_fun, list):
+            temp_model = self.model
+            for i in range(len(intervention_fun)):
+                temp_model = do(temp_model, self.intervention_fun[i](x))
+            intervened_model = temp_model
+        else:
+            intervened_model = do(self.model, self.intervention_fun(x))
+        # Prpagate uncertainty forward
         samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-            
         return samples
 
 
