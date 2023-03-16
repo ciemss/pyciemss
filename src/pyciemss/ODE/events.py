@@ -36,13 +36,13 @@ class ObservationEvent(StaticEvent):
     Use this event type to represent an observation at a given time.
     This is used in the ODE solver to trigger likelihood evaluations.
     '''
-    def __init__(self, time: Tensor, var_name: str, observation: Tensor):
-        self.var_name = var_name
+    def __init__(self, time: Tensor, observation: Dict[str, Tensor]):
+        # self.var_name = var_name
         self.observation = observation
         super().__init__(time)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(time={self.time}, var_name={self.var_name}, observation={self.observation})"
+        return f"{self.__class__.__name__}(time={self.time}, observation={self.observation})"
 
 class StartEvent(StaticEvent):
     '''
