@@ -39,7 +39,7 @@ class ODE(pyro.nn.PyroModule):
     def __init__(self):
         super().__init__()
 
-        self._start_event = None
+        self._start_event = StartEvent(0.0, {})
         self._observation_events = []
         self._observation_var_names = []
 
@@ -54,6 +54,13 @@ class ODE(pyro.nn.PyroModule):
         Loads a start event into the model.
         '''
         self._start_event = start_event
+        self._construct_static_events()
+
+    def delete_start_event(self) -> None:
+        '''
+        Deletes the start event from the model.
+        '''
+        self._start_event = StartEvent(0.0, {})
         self._construct_static_events()
 
     @load_start_event.register
