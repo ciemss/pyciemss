@@ -65,11 +65,7 @@ class ODE(pyro.nn.PyroModule):
 
     @load_start_event.register
     def _load_start_event_float(self, time: float, state: Dict[str, Union[float, torch.Tensor]]) -> None:
-        state = {k: torch.tensor(v) for k, v in state.items()}
-        self.load_start_event(StartEvent(time, state))
-
-    @load_start_event.register
-    def _load_start_event_int(self, time: int, state: Dict[str, Union[float, torch.Tensor]]) -> None:
+        # In python dispatching on float will also dispatch on int.
         state = {k: torch.tensor(v) for k, v in state.items()}
         self.load_start_event(StartEvent(float(time), state))
 
