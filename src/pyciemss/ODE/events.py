@@ -1,6 +1,6 @@
 import torch
 from torch import Tensor, nn
-from typing import Dict
+from typing import Dict, Union, Callable
 
 class Event(nn.Module):
     def __init__(self):
