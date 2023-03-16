@@ -122,7 +122,7 @@ class ODE(pyro.nn.PyroModule):
         '''
 
         # Sort the static events by time. This is linear in the number of events. Assumes each are already sorted.
-        self._static_events = [e for e in heapq.merge(*[self._logging_events, self._observation_events, [self._start_event]])]
+        self._static_events = [e for e in heapq.merge(self._logging_events, self._observation_events, [self._start_event])]
 
         # Set up the observation indices and observation values.
         self._observation_indices = {}
