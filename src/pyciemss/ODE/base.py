@@ -120,11 +120,11 @@ class ODE(pyro.nn.PyroModule):
         raise NotImplementedError
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor], var: str) -> None:
+    def observation_model(self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor]) -> None:
         '''
         Conditional distribution of observations given true state trajectory.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
-        This needs to be called once for each `var` in the set of observed variables.
+        This needs to be called once for each `var_name` in the set of observed variables.
         '''
         raise NotImplementedError
 
@@ -162,9 +162,15 @@ class ODE(pyro.nn.PyroModule):
             observation_values = torch.stack([self._static_events[i].observation for i in observation_indices])
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
-                self.observation_model(filtered_solution, observation_values, var_name)
+                self.observation_model(filtered_solution, var_name)
 
-        return solution
+        # Log the solution
+        logging_indices = [i for i, event in enumerate(self._static_events) if isinstance(event, LoggingEvent)]
+
+        # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
+        logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
+
+        return logged_solution
 
 
 @functools.singledispatch
@@ -327,5 +333,5 @@ class GaussianNoisePetriNetODESystem(PetriNetODESystem):
                 setattr(self, param_name, val)
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], data: torch.Tensor, var: str) -> None:
-        pyro.sample(var, pyro.distributions.Normal(solution[var], self.noise_var).to_event(1))
+    def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
+        pyro.sample(var_name, pyro.distributions.Normal(solution[var_name], self.noise_var).to_event(1))
