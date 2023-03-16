@@ -64,13 +64,19 @@ class ODE(pyro.nn.PyroModule):
         state = {k: torch.tensor(v) for k, v in state.items()}
         self.load_start_event(StartEvent(float(time), state))
 
-
     def load_logging_events(self, times: Union[torch.Tensor, List]) -> None:
         '''
         Loads a list of logging events into the model.
         '''
         logging_events = [LoggingEvent(t) for t in times]
         self._logging_events = sorted(logging_events)
+        self._construct_static_events()
+
+    def delete_logging_events(self) -> None:
+        '''
+        Deletes all logging events from the model.
+        '''
+        self._logging_events = []
         self._construct_static_events()
 
     @functools.singledispatchmethod
@@ -81,6 +87,13 @@ class ODE(pyro.nn.PyroModule):
         Loads a list of observation events into the model.
         '''
         self._observation_events = sorted(observation_events)
+        self._construct_static_events()
+
+    def delete_observation_events(self) -> None:
+        '''
+        Deletes all observation events from the model.
+        '''
+        self._observation_events = []
         self._construct_static_events()
 
     def _construct_static_events(self):
