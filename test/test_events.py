@@ -1,14 +1,7 @@
 import unittest
 
-import os
 import torch
-
-from pyro.distributions import Uniform
-
-from pyciemss.ODE.base import PetriNetODESystem, GaussianNoisePetriNetODESystem
 from pyciemss.ODE.events import Event, StaticEvent, ObservationEvent, LoggingEvent, StartEvent
-import pyciemss
-
 
 class TestEvents(unittest.TestCase):
     '''Tests for the events module.'''
@@ -57,7 +50,3 @@ class TestEvents(unittest.TestCase):
         static_event2 = StaticEvent(time2)
         self.assertTrue(static_event1 < static_event2)
         self.assertFalse(static_event2 < static_event1)
-
-    
-
-        
