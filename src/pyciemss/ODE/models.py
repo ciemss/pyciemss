@@ -7,7 +7,7 @@ import pyro.distributions as dist
 from pyro.nn import pyro_method
 
 from pyciemss.ODE.base import PetriNetODESystem, ODE, Time, State, Solution, Observation, get_name
-from pyciemss.utils import state_flux_constraint
+from pyciemss.utils import state_flux_constraint, log_normal_transform
 
 class SVIIvR(ODE):
     def __init__(self,
@@ -89,22 +89,22 @@ class SVIIvR(ODE):
 class SIDARTHE(ODE):
     def __init__(self,
                  N=1,
-                 alpha_prior=dist.LogNormal(torch.log(torch.tensor(0.570)), torch.tensor(0.01)),
-                 beta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
-                 gamma_prior=dist.LogNormal(torch.log(torch.tensor(0.0456)), torch.tensor(0.01)),
-                 delta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
-                 epsilon_prior=dist.LogNormal(torch.log(torch.tensor(0.171)), torch.tensor(0.01)),
-                 lamb_prior =dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
-                 zeta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
-                 eta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
-                 kappa_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 theta_prior=dist.LogNormal(torch.log(torch.tensor(0.371)), torch.tensor(0.01)),
-                 rho_prior=dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
-                 xi_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 sigma_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 mu_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 nu_prior=dist.LogNormal(torch.log(torch.tensor(0.027)), torch.tensor(0.01)),
-                 tau_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
+                 alpha_prior=log_normal_transform(torch.tensor(0.570), torch.tensor(0.01)),
+                 beta_prior=log_normal_transform(torch.tensor(0.011), torch.tensor(0.01)),
+                 gamma_prior=log_normal_transform(torch.tensor(0.0456), torch.tensor(0.01)),
+                 delta_prior=log_normal_transform(torch.tensor(0.011), torch.tensor(0.01)),
+                 epsilon_prior=log_normal_transform(torch.tensor(0.171), torch.tensor(0.01)),
+                 lamb_prior =log_normal_transform(torch.tensor(0.034), torch.tensor(0.01)),
+                 zeta_prior=log_normal_transform(torch.tensor(0.125), torch.tensor(0.01)),
+                 eta_prior=log_normal_transform(torch.tensor(0.125), torch.tensor(0.01)),
+                 kappa_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 theta_prior=log_normal_transform(torch.tensor(0.371), torch.tensor(0.01)),
+                 rho_prior=log_normal_transform(torch.tensor(0.034), torch.tensor(0.01)),
+                 xi_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 sigma_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 mu_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 nu_prior=log_normal_transform(torch.tensor(0.027), torch.tensor(0.01)),
+                 tau_prior=log_normal_transform(torch.tensor(0.01), torch.tensor(0.01)),
                 ):
         super().__init__()
 
@@ -271,28 +271,39 @@ class MIRA_SIDARTHE(PetriNetODESystem):
             ) + (pyro.deterministic(f"obs_total_infections", total_infections),)
 
 
+class MIRA_SIDARTHE_PRIORS(MIRA_SIDARTHE):
+    def __init__(self, G, *, noise_var: float = 1):
+        super().__init__(G, noise_var)
+        # set priors on the rate parameters
+        for param in self.G.parameters.values():
+            ## If we want the lognormal distribution to be centered at param.value, with sigma=0.1, then we need to make prior_loc = log(param.value**2/(param.value**2 + sigma**2)) and scale = sqrt( log(1 + sigma**2/param.value**2)) according to wikipedia: https://en.wikipedia.org/wiki/Log-normal_distribution
+            prior_mean= torch.as_tensor(param.value if param.value is not None else 0.01))
+            prior_stdev = torch.as_tensor(0.1)
+            setattr(self, get_name(param), pyro.nn.PyroSample(log_normal_transform(mu=prior_mean, sigma=prior_stdev)))
+
+
 
 class SIDARTHEV(ODE):
     def __init__(self,
                  N=1,
-                 alpha_prior=dist.LogNormal(torch.log(torch.tensor(0.570)), torch.tensor(0.01)),
-                 beta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
-                 gamma_prior=dist.LogNormal(torch.log(torch.tensor(0.0456)), torch.tensor(0.01)),
-                 delta_prior=dist.LogNormal(torch.log(torch.tensor(0.011)), torch.tensor(0.01)),
-                 epsilon_prior=dist.LogNormal(torch.log(torch.tensor(0.171)), torch.tensor(0.01)),
-                 lamb_prior =dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
-                 zeta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
-                 eta_prior=dist.LogNormal(torch.log(torch.tensor(0.125)), torch.tensor(0.01)),
-                 kappa_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 theta_prior=dist.LogNormal(torch.log(torch.tensor(0.371)), torch.tensor(0.01)),
-                 rho_prior=dist.LogNormal(torch.log(torch.tensor(0.034)), torch.tensor(0.01)),
-                 xi_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 sigma_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 mu_prior=dist.LogNormal(torch.log(torch.tensor(0.017)), torch.tensor(0.01)),
-                 nu_prior=dist.LogNormal(torch.log(torch.tensor(0.027)), torch.tensor(0.01)),
-                 # tau1_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
-                 tau2_prior=dist.LogNormal(torch.log(torch.tensor(0.01)), torch.tensor(0.01)),
-                 phi_prior=dist.LogNormal(torch.log(torch.tensor(0.0)), torch.tensor(0.01)),
+                 alpha_prior=log_normal_transform(torch.tensor(0.570), torch.tensor(0.01)),
+                 beta_prior=log_normal_transform(torch.tensor(0.011), torch.tensor(0.01)),
+                 gamma_prior=log_normal_transform(torch.tensor(0.0456), torch.tensor(0.01)),
+                 delta_prior=log_normal_transform(torch.tensor(0.011), torch.tensor(0.01)),
+                 epsilon_prior=log_normal_transform(torch.tensor(0.171), torch.tensor(0.01)),
+                 lamb_prior =log_normal_transform(torch.tensor(0.034), torch.tensor(0.01)),
+                 zeta_prior=log_normal_transform(torch.tensor(0.125), torch.tensor(0.01)),
+                 eta_prior=log_normal_transform(torch.tensor(0.125), torch.tensor(0.01)),
+                 kappa_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 theta_prior=log_normal_transform(torch.tensor(0.371), torch.tensor(0.01)),
+                 rho_prior=log_normal_transform(torch.tensor(0.034), torch.tensor(0.01)),
+                 xi_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 sigma_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 mu_prior=log_normal_transform(torch.tensor(0.017), torch.tensor(0.01)),
+                 nu_prior=log_normal_transform(torch.tensor(0.027), torch.tensor(0.01)),
+                 # tau1_prior=log_normal_transform(torch.tensor(0.01), torch.tensor(0.01)),
+                 tau2_prior=log_normal_transform(torch.tensor(0.01), torch.tensor(0.01)),
+                 phi_prior=log_normal_transform(torch.tensor(0.0), torch.tensor(0.01)),
                 ):
         super().__init__()
 

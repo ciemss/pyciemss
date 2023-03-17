@@ -51,9 +51,9 @@ def initialize_SIDARTHE_model(initial_conditions, parameters):
 
 @when("simulating the model for 100 days", target_fixture="simulate_for_days")
 def simulate_for_days(initialize_SIDARTHE_model,initial_conditions,days=100):
-    return sample(initialize_SIDARTHE_model, 1, initial_conditions["initial_state"], get_tspan(1, days, days))
+    return sample(initialize_SIDARTHE_model, 1, initial_conditions["initial_state"], get_tspan(1, days, 10*days))
 
 
 @then("peak of infection is around day 47")
 def day_around_47(simulate_for_days):
-    assert torch.abs(torch.argmax(simulate_for_days["I_total_obs"]) - torch.tensor(47)) <= 3
+    assert torch.abs(torch.argmax(simulate_for_days["I_total_obs"])/10 - torch.tensor(47)) <= 1
