@@ -268,7 +268,7 @@ class MIRA_SIDARTHE(PetriNetODESystem):
             return tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order, solution)
-            ) + (pyro.deterministic(f"I_total_obs", total_infections),)
+            ) + (pyro.deterministic("I_total_obs", total_infections),)
 
 
 class MIRA_SIDARTHE_PRIORS(MIRA_SIDARTHE):
@@ -277,7 +277,7 @@ class MIRA_SIDARTHE_PRIORS(MIRA_SIDARTHE):
         # set priors on the rate parameters
         for param in self.G.parameters.values():
             ## If we want the lognormal distribution to be centered at param.value, with sigma=0.1, then we need to make prior_loc = log(param.value**2/(param.value**2 + sigma**2)) and scale = sqrt( log(1 + sigma**2/param.value**2)) according to wikipedia: https://en.wikipedia.org/wiki/Log-normal_distribution
-            prior_mean= torch.as_tensor(param.value if param.value is not None else 0.01))
+            prior_mean= torch.as_tensor(param.value if param.value is not None else 0.01)
             prior_stdev = torch.as_tensor(0.1)
             setattr(self, get_name(param), pyro.nn.PyroSample(log_normal_transform(mu=prior_mean, sigma=prior_stdev)))
 
