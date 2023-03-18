@@ -268,7 +268,7 @@ class MIRA_SIDARTHE(PetriNetODESystem):
             return tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order, solution)
-            ) + (pyro.deterministic(f"obs_total_infections", total_infections),)
+            ) + (pyro.deterministic(f"I_total_obs", total_infections),)
 
 
 class MIRA_SIDARTHE_PRIORS(MIRA_SIDARTHE):

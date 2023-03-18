@@ -1,16 +1,27 @@
 import pytest
 from pytest_bdd import scenario, given, when, then
-import torch
+import torch, os
 from pyciemss.ODE.models import SIDARTHE
 from pyciemss.utils import get_tspan
 from pyciemss.ODE.askem_primitives import sample
 import pyro.distributions as dist
+from pyciemss.ODE.models import MIRA_SIDARTHE
+
 
 
 @scenario('evaluation_scenario_2.feature', 'Unit test 1')
 def test_UnitTest1():
     pass
 
+@scenario('evaluation_scenario_2.feature', 'Unit test 1 with MIRA')
+def test_UnitTest1_with_MIRA():
+    pass
+
+@given("MIRA initial state", target_fixture="initial_state")
+def mira_initial_state(SIDARTHE_model):
+     return tuple(torch.as_tensor(v.data['initial_value'])
+                      if v.data['initial_value'] is not None else torch.as_tensor(0.)
+                      for v in SIDARTHE_model.var_order.values())
 
 @given("initial conditions", target_fixture="initial_conditions")
 def initial_conditions():
@@ -23,6 +34,11 @@ def initial_conditions():
     return dict(N=1,
                 initial_state=tuple(torch.as_tensor(s) for s in  (S0, I0, D0, A0, R0, T0, H0, E0)),
                 final_observed_state = tuple(torch.as_tensor(s) for s in  (S0, I0, D0, A0, R0, T0, H0, E0)))
+
+@given("initial state", target_fixture="initial_state")
+def initial_state(initial_conditions):
+    return initial_conditions['initial_state']
+    
 
 @given("parameters", target_fixture="parameters")
 def parameters():
@@ -44,16 +60,22 @@ def parameters():
                  tau_prior=dist.Delta(torch.tensor (0.01)) )
 
 
-@given("SIDARTHE model", target_fixture="initialize_SIDARTHE_model")
+@given("SIDARTHE model", target_fixture="SIDARTHE_model")
 def initialize_SIDARTHE_model(initial_conditions, parameters):
     return SIDARTHE(initial_conditions["N"],**parameters)
 
 
-@when("simulating the model for 100 days", target_fixture="simulate_for_days")
-def simulate_for_days(initialize_SIDARTHE_model,initial_conditions,days=100):
-    return sample(initialize_SIDARTHE_model, 1, initial_conditions["initial_state"], get_tspan(1, days, 10*days))
+@given("MIRA SIDARTHE model", target_fixture="SIDARTHE_model")
+def initialize_MIRA_SIDARTHE_model(MODELPATH = 'models/evaluation_examples/scenario_2/', SIDARTHEPATH = 'scenario2_sidarthe.json'):
+    return MIRA_SIDARTHE.from_mira(os.path.join(MODELPATH,SIDARTHEPATH))
+    
 
+@when("simulating the model for 100 days", target_fixture="simulate_for_days")
+def simulate_for_days(SIDARTHE_model,initial_state,days=100):
+    
+    return sample(SIDARTHE_model, 1, initial_state, get_tspan(1, days, 10*days))
 
 @then("peak of infection is around day 47")
 def day_around_47(simulate_for_days):
     assert torch.abs(torch.argmax(simulate_for_days["I_total_obs"])/10 - torch.tensor(47)) <= 1
+
