@@ -86,6 +86,20 @@ class ODE(pyro.nn.PyroModule):
         self._logging_events = []
         self._construct_static_events()
 
+    # @functools.singledispatchmethod
+    # def load_static_parameter_intervention_events(self, static_parameter_intervention_events: list) -> None:
+    #     '''
+    #     Loads a list of static parameter intervention events into the model.
+    #     '''
+    #     self._static_parameter_intervention_events = sorted(static_parameter_intervention_events)
+    #     self._construct_static_events()
+
+    # @load_static_parameter_intervention_events.register
+    # def _load_static_parameter_intervention_events_tuple(self, static_parameter_intervention_events: tuple) -> None:
+    #     # In python dispatching on float will also dispatch on int.
+    #     intervention_events = [StaticParameterInterventionEvent(torch.tensor(t), p, torch.tensor(v)) for t, p, v in static_parameter_intervention_events]
+    #     self.load_static_parameter_intervention_events(intervention_events)
+
     @functools.singledispatchmethod
     def load_observation_events(self, observation_events: list) -> None:
         # TODO: having trouble dispatching on list of ObservationEvents.
@@ -158,7 +172,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         raise NotImplementedError
     
-    def static_parameter_intervention(self, parameter: str, val: torch.Tensor):
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
 
         raise NotImplementedError
 
@@ -175,58 +189,37 @@ class ODE(pyro.nn.PyroModule):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
+        initial_state = tuple(model._static_events[0].initial_state[v] for v in model.var_order.keys())
 
         # Get tspan from static events
-        tspan = torch.tensor([e.time for e in self._static_events])
- 
-        solutions = []
+        tspan = torch.tensor([e.time for e in model._static_events])
+
+        solutions = [tuple(s.reshape(-1) for s in initial_state)]
 
         # Find the indices of the static intervention events
-        bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
-        bound_pairs = list(zip(bound_indices[:-1], bound_indices[1:]))
+        bound_indices = [0] + [i for i, event in enumerate(model._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(model._static_events)]
+        bound_pairs = zip(bound_indices[:-1], bound_indices[1:])
 
         for (start, stop) in bound_pairs:
+
+            if isinstance(model._static_events[start], StaticParameterInterventionEvent):
+                # Apply the intervention
+                model.static_parameter_intervention(model._static_events[start].parameter, model._static_events[start].value)
+
             # Construct a tspan between the current time and the next static intervention event
             local_tspan = tspan[start:stop+1]
 
             # Simulate from ODE with the new local tspan
-            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method, **kwargs)
+            local_solution = odeint(model.deriv, initial_state, local_tspan, method=method)
 
             # Add the solution to the solutions list.
-            solutions.append(local_solution)
+            solutions.append(tuple(s[1:] for s in local_solution))
 
-            # Apply the intervention
-            self.static_parameter_intervention(self._static_events[i].parameter, self._static_events[i].val)
+            # update the initial_state
+            initial_state = tuple(s[-1] for s in local_solution)
 
-            
-
-
-
-
-
-        # while not done:
-        #     # Find the index of the next static intervention event
-
-        #     # Construct a tspan between the current time and the next static intervention event
-        #     ...
-
-        #     # Simulate from ODE with the new local tspan
-        #     # Add the solution to the solutions list.
-        #     ...
-
-        #     # Apply the intervention
-        #     ...
-
-        #     # Check if we're done.
-        #     ...
-
-        # Concatenate all of the solutions from the while loop
-        solution = torch.concat(solutions, dim=0)
-
-
-        # Simulate from ODE
-        # solution = odeint(self.deriv, initial_state, tspan, method=method, **kwargs)
+        # Concatenate the solutions
+        solution = tuple(torch.cat(s) for s in zip(*solutions))
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         # Compute likelihoods for observations
@@ -376,8 +369,8 @@ class PetriNetODESystem(ODE):
                 for var, sol in zip(self.var_order.values(), solution)
             )
         
-    def static_parameter_intervention(self, parameter: str, val: torch.Tensor):
-        setattr(self, get_name(self.G.parameters[parameter]), val)
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
+        setattr(self, get_name(self.G.parameters[parameter]), value)
 
 class GaussianNoisePetriNetODESystem(PetriNetODESystem):
     '''
