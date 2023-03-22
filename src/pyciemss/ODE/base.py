@@ -189,28 +189,28 @@ class ODE(pyro.nn.PyroModule):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(model._static_events[0].initial_state[v] for v in model.var_order.keys())
+        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
 
         # Get tspan from static events
-        tspan = torch.tensor([e.time for e in model._static_events])
+        tspan = torch.tensor([e.time for e in self._static_events])
 
         solutions = [tuple(s.reshape(-1) for s in initial_state)]
 
         # Find the indices of the static intervention events
-        bound_indices = [0] + [i for i, event in enumerate(model._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(model._static_events)]
+        bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
         bound_pairs = zip(bound_indices[:-1], bound_indices[1:])
 
         for (start, stop) in bound_pairs:
 
-            if isinstance(model._static_events[start], StaticParameterInterventionEvent):
+            if isinstance(self._static_events[start], StaticParameterInterventionEvent):
                 # Apply the intervention
-                model.static_parameter_intervention(model._static_events[start].parameter, model._static_events[start].value)
+                self.static_parameter_intervention(self._static_events[start].parameter, self._static_events[start].value)
 
             # Construct a tspan between the current time and the next static intervention event
             local_tspan = tspan[start:stop+1]
 
             # Simulate from ODE with the new local tspan
-            local_solution = odeint(model.deriv, initial_state, local_tspan, method=method)
+            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method)
 
             # Add the solution to the solutions list.
             solutions.append(tuple(s[1:] for s in local_solution))
