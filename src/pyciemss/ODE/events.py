@@ -63,7 +63,18 @@ class LoggingEvent(StaticEvent):
     def __init__(self, time: Tensor):
         super().__init__(time)
 
-class DynamicStopEvent(Event):
+class StaticParameterInterventionEvent(StaticEvent):
+
+    def __init__(self, time: Tensor, parameter: str, value: Tensor):
+        self.time = time
+        self.parameter = parameter
+        self.value = value
+        super().__init__(time)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(time={self.time}, parameter={self.parameter}, value={self.value})"
+
+class DynamicEvent(Event):
     '''
     Use this event type to represent a dynamic event in the ODE solver.
     This will be the base class for state-dependent interventions.
@@ -74,3 +85,4 @@ class DynamicStopEvent(Event):
 
     def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor:
         raise NotImplementedError
+    

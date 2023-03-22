@@ -23,7 +23,7 @@ import torch
 
 from torchdiffeq import odeint
 
-from pyciemss.ODE.events import StaticEvent, StartEvent, ObservationEvent, LoggingEvent, DynamicStopEvent
+from pyciemss.ODE.events import StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
 T = TypeVar('T')
 Time = TypeVar('Time')
@@ -45,6 +45,8 @@ class ODE(pyro.nn.PyroModule):
 
         self._logging_events = []
         
+        self._static_parameter_intervention_events = []
+
         self._static_events = []
         self._dynamic_stop_events = []
 
@@ -113,12 +115,12 @@ class ODE(pyro.nn.PyroModule):
 
     def _construct_static_events(self):
         '''
-        Returns a list of static events sorted by time.
+        Create an attribute `self._static_events`, which is a list of static events sorted by time.
         This is called whenever we add or remove a collection of static events.
         '''
 
         # Sort the static events by time. This is linear in the number of events. Assumes each are already sorted.
-        self._static_events = [e for e in heapq.merge(self._logging_events, self._observation_events, [self._start_event])]
+        self._static_events = [e for e in heapq.merge(self._logging_events, self._observation_events, self._static_parameter_intervention_events, [self._start_event])]
 
         # Set up the observation indices and observation values.
         self._observation_indices = {}
@@ -155,6 +157,12 @@ class ODE(pyro.nn.PyroModule):
         Returns a dictionary mapping variable names to their order in the state vector.
         '''
         raise NotImplementedError
+    
+    def static_parameter_intervention(self, parameter: str, val: torch.Tensor):
+
+        raise NotImplementedError
+
+    # TODO: modify this forward method to account for interventions.
 
     def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
         '''
@@ -171,9 +179,54 @@ class ODE(pyro.nn.PyroModule):
 
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
+ 
+        solutions = []
+
+        # Find the indices of the static intervention events
+        bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
+        bound_pairs = list(zip(bound_indices[:-1], bound_indices[1:]))
+
+        for (start, stop) in bound_pairs:
+            # Construct a tspan between the current time and the next static intervention event
+            local_tspan = tspan[start:stop+1]
+
+            # Simulate from ODE with the new local tspan
+            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method, **kwargs)
+
+            # Add the solution to the solutions list.
+            solutions.append(local_solution)
+
+            # Apply the intervention
+            self.static_parameter_intervention(self._static_events[i].parameter, self._static_events[i].val)
+
+            
+
+
+
+
+
+        # while not done:
+        #     # Find the index of the next static intervention event
+
+        #     # Construct a tspan between the current time and the next static intervention event
+        #     ...
+
+        #     # Simulate from ODE with the new local tspan
+        #     # Add the solution to the solutions list.
+        #     ...
+
+        #     # Apply the intervention
+        #     ...
+
+        #     # Check if we're done.
+        #     ...
+
+        # Concatenate all of the solutions from the while loop
+        solution = torch.concat(solutions, dim=0)
+
 
         # Simulate from ODE
-        solution = odeint(self.deriv, initial_state, tspan, method=method, **kwargs)
+        # solution = odeint(self.deriv, initial_state, tspan, method=method, **kwargs)
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         # Compute likelihoods for observations
@@ -191,7 +244,6 @@ class ODE(pyro.nn.PyroModule):
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
         return logged_solution
-
 
 @functools.singledispatch
 def get_name(obj) -> str:
@@ -323,6 +375,9 @@ class PetriNetODESystem(ODE):
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
+        
+    def static_parameter_intervention(self, parameter: str, val: torch.Tensor):
+        setattr(self, get_name(self.G.parameters[parameter]), val)
 
 class GaussianNoisePetriNetODESystem(PetriNetODESystem):
     '''
