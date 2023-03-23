@@ -1,7 +1,7 @@
 import unittest
 
 import torch
-from pyciemss.ODE.events import Event, StaticEvent, ObservationEvent, LoggingEvent, StartEvent
+from pyciemss.ODE.events import Event, StaticEvent, ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 
 class TestEvents(unittest.TestCase):
     '''Tests for the events module.'''
@@ -41,6 +41,17 @@ class TestEvents(unittest.TestCase):
         logging_event = LoggingEvent(time)
         self.assertIsNotNone(logging_event)
         self.assertEqual(logging_event.time, time)
+
+    def test_static_parameter_intervention_event(self):
+        '''Test the StaticParameterInterventionEvent class.'''
+        time = 1.
+        parameter = 'a'
+        value = 1.
+        static_parameter_intervention_event = StaticParameterInterventionEvent(time, parameter, value)
+        self.assertIsNotNone(static_parameter_intervention_event)
+        self.assertEqual(static_parameter_intervention_event.time, time)
+        self.assertEqual(static_parameter_intervention_event.parameter, parameter)
+        self.assertEqual(static_parameter_intervention_event.value, value)
 
     def test_lt(self):
         '''Test the __lt__ method.'''

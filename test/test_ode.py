@@ -7,7 +7,7 @@ from copy import deepcopy
 from pyro.distributions import Uniform
 
 from pyciemss.ODE.base import PetriNetODESystem, GaussianNoisePetriNetODESystem
-from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent
+from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 import pyciemss
 
 from pyro.infer.autoguide import AutoNormal
@@ -97,6 +97,28 @@ class TestODE(unittest.TestCase):
 
         self.assertEqual(self.model._observation_var_names, [])
 
+    def test_load_remove_static_parameter_intervention_events(self):
+        '''Test the load_events method for StaticParameterIntervention and the remove_static_parameter_interventions methods.'''
+        # Load some static parameter intervention events
+        intervention1 = StaticParameterInterventionEvent(2.99, "beta", 0.0)
+        intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
+        self.model.load_events([intervention1, intervention2])
+
+        self.assertEqual(len(self.model._static_parameter_intervention_events), 2)
+        self.assertEqual(len(self.model._static_events), 2)
+
+        self.assertEqual(self.model._static_parameter_intervention_events[0].time, torch.tensor(2.99))
+        self.assertEqual(self.model._static_parameter_intervention_events[1].time, torch.tensor(4.11))
+        self.assertEqual(self.model._static_parameter_intervention_events[0].parameter, "beta")
+        self.assertEqual(self.model._static_parameter_intervention_events[1].parameter, "beta")
+        self.assertEqual(self.model._static_parameter_intervention_events[0].value, torch.tensor(0.0))
+        self.assertEqual(self.model._static_parameter_intervention_events[1].value, torch.tensor(10.0))
+
+        self.model.remove_static_parameter_intervention_events()
+        
+        self.assertEqual(len(self.model._static_parameter_intervention_events), 0)
+        self.assertEqual(len(self.model._static_events), 0)
+
     def test_observation_indices_and_values(self):
         '''Test the _setup_observation_indices_and_values method.'''
 
@@ -181,7 +203,12 @@ class TestODE(unittest.TestCase):
         
         # Remove the observation events and add logging events.
         model.remove_observation_events()
-        model.load_events(logging_events) 
+        model.load_events(logging_events)
+
+        # Add a few static parameter interventions
+        intervention1 = StaticParameterInterventionEvent(2.99, "beta", 0.0)
+        intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
+        model.load_events([intervention1, intervention2])
 
         # Sample from the posterior predictive distribution  
         predictions = Predictive(model, guide=guide, num_samples=2)()
@@ -189,3 +216,12 @@ class TestODE(unittest.TestCase):
         self.assertEqual(predictions['I_sol'].shape, predictions['R_sol'].shape)
         self.assertEqual(predictions['I_sol'].shape, predictions['S_sol'].shape)
         self.assertEqual(predictions['I_sol'].shape, torch.Size([2, 9]))
+
+        # Susceptible individuals shouldn't change between t=3 and t=4 because of the first intervention
+        self.assertTrue(torch.all(predictions['S_sol'][:, 2] == predictions['S_sol'][:, 3]))
+
+        # Recovered individuals should increase between t=3 and t=4
+        self.assertTrue(torch.all(predictions['R_sol'][:, 2] < predictions['R_sol'][:, 3]))
+
+        # Susceptible individuals should decrease between t=4 and t=5 because of the second intervention
+        self.assertTrue(torch.all(predictions['S_sol'][:, 3] > predictions['S_sol'][:, 4]))
