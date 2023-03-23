@@ -324,14 +324,14 @@ class PetriNetODESystem(ODE):
                 for var, sol in zip(self.var_order.values(), solution)
             )
 
-class GaussianNoisePetriNetODESystem(PetriNetODESystem):
+class BetaNoisePetriNetODESystem(PetriNetODESystem):
     '''
-    This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
+    This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
-    def __init__(self, G: mira.modeling.Model, noise_var: float = 1):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
         super().__init__(G)
-        self.register_buffer("noise_var", torch.as_tensor(noise_var))
+        self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     @pyro.nn.pyro_method
     def param_prior(self):
@@ -351,4 +351,6 @@ class GaussianNoisePetriNetODESystem(PetriNetODESystem):
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
-        pyro.sample(var_name, pyro.distributions.Normal(solution[var_name], self.noise_var).to_event(1))
+        mu = solution[var_name]
+        n = self.pseudocount
+        pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
