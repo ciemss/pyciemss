@@ -7,7 +7,7 @@ from copy import deepcopy
 from pyro.distributions import Uniform
 
 from pyciemss.ODE.base import PetriNetODESystem, GaussianNoisePetriNetODESystem
-from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent, DynamicStopEvent
+from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent
 import pyciemss
 
 from pyro.infer.autoguide import AutoNormal
