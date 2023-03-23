@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from pyro.distributions import Uniform
 
-from pyciemss.ODE.base import PetriNetODESystem, GaussianNoisePetriNetODESystem
+from pyciemss.ODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem
 from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent, DynamicStopEvent
 import pyciemss
 
@@ -23,7 +23,7 @@ class TestODE(unittest.TestCase):
         STARTERKIT_PATH = "test/models/starter_kit_examples/"
         filename = "CHIME-SIR/model_petri.json"
         filename = os.path.join(STARTERKIT_PATH, filename)
-        self.model = GaussianNoisePetriNetODESystem.from_mira(filename)
+        self.model = BetaNoisePetriNetODESystem.from_mira(filename)
 
     # Clean up after tests
     def tearDown(self):
