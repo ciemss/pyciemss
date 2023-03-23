@@ -1,5 +1,5 @@
 import torch
-from torch import Tensor, nn
+from torch import nn, Tensor
 from typing import Dict, Union, Callable
 
 class Event(nn.Module):
@@ -9,7 +9,7 @@ class Event(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor: 
+    def forward(self, t: float, state: tuple[float, ...]) -> float: 
         raise NotImplementedError
 
 class StaticEvent(Event):
@@ -18,8 +18,8 @@ class StaticEvent(Event):
     Base class for ObservationEvent, StartEvent, and LoggingEvent.
     '''
 
-    def __init__(self, time: Tensor):
-        self.time = time
+    def __init__(self, time: float):
+        self.time = torch.tensor(time)
         super().__init__()
 
     def __repr__(self):
@@ -36,9 +36,9 @@ class ObservationEvent(StaticEvent):
     Use this event type to represent an observation at a given time.
     This is used in the ODE solver to trigger likelihood evaluations.
     '''
-    def __init__(self, time: Tensor, observation: Dict[str, Tensor]):
+    def __init__(self, time: float, observation: Dict[str, float]):
         # self.var_name = var_name
-        self.observation = observation
+        self.observation = {k: torch.tensor(v) for k, v in observation.items()}
         super().__init__(time)
 
     def __repr__(self):
@@ -48,9 +48,13 @@ class StartEvent(StaticEvent):
     '''
     Use this event type to start the trajectory at a given time with a given initial state.    
     '''
-    def __init__(self, time: Tensor, initial_state: Dict[str, Tensor]):
-        self.initial_state = initial_state
+    def __init__(self, time: float, initial_state: Dict[str, float]):
+        self.initial_state = {k: torch.tensor(v) for k, v in initial_state.items()}
         super().__init__(time)
+
+    def __lt__(self, other: Event) -> bool:
+        # Start events are always first
+        return self.time <= other.time
 
     def __repr__(self):
         return f"{self.__class__.__name__}(time={self.time}, initial_state={self.initial_state})"
@@ -60,15 +64,17 @@ class LoggingEvent(StaticEvent):
     Use this event type to measure the state of the system at a given time.
     This will not trigger an observation, nor will it stop the trajectory.
     '''
-    def __init__(self, time: Tensor):
+    def __init__(self, time: float):
         super().__init__(time)
 
 class StaticParameterInterventionEvent(StaticEvent):
+    '''
+    Use this event type to represent a static parameter intervention at a given time.
+    '''
 
-    def __init__(self, time: Tensor, parameter: str, value: Tensor):
-        self.time = time
+    def __init__(self, time: float, parameter: str, value: float):
         self.parameter = parameter
-        self.value = value
+        self.value = torch.tensor(value)
         super().__init__(time)
 
     def __repr__(self):
