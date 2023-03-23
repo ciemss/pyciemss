@@ -40,9 +40,11 @@ class TestODE(unittest.TestCase):
     def test_from_mira_with_noise(self):
         self.assertIsNotNone(self.model)
 
-    def test_load_delete_start_event(self):
-        '''Test the load_start_event and the delete_start_event methods.'''
-        self.model.load_start_event(0.0, {"S": 0.9, "I": 0.1, "R": 0.0})
+    def test_load_remove_start_event(self):
+        '''Test the load_event method for StartEvent and the remove_start_event methods.'''
+        event = StartEvent(0.0, {"S": 0.9, "I": 0.1, "R": 0.0})
+
+        self.model.load_event(event)
         
         self.assertEqual(self.model._start_event.time, torch.tensor(0.0))
         self.assertEqual(self.model._start_event.initial_state["S"], torch.tensor(0.9))
@@ -51,32 +53,34 @@ class TestODE(unittest.TestCase):
         
         self.assertEqual(len(self.model._static_events), 1)
 
-        self.model.delete_start_event()
-        self.assertEqual(self.model._start_event.initial_state, {})
+        self.model.remove_start_event()
+        
+        self.assertIsNone(self.model._start_event)
+        self.assertEqual(len(self.model._static_events), 0)
 
-    def test_load_delete_logging_event(self):
-        '''Test the load_logging_event method.'''
-        log_times = [1., 2.]
-        self.model.load_logging_events(log_times)
+    def test_load_remove_logging_event(self):
+        '''Test the load_events method for LoggingEvent and the remove_logging_events methods.'''
+        self.model.load_events([LoggingEvent(1.0), LoggingEvent(2.0)])
 
         self.assertEqual(self.model._logging_events[0].time, 1.0)
         self.assertEqual(self.model._logging_events[1].time, 2.0)
         self.assertEqual(len(self.model._logging_events), 2)
-        # Includes the default start event
-        self.assertEqual(len(self.model._static_events), 3)
+        self.assertEqual(len(self.model._static_events), 2)
 
-        self.model.delete_logging_events()
+        self.model.remove_logging_events()
 
         self.assertEqual(len(self.model._logging_events), 0)
-        # Includes the default start event
-        self.assertEqual(len(self.model._static_events), 1)
+        self.assertEqual(len(self.model._static_events), 0)
 
-    def test_load_delete_observation_events(self):
-        '''Test the load_observation_events and the delete_observation_events methods.'''
-        self.model.load_observation_events({0.01: {"S": 0.9, "I": 0.1}, 1.0: {"S": 0.8}})
+    def test_load_remove_observation_events(self):
+        '''Test the load_observation_events and the remove_observation_events methods.'''
+        observation1 = ObservationEvent(0.01, {"S": 0.9, "I": 0.1})
+        observation2 = ObservationEvent(1.0, {"S": 0.8})
+
+        self.model.load_events([observation1, observation2])
         
         self.assertEqual(len(self.model._observation_events), 2)
-        self.assertEqual(len(self.model._static_events), 3)
+        self.assertEqual(len(self.model._static_events), 2)
 
         self.assertEqual(self.model._observation_events[0].time, torch.tensor(0.01))
         self.assertEqual(self.model._observation_events[1].time, torch.tensor(1.0))
@@ -86,31 +90,41 @@ class TestODE(unittest.TestCase):
 
         self.assertEqual(set(self.model._observation_var_names), {"S", "I"})
 
-        self.assertEqual(self.model._observation_indices["S"], [1, 2])
-        self.assertEqual(self.model._observation_indices["I"], [1])
+        self.model.remove_observation_events()
+
+        self.assertEqual(len(self.model._observation_events), 0)
+        self.assertEqual(len(self.model._static_events), 0)
+
+        self.assertEqual(self.model._observation_var_names, [])
+
+    def test_observation_indices_and_values(self):
+        '''Test the _setup_observation_indices_and_values method.'''
+
+        observation1 = ObservationEvent(0.01, {"S": 0.9, "I": 0.1})
+        observation2 = ObservationEvent(1.0, {"S": 0.8})
+
+        self.model.load_events([observation1, observation2])
+
+        self.model._setup_observation_indices_and_values()
+
+        self.assertEqual(self.model._observation_indices["S"], [0, 1])
+        self.assertEqual(self.model._observation_indices["I"], [0])
 
         self.assertTrue(torch.equal(self.model._observation_values["S"], torch.tensor([0.9, 0.8]))) 
         self.assertTrue(torch.equal(self.model._observation_values["I"], torch.tensor([0.1])))
-
-        self.model.delete_observation_events()
-
-        self.assertEqual(len(self.model._observation_events), 0)
-        self.assertEqual(len(self.model._static_events), 1)
-
-        self.assertEqual(self.model._observation_var_names, [])
-        self.assertEqual(self.model._observation_indices, {})
-        self.assertEqual(self.model._observation_values, {})
 
     def test_integration(self):
 
         model = self.model
 
         # Load the start event
-        model.load_start_event(0.0, {"S": 0.9, "I": 0.1, "R": 0.0})
+        start_event = StartEvent(0.0, {"S": 0.9, "I": 0.1, "R": 0.0})
+        model.load_event(start_event)
 
         # Load the logging events
-        tspan = [i for i in range(1, 10)]
-        model.load_logging_events(tspan)
+        tspan = range(1, 10)
+        logging_events = [LoggingEvent(t) for t in tspan]
+        model.load_events(logging_events)
 
         # Run the model without observations
         solution = model()
@@ -126,11 +140,13 @@ class TestODE(unittest.TestCase):
         self.assertTrue(torch.all(solution["R"][:-1] < solution["R"][1:]))
 
         # Remove the logs
-        model.delete_logging_events()
+        model.remove_logging_events()
 
         # Load the observation events
-        observations = {1.3: {"R": 0.2, "I":0.15}, 2.3: {"I": 0.1}}
-        model.load_observation_events(observations)
+        observation1 = ObservationEvent(0.01, {"S": 0.9, "I": 0.1})
+        observation2 = ObservationEvent(1.0, {"S": 0.8})
+
+        self.model.load_events([observation1, observation2])
 
         solution = model()
 
@@ -161,12 +177,11 @@ class TestODE(unittest.TestCase):
 
         # Check that the parameters have been updated
         for (i, p) in enumerate(guide.parameters()):
-
             self.assertNotEqual(p, old_params[i])
         
         # Remove the observation events and add logging events.
-        model.delete_observation_events()
-        model.load_logging_events(tspan)  
+        model.remove_observation_events()
+        model.load_events(logging_events) 
 
         # Sample from the posterior predictive distribution  
         predictions = Predictive(model, guide=guide, num_samples=2)()

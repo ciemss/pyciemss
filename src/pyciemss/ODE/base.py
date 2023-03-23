@@ -126,7 +126,6 @@ class ODE(pyro.nn.PyroModule):
         '''
         Remove all observation events from the model.
         '''
-        
         self._observation_events = []
         self._observation_var_names = []
         self._remove_static_events(ObservationEvent)
