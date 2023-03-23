@@ -46,7 +46,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         Resets the model to its initial state.
         '''
-        self._start_event = StartEvent(0.0, {})
+        self._start_event = None
         self._observation_events = []
         self._observation_var_names = []
         self._logging_events = []
@@ -115,6 +115,43 @@ class ODE(pyro.nn.PyroModule):
 
             self._observation_indices_and_values_are_set_up = True
 
+    def remove_start_event(self) -> None:
+        '''
+        Remove the start event from the model.
+        '''
+        self._start_event = None
+        self._remove_static_events(StartEvent)
+
+    def remove_observation_events(self) -> None:
+        '''
+        Remove all observation events from the model.
+        '''
+        
+        self._observation_events = []
+        self._observation_var_names = []
+        self._remove_static_events(ObservationEvent)
+
+    def remove_logging_events(self) -> None:
+        '''
+        Remove all logging events from the model.
+        '''
+        self._logging_events = []
+        self._remove_static_events(LoggingEvent)
+
+    def remove_static_parameter_intervention_events(self) -> None:
+        '''
+        Remove all static parameter intervention events from the model.
+        '''
+        self._static_parameter_intervention_events = []
+        self._remove_static_events(StaticParameterInterventionEvent)
+
+    def _remove_static_events(self, event_class) -> None:
+        '''
+        Remove all static events of Type `event_class` from the model.
+        '''
+        self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
+        self._observation_indices_and_values_are_set_up = False
+
     def deriv(self, t: Time, state: State) -> State:
         '''
         Returns a derivate of `state` with respect to `t`.
@@ -154,7 +191,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         Joint distribution over model parameters, trajectories, and noisy observations.
         '''
-        # Setup the observation indices and values
+        # Setup the memoized observation indices and values
         self._setup_observation_indices_and_values()
 
         # Sample parameters from the prior
