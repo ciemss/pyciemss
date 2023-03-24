@@ -69,10 +69,15 @@ class ODE(pyro.nn.PyroModule):
         Loads an event into the model.
         '''
         self._load_event(event)
-        bisect.insort(self._static_events, event)
-        # If the event is a static event, then we need to set up the observation indices and values again.
-        # We'll do this in the `forward` method if necessary.
-        self._observation_indices_and_values_are_set_up = False
+
+        if isinstance(event, StaticEvent):
+            # If the event is a static event, then we need to set up the observation indices and values again.
+            # We'll do this in the `forward` method if necessary.
+            self._observation_indices_and_values_are_set_up = False
+            bisect.insort(self._static_events, event)
+        else:
+            # If the event is a dynamic event, then we need to add it to the list of dynamic events.
+            raise NotImplementedError
     
     @functools.singledispatchmethod
     def _load_event(self, event:Event) -> None:
