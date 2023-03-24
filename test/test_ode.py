@@ -46,30 +46,27 @@ class TestODE(unittest.TestCase):
 
         self.model.load_event(event)
         
-        self.assertEqual(self.model._start_event.time, torch.tensor(0.0))
-        self.assertEqual(self.model._start_event.initial_state["S"], torch.tensor(0.9))
-        self.assertEqual(self.model._start_event.initial_state["I"], torch.tensor(0.1))
-        self.assertEqual(self.model._start_event.initial_state["R"], torch.tensor(0.0))
-        
         self.assertEqual(len(self.model._static_events), 1)
 
+        self.assertEqual(self.model._static_events[0].time, torch.tensor(0.0))
+        self.assertEqual(self.model._static_events[0].initial_state["S"], torch.tensor(0.9))
+        self.assertEqual(self.model._static_events[0].initial_state["I"], torch.tensor(0.1))
+        self.assertEqual(self.model._static_events[0].initial_state["R"], torch.tensor(0.0))
+        
         self.model.remove_start_event()
         
-        self.assertIsNone(self.model._start_event)
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_load_remove_logging_event(self):
         '''Test the load_events method for LoggingEvent and the remove_logging_events methods.'''
         self.model.load_events([LoggingEvent(1.0), LoggingEvent(2.0)])
 
-        self.assertEqual(self.model._logging_events[0].time, 1.0)
-        self.assertEqual(self.model._logging_events[1].time, 2.0)
-        self.assertEqual(len(self.model._logging_events), 2)
         self.assertEqual(len(self.model._static_events), 2)
+        self.assertEqual(self.model._static_events[0].time, 1.0)
+        self.assertEqual(self.model._static_events[1].time, 2.0)
 
         self.model.remove_logging_events()
 
-        self.assertEqual(len(self.model._logging_events), 0)
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_load_remove_observation_events(self):
@@ -79,20 +76,18 @@ class TestODE(unittest.TestCase):
 
         self.model.load_events([observation1, observation2])
         
-        self.assertEqual(len(self.model._observation_events), 2)
         self.assertEqual(len(self.model._static_events), 2)
 
-        self.assertEqual(self.model._observation_events[0].time, torch.tensor(0.01))
-        self.assertEqual(self.model._observation_events[1].time, torch.tensor(1.0))
-        self.assertEqual(self.model._observation_events[0].observation["S"], torch.tensor(0.9))
-        self.assertEqual(self.model._observation_events[0].observation["I"], torch.tensor(0.1))
-        self.assertEqual(self.model._observation_events[1].observation["S"], torch.tensor(0.8))
+        self.assertEqual(self.model._static_events[0].time, torch.tensor(0.01))
+        self.assertEqual(self.model._static_events[1].time, torch.tensor(1.0))
+        self.assertEqual(self.model._static_events[0].observation["S"], torch.tensor(0.9))
+        self.assertEqual(self.model._static_events[0].observation["I"], torch.tensor(0.1))
+        self.assertEqual(self.model._static_events[1].observation["S"], torch.tensor(0.8))
 
         self.assertEqual(set(self.model._observation_var_names), {"S", "I"})
 
         self.model.remove_observation_events()
 
-        self.assertEqual(len(self.model._observation_events), 0)
         self.assertEqual(len(self.model._static_events), 0)
 
         self.assertEqual(self.model._observation_var_names, [])
@@ -104,19 +99,17 @@ class TestODE(unittest.TestCase):
         intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
         self.model.load_events([intervention1, intervention2])
 
-        self.assertEqual(len(self.model._static_parameter_intervention_events), 2)
         self.assertEqual(len(self.model._static_events), 2)
 
-        self.assertEqual(self.model._static_parameter_intervention_events[0].time, torch.tensor(2.99))
-        self.assertEqual(self.model._static_parameter_intervention_events[1].time, torch.tensor(4.11))
-        self.assertEqual(self.model._static_parameter_intervention_events[0].parameter, "beta")
-        self.assertEqual(self.model._static_parameter_intervention_events[1].parameter, "beta")
-        self.assertEqual(self.model._static_parameter_intervention_events[0].value, torch.tensor(0.0))
-        self.assertEqual(self.model._static_parameter_intervention_events[1].value, torch.tensor(10.0))
+        self.assertEqual(self.model._static_events[0].time, torch.tensor(2.99))
+        self.assertEqual(self.model._static_events[1].time, torch.tensor(4.11))
+        self.assertEqual(self.model._static_events[0].parameter, "beta")
+        self.assertEqual(self.model._static_events[1].parameter, "beta")
+        self.assertEqual(self.model._static_events[0].value, torch.tensor(0.0))
+        self.assertEqual(self.model._static_events[1].value, torch.tensor(10.0))
 
         self.model.remove_static_parameter_intervention_events()
         
-        self.assertEqual(len(self.model._static_parameter_intervention_events), 0)
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_observation_indices_and_values(self):
@@ -126,6 +119,8 @@ class TestODE(unittest.TestCase):
         observation2 = ObservationEvent(1.0, {"S": 0.8})
 
         self.model.load_events([observation1, observation2])
+
+        self.assertListEqual(self.model._observation_var_names, ["S", "I"])
 
         self.model._setup_observation_indices_and_values()
 

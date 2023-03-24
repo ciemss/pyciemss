@@ -46,11 +46,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         Resets the model to its initial state.
         '''
-        self._start_event = None
-        self._observation_events = []
         self._observation_var_names = []
-        self._logging_events = []
-        self._static_parameter_intervention_events = []
         self._static_events = []
         self._dynamic_stop_events = []
         self._observation_indices = {}
@@ -68,6 +64,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         Loads an event into the model.
         '''
+        # Execute specializations of the `_load_event` method, dispatched on the type of event.
         self._load_event(event)
 
         if isinstance(event, StaticEvent):
@@ -84,28 +81,14 @@ class ODE(pyro.nn.PyroModule):
         '''
         Loads an event into the model.
         '''
-        raise NotImplementedError
-
-    @_load_event.register
-    def _load_event_start_event(self, event: StartEvent) -> None:
-        self._start_event = event
+        pass
 
     @_load_event.register
     def _load_event_observation_event(self, event: ObservationEvent) -> None:
-        bisect.insort(self._observation_events, event)
         # Add the variable names to the list of observation variable names if they are not already there.
         for var_name in event.observation.keys():
             if var_name not in self._observation_var_names:
                 self._observation_var_names.append(var_name)
-    
-
-    @_load_event.register
-    def _load_event_logging_event(self, event: LoggingEvent) -> None:
-        bisect.insort(self._logging_events, event)
-
-    @_load_event.register
-    def _load_event_static_parameter_intervention_event(self, event: StaticParameterInterventionEvent) -> None:
-        bisect.insort(self._static_parameter_intervention_events, event)
 
     def _setup_observation_indices_and_values(self):
         '''
