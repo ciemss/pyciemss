@@ -107,14 +107,12 @@ class ODE(pyro.nn.PyroModule):
         '''
         Remove the start event from the model.
         '''
-        self._start_event = None
         self._remove_static_events(StartEvent)
 
     def remove_observation_events(self) -> None:
         '''
         Remove all observation events from the model.
         '''
-        self._observation_events = []
         self._observation_var_names = []
         self._remove_static_events(ObservationEvent)
 
@@ -122,14 +120,12 @@ class ODE(pyro.nn.PyroModule):
         '''
         Remove all logging events from the model.
         '''
-        self._logging_events = []
         self._remove_static_events(LoggingEvent)
 
     def remove_static_parameter_intervention_events(self) -> None:
         '''
         Remove all static parameter intervention events from the model.
         '''
-        self._static_parameter_intervention_events = []
         self._remove_static_events(StaticParameterInterventionEvent)
 
     def _remove_static_events(self, event_class) -> None:
