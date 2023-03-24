@@ -19,7 +19,7 @@ class StaticEvent(Event):
     '''
 
     def __init__(self, time: float):
-        self.time = torch.tensor(time)
+        self.time = torch.as_tensor(time)
         super().__init__()
 
     def __repr__(self):
@@ -38,7 +38,7 @@ class ObservationEvent(StaticEvent):
     '''
     def __init__(self, time: float, observation: Dict[str, float]):
         # self.var_name = var_name
-        self.observation = {k: torch.tensor(v) for k, v in observation.items()}
+        self.observation = {k: torch.as_tensor(v) for k, v in observation.items()}
         super().__init__(time)
 
     def __repr__(self):
@@ -49,7 +49,7 @@ class StartEvent(StaticEvent):
     Use this event type to start the trajectory at a given time with a given initial state.    
     '''
     def __init__(self, time: float, initial_state: Dict[str, float]):
-        self.initial_state = {k: torch.tensor(v) for k, v in initial_state.items()}
+        self.initial_state = {k: torch.as_tensor(v) for k, v in initial_state.items()}
         super().__init__(time)
 
     def __lt__(self, other: Event) -> bool:
@@ -74,7 +74,7 @@ class StaticParameterInterventionEvent(StaticEvent):
 
     def __init__(self, time: float, parameter: str, value: float):
         self.parameter = parameter
-        self.value = torch.tensor(value)
+        self.value = torch.as_tensor(value)
         super().__init__(time)
 
     def __repr__(self):
