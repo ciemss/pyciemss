@@ -18,12 +18,13 @@ import mira.sources
 import mira.sources.petri
 
 import heapq
+import bisect
 
 import torch
 
 from torchdiffeq import odeint
 
-from pyciemss.ODE.events import StaticEvent, StartEvent, ObservationEvent, LoggingEvent, DynamicStopEvent
+from pyciemss.ODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
 T = TypeVar('T')
 Time = TypeVar('Time')
@@ -39,93 +40,100 @@ class ODE(pyro.nn.PyroModule):
     def __init__(self):
         super().__init__()
 
-        self._start_event = StartEvent(0.0, {})
-        self._observation_events = []
-        self._observation_var_names = []
+        self.reset()
 
-        self._logging_events = []
-        
+    def reset(self) -> None:
+        '''
+        Resets the model to its initial state.
+        '''
+        self._observation_var_names = []
         self._static_events = []
         self._dynamic_stop_events = []
-
-    @functools.singledispatchmethod
-    def load_start_event(self, start_event: StartEvent) -> None:
-        '''
-        Loads a start event into the model.
-        '''
-        self._start_event = start_event
-        self._construct_static_events()
-
-    def delete_start_event(self) -> None:
-        '''
-        Deletes the start event from the model.
-        '''
-        self._start_event = StartEvent(0.0, {})
-        self._construct_static_events()
-
-    @load_start_event.register
-    def _load_start_event_float(self, time: float, state: Dict[str, Union[float, torch.Tensor]]) -> None:
-        # In python dispatching on float will also dispatch on int.
-        state = {k: torch.tensor(v) for k, v in state.items()}
-        self.load_start_event(StartEvent(float(time), state))
-
-    def load_logging_events(self, times: Union[torch.Tensor, List]) -> None:
-        '''
-        Loads a list of logging events into the model.
-        '''
-        logging_events = [LoggingEvent(torch.tensor(t)) for t in times]
-        self._logging_events = sorted(logging_events)
-        self._construct_static_events()
-
-    def delete_logging_events(self) -> None:
-        '''
-        Deletes all logging events from the model.
-        '''
-        self._logging_events = []
-        self._construct_static_events()
-
-    @functools.singledispatchmethod
-    def load_observation_events(self, observation_events: list) -> None:
-        # TODO: having trouble dispatching on list of ObservationEvents.
-        '''
-        Loads a list of observation events into the model.
-        '''
-        self._observation_events = sorted(observation_events)
-        observation_var_names = [event.observation.keys() for event in self._observation_events]
-        self._observation_var_names = list(set.union(*map(set, observation_var_names)))
-        self._construct_static_events()
-
-    @load_observation_events.register
-    def _load_observation_events_dict(self, observation_events: dict) -> None:
-        '''
-        Loads a dictionary of observation events into the model.
-        '''
-        observation_events = [ObservationEvent(t, {k: torch.tensor(v) for k, v in obs.items()}) for t, obs in observation_events.items()]
-        self.load_observation_events(observation_events)
-
-    def delete_observation_events(self) -> None:
-        '''
-        Deletes all observation events from the model.
-        '''
-        self._observation_events = []
-        self._observation_var_names = []
-        self._construct_static_events()
-
-    def _construct_static_events(self):
-        '''
-        Returns a list of static events sorted by time.
-        This is called whenever we add or remove a collection of static events.
-        '''
-
-        # Sort the static events by time. This is linear in the number of events. Assumes each are already sorted.
-        self._static_events = [e for e in heapq.merge(self._logging_events, self._observation_events, [self._start_event])]
-
-        # Set up the observation indices and observation values.
         self._observation_indices = {}
         self._observation_values = {}
-        for var_name in self._observation_var_names:
-            self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events) if isinstance(event, ObservationEvent) and var_name in event.observation.keys()]
-            self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name] for i in self._observation_indices[var_name]])
+        self._observation_indices_and_values_are_set_up = False
+    
+    def load_events(self, events: List[Event]) -> None:
+        '''
+        Loads a list of events into the model.
+        '''
+        for event in events:
+            self.load_event(event)
+
+    def load_event(self, event: Event) -> None:
+        '''
+        Loads an event into the model.
+        '''
+        # Execute specializations of the `_load_event` method, dispatched on the type of event.
+        self._load_event(event)
+
+        if isinstance(event, StaticEvent):
+            # If the event is a static event, then we need to set up the observation indices and values again.
+            # We'll do this in the `forward` method if necessary.
+            self._observation_indices_and_values_are_set_up = False
+            bisect.insort(self._static_events, event)
+        else:
+            # If the event is a dynamic event, then we need to add it to the list of dynamic events.
+            raise NotImplementedError
+    
+    @functools.singledispatchmethod
+    def _load_event(self, event:Event) -> None:
+        '''
+        Loads an event into the model.
+        '''
+        pass
+
+    @_load_event.register
+    def _load_event_observation_event(self, event: ObservationEvent) -> None:
+        # Add the variable names to the list of observation variable names if they are not already there.
+        for var_name in event.observation.keys():
+            if var_name not in self._observation_var_names:
+                self._observation_var_names.append(var_name)
+
+    def _setup_observation_indices_and_values(self):
+        '''
+        Set up the observation indices and observation values.
+        '''
+        if not self._observation_indices_and_values_are_set_up:
+            self._observation_indices = {}
+            self._observation_values = {}
+            for var_name in self._observation_var_names:
+                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events) if isinstance(event, ObservationEvent) and var_name in event.observation.keys()]
+                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name] for i in self._observation_indices[var_name]])
+
+            self._observation_indices_and_values_are_set_up = True
+
+    def remove_start_event(self) -> None:
+        '''
+        Remove the start event from the model.
+        '''
+        self._remove_static_events(StartEvent)
+
+    def remove_observation_events(self) -> None:
+        '''
+        Remove all observation events from the model.
+        '''
+        self._observation_var_names = []
+        self._remove_static_events(ObservationEvent)
+
+    def remove_logging_events(self) -> None:
+        '''
+        Remove all logging events from the model.
+        '''
+        self._remove_static_events(LoggingEvent)
+
+    def remove_static_parameter_intervention_events(self) -> None:
+        '''
+        Remove all static parameter intervention events from the model.
+        '''
+        self._remove_static_events(StaticParameterInterventionEvent)
+
+    def _remove_static_events(self, event_class) -> None:
+        '''
+        Remove all static events of Type `event_class` from the model.
+        '''
+        self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
+        self._observation_indices_and_values_are_set_up = False
 
     def deriv(self, t: Time, state: State) -> State:
         '''
@@ -155,11 +163,20 @@ class ODE(pyro.nn.PyroModule):
         Returns a dictionary mapping variable names to their order in the state vector.
         '''
         raise NotImplementedError
+    
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
+        '''
+        Inplace method defining how interventions are applied to modify the model parameters.
+        '''
+        raise NotImplementedError
 
     def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
         '''
         Joint distribution over model parameters, trajectories, and noisy observations.
         '''
+        # Setup the memoized observation indices and values
+        self._setup_observation_indices_and_values()
+
         # Sample parameters from the prior
         self.param_prior()
 
@@ -172,8 +189,33 @@ class ODE(pyro.nn.PyroModule):
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
 
-        # Simulate from ODE
-        solution = odeint(self.deriv, initial_state, tspan, method=method, **kwargs)
+        solutions = [tuple(s.reshape(-1) for s in initial_state)]
+
+        # Find the indices of the static intervention events
+        bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
+        bound_pairs = zip(bound_indices[:-1], bound_indices[1:])
+
+        # Iterate through the static intervention events, running the ODE solver in between each.
+        for (start, stop) in bound_pairs:
+
+            if isinstance(self._static_events[start], StaticParameterInterventionEvent):
+                # Apply the intervention
+                self.static_parameter_intervention(self._static_events[start].parameter, self._static_events[start].value)
+
+            # Construct a tspan between the current time and the next static intervention event
+            local_tspan = tspan[start:stop+1]
+
+            # Simulate from ODE with the new local tspan
+            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method)
+
+            # Add the solution to the solutions list.
+            solutions.append(tuple(s[1:] for s in local_solution))
+
+            # update the initial_state
+            initial_state = tuple(s[-1] for s in local_solution)
+
+        # Concatenate the solutions
+        solution = tuple(torch.cat(s) for s in zip(*solutions))
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         # Compute likelihoods for observations
@@ -191,7 +233,6 @@ class ODE(pyro.nn.PyroModule):
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
         return logged_solution
-
 
 @functools.singledispatch
 def get_name(obj) -> str:
@@ -323,6 +364,9 @@ class PetriNetODESystem(ODE):
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
+        
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
+        setattr(self, get_name(self.G.parameters[parameter]), value)
 
 class BetaNoisePetriNetODESystem(PetriNetODESystem):
     '''
