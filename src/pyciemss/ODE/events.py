@@ -85,10 +85,23 @@ class DynamicEvent(Event):
     Use this event type to represent a dynamic event in the ODE solver.
     This will be the base class for state-dependent interventions.
     '''
-    def __init__(self, stop_condition: nn.Module):
-        self.stop_condition = stop_condition
+    def __init__(self):
         super().__init__()
 
     def forward(self, t: Tensor, state: tuple[Tensor, ...]) -> Tensor:
         raise NotImplementedError
     
+class DynamicParameterInterventionEvent(DynamicEvent):
+    '''
+    Use this event type to represent a dynamic parameter intervention.
+    zero_function: Callable that returns a float when given a state. 
+    parameter: Name of the parameter to be intervened.
+    value: Value of the parameter to be intervened.
+    
+    If the zero_function returns 0, the intervention will be triggered to set the parameter to the value.
+    '''
+    def __init__(self, zero_function: Callable, parameter: str, value: float):
+        self.zero_function = zero_function
+        self.parameter = parameter
+        self.value = torch.as_tensor(value)
+        super().__init__()
