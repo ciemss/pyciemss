@@ -135,6 +135,12 @@ class ODE(pyro.nn.PyroModule):
         self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
         self._observation_indices_and_values_are_set_up = False
 
+    def _remove_dynamic_events(self) -> None:
+        '''
+        Remove all dynamic events from the model.
+        '''
+        self._dynamic_events = []
+
     def deriv(self, t: Time, state: State) -> State:
         '''
         Returns a derivate of `state` with respect to `t`.
@@ -185,6 +191,12 @@ class ODE(pyro.nn.PyroModule):
             state_dict = self.tuple_to_dict(state)
             return zero_function(t, state_dict)
         return tupilified_zero_function
+
+    def create_event_fn(self) -> Callable:
+        def aggregated_zero_function(t, state_dict):
+            return torch.as_tensor([event.zero_function(t, state_dict) for event in self._dynamic_events])
+        # TODO: use python functools.partial to make this faster.
+        return self.tuplify_zero_function(aggregated_zero_function)
 
     def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
         '''
