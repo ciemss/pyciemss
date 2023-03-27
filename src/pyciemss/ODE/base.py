@@ -48,7 +48,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         self._observation_var_names = []
         self._static_events = []
-        self._dynamic_stop_events = []
+        self._dynamic_events = []
         self._observation_indices = {}
         self._observation_values = {}
         self._observation_indices_and_values_are_set_up = False
@@ -74,7 +74,7 @@ class ODE(pyro.nn.PyroModule):
             bisect.insort(self._static_events, event)
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
-            raise NotImplementedError
+            self._dynamic_events.append(event)
     
     @functools.singledispatchmethod
     def _load_event(self, event:Event) -> None:
@@ -158,7 +158,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         raise NotImplementedError
 
-    def var_order(self) -> OrderedDict[str, int]:
+    def get_var_order(self) -> OrderedDict[str, int]:
         '''
         Returns a dictionary mapping variable names to their order in the state vector.
         '''
@@ -169,6 +169,22 @@ class ODE(pyro.nn.PyroModule):
         Inplace method defining how interventions are applied to modify the model parameters.
         '''
         raise NotImplementedError
+
+    def tuple_to_dict(self, state: tuple[torch.Tensor]) -> Dict[str, torch.Tensor]:
+        '''
+        Converts a tuple of tensors to a dictionary of tensors.
+        '''
+        return dict(zip(self.get_var_order().keys(), state))
+
+    def tuplify_zero_function(self, zero_function):
+        '''
+        Translates a user-defined zero function over state dictionaries
+        to a zero function that takes a tuple as input.
+        '''
+        def tupilified_zero_function(t: float, state: tuple):
+            state_dict = self.tuple_to_dict(state)
+            return zero_function(t, state_dict)
+        return tupilified_zero_function
 
     def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
         '''
@@ -184,7 +200,7 @@ class ODE(pyro.nn.PyroModule):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
+        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.get_var_order().keys())
 
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
@@ -216,7 +232,7 @@ class ODE(pyro.nn.PyroModule):
 
         # Concatenate the solutions
         solution = tuple(torch.cat(s) for s in zip(*solutions))
-        solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
+        solution = {v: solution[i] for i, v in enumerate(self.get_var_order().keys())}
 
         # Compute likelihoods for observations
         for var_name in self._observation_var_names:
@@ -303,6 +319,9 @@ class PetriNetODESystem(ODE):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
+
+    def get_var_order(self) -> OrderedDict[str, int]:
+        return self.var_order
 
     @functools.singledispatchmethod
     @classmethod

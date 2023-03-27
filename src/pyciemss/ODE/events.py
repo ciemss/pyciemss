@@ -105,3 +105,6 @@ class DynamicParameterInterventionEvent(DynamicEvent):
         self.parameter = parameter
         self.value = torch.as_tensor(value)
         super().__init__()
+    
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(zero_function={self.zero_function}, parameter={self.parameter}, value={self.value})"
