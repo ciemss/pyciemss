@@ -21,7 +21,9 @@ from .inference_utils import (get_tspan,
                               run_inference,
                               is_density_equal,
                               is_intervention_density_equal)
+import torch
 import pyro
+import pyro.distributions as dist
 
 def log_normal_transform(mu, sigma) -> pyro.distributions.LogNormal:
     """
