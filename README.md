@@ -7,6 +7,7 @@
 To make it easy for you to get started with the pyciemss repository, here's a list of recommended steps:
 
 1. install `pyenv` and `pyenv-virtualenv`:
+( These change for zsh )
 
 ```bash
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
@@ -16,6 +17,7 @@ echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.
 echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+exec "$SHELL"
 pyenv install 3.10.9
 ```
 
