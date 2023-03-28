@@ -1,4 +1,4 @@
-Feature: Evaluation Scenario 2
+Feature: Evaluation_scenario 2
     Reproduce the result in page 9 of the supplementary methods section of the SIDARTHE publication
 
     Scenario: Unit test 1
