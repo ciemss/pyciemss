@@ -21,10 +21,13 @@ exec "$SHELL"
 pyenv install 3.10.9
 ```
 
-2. Install pyciemss and set up a branch-specific virtual environment
+2. Create a 'Personal Access Token' (PAT): Github > Settings > Developer Settings > PAT > Tokens (classic)
+    - When prompted to check boxes, check 'workflow', 'write:packages', 'gist'
+
+3. Install pyciemss and set up a branch-specific virtual environment
 
 ```bash
-git clone https://github.com/ciemss/pyciemss.git <branch-name>
+git clone https://github.com/ciemss/pyciemss.git <branch-name>   # Username: Github user, Password: PAT
 cd <branch-name>
 git checkout <branch-name>
 pyenv virtualenv 3.10.9 <branch-name>
