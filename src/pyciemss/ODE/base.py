@@ -3,7 +3,7 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, List, Tuple, Optional, Tuple, Union, OrderedDict
+from typing import Dict, List, Optional, Union, OrderedDict
 
 import networkx
 import numpy
@@ -18,8 +18,6 @@ import mira.sources
 import mira.sources.petri
 
 import bisect
-
-import torch
 
 from torchdiffeq import odeint
 
