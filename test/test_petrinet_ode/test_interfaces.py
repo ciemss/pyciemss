@@ -84,7 +84,6 @@ class TestODEInterfaces(unittest.TestCase):
         self.assertEqual(simulation['I_sol'].shape[0], num_samples)
         self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
         
-
         observation_event = ObservationEvent(0.2, {"I": 0.1})
         parameters = calibrate(model, [observation_event], num_iterations=2)
         # Test that sample works with inferred parameters
