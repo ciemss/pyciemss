@@ -3,7 +3,7 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union, OrderedDict, Callable
+from typing import Dict, List, Tuple, Optional, Tuple, Union, OrderedDict
 
 import networkx
 import numpy
@@ -17,22 +17,22 @@ import mira.metamodel
 import mira.sources
 import mira.sources.petri
 
-import heapq
 import bisect
 
 import torch
 
 from torchdiffeq import odeint
 
+from pyciemss.interfaces import DynamicalSystem
+
 from pyciemss.ODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
-T = TypeVar('T')
-Time = TypeVar('Time')
-State = TypeVar('State')
-Solution = TypeVar('Solution')
-Observation = Solution
+Time = Union[float, torch.tensor]
+State = torch.tensor
+StateDeriv = torch.tensor
+Solution = torch.tensor
 
-class ODE(pyro.nn.PyroModule):
+class ODE(DynamicalSystem):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
@@ -337,7 +337,7 @@ class PetriNetODESystem(ODE):
             getattr(self, get_name(param_info))
 
     @pyro.nn.pyro_method
-    def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
+    def deriv(self, t: Time, state: State) -> StateDeriv:
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 
@@ -358,7 +358,7 @@ class PetriNetODESystem(ODE):
         return tuple(derivs[v] for v in self.var_order.values())
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> None:
         with pyro.condition(data=data if data is not None else {}):
             return tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
