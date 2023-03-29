@@ -94,6 +94,8 @@ def calibrate(model: DynamicalSystem, *args, **kwargs) -> InferredParameters:
     '''
     raise NotImplementedError
 
+# TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
+@functools.singledispatch
 def optimization(model: DynamicalSystem, 
                  objective_function: ObjectiveFunction,
                  constraints: Constraints,
