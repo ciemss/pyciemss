@@ -208,7 +208,7 @@ class ODE(pyro.nn.PyroModule):
             # We need to get the solution from `start` to `stop`
             # But the solver may stop early if it hits a dynamic event.
             # So we need to check for that and restart accordingly until we have the full solution for the interval.
-            
+
             done = False
             while not done:
                 # Simulate from ODE with the new local tspan
@@ -229,15 +229,6 @@ class ODE(pyro.nn.PyroModule):
                     local_tspan = local_tspan[n_local_solution_points-1:]
                 else:
                     done = True
-
-            # Find how many points are included in `local_solution`
-            n_local_solution_points = local_solution.shape[0]
-
-            # Add the solution to the solutions list.
-            solutions.append(tuple(s[1:] for s in local_solution))
-
-            # update the initial_state
-            initial_state = tuple(s[-1] for s in local_solution)
 
         # Concatenate the solutions
         solution = tuple(torch.cat(s) for s in zip(*solutions))
