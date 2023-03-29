@@ -1,9 +1,10 @@
 import pyro
 
-from typing import TypeVar, Iterable, Optional, Union
+from typing import TypeVar, Optional
 import functools
 
 # Declare types
+# Note: this doesn't really do anything. More of a placeholder for how derived classes should be declared.
 Data                   = TypeVar('Data')
 Intervention           = TypeVar('Intervention')
 InferredParameters     = TypeVar('InferredParameters')
@@ -25,7 +26,6 @@ class DynamicalSystem(pyro.nn.PyroModule):
 
     def forward(self):
         raise NotImplementedError
-
 
 @functools.singledispatch
 def compile_pp(model_or_path, *args, **kwargs) -> DynamicalSystem:
