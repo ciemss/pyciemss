@@ -16,7 +16,7 @@ from pyciemss.PetriNetODE.events import StartEvent, ObservationEvent, LoggingEve
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
-PetriSolution = Tuple[torch.tensor]
+PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
 @functools.singledispatch
