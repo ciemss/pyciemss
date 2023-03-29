@@ -205,8 +205,33 @@ class ODE(pyro.nn.PyroModule):
             # Construct a tspan between the current time and the next static intervention event
             local_tspan = tspan[start:stop+1]
 
-            # Simulate from ODE with the new local tspan
-            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method)
+            # We need to get the solution from `start` to `stop`
+            # But the solver may stop early if it hits a dynamic event.
+            # So we need to check for that and restart accordingly until we have the full solution for the interval.
+            
+            done = False
+            while not done:
+                # Simulate from ODE with the new local tspan
+                local_solution = odeint(self.deriv, initial_state, local_tspan, method=method, event_fn=self.event_fn)
+
+                # Find how many points are included in `local_solution`
+                n_local_solution_points = local_solution.shape[0]
+
+                # Add the solution to the solutions list.
+                solutions.append(tuple(s[1:] for s in local_solution))
+
+                # update the initial_state
+                initial_state = tuple(s[-1] for s in local_solution)
+
+                # Check if the ODE solver stopped early
+                if n_local_solution_points < local_tspan.shape[0]:
+                    # If the ODE solver stopped early, then we need to update the local tspan
+                    local_tspan = local_tspan[n_local_solution_points-1:]
+                else:
+                    done = True
+
+            # Find how many points are included in `local_solution`
+            n_local_solution_points = local_solution.shape[0]
 
             # Add the solution to the solutions list.
             solutions.append(tuple(s[1:] for s in local_solution))
