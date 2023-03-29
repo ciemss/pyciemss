@@ -1,13 +1,4 @@
-import torch
 import pyro
-
-from pyro.infer import Predictive
-# from pyro.infer.autoguide.guides import AutoNormal
-# from pyro.poutine import block
-
-# from pyciemss.risk.ouu import solveOUU
-
-# from pyciemss.utils.inference_utils import run_inference
 
 from typing import TypeVar, Iterable, Optional, Union
 import functools
