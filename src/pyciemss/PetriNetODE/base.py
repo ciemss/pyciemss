@@ -23,7 +23,7 @@ from torchdiffeq import odeint
 
 from pyciemss.interfaces import DynamicalSystem
 
-from pyciemss.ODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
+from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
 Time = Union[float, torch.tensor]
 State = torch.tensor

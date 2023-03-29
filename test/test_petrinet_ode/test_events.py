@@ -1,7 +1,5 @@
 import unittest
-
-import torch
-from pyciemss.ODE.events import Event, StaticEvent, ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
+from pyciemss.PetriNetODE.events import Event, StaticEvent, ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 
 class TestEvents(unittest.TestCase):
     '''Tests for the events module.'''

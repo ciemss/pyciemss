@@ -4,11 +4,8 @@ import os
 import torch
 from copy import deepcopy
 
-from pyro.distributions import Uniform
-
-from pyciemss.ODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem
-from pyciemss.ODE.events import Event, ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
-import pyciemss
+from pyciemss.PetriNetODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem
+from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 
 from pyro.infer.autoguide import AutoNormal
 from pyro.infer import SVI, Trace_ELBO, Predictive

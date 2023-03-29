@@ -25,14 +25,7 @@ class DynamicalSystem(pyro.nn.PyroModule):
         super().__init__()
 
     def forward(self):
-        raise NotImplementedError
-
-@functools.singledispatch
-def compile_pp(model_or_path, *args, **kwargs) -> DynamicalSystem:
-    '''
-    Loads a model from a file or a string and compiles it into a dynamical system
-    '''
-    raise NotImplementedError     
+        raise NotImplementedError  
      
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
@@ -54,17 +47,17 @@ def reset_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def condition(model: DynamicalSystem, data: Data, *args, **kwargs) -> DynamicalSystem:
+def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwargs) -> DynamicalSystem:
     '''
-    Condition a model on observed data.
+    Intervene on a model.
     '''
     raise NotImplementedError
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwargs) -> DynamicalSystem:
+def calibrate(model: DynamicalSystem, data: Data, *args, **kwargs) -> InferredParameters:
     '''
-    Intervene on a model.
+    Approximate the posterior distribution over DynamicalSystem parameters conditional on data.
     '''
     raise NotImplementedError
 
@@ -78,16 +71,7 @@ def sample(model: DynamicalSystem, inferred_parameters: Optional[InferredParamet
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def calibrate(model: DynamicalSystem, *args, **kwargs) -> InferredParameters:
-    '''
-    Approximate the posterior distribution over DynamicalSystem parameters.
-    If the model has not been conditioned on data, this will be the prior distribution.
-    '''
-    raise NotImplementedError
-
-# TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
-@functools.singledispatch
-def optimization(model: DynamicalSystem, 
+def optimize(model: DynamicalSystem, 
                  objective_function: ObjectiveFunction,
                  constraints: Constraints,
                  optimization_algorithm: OptimizationAlgorithm,

@@ -10,7 +10,7 @@ from pyro.poutine import trace, replay, block
 from pyro.infer.autoguide.guides import AutoDelta, AutoNormal
 from pyro.infer import SVI, Trace_ELBO, Predictive
 
-from pyciemss.ODE.base import PetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem
 
 
 STARTERKIT_PATH = os.environ.get("STARTERKIT_PATH", "test/models/starter_kit_examples/")
