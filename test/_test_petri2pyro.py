@@ -10,7 +10,7 @@ from pyro.poutine import trace, replay, block
 from pyro.infer.autoguide.guides import AutoDelta, AutoNormal
 from pyro.infer import SVI, Trace_ELBO, Predictive
 
-from pyciemss.ODE.base import PetriNetODESystem
+from pyciemss.PetriNetODE.base import MiraPetriNetODESystem
 
 
 STARTERKIT_PATH = os.environ.get("STARTERKIT_PATH", "test/models/starter_kit_examples/")
@@ -24,7 +24,7 @@ MIRA_PATH = os.environ.get("MIRA_PATH", "test/models/evaluation_examples/")
 ])
 def test_load_starterkit_scenarios_from_json(filename):
     filename = os.path.join(STARTERKIT_PATH, filename)
-    model = PetriNetODESystem.from_mira(filename)
+    model = MiraPetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
 
 
@@ -35,7 +35,7 @@ def test_load_starterkit_scenarios_from_json(filename):
 ])
 def test_load_evaluation_scenario1_from_json(filename):
     filename = os.path.join(MIRA_PATH, "scenario_1/ta_2", filename)
-    model = PetriNetODESystem.from_mira(filename)
+    model = MiraPetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     if hasattr(model, "default_initial_state"):
         initial_state = model.default_initial_state
@@ -54,7 +54,7 @@ def test_load_evaluation_scenario1_from_json(filename):
 ])
 def test_load_evaluation_scenario2_from_json(filename):
     filename = os.path.join(MIRA_PATH, "scenario_2/ta_2", filename)
-    model = PetriNetODESystem.from_mira(filename)
+    model = MiraPetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     if hasattr(model, "default_initial_state"):
         initial_state = model.default_initial_state
@@ -73,7 +73,7 @@ def test_load_evaluation_scenario2_from_json(filename):
 ])
 def test_load_evaluation_scenario3_from_json(filename):
     filename = os.path.join(MIRA_PATH, "scenario_3/ta_2", filename)
-    model = PetriNetODESystem.from_mira(filename)
+    model = MiraPetriNetODESystem.from_mira(filename)
     assert len(model.var_order) > 0
     if hasattr(model, "default_initial_state"):
         initial_state = model.default_initial_state

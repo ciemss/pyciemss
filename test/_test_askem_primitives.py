@@ -4,10 +4,10 @@ import torch
 import json
 
 from pyciemss.utils import load, add_state_indicies, get_tspan
-from pyciemss.ODE.interventions import constant_intervention_builder
+from pyciemss.PetriNetODE.interventions import constant_intervention_builder
 
-from pyciemss.ODE.askem_primitives import sample, infer_parameters, intervene, optimization
-from pyciemss.ODE.models import SVIIvR
+from pyciemss.PetriNetODE.interfaces import sample, infer_parameters, intervene, optimization
+from pyciemss.PetriNetODE.models import SVIIvR
 
 from pyciemss.risk.ouu import RandomDisplacementBounds, computeRisk
 from pyciemss.risk.qoi import nday_rolling_average

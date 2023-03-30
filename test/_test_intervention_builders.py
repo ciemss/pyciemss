@@ -2,10 +2,10 @@ import unittest
 
 import torch
 from pyciemss.utils import get_tspan
-from pyciemss.ODE.interventions import constant_intervention_builder, parameter_intervention_builder, state_dependent_intervention_builder, time_and_state_dependent_intervention_builder, time_dependent_intervention_builder
+from pyciemss.PetriNetODE.interventions import constant_intervention_builder, parameter_intervention_builder, state_dependent_intervention_builder, time_and_state_dependent_intervention_builder, time_dependent_intervention_builder
 
-from pyciemss.ODE.models import SVIIvR
-from pyciemss.ODE.askem_primitives import sample, intervene
+from pyciemss.PetriNetODE.models import SVIIvR
+from pyciemss.PetriNetODE.interfaces import sample, intervene
 
 class TestInterventions(unittest.TestCase):
     '''
