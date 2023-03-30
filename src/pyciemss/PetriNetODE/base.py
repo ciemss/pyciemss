@@ -354,15 +354,12 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-
+    
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> None:
-        with pyro.condition(data=data if data is not None else {}):
-            tuple(
-                pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
-                for var, sol in zip(self.var_order.values(), solution)
-            )
-        
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        # Default implementation just records the observation, with no randomness.
+        pyro.deterministic(var_name, solution[var_name])
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
@@ -392,7 +389,7 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
                 setattr(self, param_name, val)
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
+    def observation_model(self, solution: Solution, var_name: str) -> None:
         mu = solution[var_name]
         n = self.pseudocount
         pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
