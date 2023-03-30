@@ -358,7 +358,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> None:
         with pyro.condition(data=data if data is not None else {}):
-            return tuple(
+            tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
