@@ -28,7 +28,7 @@ from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, Observat
 Time = Union[float, torch.tensor]
 State = torch.tensor
 StateDeriv = torch.tensor
-Solution = torch.tensor
+Solution = Dict[str, torch.tensor]
 
 class PetriNetODESystem(DynamicalSystem):
     '''
@@ -168,7 +168,7 @@ class PetriNetODESystem(DynamicalSystem):
         '''
         raise NotImplementedError
 
-    def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
+    def forward(self, method="dopri5", **kwargs) -> Solution:
         '''
         Joint distribution over model parameters, trajectories, and noisy observations.
         '''
