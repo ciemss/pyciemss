@@ -2,7 +2,7 @@ import pyro
 import torch
 from pyro.infer import Predictive
 
-from pyciemss.PetriNetODE.base import ODE, BetaNoisePetriNetODESystem, PetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem, MiraPetriNetODESystem
 from pyciemss.risk.ouu import solveOUU
 
 from typing import Iterable, Optional, Tuple
@@ -20,24 +20,24 @@ PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
 @functools.singledispatch
-def load_petri_model(model_path_or_petri, *args, **kwargs) -> ODE:
+def load_petri_model(model_path_or_petri, *args, **kwargs) -> PetriNetODESystem:
     '''
     Load a petri net from a file and/or compile it into a probabilistic program.
     '''
     raise NotImplementedError
 
 @load_petri_model.register
-def load_model_from_path(petri_path: str, add_uncertainty=True) -> ODE:
+def load_model_from_path(petri_path: str, add_uncertainty=True) -> PetriNetODESystem:
     '''
     Load a petri net from a file and compile it into a probabilistic program.
     '''
     if add_uncertainty:
         return BetaNoisePetriNetODESystem.from_mira(petri_path)
     else:
-        return PetriNetODESystem.from_mira(petri_path)
+        return MiraPetriNetODESystem.from_mira(petri_path)
 
 @load_petri_model.register
-def load_model_from_petri(petri, *args, **kwargs) -> ODE:
+def load_model_from_petri(petri, *args, **kwargs) -> PetriNetODESystem:
     '''
     Compile a petri net into a probabilistic program.
     '''
@@ -45,10 +45,10 @@ def load_model_from_petri(petri, *args, **kwargs) -> ODE:
     raise NotImplementedError
 
 @setup_model.register
-def setup_petri_model(petri: ODE, 
+def setup_petri_model(petri: PetriNetODESystem, 
                       start_time: float,
                       start_state: dict[str, float],
-                    ) -> ODE:    
+                    ) -> PetriNetODESystem:    
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
@@ -59,7 +59,7 @@ def setup_petri_model(petri: ODE,
     return new_petri
 
 @reset_model.register
-def reset_petri_model(petri: ODE) -> ODE:
+def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
     '''
     Reset a model to its initial state.
     reset_model * setup_model = id
@@ -69,7 +69,7 @@ def reset_petri_model(petri: ODE) -> ODE:
     return new_petri
 
 @intervene.register
-def intervene_petri_model(petri: ODE, interventions: Iterable[Tuple[float, str, float]]) -> ODE:
+def intervene_petri_model(petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]]) -> PetriNetODESystem:
     '''
     Intervene on a model.
     '''
@@ -80,7 +80,7 @@ def intervene_petri_model(petri: ODE, interventions: Iterable[Tuple[float, str, 
     return new_petri
 
 @calibrate.register
-def calibrate_petri(petri: ODE, 
+def calibrate_petri(petri: PetriNetODESystem, 
                     data: Iterable[Tuple[float, dict[str, float]]],
                     num_iterations: int = 1000, 
                     lr: float = 0.03, 
@@ -112,7 +112,7 @@ def calibrate_petri(petri: ODE,
     return guide
 
 @sample.register
-def sample_petri(petri:ODE,
+def sample_petri(petri:PetriNetODESystem,
                  timepoints: Iterable[float],
                  num_samples: int,
                  inferred_parameters: Optional[PetriInferredParameters] = None) -> PetriSolution:
@@ -126,7 +126,7 @@ def sample_petri(petri:ODE,
     return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)()
 
 @optimize.register
-def optimize_petri(petri:ODE,
+def optimize_petri(petri:PetriNetODESystem,
                    initial_guess,
                    objective_function,
                    constraints,

@@ -30,7 +30,7 @@ State = torch.tensor
 StateDeriv = torch.tensor
 Solution = torch.tensor
 
-class ODE(DynamicalSystem):
+class PetriNetODESystem(DynamicalSystem):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
@@ -263,7 +263,7 @@ def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
     return f"{param.key[-1]}_{param.key}"
 
 
-class PetriNetODESystem(ODE):
+class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
@@ -304,7 +304,7 @@ class PetriNetODESystem(ODE):
 
     @functools.singledispatchmethod
     @classmethod
-    def from_mira(cls, model: mira.modeling.Model) -> "PetriNetODESystem":
+    def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
         return cls(model)
 
     @from_mira.register(mira.metamodel.TemplateModel)
@@ -366,7 +366,7 @@ class PetriNetODESystem(ODE):
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
-class BetaNoisePetriNetODESystem(PetriNetODESystem):
+class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.

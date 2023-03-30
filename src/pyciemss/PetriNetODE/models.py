@@ -6,10 +6,10 @@ import pyro.distributions as dist
 
 from pyro.nn import pyro_method
 
-from pyciemss.PetriNetODE.base import PetriNetODESystem, ODE, Time, State, Solution
+from pyciemss.PetriNetODE.base import MiraPetriNetODESystem, PetriNetODESystem, Time, State, Solution
 from pyciemss.utils import state_flux_constraint
 
-class SVIIvR(ODE):
+class SVIIvR(PetriNetODESystem):
     def __init__(self,
                 N,
                 noise_prior=dist.Uniform(5., 10.),
@@ -86,7 +86,7 @@ class SVIIvR(ODE):
         return (S_obs, V_obs, I_obs, R_obs)
 
 
-class MIRA_SVIIvR(PetriNetODESystem):
+class MIRA_SVIIvR(MiraPetriNetODESystem):
 
     def __init__(self, G, *, noise_var: float = 1):
         super().__init__(G)
