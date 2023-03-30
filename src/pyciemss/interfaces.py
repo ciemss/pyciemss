@@ -65,7 +65,7 @@ def calibrate(model: DynamicalSystem, data: Data, *args, **kwargs) -> InferredPa
 @functools.singledispatch
 def sample(model: DynamicalSystem, inferred_parameters: Optional[InferredParameters] = None, *args, **kwargs) -> Simulation:
     '''
-    Sample `num_samples` trajectories from the prior distribution over ODE models.
+    Sample trajectories from a given `model`, conditional on specified `inferred_parameters`. If `inferred_parameters` is not given, this will sample from the prior distribution.
     '''
     raise NotImplementedError
 
