@@ -46,12 +46,14 @@ def load_model_from_petri(petri, *args, **kwargs) -> ODE:
 
 @setup_model.register
 def setup_petri_model(petri: ODE, 
-                      start_event: StartEvent,
+                      start_time: float,
+                      start_state: dict[str, float],
                     ) -> ODE:    
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
     # TODO: Figure out how to do this without copying the petri net.
+    start_event = StartEvent(start_time, start_state)
     new_petri = copy.deepcopy(petri)
     new_petri.load_event(start_event)
     return new_petri
@@ -67,17 +69,19 @@ def reset_petri_model(petri: ODE) -> ODE:
     return new_petri
 
 @intervene.register
-def intervene_petri_model(petri: ODE, interventions: Iterable[StaticParameterInterventionEvent]) -> ODE:
+def intervene_petri_model(petri: ODE, interventions: Iterable[Tuple[float, str, float]]) -> ODE:
     '''
     Intervene on a model.
     '''
+    # Note: this will have to change if we want to add more sophisticated interventions.
+    interventions = [StaticParameterInterventionEvent(timepoint, parameter, value) for timepoint, parameter, value in interventions]
     new_petri = copy.deepcopy(petri)
     new_petri.load_events(interventions)
     return new_petri
 
 @calibrate.register
 def calibrate_petri(petri: ODE, 
-                    observations: Iterable[ObservationEvent],
+                    data: Iterable[Tuple[float, dict[str, float]]],
                     num_iterations: int = 1000, 
                     lr: float = 0.03, 
                     verbose: bool = False,
@@ -88,6 +92,8 @@ def calibrate_petri(petri: ODE,
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     '''
     new_petri = copy.deepcopy(petri)
+    observations = [ObservationEvent(timepoint, observation) for timepoint, observation in data]
+
     new_petri.load_events(observations)
 
     guide = pyro.infer.autoguide.AutoNormal(new_petri)
