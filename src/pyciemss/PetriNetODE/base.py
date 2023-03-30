@@ -3,7 +3,7 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union, OrderedDict, Callable
+from typing import Dict, List, Optional, Union, OrderedDict
 
 import networkx
 import numpy
@@ -17,22 +17,20 @@ import mira.metamodel
 import mira.sources
 import mira.sources.petri
 
-import heapq
 import bisect
-
-import torch
 
 from torchdiffeq import odeint
 
-from pyciemss.ODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
+from pyciemss.interfaces import DynamicalSystem
 
-T = TypeVar('T')
-Time = TypeVar('Time')
-State = TypeVar('State')
-Solution = TypeVar('Solution')
-Observation = Solution
+from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
-class ODE(pyro.nn.PyroModule):
+Time = Union[float, torch.tensor]
+State = torch.tensor
+StateDeriv = torch.tensor
+Solution = Dict[str, torch.tensor]
+
+class PetriNetODESystem(DynamicalSystem):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
@@ -170,7 +168,7 @@ class ODE(pyro.nn.PyroModule):
         '''
         raise NotImplementedError
 
-    def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
+    def forward(self, method="dopri5", **kwargs) -> Solution:
         '''
         Joint distribution over model parameters, trajectories, and noisy observations.
         '''
@@ -265,7 +263,7 @@ def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
     return f"{param.key[-1]}_{param.key}"
 
 
-class PetriNetODESystem(ODE):
+class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
@@ -306,7 +304,7 @@ class PetriNetODESystem(ODE):
 
     @functools.singledispatchmethod
     @classmethod
-    def from_mira(cls, model: mira.modeling.Model) -> "PetriNetODESystem":
+    def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
         return cls(model)
 
     @from_mira.register(mira.metamodel.TemplateModel)
@@ -337,7 +335,7 @@ class PetriNetODESystem(ODE):
             getattr(self, get_name(param_info))
 
     @pyro.nn.pyro_method
-    def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
+    def deriv(self, t: Time, state: State) -> StateDeriv:
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 
@@ -356,19 +354,16 @@ class PetriNetODESystem(ODE):
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-
+    
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
-        with pyro.condition(data=data if data is not None else {}):
-            return tuple(
-                pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
-                for var, sol in zip(self.var_order.values(), solution)
-            )
-        
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        # Default implementation just records the observation, with no randomness.
+        pyro.deterministic(var_name, solution[var_name])
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
-class BetaNoisePetriNetODESystem(PetriNetODESystem):
+class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
@@ -394,7 +389,7 @@ class BetaNoisePetriNetODESystem(PetriNetODESystem):
                 setattr(self, param_name, val)
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
+    def observation_model(self, solution: Solution, var_name: str) -> None:
         mu = solution[var_name]
         n = self.pseudocount
         pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
