@@ -49,7 +49,7 @@ def reset_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
 @functools.singledispatch
 def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwargs) -> DynamicalSystem:
     '''
-    Intervene on a model.
+    `intervene(model, intervention)` returns a new model where the intervention has been applied.
     '''
     raise NotImplementedError
 
