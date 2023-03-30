@@ -57,7 +57,7 @@ def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwarg
 @functools.singledispatch
 def calibrate(model: DynamicalSystem, data: Data, *args, **kwargs) -> InferredParameters:
     '''
-    Approximate the posterior distribution over DynamicalSystem parameters conditional on data.
+    Infer parameters for a DynamicalSystem model conditional on data. This is typically done using a variational approximation.
     '''
     raise NotImplementedError
 
