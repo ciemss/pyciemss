@@ -3,7 +3,18 @@ import functools
 import json
 import operator
 import os
-from typing import Dict, List, Tuple, Type, TypeVar, Optional, Tuple, Union, OrderedDict, Callable
+from typing import (
+    Dict,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Optional,
+    Tuple,
+    Union,
+    OrderedDict,
+    Callable,
+)
 
 import networkx
 import numpy
@@ -24,18 +35,26 @@ import torch
 
 from torchdiffeq import odeint
 
-from pyciemss.ODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
+from pyciemss.ODE.events import (
+    Event,
+    StaticEvent,
+    StartEvent,
+    ObservationEvent,
+    LoggingEvent,
+    StaticParameterInterventionEvent,
+)
 
-T = TypeVar('T')
-Time = TypeVar('Time')
-State = TypeVar('State')
-Solution = TypeVar('Solution')
+T = TypeVar("T")
+Time = TypeVar("Time")
+State = TypeVar("State")
+Solution = TypeVar("Solution")
 Observation = Solution
 
+
 class ODE(pyro.nn.PyroModule):
-    '''
+    """
     Base class for ordinary differential equations models in PyCIEMSS.
-    '''
+    """
 
     def __init__(self):
         super().__init__()
@@ -43,27 +62,27 @@ class ODE(pyro.nn.PyroModule):
         self.reset()
 
     def reset(self) -> None:
-        '''
+        """
         Resets the model to its initial state.
-        '''
+        """
         self._observation_var_names = []
         self._static_events = []
         self._dynamic_stop_events = []
         self._observation_indices = {}
         self._observation_values = {}
         self._observation_indices_and_values_are_set_up = False
-    
+
     def load_events(self, events: List[Event]) -> None:
-        '''
+        """
         Loads a list of events into the model.
-        '''
+        """
         for event in events:
             self.load_event(event)
 
     def load_event(self, event: Event) -> None:
-        '''
+        """
         Loads an event into the model.
-        '''
+        """
         # Execute specializations of the `_load_event` method, dispatched on the type of event.
         self._load_event(event)
 
@@ -75,12 +94,12 @@ class ODE(pyro.nn.PyroModule):
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
             raise NotImplementedError
-    
+
     @functools.singledispatchmethod
-    def _load_event(self, event:Event) -> None:
-        '''
+    def _load_event(self, event: Event) -> None:
+        """
         Loads an event into the model.
-        '''
+        """
         pass
 
     @_load_event.register
@@ -91,89 +110,103 @@ class ODE(pyro.nn.PyroModule):
                 self._observation_var_names.append(var_name)
 
     def _setup_observation_indices_and_values(self):
-        '''
+        """
         Set up the observation indices and observation values.
-        '''
+        """
         if not self._observation_indices_and_values_are_set_up:
             self._observation_indices = {}
             self._observation_values = {}
             for var_name in self._observation_var_names:
-                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events) if isinstance(event, ObservationEvent) and var_name in event.observation.keys()]
-                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name] for i in self._observation_indices[var_name]])
+                self._observation_indices[var_name] = [
+                    i
+                    for i, event in enumerate(self._static_events)
+                    if isinstance(event, ObservationEvent)
+                    and var_name in event.observation.keys()
+                ]
+                self._observation_values[var_name] = torch.stack(
+                    [
+                        self._static_events[i].observation[var_name]
+                        for i in self._observation_indices[var_name]
+                    ]
+                )
 
             self._observation_indices_and_values_are_set_up = True
 
     def remove_start_event(self) -> None:
-        '''
+        """
         Remove the start event from the model.
-        '''
+        """
         self._remove_static_events(StartEvent)
 
     def remove_observation_events(self) -> None:
-        '''
+        """
         Remove all observation events from the model.
-        '''
+        """
         self._observation_var_names = []
         self._remove_static_events(ObservationEvent)
 
     def remove_logging_events(self) -> None:
-        '''
+        """
         Remove all logging events from the model.
-        '''
+        """
         self._remove_static_events(LoggingEvent)
 
     def remove_static_parameter_intervention_events(self) -> None:
-        '''
+        """
         Remove all static parameter intervention events from the model.
-        '''
+        """
         self._remove_static_events(StaticParameterInterventionEvent)
 
     def _remove_static_events(self, event_class) -> None:
-        '''
+        """
         Remove all static events of Type `event_class` from the model.
-        '''
-        self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
+        """
+        self._static_events = [
+            event for event in self._static_events if not isinstance(event, event_class)
+        ]
         self._observation_indices_and_values_are_set_up = False
 
     def deriv(self, t: Time, state: State) -> State:
-        '''
+        """
         Returns a derivate of `state` with respect to `t`.
-        '''
+        """
         raise NotImplementedError
 
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
-        '''
+        """
         Inplace method defining the prior distribution over model parameters.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
-        '''
+        """
         raise NotImplementedError
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor]) -> None:
-        '''
+    def observation_model(
+        self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor]
+    ) -> None:
+        """
         Conditional distribution of observations given true state trajectory.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
         This needs to be called once for each `var_name` in the set of observed variables.
-        '''
+        """
         raise NotImplementedError
 
     def var_order(self) -> OrderedDict[str, int]:
-        '''
+        """
         Returns a dictionary mapping variable names to their order in the state vector.
-        '''
+        """
         raise NotImplementedError
-    
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
-        '''
+        """
         Inplace method defining how interventions are applied to modify the model parameters.
-        '''
+        """
         raise NotImplementedError
 
     def forward(self, method="dopri5", **kwargs) -> Dict[str, Solution]:
-        '''
+        """
         Joint distribution over model parameters, trajectories, and noisy observations.
-        '''
+        """
         # Setup the memoized observation indices and values
         self._setup_observation_indices_and_values()
 
@@ -184,7 +217,9 @@ class ODE(pyro.nn.PyroModule):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
+        initial_state = tuple(
+            self._static_events[0].initial_state[v] for v in self.var_order.keys()
+        )
 
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
@@ -192,7 +227,15 @@ class ODE(pyro.nn.PyroModule):
         solutions = [tuple(s.reshape(-1) for s in initial_state)]
 
         # Find the indices of the static intervention events
-        bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
+        bound_indices = (
+            [0]
+            + [
+                i
+                for i, event in enumerate(self._static_events)
+                if isinstance(event, StaticParameterInterventionEvent)
+            ]
+            + [len(self._static_events)]
+        )
         bound_pairs = zip(bound_indices[:-1], bound_indices[1:])
 
         # Iterate through the static intervention events, running the ODE solver in between each.
@@ -200,13 +243,18 @@ class ODE(pyro.nn.PyroModule):
 
             if isinstance(self._static_events[start], StaticParameterInterventionEvent):
                 # Apply the intervention
-                self.static_parameter_intervention(self._static_events[start].parameter, self._static_events[start].value)
+                self.static_parameter_intervention(
+                    self._static_events[start].parameter,
+                    self._static_events[start].value,
+                )
 
             # Construct a tspan between the current time and the next static intervention event
-            local_tspan = tspan[start:stop+1]
+            local_tspan = tspan[start : stop + 1]
 
             # Simulate from ODE with the new local tspan
-            local_solution = odeint(self.deriv, initial_state, local_tspan, method=method)
+            local_solution = odeint(
+                self.deriv, initial_state, local_tspan, method=method
+            )
 
             # Add the solution to the solutions list.
             solutions.append(tuple(s[1:] for s in local_solution))
@@ -222,17 +270,27 @@ class ODE(pyro.nn.PyroModule):
         for var_name in self._observation_var_names:
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
-            filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
+            filtered_solution = {
+                v: solution[observation_indices] for v, solution in solution.items()
+            }
             with pyro.condition(data={var_name: observation_values}):
                 self.observation_model(filtered_solution, var_name)
 
         # Log the solution
-        logging_indices = [i for i, event in enumerate(self._static_events) if isinstance(event, LoggingEvent)]
+        logging_indices = [
+            i
+            for i, event in enumerate(self._static_events)
+            if isinstance(event, LoggingEvent)
+        ]
 
         # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
-        logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
+        logged_solution = {
+            v: pyro.deterministic(f"{v}_sol", solution[logging_indices])
+            for v, solution in solution.items()
+        }
 
         return logged_solution
+
 
 @functools.singledispatch
 def get_name(obj) -> str:
@@ -269,6 +327,7 @@ class PetriNetODESystem(ODE):
     """
     Create an ODE system from a petri-net specification.
     """
+
     def __init__(self, G: mira.modeling.Model):
         super().__init__()
         self.G = G
@@ -292,11 +351,14 @@ class PetriNetODESystem(ODE):
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
-        if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
+        if all(
+            var.data.get("initial_value", None) is not None
+            for var in self.var_order.values()
+        ):
             for var in self.var_order.values():
                 self.register_buffer(
                     f"default_initial_state_{get_name(var)}",
-                    torch.as_tensor(var.data["initial_value"])
+                    torch.as_tensor(var.data["initial_value"]),
                 )
 
             self.default_initial_state = tuple(
@@ -317,7 +379,9 @@ class PetriNetODESystem(ODE):
     @from_mira.register(dict)
     @classmethod
     def _from_json(cls, model_json: dict):
-        return cls.from_mira(mira.sources.petri.template_model_from_petri_json(model_json))
+        return cls.from_mira(
+            mira.sources.petri.template_model_from_petri_json(model_json)
+        )
 
     @from_mira.register(str)
     @classmethod
@@ -329,6 +393,7 @@ class PetriNetODESystem(ODE):
 
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
+
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
 
     @pyro.nn.pyro_method
@@ -339,7 +404,7 @@ class PetriNetODESystem(ODE):
     @pyro.nn.pyro_method
     def deriv(self, t: T, state: Tuple[T, ...]) -> Tuple[T, ...]:
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
-        derivs = {k: 0. for k in states}
+        derivs = {k: 0.0 for k in states}
 
         population_size = sum(states.values())
 
@@ -348,7 +413,11 @@ class PetriNetODESystem(ODE):
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
             if len(transition.control) > 0:
-                flux = flux * sum([states[k] for k in transition.control]) / population_size
+                flux = (
+                    flux
+                    * sum([states[k] for k in transition.control])
+                    / population_size
+                )
 
             for c in transition.consumed:
                 derivs[c] -= flux
@@ -358,21 +427,25 @@ class PetriNetODESystem(ODE):
         return tuple(derivs[v] for v in self.var_order.values())
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Observation:
+    def observation_model(
+        self, solution: Solution, data: Optional[Dict[str, State]] = None
+    ) -> Observation:
         with pyro.condition(data=data if data is not None else {}):
             return tuple(
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
-        
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
+
 class BetaNoisePetriNetODESystem(PetriNetODESystem):
-    '''
+    """
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
-    '''
+    """
+
     def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
         super().__init__(G)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
@@ -389,12 +462,16 @@ class BetaNoisePetriNetODESystem(PetriNetODESystem):
             if not isinstance(param_value, pyro.distributions.Distribution):
                 val = pyro.sample(
                     param_name,
-                    pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                    pyro.distributions.Uniform(
+                        max(0.9 * param_value, 0.0), 1.1 * param_value
+                    ),
                 )
                 setattr(self, param_name, val)
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
+    def observation_model(
+        self, solution: Dict[str, torch.Tensor], var_name: str
+    ) -> None:
         mu = solution[var_name]
         n = self.pseudocount
         pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
