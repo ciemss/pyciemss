@@ -156,7 +156,8 @@ class SIDARTHE(ODE):
         S, I, D, A, R, T, H, E = state
 
         # Local fluxes exposed to pyro for interventions.
-        # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
+        # Note: This only works with solvers that use fixed time increments, such as Euler's method.
+        # Otherwise, we have name collisions.
         SI_flux_ = pyro.deterministic("SI_flux %f" % (t), self.alpha * S * I / self.N)
         SD_flux_ = pyro.deterministic("SD_flux %f" % (t), self.beta * S * D / self.N)
         SA_flux_ = pyro.deterministic("SA_flux %f" % (t), self.gamma * S * A / self.N)
@@ -189,8 +190,8 @@ class SIDARTHE(ODE):
         DH_flux = state_flux_constraint(D, DH_flux_)
         RH_flux = state_flux_constraint(R, RH_flux_)
         TH_flux = state_flux_constraint(T, TH_flux_)
-        AT_flux = state_flux_constraint(A, AH_flux_)
-        RT_flux = state_flux_constraint(R, RH_flux_)
+        AT_flux = state_flux_constraint(A, AT_flux_)
+        RT_flux = state_flux_constraint(R, RT_flux_)
         TE_flux = state_flux_constraint(T, TE_flux_)
 
         # Where the real magic happens.
@@ -229,7 +230,7 @@ class SIDARTHE(ODE):
     ) -> Solution:
         S, I, D, A, R, T, H, E = solution
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data == None:
+        if data is None:
             data = {
                 k: None
                 for k in [
@@ -312,7 +313,10 @@ class MIRA_SIDARTHE_PRIORS(MIRA_SIDARTHE):
         super().__init__(G, noise_var)
         # set priors on the rate parameters
         for param in self.G.parameters.values():
-            ## If we want the lognormal distribution to be centered at param.value, with sigma=0.1, then we need to make prior_loc = log(param.value**2/(param.value**2 + sigma**2)) and scale = sqrt( log(1 + sigma**2/param.value**2)) according to wikipedia: https://en.wikipedia.org/wiki/Log-normal_distribution
+            # If we want the lognormal distribution to be centered at param.value, with sigma=0.1,
+            # then we need to make prior_loc = log(param.value**2/(param.value**2 + sigma**2))
+            # and scale = sqrt( log(1 + sigma**2/param.value**2))
+            # according to wikipedia: https://en.wikipedia.org/wiki/Log-normal_distribution
             prior_mean = torch.as_tensor(
                 param.value if param.value is not None else 0.01
             )
@@ -384,7 +388,8 @@ class SIDARTHEV(ODE):
         S, I, D, A, R, T, H, E, V = state
 
         # Local fluxes exposed to pyro for interventions.
-        # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
+        # Note: This only works with solvers that use fixed time increments, such as Euler's method.
+        # Otherwise, we have name collisions.
         SI_flux_ = pyro.deterministic("SI_flux %f" % (t), self.alpha * S * I / self.N)
         SD_flux_ = pyro.deterministic("SD_flux %f" % (t), self.beta * S * D / self.N)
         SA_flux_ = pyro.deterministic("SA_flux %f" % (t), self.gamma * S * A / self.N)
@@ -419,8 +424,8 @@ class SIDARTHEV(ODE):
         DH_flux = state_flux_constraint(D, DH_flux_)
         RH_flux = state_flux_constraint(R, RH_flux_)
         TH_flux = state_flux_constraint(T, TH_flux_)
-        AT_flux = state_flux_constraint(A, AH_flux_)
-        RT_flux = state_flux_constraint(R, RH_flux_)
+        AT_flux = state_flux_constraint(A, AT_flux_)
+        RT_flux = state_flux_constraint(R, RT_flux_)
         RE_flux = state_flux_constraint(R, RE_flux_)
         TE_flux = state_flux_constraint(T, TE_flux_)
         SV_flux = state_flux_constraint(S, SV_flux_)
@@ -465,7 +470,7 @@ class SIDARTHEV(ODE):
     ) -> Solution:
         S, I, D, A, R, T, H, E, V = solution
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data == None:
+        if data is None:
             data = {
                 k: None
                 for k in [
@@ -493,7 +498,7 @@ class SIDARTHEV(ODE):
         H_obs = pyro.deterministic("H_obs", H)
         E_obs = pyro.deterministic("E_obs", E)
         V_obs = pyro.deterministic("V_obs", V)
-        Rt_obs = pyro.deterministic("Rt_obs",)
+        R_obs = pyro.deterministic("R_obs",)
         return (
             S_obs,
             I_obs,
