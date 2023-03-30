@@ -36,7 +36,8 @@ class SVIIvR(ODE):
         S, V, I, Iv, R = state
 
         # Local fluxes exposed to pyro for interventions.
-        # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
+        # Note: This only works with solvers that use fixed time increments, such as Euler's method.
+        # Otherwise, we have name collisions.
         SV_flux_ = pyro.deterministic("SV_flux %f" % (t), self.nu * S)
         SI_flux_ = pyro.deterministic(
             "SI_flux %f" % (t), self.beta * S * (I + Iv) / self.N
@@ -80,7 +81,7 @@ class SVIIvR(ODE):
         S, V, I, Iv, R = solution
 
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data == None:
+        if data is None:
             data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
 
         # TODO: Make sure observations are strictly greater than 0.

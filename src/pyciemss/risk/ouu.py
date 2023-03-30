@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.optimize import basinhopping, minimize
+from scipy.optimize import basinhopping
 
 from causal_pyro.query.do_messenger import do
 from pyro.infer import Predictive
@@ -52,7 +52,8 @@ class computeRisk:
         self.tspan = tspan
         self.guide = guide
 
-    # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
+    # TODO: figure out a way to pass samples between the constraint and the optimization objective function
+    # so as not to do double the labor.
     def __call__(self, x):
         # Apply intervention, perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
@@ -81,7 +82,8 @@ class computeRisk:
 
 class solveOUU:
     """
-    Solve the optimization under uncertainty problem. The core of this class is a wrapper around an appropriate SciPy optimization algorithm.
+    Solve the optimization under uncertainty problem. The core of this class is a wrapper around an
+    appropriate SciPy optimization algorithm.
     """
 
     def __init__(
@@ -110,7 +112,8 @@ class solveOUU:
 
     def solve(self):
         # Thin wrapper around SciPy optimizer(s).
-        # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call must interface with the SciPy optimizer which is not consistent across algorithms.
+        # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call
+        # must interface with the SciPy optimizer which is not consistent across algorithms.
 
         minimizer_kwargs = dict(
             constraints=self.constraints,

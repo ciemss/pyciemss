@@ -11,7 +11,6 @@ from typing import (
     TypeVar,
     Optional,
     Tuple,
-    Union,
     OrderedDict,
     Callable,
 )
@@ -28,10 +27,8 @@ import mira.metamodel
 import mira.sources
 import mira.sources.petri
 
-import heapq
 import bisect
 
-import torch
 
 from torchdiffeq import odeint
 

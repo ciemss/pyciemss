@@ -1,6 +1,6 @@
 import torch
 from torch import nn, Tensor
-from typing import Dict, Union, Callable
+from typing import Dict
 
 
 class Event(nn.Module):
@@ -52,7 +52,7 @@ class ObservationEvent(StaticEvent):
 
 class StartEvent(StaticEvent):
     """
-    Use this event type to start the trajectory at a given time with a given initial state.    
+    Use this event type to start the trajectory at a given time with a given initial state.
     """
 
     def __init__(self, time: float, initial_state: Dict[str, float]):

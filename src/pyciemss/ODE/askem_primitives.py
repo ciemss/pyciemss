@@ -6,12 +6,11 @@ from pyro.poutine import block
 
 from causal_pyro.query.do_messenger import do
 
-from pyciemss.ODE.base import ODE
 from pyciemss.risk.ouu import solveOUU
 
 from pyciemss.utils.inference_utils import run_inference
 
-from typing import TypeVar, Iterable, Optional, Union
+from typing import TypeVar, Iterable, Optional
 
 # Declare types
 PetriNet = TypeVar("PetriNet")
