@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def nday_rolling_average(
     dataCube: np.ndarray,
     tf: float = 90 - 1.0,
