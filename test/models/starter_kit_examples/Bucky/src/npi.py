@@ -54,7 +54,9 @@ def read_npi_file(fname, start_date, end_t, adm2_map, disable_npi=False):
         date_group = group.set_index("adm2").reindex(adm2_map)
         r0_reduction = np.array(date_group[["r0_reduction"]])
         mobility_reduction = np.array(date_group[["mobility_reduction"]])
-        contact_weight = np.array(date_group[["home", "other_locations", "school", "work"]])
+        contact_weight = np.array(
+            date_group[["home", "other_locations", "school", "work"]]
+        )
         r0_reductions.append(r0_reduction)
         mobility_reductions.append(mobility_reduction)
         contact_weights.append(contact_weight)

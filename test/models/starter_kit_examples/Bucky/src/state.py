@@ -27,8 +27,12 @@ class buckyState:  # pylint: disable=too-many-instance-attributes
         indices["Rh"] = slice(indices["R"].stop, indices["R"].stop + self.Rhn)
         indices["D"] = slice(indices["Rh"].stop, indices["Rh"].stop + 1)
 
-        indices["Itot"] = xp.concatenate([xp.r_[v] for k, v in indices.items() if k in ("I", "Ia", "Ic")])
-        indices["H"] = xp.concatenate([xp.r_[v] for k, v in indices.items() if k in ("Ic", "Rh")])
+        indices["Itot"] = xp.concatenate(
+            [xp.r_[v] for k, v in indices.items() if k in ("I", "Ia", "Ic")]
+        )
+        indices["H"] = xp.concatenate(
+            [xp.r_[v] for k, v in indices.items() if k in ("Ic", "Rh")]
+        )
 
         indices["incH"] = slice(indices["D"].stop, indices["D"].stop + 1)
         indices["incC"] = slice(indices["incH"].stop, indices["incH"].stop + 1)

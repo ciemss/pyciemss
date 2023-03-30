@@ -42,8 +42,12 @@ parser.add_argument(
     type=str,
     help="File containing paramters",
 )
-parser.add_argument("--n_mc", "-n", default=100, type=int, help="Number of runs to do for Monte Carlo")
-parser.add_argument("--days", "-d", default=40, type=int, help="Length of the runs in days")
+parser.add_argument(
+    "--n_mc", "-n", default=100, type=int, help="Number of runs to do for Monte Carlo"
+)
+parser.add_argument(
+    "--days", "-d", default=40, type=int, help="Length of the runs in days"
+)
 parser.add_argument(
     "--seed",
     "-s",
@@ -121,7 +125,9 @@ parser.add_argument(
     help="Dir to put the output files",
 )
 
-parser.add_argument("--npi_file", default=None, nargs="?", type=str, help="File containing NPIs")
+parser.add_argument(
+    "--npi_file", default=None, nargs="?", type=str, help="File containing NPIs"
+)
 parser.add_argument(
     "--disable-npi",
     action="store_true",

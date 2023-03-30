@@ -30,8 +30,7 @@
 #  Called by:   main
 #  Calls:       None
 # ==============================================================================
-def get_beta(intrinsic_growth_rate, gamma,
-             susceptible, relative_contact_rate):
+def get_beta(intrinsic_growth_rate, gamma, susceptible, relative_contact_rate):
     """
     Calculates a rate of exposure given an intrinsic growth rate for COVID-19
     :param intrinsic_growth_rate: Rate of spread of COVID-19 cases
@@ -40,8 +39,12 @@ def get_beta(intrinsic_growth_rate, gamma,
     :param relative_contact_rate: The relative contact rate amongst individuals in the population
     :return: beta: The rate of exposure of individuals to persons infected with COVID-19
     """
-    inv_contact_rate = 1.0 - relative_contact_rate  # The inverse rate of contact between individuals in the population ## get_beta_icr_exp
-    updated_growth_rate = intrinsic_growth_rate + gamma  # The intrinsic growth rate adjusted for the recovery rate from infection ## get_beta_ugr_exp
+    inv_contact_rate = (
+        1.0 - relative_contact_rate
+    )  # The inverse rate of contact between individuals in the population ## get_beta_icr_exp
+    updated_growth_rate = (
+        intrinsic_growth_rate + gamma
+    )  # The intrinsic growth rate adjusted for the recovery rate from infection ## get_beta_ugr_exp
     beta = updated_growth_rate / susceptible * inv_contact_rate  ## get_beta_beta_exp
 
     return beta
@@ -109,11 +112,19 @@ def sir(s, i, r, beta, gamma, n):
     :param n: Total population size
     :return:
     """
-    s_n = (-beta * s * i) + s  # Update to the amount of individuals that are susceptible ## sir_s_n_exp
-    i_n = (beta * s * i - gamma * i) + i  # Update to the amount of individuals that are infectious ## sir_i_n_exp
-    r_n = gamma * i + r  # Update to the amount of individuals that are recovered ## sir_r_n_exp
+    s_n = (
+        -beta * s * i
+    ) + s  # Update to the amount of individuals that are susceptible ## sir_s_n_exp
+    i_n = (
+        beta * s * i - gamma * i
+    ) + i  # Update to the amount of individuals that are infectious ## sir_i_n_exp
+    r_n = (
+        gamma * i + r
+    )  # Update to the amount of individuals that are recovered ## sir_r_n_exp
 
-    scale = n / (s_n + i_n + r_n)  # A scaling factor to compute updated disease variables ## sir_scale_exp
+    scale = n / (
+        s_n + i_n + r_n
+    )  # A scaling factor to compute updated disease variables ## sir_scale_exp
 
     s = s_n * scale  ## sir_s_exp
     i = i_n * scale  ## sir_i_exp
@@ -157,10 +168,21 @@ def sir(s, i, r, beta, gamma, n):
 #  Called by:   main
 #  Calls:       sir
 # ==============================================================================
-def sim_sir(s, i, r, gamma, i_day,  ### original inputs
-            N_p, betas, days,  ### changes to original CHIME sim_sir to simplify policy bookkeeping
-            d_a, s_a, i_a, r_a, e_a  ### changes to original CHIME sim_sir simulation bookkeeping - here, bookkeeping represented as lists that are passed in as arguments
-            ):
+def sim_sir(
+    s,
+    i,
+    r,
+    gamma,
+    i_day,  ### original inputs
+    N_p,
+    betas,
+    days,  ### changes to original CHIME sim_sir to simplify policy bookkeeping
+    d_a,
+    s_a,
+    i_a,
+    r_a,
+    e_a,  ### changes to original CHIME sim_sir simulation bookkeeping - here, bookkeeping represented as lists that are passed in as arguments
+):
     n = s + i + r  ## simsir_n_exp
     d = i_day  ## simsir_d_exp
 
@@ -178,7 +200,9 @@ def sim_sir(s, i, r, gamma, i_day,  ### original inputs
             s_a[index] = s  ## simsir_loop_1_1_S_exp
             i_a[index] = i  ## simsir_loop_1_1_I_exp
             r_a[index] = r  ## simsir_loop_1_1_R_exp
-            e_a[index] = i + r  # updated "ever" infected (= i + r)  ### In CHIME sir.py, this is performed at end as sum of two numpy arrays; here perform iteratively
+            e_a[index] = (
+                i + r
+            )  # updated "ever" infected (= i + r)  ### In CHIME sir.py, this is performed at end as sum of two numpy arrays; here perform iteratively
             index += 1  ## simsir_loop_1_1_idx_exp
 
             s, i, r = sir(s, i, r, beta, gamma, n)  ## simsir_loop_1_1_call_sir_exp
@@ -189,7 +213,9 @@ def sim_sir(s, i, r, gamma, i_day,  ### original inputs
     s_a[index] = s  ## simsir_S_exp
     i_a[index] = i  ## simsir_I_exp
     r_a[index] = r  ## simsir_R_exp
-    e_a[index] = i + r  # updated "ever" infected (= i + r)  ### In CHIME sir.py, this is performed at end as sum of two numpy arrays; here perform iteratively
+    e_a[index] = (
+        i + r
+    )  # updated "ever" infected (= i + r)  ### In CHIME sir.py, this is performed at end as sum of two numpy arrays; here perform iteratively
 
     return s, i, r, d_a, s_a, i_a, r_a, e_a  ### return
 
@@ -230,16 +256,28 @@ def main():
         doubling_time = (p_idx - 1.0) * 5.0  ## main_loop_1_dtime_exp
 
         growth_rate = get_growth_rate(doubling_time)  ## main_loop_1_gr_exp
-        beta = get_beta(growth_rate, gamma, s_n,  ## main_loop_1_beta_exp
-                        relative_contact_rate)
+        beta = get_beta(
+            growth_rate, gamma, s_n, relative_contact_rate  ## main_loop_1_beta_exp
+        )
         policys_betas[p_idx] = beta  ## main_loop_1_pbetas_exp
         policy_days[p_idx] = n_days * p_idx  ## main_loop_1_pdays_exp
 
     # simulate dynamics (corresponding roughly to run_projection() )
-    s_n, i_n, r_n, d_a, s_a, i_a, r_a, e_a \
-        = sim_sir(s_n, i_n, r_n, gamma, i_day,  ## main_call_simsir_exp
-                  N_p, policys_betas, policy_days,
-                  d_a, s_a, i_a, r_a, e_a)
+    s_n, i_n, r_n, d_a, s_a, i_a, r_a, e_a = sim_sir(
+        s_n,
+        i_n,
+        r_n,
+        gamma,
+        i_day,  ## main_call_simsir_exp
+        N_p,
+        policys_betas,
+        policy_days,
+        d_a,
+        s_a,
+        i_a,
+        r_a,
+        e_a,
+    )
 
     print("s_n: " + str(s_n))
     print("i_n: " + str(i_n))
@@ -250,4 +288,3 @@ def main():
 
 
 main()
-

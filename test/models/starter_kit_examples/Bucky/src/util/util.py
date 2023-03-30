@@ -16,7 +16,9 @@ import tqdm
 
 # https://stackoverflow.com/questions/38543506/change-logging-print-function-to-tqdm-write-so-logging-doesnt-interfere-wit
 class TqdmLoggingHandler(logging.Handler):
-    def __init__(self, level=logging.NOTSET):  # pylint: disable=useless-super-delegation
+    def __init__(
+        self, level=logging.NOTSET
+    ):  # pylint: disable=useless-super-delegation
         super().__init__(level)
 
     def emit(self, record):
@@ -66,7 +68,9 @@ def bin_age_csv(filename, out_filename):
     df = pd.read_csv(filename, header=None, names=["fips", "age", "N"])
     pop_weighted_IFR = df.N.to_numpy() * estimate_IFR(df.age.to_numpy())
     df = df.assign(IFR=pop_weighted_IFR)
-    df["age_group"] = pd.cut(df["age"], np.append(np.arange(0, 76, 5), 120), right=False)
+    df["age_group"] = pd.cut(
+        df["age"], np.append(np.arange(0, 76, 5), 120), right=False
+    )
     df = df.groupby(["fips", "age_group"]).sum()[["N", "IFR"]].unstack("age_group")
 
     df = df.assign(IFR=df.IFR / df.N)

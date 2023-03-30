@@ -123,7 +123,9 @@ def use_cupy(optimize=False):
         import optuna  # pylint: disable=import-outside-toplevel
 
         optuna.logging.set_verbosity(optuna.logging.WARN)
-        logging.info("Using optuna to optimize kernels, the first calls will be slowwwww")
+        logging.info(
+            "Using optuna to optimize kernels, the first calls will be slowwwww"
+        )
         cp.optimize_kernels = cupyx.optimizing.optimize
         cp.ExperimentalWarning = optuna.exceptions.ExperimentalWarning
     else:

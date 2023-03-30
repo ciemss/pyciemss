@@ -119,14 +119,18 @@ class SEIR_covid:
                 G = pickle.load(f)  # nosec
 
             # Get case history from graph
-            cum_case_hist = xp.vstack(list(nx.get_node_attributes(G, "case_hist").values())).T
+            cum_case_hist = xp.vstack(
+                list(nx.get_node_attributes(G, "case_hist").values())
+            ).T
 
             self.cum_case_hist = cum_case_hist.astype(float)
             self.inc_case_hist = xp.diff(cum_case_hist, axis=0).astype(float)
             self.inc_case_hist[self.inc_case_hist < 0.0] = 0.0
 
             # Get death history from graph
-            cum_death_hist = xp.vstack(list(nx.get_node_attributes(G, "death_hist").values())).T
+            cum_death_hist = xp.vstack(
+                list(nx.get_node_attributes(G, "death_hist").values())
+            ).T
 
             self.cum_death_hist = cum_death_hist.astype(float)
             self.inc_death_hist = xp.diff(cum_death_hist, axis=0).astype(float)
@@ -147,12 +151,20 @@ class SEIR_covid:
 
             # grab the geo id's for later
             self.adm2_id = np.fromiter(
-                [remove_chars(x) for x in nx.get_node_attributes(G, G.graph["adm2_key"]).values()], dtype=int
+                [
+                    remove_chars(x)
+                    for x in nx.get_node_attributes(G, G.graph["adm2_key"]).values()
+                ],
+                dtype=int,
             )
 
             # Mapping from index to adm1
             self.adm1_id = np.fromiter(
-                [remove_chars(x) for x in nx.get_node_attributes(G, G.graph["adm1_key"]).values()], dtype=int
+                [
+                    remove_chars(x)
+                    for x in nx.get_node_attributes(G, G.graph["adm1_key"]).values()
+                ],
+                dtype=int,
             )
             self.adm1_id = xp.asarray(self.adm1_id, dtype=np.int32)
             self.adm1_max = xp.to_cpu(self.adm1_id.max())
@@ -172,9 +184,13 @@ class SEIR_covid:
             # TODO tmp to remove unused contact mats in como comparison graph
             # print(self.contact_mats.keys())
             valid_contact_mats = ["home", "work", "other_locations", "school"]
-            self.contact_mats = {k: v for k, v in self.contact_mats.items() if k in valid_contact_mats}
+            self.contact_mats = {
+                k: v for k, v in self.contact_mats.items() if k in valid_contact_mats
+            }
 
-            self.Cij = xp.vstack([self.contact_mats[k][None, ...] for k in sorted(self.contact_mats)])
+            self.Cij = xp.vstack(
+                [self.contact_mats[k][None, ...] for k in sorted(self.contact_mats)]
+            )
 
             # Get stratified population (and total)
             N_age_init = nx.get_node_attributes(G, "N_age_init")
@@ -186,9 +202,9 @@ class SEIR_covid:
             if "vulnerable_frac" in G.nodes[0]:
                 self.vulnerability_factor = 1.5
                 self.use_vuln = True
-                self.vulnerability_frac = xp.array(list(nx.get_node_attributes(G, "vulnerable_frac").values()))[
-                    :, None
-                ].T
+                self.vulnerability_frac = xp.array(
+                    list(nx.get_node_attributes(G, "vulnerable_frac").values())
+                )[:, None].T
             else:
                 self.vulnerability_frac = xp.full(self.adm2_id.shape, 0.0)
 
@@ -209,26 +225,40 @@ class SEIR_covid:
                 for k in self.npi_params:
                     self.npi_params[k] = xp.array(self.npi_params[k])
                     if k == "contact_weights":
-                        self.npi_params[k] = xp.broadcast_to(self.npi_params[k], (self.t_max + 1, n_nodes, 4))
+                        self.npi_params[k] = xp.broadcast_to(
+                            self.npi_params[k], (self.t_max + 1, n_nodes, 4)
+                        )
                     else:
-                        self.npi_params[k] = xp.broadcast_to(self.npi_params[k], (self.t_max + 1, n_nodes))
+                        self.npi_params[k] = xp.broadcast_to(
+                            self.npi_params[k], (self.t_max + 1, n_nodes)
+                        )
             else:
                 self.npi_params = {
                     "r0_reduct": xp.broadcast_to(xp.ones(1), (self.t_max + 1, n_nodes)),
-                    "contact_weights": xp.broadcast_to(xp.ones(1), (self.t_max + 1, n_nodes, 4)),
-                    "mobility_reduct": xp.broadcast_to(xp.ones(1), (self.t_max + 1, n_nodes)),
+                    "contact_weights": xp.broadcast_to(
+                        xp.ones(1), (self.t_max + 1, n_nodes, 4)
+                    ),
+                    "mobility_reduct": xp.broadcast_to(
+                        xp.ones(1), (self.t_max + 1, n_nodes)
+                    ),
                 }
 
             self.Cij = xp.broadcast_to(self.Cij, (n_nodes,) + self.Cij.shape)
-            self.npi_params["contact_weights"] = self.npi_params["contact_weights"][..., None, None]
+            self.npi_params["contact_weights"] = self.npi_params["contact_weights"][
+                ..., None, None
+            ]
 
             # Build adj mat for the RHS
             G = nx.convert_node_labels_to_integers(G)
 
             edges = xp.array(list(G.edges(data="weight"))).T
 
-            A = sparse.coo_matrix((edges[2], (edges[0].astype(int), edges[1].astype(int))))
-            A = A.tocsr()  # just b/c it will do this for almost every op on the array anyway...
+            A = sparse.coo_matrix(
+                (edges[2], (edges[0].astype(int), edges[1].astype(int)))
+            )
+            A = (
+                A.tocsr()
+            )  # just b/c it will do this for almost every op on the array anyway...
             # TODO threshold low values to zero to make it even more sparse?
             if not self.sparse:
                 A = A.toarray()
@@ -249,7 +279,9 @@ class SEIR_covid:
             if "covid_tracking_data" in G.graph:
                 self.rescale_chr = True
                 ct_data = G.graph["covid_tracking_data"].reset_index()
-                hosp_data = ct_data.loc[ct_data.date == str(self.first_date)][["adm1", "hospitalizedCurrently"]]
+                hosp_data = ct_data.loc[ct_data.date == str(self.first_date)][
+                    ["adm1", "hospitalizedCurrently"]
+                ]
                 hosp_data_adm1 = hosp_data["adm1"].to_numpy()
                 hosp_data_count = hosp_data["hospitalizedCurrently"].to_numpy()
                 self.adm1_current_hosp = xp.zeros((self.adm1_max + 1,), dtype=float)
@@ -303,7 +335,11 @@ class SEIR_covid:
 
                 df = (
                     death_df.set_index(["date", "adm1"])
-                    .merge(case_df.set_index(["date", "adm1"]), left_index=True, right_index=True)
+                    .merge(
+                        case_df.set_index(["date", "adm1"]),
+                        left_index=True,
+                        right_index=True,
+                    )
                     .reset_index()
                 )
 
@@ -311,7 +347,13 @@ class SEIR_covid:
                 cfr_delay = 20
 
                 for adm1, g in df.groupby("adm1"):
-                    g_df = g.set_index("date").sort_index().rolling(7).mean().dropna(how="all")
+                    g_df = (
+                        g.set_index("date")
+                        .sort_index()
+                        .rolling(7)
+                        .mean()
+                        .dropna(how="all")
+                    )
                     g_df.clip(lower=0.0, inplace=True)
                     g_df = g_df.rolling(7).sum()
                     new_deaths = g_df.deathIncrease.to_numpy()
@@ -351,12 +393,16 @@ class SEIR_covid:
         if self.use_vuln:
             self.params.H = (
                 self.params.H[:, None] * (1 - self.vulnerability_frac)
-                + self.vulnerability_factor * self.params.H[:, None] * self.vulnerability_frac
+                + self.vulnerability_factor
+                * self.params.H[:, None]
+                * self.vulnerability_frac
             )
 
             self.params.F = (
                 self.params.F[:, None] * (1 - self.vulnerability_frac)
-                + self.vulnerability_factor * self.params.F[:, None] * self.vulnerability_frac
+                + self.vulnerability_factor
+                * self.params.F[:, None]
+                * self.vulnerability_frac
             )
         else:
             self.params.H = xp.broadcast_to(self.params.H[:, None], self.Nij.shape)
@@ -386,7 +432,9 @@ class SEIR_covid:
 
             # F_RR_fac = truncnorm(xp, 1.0, self.consts.reroll_variance, size=adm1_F_fac.size, a_min=1e-6)
             adm1_F_fac = adm1_F_fac  # * F_RR_fac
-            adm1_F_fac = xp.clip(adm1_F_fac, a_min=0.1, a_max=10.0)  # prevent extreme values
+            adm1_F_fac = xp.clip(
+                adm1_F_fac, a_min=0.1, a_max=10.0
+            )  # prevent extreme values
             if self.debug:
                 logging.debug("adm1 cfr rescaling factor: " + pformat(adm1_F_fac))
             self.params.F = self.params.F * adm1_F_fac[self.adm1_id]
@@ -395,7 +443,11 @@ class SEIR_covid:
 
         # crr_days_needed = max( #TODO this depends on all the Td params, and D_REPORT_TIME...
         case_reporting = xp.to_cpu(
-            self.estimate_reporting(cfr=self.params.F, days_back=22, min_deaths=self.consts.case_reporting_min_deaths),
+            self.estimate_reporting(
+                cfr=self.params.F,
+                days_back=22,
+                min_deaths=self.consts.case_reporting_min_deaths,
+            ),
         )
         self.case_reporting = xp.array(
             mPERT_sample(  # TODO these facs should go in param file
@@ -419,21 +471,37 @@ class SEIR_covid:
             raise SimulationException
 
         if self.consts.reroll_variance > 0.0:
-            self.doubling_t *= truncnorm(xp, 1.0, self.consts.reroll_variance, size=self.doubling_t.shape, a_min=1e-6)
+            self.doubling_t *= truncnorm(
+                xp,
+                1.0,
+                self.consts.reroll_variance,
+                size=self.doubling_t.shape,
+                a_min=1e-6,
+            )
             self.doubling_t = xp.clip(self.doubling_t, 1.0, None) / 2.0
 
-        self.params = self.bucky_params.rescale_doubling_rate(self.doubling_t, self.params, xp, self.A_diag)
+        self.params = self.bucky_params.rescale_doubling_rate(
+            self.doubling_t, self.params, xp, self.A_diag
+        )
 
-        n_nodes = self.Nij.shape[-1]  # len(self.G.nodes())  # TODO this should be refactored out...
+        n_nodes = self.Nij.shape[
+            -1
+        ]  # len(self.G.nodes())  # TODO this should be refactored out...
 
-        mean_case_reporting = xp.mean(self.case_reporting[-self.consts.case_reporting_N_historical_days :], axis=0)
+        mean_case_reporting = xp.mean(
+            self.case_reporting[-self.consts.case_reporting_N_historical_days :], axis=0
+        )
 
         self.params["CASE_REPORT"] = mean_case_reporting
         self.params["THETA"] = xp.broadcast_to(
             self.params["THETA"][:, None], self.Nij.shape
         )  # TODO move all the broadcast_to's to one place, they're all over reset()
-        self.params["GAMMA_H"] = xp.broadcast_to(self.params["GAMMA_H"][:, None], self.Nij.shape)
-        self.params["F_eff"] = xp.clip(self.consts.scaling_F * self.params["F"] / self.params["H"], 0.0, 1.0)
+        self.params["GAMMA_H"] = xp.broadcast_to(
+            self.params["GAMMA_H"][:, None], self.Nij.shape
+        )
+        self.params["F_eff"] = xp.clip(
+            self.consts.scaling_F * self.params["F"] / self.params["H"], 0.0, 1.0
+        )
 
         # init state vector (self.y)
         yy = buckyState(self.consts, self.Nij)
@@ -442,7 +510,8 @@ class SEIR_covid:
             logging.debug("case init")
         Ti = self.params.Ti
         current_I = (
-            xp.sum(self.inc_case_hist[-int(Ti) :], axis=0) + (Ti % 1) * self.inc_case_hist[-int(Ti + 1)]
+            xp.sum(self.inc_case_hist[-int(Ti) :], axis=0)
+            + (Ti % 1) * self.inc_case_hist[-int(Ti + 1)]
         )  # TODO replace with util func
         current_I[xp.isnan(current_I)] = 0.0
         current_I[current_I < 0.0] = 0.0
@@ -455,9 +524,15 @@ class SEIR_covid:
 
         I_init = current_I[None, :] / self.Nij / self.n_age_grps
         D_init = self.init_deaths[None, :] / self.Nij / self.n_age_grps
-        recovered_init = ((self.init_cum_cases) / self.params["SYM_FRAC"] / (self.params["CASE_REPORT"])) * R_fac
+        recovered_init = (
+            (self.init_cum_cases)
+            / self.params["SYM_FRAC"]
+            / (self.params["CASE_REPORT"])
+        ) * R_fac
         R_init = (
-            (recovered_init) / self.Nij / self.n_age_grps - D_init - I_init / self.params["SYM_FRAC"]
+            (recovered_init) / self.Nij / self.n_age_grps
+            - D_init
+            - I_init / self.params["SYM_FRAC"]
         )  # rhi handled later
 
         self.params.H = self.params.H * H_fac
@@ -481,20 +556,31 @@ class SEIR_covid:
         # thus adding CASE_REPORT here might lower Ic and Rh too much
         yy.Ic = self.params.H * I_init / yy.Im  # self.params.CASE_REPORT *
         yy.Rh = (
-            self.consts.scaling_F * self.params.H * I_init * self.params.GAMMA_H / self.params.THETA / yy.Rhn
+            self.consts.scaling_F
+            * self.params.H
+            * I_init
+            * self.params.GAMMA_H
+            / self.params.THETA
+            / yy.Rhn
         )  # self.params.CASE_REPORT *
 
         if self.rescale_chr:
             adm1_hosp = xp.zeros((self.adm1_max + 1,), dtype=float)
-            xp.scatter_add(adm1_hosp, self.adm1_id, xp.sum(yy.H * self.Nij, axis=(0, 1)))
+            xp.scatter_add(
+                adm1_hosp, self.adm1_id, xp.sum(yy.H * self.Nij, axis=(0, 1))
+            )
             adm2_hosp_frac = (self.adm1_current_hosp / adm1_hosp)[self.adm1_id]
             adm0_hosp_frac = xp.nansum(self.adm1_current_hosp) / xp.nansum(adm1_hosp)
             # print(adm0_hosp_frac)
             adm2_hosp_frac[xp.isnan(adm2_hosp_frac)] = adm0_hosp_frac
-            self.params.H = xp.clip(H_fac * self.params.H * adm2_hosp_frac[None, :], self.params.F, 1.0)
+            self.params.H = xp.clip(
+                H_fac * self.params.H * adm2_hosp_frac[None, :], self.params.F, 1.0
+            )
 
             # TODO this .85 should be in param file...
-            self.params["F_eff"] = xp.clip(self.params.scaling_F * self.params["F"] / self.params["H"], 0.0, 1.0)
+            self.params["F_eff"] = xp.clip(
+                self.params.scaling_F * self.params["F"] / self.params["H"], 0.0, 1.0
+            )
 
             yy.I = (1.0 - self.params.H) * I_init / yy.Im
             # y[Ici] = ic_frac * self.params.H * I_init / (len(Ici))
@@ -526,7 +612,9 @@ class SEIR_covid:
         # if xp.sum(self.y, axis=0)
 
         if xp.any(~xp.isfinite(self.y.state)):
-            logging.info("nonfinite values in the state vector, something is wrong with init")
+            logging.info(
+                "nonfinite values in the state vector, something is wrong with init"
+            )
             raise SimulationException
 
         if self.debug:
@@ -549,15 +637,23 @@ class SEIR_covid:
 
     # TODO this needs to be cleaned up
     def estimate_doubling_time_WHO(
-        self, days_back=14, doubling_time_window=7, mean_time_window=None, min_doubling_t=1.0
+        self,
+        days_back=14,
+        doubling_time_window=7,
+        mean_time_window=None,
+        min_doubling_t=1.0,
     ):
 
-        cases = xp.array(self.G.graph["data_WHO"]["#affected+infected+confirmed+total"])[-days_back:]
-        cases_old = xp.array(self.G.graph["data_WHO"]["#affected+infected+confirmed+total"])[
-            -days_back - doubling_time_window : -doubling_time_window
-        ]
+        cases = xp.array(
+            self.G.graph["data_WHO"]["#affected+infected+confirmed+total"]
+        )[-days_back:]
+        cases_old = xp.array(
+            self.G.graph["data_WHO"]["#affected+infected+confirmed+total"]
+        )[-days_back - doubling_time_window : -doubling_time_window]
         adm0_doubling_t = doubling_time_window * xp.log(2.0) / xp.log(cases / cases_old)
-        doubling_t = xp.repeat(adm0_doubling_t[:, None], self.cum_case_hist.shape[-1], axis=1)
+        doubling_t = xp.repeat(
+            adm0_doubling_t[:, None], self.cum_case_hist.shape[-1], axis=1
+        )
         if mean_time_window is not None:
             hist_doubling_t = xp.nanmean(doubling_t[-mean_time_window:], axis=0)
         return hist_doubling_t
@@ -576,12 +672,18 @@ class SEIR_covid:
 
         cases = self.cum_case_hist[-days_back:] / self.case_reporting[-days_back:]
         cases_old = (
-            self.cum_case_hist[-days_back - doubling_time_window : -doubling_time_window]
-            / self.case_reporting[-days_back - doubling_time_window : -doubling_time_window]
+            self.cum_case_hist[
+                -days_back - doubling_time_window : -doubling_time_window
+            ]
+            / self.case_reporting[
+                -days_back - doubling_time_window : -doubling_time_window
+            ]
         )
 
         # adm0
-        adm0_doubling_t = doubling_time_window / xp.log2(xp.nansum(cases, axis=1) / xp.nansum(cases_old, axis=1))
+        adm0_doubling_t = doubling_time_window / xp.log2(
+            xp.nansum(cases, axis=1) / xp.nansum(cases_old, axis=1)
+        )
 
         if self.debug:
             logging.debug("Adm0 doubling time: " + str(adm0_doubling_t))
@@ -610,7 +712,9 @@ class SEIR_covid:
         # adm2
         adm2_doubling_t = doubling_time_window / xp.log2(cases / cases_old)
 
-        valid_adm2_dt = xp.isfinite(adm2_doubling_t) & (adm2_doubling_t > min_doubling_t)
+        valid_adm2_dt = xp.isfinite(adm2_doubling_t) & (
+            adm2_doubling_t > min_doubling_t
+        )
         doubling_t[valid_adm2_dt] = adm2_doubling_t[valid_adm2_dt]
 
         # hist_weights = xp.arange(1., days_back + 1.0, 1.0)
@@ -631,10 +735,11 @@ class SEIR_covid:
         if case_lag is None:
             adm0_cfr_by_age = xp.sum(cfr * self.Nij, axis=1) / xp.sum(self.Nj, axis=0)
             adm0_cfr_total = xp.sum(
-                xp.sum(cfr * self.Nij, axis=1) / xp.sum(self.Nj, axis=0),
-                axis=0,
+                xp.sum(cfr * self.Nij, axis=1) / xp.sum(self.Nj, axis=0), axis=0,
             )
-            case_lag = xp.sum(self.params["D_REPORT_TIME"] * adm0_cfr_by_age / adm0_cfr_total, axis=0)
+            case_lag = xp.sum(
+                self.params["D_REPORT_TIME"] * adm0_cfr_by_age / adm0_cfr_total, axis=0
+            )
 
         case_lag_int = int(case_lag)
         case_lag_frac = case_lag % 1  # TODO replace with util function for the indexing
@@ -642,13 +747,18 @@ class SEIR_covid:
         recent_cum_deaths = self.cum_death_hist - self.cum_death_hist[-90]
         cases_lagged = (
             recent_cum_cases[-case_lag_int - days_back : -case_lag_int]
-            + case_lag_frac * recent_cum_cases[-case_lag_int - 1 - days_back : -case_lag_int - 1]
+            + case_lag_frac
+            * recent_cum_cases[-case_lag_int - 1 - days_back : -case_lag_int - 1]
         )
 
         # adm0
-        adm0_cfr_param = xp.sum(xp.sum(cfr * self.Nij, axis=1) / xp.sum(self.Nj, axis=0), axis=0)
+        adm0_cfr_param = xp.sum(
+            xp.sum(cfr * self.Nij, axis=1) / xp.sum(self.Nj, axis=0), axis=0
+        )
         if self.adm0_cfr_reported is None:
-            self.adm0_cfr_reported = xp.sum(recent_cum_deaths[-days_back:], axis=1) / xp.sum(cases_lagged, axis=1)
+            self.adm0_cfr_reported = xp.sum(
+                recent_cum_deaths[-days_back:], axis=1
+            ) / xp.sum(cases_lagged, axis=1)
         adm0_case_report = adm0_cfr_param / self.adm0_cfr_reported
 
         if self.debug:
@@ -660,7 +770,9 @@ class SEIR_covid:
                 logging.debug(self.adm0_cfr_reported)
             raise SimulationException
 
-        case_report = xp.repeat(adm0_case_report[:, None], cases_lagged.shape[-1], axis=1)
+        case_report = xp.repeat(
+            adm0_case_report[:, None], cases_lagged.shape[-1], axis=1
+        )
 
         # adm1
         adm1_cfr_param = xp.zeros((self.adm1_max + 1,), dtype=float)
@@ -674,7 +786,9 @@ class SEIR_covid:
 
         # adm1_cfr_reported is const, only calc it once and cache it
         if self.adm1_cfr_reported is None:
-            self.adm1_deaths_reported = xp.zeros((self.adm1_max + 1, days_back), dtype=float)
+            self.adm1_deaths_reported = xp.zeros(
+                (self.adm1_max + 1, days_back), dtype=float
+            )
             adm1_lagged_cases = xp.zeros((self.adm1_max + 1, days_back), dtype=float)
 
             xp.scatter_add(
@@ -686,9 +800,13 @@ class SEIR_covid:
 
             self.adm1_cfr_reported = self.adm1_deaths_reported / adm1_lagged_cases
 
-        adm1_case_report = (adm1_cfr_param[:, None] / self.adm1_cfr_reported)[self.adm1_id].T
+        adm1_case_report = (adm1_cfr_param[:, None] / self.adm1_cfr_reported)[
+            self.adm1_id
+        ].T
 
-        valid_mask = (self.adm1_deaths_reported > min_deaths)[self.adm1_id].T & xp.isfinite(adm1_case_report)
+        valid_mask = (self.adm1_deaths_reported > min_deaths)[
+            self.adm1_id
+        ].T & xp.isfinite(adm1_case_report)
         case_report[valid_mask] = adm1_case_report[valid_mask]
 
         # adm2
@@ -698,7 +816,9 @@ class SEIR_covid:
             self.adm2_cfr_reported = recent_cum_deaths[-days_back:] / cases_lagged
         adm2_case_report = adm2_cfr_param / self.adm2_cfr_reported
 
-        valid_adm2_cr = xp.isfinite(adm2_case_report) & (recent_cum_deaths[-days_back:] > min_deaths)
+        valid_adm2_cr = xp.isfinite(adm2_case_report) & (
+            recent_cum_deaths[-days_back:] > min_deaths
+        )
         case_report[valid_adm2_cr] = adm2_case_report[valid_adm2_cr]
 
         return case_report
@@ -728,7 +848,9 @@ class SEIR_covid:
         dy = buckyState(y.consts, Nij)  # TODO make a pseudo copy operator w/ zeros
 
         # effective params after damping w/ allocated stuff
-        t_index = min(int(t), npi["r0_reduct"].shape[0] - 1)  # prevent OOB error when integrator overshoots
+        t_index = min(
+            int(t), npi["r0_reduct"].shape[0] - 1
+        )  # prevent OOB error when integrator overshoots
         BETA_eff = npi["r0_reduct"][t_index] * par["BETA"]
         F_eff = par["F_eff"]
         HOSP = par["H"]
@@ -756,7 +878,9 @@ class SEIR_covid:
         # Aij_eff = A / xp.sum(A, axis=0)
 
         # Infectivity matrix (I made this name up, idk what its really called)
-        I_tot = xp.sum(Nij * y.Itot, axis=0) - (1.0 - par["rel_inf_asym"]) * xp.sum(Nij * y.Ia, axis=0)
+        I_tot = xp.sum(Nij * y.Itot, axis=0) - (1.0 - par["rel_inf_asym"]) * xp.sum(
+            Nij * y.Ia, axis=0
+        )
 
         # I_tmp = (Aij.T @ I_tot.T).T
         if aij_sparse:
@@ -825,7 +949,15 @@ class SEIR_covid:
             t_span=(0.0, self.t_max),
             y0=self.y.state.ravel(),
             t_eval=t_eval,
-            args=(self.Nij, self.Cij, self.A, self.params, self.npi_params, self.sparse, self.y),
+            args=(
+                self.Nij,
+                self.Cij,
+                self.A,
+                self.params,
+                self.npi_params,
+                self.sparse,
+                self.y,
+            ),
         )
         logging.debug("Done integration")
 
@@ -837,7 +969,9 @@ class SEIR_covid:
         # collapse age groups
         out.state = xp.sum(out.state, axis=1)
 
-        population_conserved = (xp.diff(xp.around(xp.sum(out.N, axis=(0, 1)), 1)) == 0.0).all()
+        population_conserved = (
+            xp.diff(xp.around(xp.sum(out.N, axis=(0, 1)), 1)) == 0.0
+        ).all()
         if not population_conserved:
             pass  # TODO we're getting small fp errors here
             # print(xp.sum(xp.diff(xp.around(xp.sum(out[:incH], axis=(0, 1)), 1))))
@@ -849,12 +983,19 @@ class SEIR_covid:
 
         if self.output_dates is None:
             t_output = xp.to_cpu(sol.t)
-            dates = [pd.Timestamp(self.first_date + datetime.timedelta(days=np.round(t))) for t in t_output]
+            dates = [
+                pd.Timestamp(self.first_date + datetime.timedelta(days=np.round(t)))
+                for t in t_output
+            ]
             self.output_dates = np.broadcast_to(dates, out.state.shape[1:])
 
         dates = self.output_dates
 
-        icu = self.Nij[..., None] * self.params["ICU_FRAC"][:, None, None] * xp.sum(y[out.indices["H"]], axis=0)
+        icu = (
+            self.Nij[..., None]
+            * self.params["ICU_FRAC"][:, None, None]
+            * xp.sum(y[out.indices["H"]], axis=0)
+        )
         vent = self.params.ICU_VENT_FRAC[:, None, None] * icu
 
         # prepend the min cumulative cases over the last 2 days in case in the decreased
@@ -874,7 +1015,9 @@ class SEIR_covid:
 
         # prepend the min cumulative cases over the last 2 days in case in the decreased
         prepend_cases = xp.minimum(self.cum_case_hist[-2], self.cum_case_hist[-1])
-        daily_cases_reported = xp.diff(out.incC, axis=-1, prepend=prepend_cases[:, None])
+        daily_cases_reported = xp.diff(
+            out.incC, axis=-1, prepend=prepend_cases[:, None]
+        )
         cum_cases_reported = out.incC
 
         init_inc_case_mean = xp.mean(xp.sum(daily_cases_reported[:, 1:4], axis=0))
@@ -898,7 +1041,9 @@ class SEIR_covid:
         #    raise SimulationException
         N = xp.broadcast_to(self.Nj[..., None], out.state.shape[1:])
 
-        hosps = xp.sum(out.Ic, axis=0) + xp.sum(out.Rh, axis=0)  # why not just using .H?
+        hosps = xp.sum(out.Ic, axis=0) + xp.sum(
+            out.Rh, axis=0
+        )  # why not just using .H?
 
         out.state = out.state.reshape(y.shape[0], -1)
 
@@ -919,12 +1064,18 @@ class SEIR_covid:
             "cumulative_reported_cases": cum_cases_reported.ravel(),
             "current_icu_usage": xp.sum(icu, axis=0).ravel(),
             "current_vent_usage": xp.sum(vent, axis=0).ravel(),
-            "case_reporting_rate": np.broadcast_to(self.params.CASE_REPORT[:, None], adm2_ids.shape).ravel(),
+            "case_reporting_rate": np.broadcast_to(
+                self.params.CASE_REPORT[:, None], adm2_ids.shape
+            ).ravel(),
             "R_eff": (
                 self.npi_params["r0_reduct"].T
-                * np.broadcast_to((self.params.R0 * self.A_diag)[:, None], adm2_ids.shape)
+                * np.broadcast_to(
+                    (self.params.R0 * self.A_diag)[:, None], adm2_ids.shape
+                )
             ).ravel(),
-            "doubling_t": np.broadcast_to(self.doubling_t[:, None], adm2_ids.shape).ravel(),
+            "doubling_t": np.broadcast_to(
+                self.doubling_t[:, None], adm2_ids.shape
+            ).ravel(),
         }
 
         # Collapse the gamma-distributed compartments and move everything to cpu
@@ -962,7 +1113,11 @@ def main(args=None):
         use_cupy(optimize=args.opt)
 
     global xp, ivp, sparse  # pylint: disable=global-variable-not-assigned
-    from .numerical_libs import xp, ivp, sparse  # noqa: E402  # pylint: disable=import-outside-toplevel  # isort:skip
+    from .numerical_libs import (
+        xp,
+        ivp,
+        sparse,
+    )  # noqa: E402  # pylint: disable=import-outside-toplevel  # isort:skip
 
     warnings.simplefilter(action="ignore", category=xp.ExperimentalWarning)
 
@@ -1034,7 +1189,9 @@ def main(args=None):
     try:
         while success < n_mc:
             start_time = datetime.datetime.now()
-            mc_seed = seed_seq.spawn(1)[0].generate_state(1)[0]  # inc spawn key then grab next seed
+            mc_seed = seed_seq.spawn(1)[0].generate_state(1)[
+                0
+            ]  # inc spawn key then grab next seed
             pbar.set_postfix_str(
                 "seed="
                 + str(mc_seed)
@@ -1045,7 +1202,9 @@ def main(args=None):
             try:
                 n_runs += 1
                 with xp.optimize_kernels():
-                    env.run_once(seed=mc_seed, outdir=args.output_dir, output_queue=to_write)
+                    env.run_once(
+                        seed=mc_seed, outdir=args.output_dir, output_queue=to_write
+                    )
                 success += 1
                 pbar.update(1)
             except SimulationException:
