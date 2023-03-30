@@ -126,7 +126,8 @@ def optimize_petri(petri:ODE,
                    constraints,
                    optimizer):
         # TODO: This probably won't work out of the box. Will need to work with Anirban to refactor this.
-        return solveOUU(initial_guess,
-                    objective_function,
-                    constraints,
-                    optimizer_algorithm=optimizer).solve()
+#        return solveOUU(initial_guess,
+#                    objective_function,
+#                    constraints,
+#                    optimizer_algorithm=optimizer).solve()
+    raise NotImplementedError
