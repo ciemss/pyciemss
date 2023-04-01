@@ -50,7 +50,7 @@ class PetriNetODESystem(DynamicalSystem):
         self._observation_indices = {}
         self._observation_values = {}
         self._observation_indices_and_values_are_set_up = False
-    
+
     def load_events(self, events: List[Event]) -> None:
         '''
         Loads a list of events into the model.
@@ -73,7 +73,7 @@ class PetriNetODESystem(DynamicalSystem):
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
             raise NotImplementedError
-    
+
     @functools.singledispatchmethod
     def _load_event(self, event:Event) -> None:
         '''
@@ -161,7 +161,7 @@ class PetriNetODESystem(DynamicalSystem):
         Returns a dictionary mapping variable names to their order in the state vector.
         '''
         raise NotImplementedError
-    
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         '''
         Inplace method defining how interventions are applied to modify the model parameters.
@@ -182,7 +182,7 @@ class PetriNetODESystem(DynamicalSystem):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
+        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order().keys())
 
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
@@ -354,7 +354,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-    
+
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         # Default implementation just records the observation, with no randomness.

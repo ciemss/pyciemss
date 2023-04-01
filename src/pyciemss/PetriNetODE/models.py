@@ -9,6 +9,7 @@ from pyro.nn import pyro_method
 from pyciemss.PetriNetODE.base import MiraPetriNetODESystem, PetriNetODESystem, Time, State, Solution
 from pyciemss.utils import state_flux_constraint
 
+
 class SVIIvR(PetriNetODESystem):
     def __init__(self,
                 N,
@@ -72,7 +73,7 @@ class SVIIvR(PetriNetODESystem):
         S, V, I, Iv, R = solution
 
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data == None:
+        if data is None:
             data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
 
         # TODO: Make sure observations are strictly greater than 0.
