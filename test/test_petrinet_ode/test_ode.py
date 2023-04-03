@@ -4,7 +4,7 @@ import os
 import torch
 from copy import deepcopy
 
-from pyciemss.PetriNetODE.base import MiraPetriNetODESystem, BetaNoisePetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, BetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 
 from pyro.infer.autoguide import AutoNormal
@@ -25,6 +25,14 @@ class TestODE(unittest.TestCase):
     # Clean up after tests
     def tearDown(self):
         self.model = None
+
+    def test_ODE_base_class(self):
+        '''Test the ODE base class.'''
+        # Assert that the constructor requires var_order
+        with self.assertRaises(TypeError):
+            model = PetriNetODESystem()
+
+        # TODO: add more tests here as handwritten implementations of ODEs are added
 
     def test_from_mira(self):
         '''Test the from_mira method.'''

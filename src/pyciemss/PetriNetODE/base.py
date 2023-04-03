@@ -35,8 +35,10 @@ class PetriNetODESystem(DynamicalSystem):
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
 
-    def __init__(self):
+    def __init__(self, var_order: Dict[str, int], **kwargs):
         super().__init__()
+        # The order of the variables in the state vector used in the `deriv` method.
+        self.var_order = var_order
 
         self.reset()
 
@@ -155,12 +157,6 @@ class PetriNetODESystem(DynamicalSystem):
         This needs to be called once for each `var_name` in the set of observed variables.
         '''
         raise NotImplementedError
-
-    def var_order(self) -> OrderedDict[str, int]:
-        '''
-        Returns a dictionary mapping variable names to their order in the state vector.
-        '''
-        raise NotImplementedError
     
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         '''
@@ -268,11 +264,11 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     Create an ODE system from a petri-net specification.
     """
     def __init__(self, G: mira.modeling.Model):
-        super().__init__()
-        self.G = G
-        self.var_order = collections.OrderedDict(
+        var_order = collections.OrderedDict(
             (get_name(var), var) for var in sorted(G.variables.values(), key=get_name)
         )
+        super().__init__(var_order=var_order)
+        self.G = G
 
         for param_info in self.G.parameters.values():
             param_name = get_name(param_info)
