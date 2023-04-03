@@ -35,7 +35,7 @@ class PetriNetODESystem(DynamicalSystem):
     Base class for ordinary differential equations models in PyCIEMSS.
     '''
 
-    def __init__(self, var_order: Dict[str, int], **kwargs):
+    def __init__(self, var_order: Dict[str, int]):
         super().__init__()
         # The order of the variables in the state vector used in the `deriv` method.
         self.var_order = var_order
