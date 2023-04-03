@@ -29,7 +29,7 @@ class TestODE(unittest.TestCase):
     def test_ODE_base_class(self):
         '''Test the ODE base class.'''
         # Assert that the constructor requires var_order
-        with self.assertRaises(TypeError):
+        with self.assertRaises(NotImplementedError):
             model = PetriNetODESystem()
 
         # TODO: add more tests here as handwritten implementations of ODEs are added
