@@ -26,8 +26,8 @@ from pyciemss.interfaces import DynamicalSystem
 from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
 
 Time = Union[float, torch.tensor]
-State = torch.tensor
-StateDeriv = torch.tensor
+State = tuple[torch.tensor]
+StateDeriv = tuple[torch.tensor]
 Solution = Dict[str, torch.tensor]
 
 class PetriNetODESystem(DynamicalSystem):
@@ -135,7 +135,7 @@ class PetriNetODESystem(DynamicalSystem):
         self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
         self._observation_indices_and_values_are_set_up = False
 
-    def deriv(self, t: Time, state: State) -> State:
+    def deriv(self, t: Time, state: State) -> StateDeriv:
         '''
         Returns a derivate of `state` with respect to `t`.
         '''
