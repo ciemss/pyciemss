@@ -5,9 +5,10 @@ from pyro.infer import Predictive
 from pyciemss.PetriNetODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem, MiraPetriNetODESystem
 from pyciemss.risk.ouu import solveOUU
 
-from typing import Iterable, Optional, Tuple
-import functools
+from typing import Iterable, Optional, Tuple, Union
 import copy
+
+import mira
 
 # Load base interfaces
 from pyciemss.interfaces import setup_model, reset_model, intervene, sample, calibrate, optimize
@@ -19,30 +20,14 @@ from pyciemss.PetriNetODE.events import StartEvent, ObservationEvent, LoggingEve
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
-@functools.singledispatch
-def load_petri_model(model_path_or_petri, *args, **kwargs) -> PetriNetODESystem:
-    '''
-    Load a petri net from a file and/or compile it into a probabilistic program.
-    '''
-    raise NotImplementedError
-
-@load_petri_model.register
-def load_model_from_path(petri_path: str, add_uncertainty=True) -> PetriNetODESystem:
+def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model], add_uncertainty=True) -> PetriNetODESystem:
     '''
     Load a petri net from a file and compile it into a probabilistic program.
     '''
     if add_uncertainty:
-        return BetaNoisePetriNetODESystem.from_mira(petri_path)
+        return BetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
     else:
-        return MiraPetriNetODESystem.from_mira(petri_path)
-
-@load_petri_model.register
-def load_model_from_petri(petri, *args, **kwargs) -> PetriNetODESystem:
-    '''
-    Compile a petri net into a probabilistic program.
-    '''
-    # TODO: load from a Mira object directly.
-    raise NotImplementedError
+        return MiraPetriNetODESystem.from_mira(petri_model_or_path)
 
 @setup_model.register
 def setup_petri_model(petri: PetriNetODESystem, 

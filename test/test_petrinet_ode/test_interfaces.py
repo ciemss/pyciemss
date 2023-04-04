@@ -1,6 +1,8 @@
 import unittest
 import os
 
+from mira.examples.sir import sir_parameterized as sir
+
 from pyciemss.PetriNetODE.interfaces import load_petri_model, setup_model, reset_model, intervene, sample, calibrate, optimize
 
 class TestODEInterfaces(unittest.TestCase):
@@ -14,12 +16,20 @@ class TestODEInterfaces(unittest.TestCase):
         self.initial_time = 0.0
         self.initial_state = {"S": 0.9, "I": 0.1, "R": 0.0}
 
-    def test_load_petri(self):
-        '''Test the load_petri function.'''
+    def test_load_petri_from_file(self):
+        '''Test the load_petri function when called on a string.'''
         model = load_petri_model(self.filename, add_uncertainty=True)
         self.assertIsNotNone(model)
 
         model = load_petri_model(self.filename, add_uncertainty=False)
+        self.assertIsNotNone(model)
+
+    def test_load_petri_from_mira_registry(self):
+        '''Test the load_petri function when called on a mira.modeling.Model'''
+        model = load_petri_model(sir, add_uncertainty=True)
+        self.assertIsNotNone(model)
+
+        model = load_petri_model(sir, add_uncertainty=False)
         self.assertIsNotNone(model)
     
     def test_setup_model(self):
@@ -94,3 +104,24 @@ class TestODEInterfaces(unittest.TestCase):
         self.assertEqual(simulation['I_sol'].shape[0], num_samples)
         self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
 
+    def test_sample_from_mira_registry(self):
+        '''Test the sample function when called on a mira.modeling.Model'''
+        model = load_petri_model(sir)
+        # This seems like a bit of a risky test, as mira might change...
+        model = setup_model(model, self.initial_time, {"susceptible_population": 0.9, "infected_population": 0.1, "immune_population": 0.0})
+        
+        timepoints = [0.2, 0.4, 0.6]
+        num_samples = 10
+        # Test that sample works without inferred parameters
+        simulation = sample(model, timepoints, num_samples)
+        
+        self.assertEqual(simulation['infected_population_sol'].shape[0], num_samples)
+        self.assertEqual(simulation['infected_population_sol'].shape[1], len(timepoints))
+        
+        data = [(0.2, {"infected_population": 0.1}), (0.4, {"infected_population": 0.2}), (0.6, {"infected_population": 0.3})]
+        parameters = calibrate(model, data, num_iterations=2)
+        # Test that sample works with inferred parameters
+        simulation = sample(model, timepoints, num_samples, parameters)
+
+        self.assertEqual(simulation['infected_population_sol'].shape[0], num_samples)
+        self.assertEqual(simulation['infected_population_sol'].shape[1], len(timepoints))
