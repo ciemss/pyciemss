@@ -1,6 +1,6 @@
 import torch
 import pyro
-from causal_pyro.query.do_messenger import do
+# from causal_pyro.query.do_messenger import do
 from pyro.infer import SVI, Trace_ELBO
 from pyro.optim import Adam
 import numpy as np
