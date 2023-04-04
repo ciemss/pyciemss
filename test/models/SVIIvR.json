@@ -31,43 +31,43 @@
 	    "tname": "t1",
 	    "template_type": "ControlledConversion",
 	    "parameter_name": "beta",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.2
 	},
 	{
 	    "tname": "t2",
 	    "template_type": "ControlledConversion",
 	    "parameter_name": "betaV",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.0375
 	},
 	{
 	    "tname": "t3",
 	    "template_type": "NaturalConversion",
 	    "parameter_name": "nu",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.005
 	},
 	{
 	    "tname": "t4",
 	    "template_type": "ControlledConversion",
 	    "parameter_name": "beta",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.2
 	},
 	{
 	    "tname": "t5",
 	    "template_type": "ControlledConversion",
 	    "parameter_name": "betaV",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.0375
 	},
 	{
 	    "tname": "t6",
 	    "template_type": "NaturalConversion",
 	    "parameter_name": "gamma",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.175
 	},
 	{
 	    "tname": "t7",
 	    "template_type": "NaturalConversion",
 	    "parameter_name": "gammaV",
-	    "parameter_value": 1.0
+	    "parameter_value": 0.25
 	}
     ],
     "I": [
