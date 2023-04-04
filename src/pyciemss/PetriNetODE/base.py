@@ -23,11 +23,12 @@ from torchdiffeq import odeint
 
 from pyciemss.interfaces import DynamicalSystem
 
-from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
+from pyciemss.PetriNetODE.events import (Event, StaticEvent, StartEvent, ObservationEvent,
+                                         LoggingEvent, StaticParameterInterventionEvent)
 
 Time = Union[float, torch.tensor]
-State = torch.tensor
-StateDeriv = torch.tensor
+State = tuple[torch.tensor]
+StateDeriv = tuple[torch.tensor]
 Solution = Dict[str, torch.tensor]
 
 class PetriNetODESystem(DynamicalSystem):
@@ -37,6 +38,8 @@ class PetriNetODESystem(DynamicalSystem):
 
     def __init__(self):
         super().__init__()
+        # The order of the variables in the state vector used in the `deriv` method.
+        self.var_order = self.create_var_order()
 
         self.reset()
 
@@ -50,6 +53,12 @@ class PetriNetODESystem(DynamicalSystem):
         self._observation_indices = {}
         self._observation_values = {}
         self._observation_indices_and_values_are_set_up = False
+
+    def create_var_order(self) -> dict[str, int]:
+        '''
+        Returns the order of the variables in the state vector used in the `deriv` method.
+        '''
+        raise NotImplementedError
 
     def load_events(self, events: List[Event]) -> None:
         '''
@@ -96,8 +105,11 @@ class PetriNetODESystem(DynamicalSystem):
             self._observation_indices = {}
             self._observation_values = {}
             for var_name in self._observation_var_names:
-                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events) if isinstance(event, ObservationEvent) and var_name in event.observation.keys()]
-                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name] for i in self._observation_indices[var_name]])
+                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events)
+                                                       if isinstance(event, ObservationEvent)
+                                                       and var_name in event.observation.keys()]
+                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name]
+                                                                  for i in self._observation_indices[var_name]])
 
             self._observation_indices_and_values_are_set_up = True
 
@@ -133,7 +145,7 @@ class PetriNetODESystem(DynamicalSystem):
         self._static_events = [event for event in self._static_events if not isinstance(event, event_class)]
         self._observation_indices_and_values_are_set_up = False
 
-    def deriv(self, t: Time, state: State) -> State:
+    def deriv(self, t: Time, state: State) -> StateDeriv:
         '''
         Returns a derivate of `state` with respect to `t`.
         '''
@@ -153,12 +165,6 @@ class PetriNetODESystem(DynamicalSystem):
         Conditional distribution of observations given true state trajectory.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
         This needs to be called once for each `var_name` in the set of observed variables.
-        '''
-        raise NotImplementedError
-
-    def var_order(self) -> OrderedDict[str, int]:
-        '''
-        Returns a dictionary mapping variable names to their order in the state vector.
         '''
         raise NotImplementedError
 
@@ -182,7 +188,7 @@ class PetriNetODESystem(DynamicalSystem):
         assert isinstance(self._static_events[0], StartEvent)
 
         # Load initial state
-        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order().keys())
+        initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
 
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
@@ -268,11 +274,8 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     Create an ODE system from a petri-net specification.
     """
     def __init__(self, G: mira.modeling.Model):
-        super().__init__()
         self.G = G
-        self.var_order = collections.OrderedDict(
-            (get_name(var), var) for var in sorted(G.variables.values(), key=get_name)
-        )
+        super().__init__()
 
         for param_info in self.G.parameters.values():
             param_name = get_name(param_info)
@@ -301,6 +304,15 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
+
+    def create_var_order(self) -> dict[str, int]:
+        '''
+        Returns the order of the variables in the state vector used in the `deriv` method.
+        Specialization of the base class method using the Mira graph object.
+        '''
+        return collections.OrderedDict(
+            (get_name(var), var) for var in sorted(self.G.variables.values(), key=get_name)
+        )
 
     @functools.singledispatchmethod
     @classmethod
