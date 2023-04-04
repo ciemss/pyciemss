@@ -9,8 +9,8 @@ from pyciemss.utils import get_tspan
 from pyciemss.risk.ouu import computeRisk
 from pyciemss.risk.qoi import threshold_exceedence
 from pyciemss.risk.risk_measures import alpha_quantile
-from pyciemss.ODE.models import SVIIvR
-from pyciemss.ODE.interventions import constant_intervention_builder
+from pyciemss.PetriNetODE.models import SVIIvR
+from pyciemss.PetriNetODE.interventions import constant_intervention_builder
 
 class TestOUU(unittest.TestCase):
     '''
