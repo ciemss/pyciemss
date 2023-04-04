@@ -1,4 +1,4 @@
-from pyciemss.utils import is_density_equal, is_intervention_density_equal
+from pyciemss.utils import is_density_equal#, is_intervention_density_equal
 import pyro
 import torch
 import unittest
@@ -80,19 +80,21 @@ class TestDensityTest(unittest.TestCase):
         self.assertTrue(is_density_equal(model2, model3, num_samples=num_samples))
         self.assertFalse(is_density_equal(model3, model4, num_samples=num_samples))
 
-        self.assertTrue(is_intervention_density_equal(model1,
-                                     model1, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model1,model1, intervention={"x": 1}, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model1, model2, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model2, model3, intervention={"x": 0}, num_samples=num_samples))
-        self.assertTrue(is_intervention_density_equal(model3, model4, intervention={"x": 0}, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model3, model4, intervention={"x": 1}, num_samples=num_samples))
+        # Commented out because of removal of causal pyro
+        # self.assertTrue(is_intervention_density_equal(model1,
+        #                              model1, intervention={"x": 0}, num_samples=num_samples))
+        # self.assertTrue(is_intervention_density_equal(model1,model1, intervention={"x": 1}, num_samples=num_samples))
+        # self.assertFalse(is_intervention_density_equal(model1, model2, intervention={"x": 0}, num_samples=num_samples))
+        # self.assertTrue(is_intervention_density_equal(model2, model3, intervention={"x": 0}, num_samples=num_samples))
+        # self.assertTrue(is_intervention_density_equal(model3, model4, intervention={"x": 0}, num_samples=num_samples))
+        # self.assertFalse(is_intervention_density_equal(model3, model4, intervention={"x": 1}, num_samples=num_samples))
+       
         #self.assertTrue(is_density_equal(model5, model6))
 
         #self.assertFalse(is_density_equal(do(model5, intervention={'y': 0 }),
         #                              do(model6, intervention={'y': 0 })))
         # The marginals are equal, but not the density.
         self.assertFalse(is_density_equal(model7, model8, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model7, model8, intervention={'x': 1}, num_samples=num_samples))
+        # self.assertFalse(is_intervention_density_equal(model7, model8, intervention={'x': 1}, num_samples=num_samples))
         self.assertTrue(is_density_equal(model9, model10, num_samples=num_samples))
-        self.assertFalse(is_intervention_density_equal(model9, model10, intervention={'x': 1}, num_samples=num_samples))
+        # self.assertFalse(is_intervention_density_equal(model9, model10, intervention={'x': 1}, num_samples=num_samples))
