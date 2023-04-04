@@ -405,3 +405,20 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
         mu = solution[var_name]
         n = self.pseudocount
         pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
+
+class SVIIvRPetriNetODESystem(BetaNoisePetriNetODESystem):
+
+    '''This is a wrapper around BetaNoisePetriNetODESystem that uses
+    a different observation model to handle the fact that we cannot
+    observe the number of unvaccinated and vaccinated infected people
+    directly, but only their sum
+    '''
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        if var_name == "I_obs":
+            mu = solution["I"] + solution["I_v"]
+            n = self.pseudocount
+            pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
+        else:
+            super().observation_model(solution, var_name)
