@@ -3,6 +3,8 @@ import os
 
 from mira.examples.sir import sir_parameterized as sir
 
+import torch
+
 from pyciemss.PetriNetODE.interfaces import load_petri_model, setup_model, reset_model, intervene, sample, calibrate, optimize
 
 class TestODEInterfaces(unittest.TestCase):
@@ -103,6 +105,9 @@ class TestODEInterfaces(unittest.TestCase):
 
         self.assertEqual(simulation['I_sol'].shape[0], num_samples)
         self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
+
+        # Test that samples are different when num_samples > 1
+        self.assertTrue(torch.all(simulation['I_sol'][0, :] != simulation['I_sol'][1, :]))
 
     def test_sample_from_mira_registry(self):
         '''Test the sample function when called on a mira.modeling.Model'''
