@@ -94,17 +94,18 @@ class MIRA_SVIIvR(MiraPetriNetODESystem):
         self.register_buffer("noise_var", torch.as_tensor(noise_var))
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
-        with pyro.condition(data=data if data is not None else {}):
-            output = {}
-            named_solution = dict(zip(self.var_order, solution))
-            for name, value in named_solution.items():
-                if name == "I_v":
-                    continue
-                if name == "I":
-                    value = value + named_solution["I_v"]
-                output[name] = pyro.sample(
-                    f"{name}_obs",
-                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
-                )
-            return tuple(output.get(v, named_solution[v]) for v in self.var_order)
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """
+        This is the observation model for the MIRA model.
+        It is assumed that I_obs is the sum of I and I_v.
+        """
+        named_solution = dict(zip(self.var_order, solution))
+        if var_name == "I_obs":
+            value = named_solution["I"] + named_solution["I_v"]
+        else:
+            value = named_solution[var_name]
+        pyro.sample(
+            var_name,
+            pyro.distributions.Normal(value, self.noise_var).to_event(1),
+        )
+        
