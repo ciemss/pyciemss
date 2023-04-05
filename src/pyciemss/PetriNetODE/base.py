@@ -377,24 +377,16 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
     def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
+
+        for param_info in G.parameters.values():
+            param_value = param_info.value
+            if param_value is None:
+                param_info.value = pyro.distributions.Uniform(0.0, 1.0)
+            elif isinstance(param_value, (int, float)):
+                param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+
         super().__init__(G)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
-
-    @pyro.nn.pyro_method
-    def param_prior(self):
-        # Uniform priors on model parameters
-        # lower bound = max(0.9 * value, 0)
-        # upper bound = 1.1 * value
-
-        for param_info in self.G.parameters.values():
-            param_name = get_name(param_info)
-            param_value = param_info.value
-            if not isinstance(param_value, pyro.distributions.Distribution):
-                val = pyro.sample(
-                    param_name,
-                    pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
-                )
-                setattr(self, param_name, val)
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
