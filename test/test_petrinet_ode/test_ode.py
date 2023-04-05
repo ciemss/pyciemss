@@ -17,6 +17,10 @@ class TestODE(unittest.TestCase):
 
     # Setup for the tests
     def setUp(self):
+        """
+
+        
+        """
         STARTERKIT_PATH = "test/models/starter_kit_examples/"
         filename = "CHIME-SIR/model_petri.json"
         filename = os.path.join(STARTERKIT_PATH, filename)

@@ -99,13 +99,11 @@ class MIRA_SVIIvR(MiraPetriNetODESystem):
         This is the observation model for the MIRA model.
         It is assumed that I_obs is the sum of I and I_v.
         """
-        named_solution = dict(zip(self.var_order, solution))
         if var_name == "I_obs":
-            value = named_solution["I"] + named_solution["I_v"]
+            value = solution["I"] + solution["I_v"]
         else:
-            value = named_solution[var_name]
+            value = solution[var_name]
         pyro.sample(
             var_name,
             pyro.distributions.Normal(value, self.noise_var).to_event(1),
         )
-        
