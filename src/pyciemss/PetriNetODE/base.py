@@ -156,7 +156,7 @@ class PetriNetODESystem(DynamicalSystem):
         raise NotImplementedError
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Dict[str, torch.Tensor], data: Dict[str, torch.Tensor]) -> None:
+    def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
         '''
         Conditional distribution of observations given true state trajectory.
         All random variables must be defined using `pyro.sample` or `PyroSample` methods.
