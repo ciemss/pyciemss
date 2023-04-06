@@ -5,7 +5,6 @@ import operator
 import os
 from typing import Dict, List, Optional, Union, OrderedDict
 
-
 import networkx
 import numpy
 import torch
@@ -157,7 +156,6 @@ class PetriNetODESystem(DynamicalSystem):
         raise NotImplementedError
 
     @pyro.nn.pyro_method
-
     def observation_model(self, solution: Dict[str, torch.Tensor], var_name: str) -> None:
         '''
         Conditional distribution of observations given true state trajectory.
@@ -178,6 +176,7 @@ class PetriNetODESystem(DynamicalSystem):
         '''
         # Setup the memoized observation indices and values
         self._setup_observation_indices_and_values()
+
         # Sample parameters from the prior
         self.param_prior()
 
@@ -273,6 +272,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def __init__(self, G: mira.modeling.Model):
         self.G = G
         super().__init__()
+
         for param_info in self.G.parameters.values():
             param_name = get_name(param_info)
 
