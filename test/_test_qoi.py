@@ -13,7 +13,6 @@ class TestQOIs(unittest.TestCase):
         expected = np.array([1, 11, 5])
         self.assertTrue(np.array_equal(actual, expected))
 
-    
     def test_qoi_threshold_exceedence(self):
         dataCube = np.array([[0, 1, 2, 3, 4], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6]])
         actual = threshold_exceedence(dataCube, threshold=5)

@@ -31,9 +31,11 @@ class computeRisk():
                  tspan: np.ndarray,
                  risk_measure: callable = alpha_superquantile,
                  num_samples: int = 1000,
-                 guide=None,
+                 guide=None
                 ):
         self.model = model
+        # TODO: do it outside
+        # self.model = do(self.model, {"noise_var": torch.tensor([0.000001])})
         self.intervention_fun = intervention_fun
         self.qoi = qoi
         self.risk_measure = risk_measure
@@ -47,9 +49,11 @@ class computeRisk():
     def __call__(self, x):
         # Apply intervention, perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
+        # print(x)
 
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
+        # print(self.risk_measure(sample_qoi))
         
         # Compute risk measure
         return self.risk_measure(sample_qoi)
@@ -60,10 +64,15 @@ class computeRisk():
         Perform forward uncertainty propagation.
         '''
         # Apply intervention to model
-        intervened_model = do(self.model, self.intervention_fun(x))
-        
+        if isinstance(self.intervention_fun, list):
+            temp_model = self.model
+            for i in range(len(intervention_fun)):
+                temp_model = do(temp_model, self.intervention_fun[i](x))
+            intervened_model = temp_model
+        else:
+            intervened_model = do(self.model, self.intervention_fun(x))
+        # Prpagate uncertainty forward
         samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-            
         return samples
 
 
@@ -74,50 +83,59 @@ class solveOUU():
     def __init__(self,
                  x0: np.ndarray,
                  objfun: callable,
-                 constraints: dict,
+                 constraints: tuple,
                  minimizer_kwargs: dict = dict(
                         method="COBYLA",
-                        options={
-                                 "disp": False,
-                                },
+                        tol=1e-5, options={'disp': False, 'maxiter':  10},
                        ),
                  optimizer_algorithm: str = "basinhopping",
+                 maxfeval: int = 100,
                  maxiter: int = 100,
                  **kwargs
                 ):
-        self.x0 = x0
+        self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
         self.constraints = constraints
         self.minimizer_kwargs = minimizer_kwargs.update({"constraints": self.constraints})
         self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
-        
-        self.kwargs = kwargs
+        self.maxfeval = maxfeval        
+        # self.kwargs = kwargs
 
     def solve(self):
         # Thin wrapper around SciPy optimizer(s).
         # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call must interface with the SciPy optimizer which is not consistent across algorithms.
 
-        if self.optimizer_algorithm == "basinhopping":
-            result = basinhopping(
-                func=self.objfun,
-                x0=self.x0,
-                niter=self.maxiter,
-                minimizer_kwargs=self.minimizer_kwargs,
-                **self.kwargs
-            )
-        else:
-            # TODO: extend so as not just to be a pass through to minimize
-            result = minimize(
-                fun=self.objfun,
-                x0=self.x0,
-                method=self.optimizer_algorithm,
-                constraints=self.constraints,
-                **self.kwargs
-            )
+        minimizer_kwargs = dict(constraints=self.constraints, method='COBYLA', 
+                                tol=1e-5, options={'disp': False, 'maxiter':  self.maxfeval})
+        # take_step = RandomDisplacementBounds(self.u_bounds[0], self.u_bounds[1], stepsize=stepsize)
+        # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5, 
+        #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
+
+        result = basinhopping(self.objfun, self.x0, stepsize=0.25, T=1.5, 
+                          niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, 
+                          interval=2, disp=False) 
+
+        # # if self.optimizer_algorithm == "basinhopping":
+        # result = basinhopping(
+        #     func=self.objfun,
+        #     x0=self.x0,
+        #     niter=self.maxiter,
+        #     minimizer_kwargs=self.minimizer_kwargs,
+        #     **self.kwargs
+        # )
+        # else:
+        #     # TODO: extend so as not just to be a pass through to minimize
+        #     result = minimize(
+        #         fun=self.objfun,
+        #         x0=self.x0,
+        #         method=self.optimizer_algorithm,
+        #         constraints=self.constraints,
+        #         **self.kwargs
+        #     )
 
         return result
     
-    # TODO: implement logging callback for optimizer
-    def _save(self):
-        raise NotImplementedError
+    # # TODO: implement logging callback for optimizer
+    # def _save(self):
+    #     raise NotImplementedError
