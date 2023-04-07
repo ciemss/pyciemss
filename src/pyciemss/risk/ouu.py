@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import basinhopping, minimize
 
-from causal_pyro.query.do_messenger import do
+# from causal_pyro.query.do_messenger import do
 from pyro.infer import Predictive
 
 from pyciemss.risk.risk_measures import alpha_superquantile
