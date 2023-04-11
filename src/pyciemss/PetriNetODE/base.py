@@ -189,7 +189,7 @@ class PetriNetODESystem(DynamicalSystem):
         # Get tspan from static events
         tspan = torch.tensor([e.time for e in self._static_events])
 
-        solutions = [tuple(s.reshape(-1) for s in initial_state)]
+        solutions = [tuple(torch.unsqueeze(s, 0) for s in initial_state)]
 
         # Find the indices of the static intervention events
         bound_indices = [0] + [i for i, event in enumerate(self._static_events) if isinstance(event, StaticParameterInterventionEvent)] + [len(self._static_events)]
@@ -209,10 +209,10 @@ class PetriNetODESystem(DynamicalSystem):
             local_solution = odeint(self.deriv, initial_state, local_tspan, method=method)
 
             # Add the solution to the solutions list.
-            solutions.append(tuple(s[1:] for s in local_solution))
+            solutions.append(tuple(s[1:, ...] for s in local_solution))
 
             # update the initial_state
-            initial_state = tuple(s[-1] for s in local_solution)
+            initial_state = tuple(s[-1, ...] for s in local_solution)
 
         # Concatenate the solutions
         solution = tuple(torch.cat(s) for s in zip(*solutions))
