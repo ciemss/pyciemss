@@ -32,7 +32,7 @@ def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateMode
 @setup_model.register
 def setup_petri_model(petri: PetriNetODESystem, 
                       start_time: float,
-                      start_state: dict[str, float],
+                      start_state: dict[str, Union[float, torch.Tensor, torch.distributions.Distribution]]
                     ) -> PetriNetODESystem:    
     '''
     Instatiate a model for a particular configuration of initial conditions
