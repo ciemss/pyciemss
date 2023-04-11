@@ -71,7 +71,8 @@ def calibrate_petri(petri: PetriNetODESystem,
                     lr: float = 0.03, 
                     verbose: bool = False,
                     num_particles: int = 1,
-                    autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal
+                    autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+                    method="dopri5"
                     ) -> PetriInferredParameters:
     
     '''
@@ -90,7 +91,7 @@ def calibrate_petri(petri: PetriNetODESystem,
     pyro.clear_param_store()
 
     for i in range(num_iterations):
-        loss = svi.step()
+        loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
@@ -102,7 +103,7 @@ def sample_petri(petri:PetriNetODESystem,
                  timepoints: Iterable[float],
                  num_samples: int,
                  inferred_parameters: Optional[PetriInferredParameters] = None,
-                 method="dopri") -> PetriSolution:
+                 method="dopri5") -> PetriSolution:
     
     '''
     Sample `num_samples` trajectories from the prior or posterior distribution over ODE models.
