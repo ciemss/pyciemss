@@ -71,6 +71,7 @@ def calibrate_petri(petri: PetriNetODESystem,
                     lr: float = 0.03, 
                     verbose: bool = False,
                     num_particles: int = 1,
+                    autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal
                     ) -> PetriInferredParameters:
     
     '''
@@ -81,7 +82,7 @@ def calibrate_petri(petri: PetriNetODESystem,
 
     new_petri.load_events(observations)
 
-    guide = pyro.infer.autoguide.AutoLowRankMultivariateNormal(new_petri)
+    guide = autoguide(new_petri)
     optim = pyro.optim.Adam({"lr": lr})
     loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
     svi = pyro.infer.SVI(new_petri, guide, optim, loss=loss)
