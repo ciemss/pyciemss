@@ -134,13 +134,6 @@ class PetriNetODESystem(ODE):
                     torch.as_tensor(var.data["initial_value"])
                 )
 
-    @property
-    @pyro.nn.pyro_method
-    def default_initial_state(self):
-        return tuple(
-            getattr(self, f"default_initial_state_{name}")
-            for name in self.var_order
-        )
 
     @functools.singledispatchmethod
     @classmethod
@@ -204,9 +197,3 @@ class PetriNetODESystem(ODE):
                 pyro.deterministic(f"obs_{get_name(var)}", sol, event_dim=1)
                 for var, sol in zip(self.var_order.values(), solution)
             )
-
-    def forward(self, initial_state: Optional[State], tspan: Time, data = None):
-        if initial_state is None:
-            initial_state = self.default_initial_state
-        return super().forward(initial_state, tspan, data)
- 
