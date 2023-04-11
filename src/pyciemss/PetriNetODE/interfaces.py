@@ -101,7 +101,8 @@ def calibrate_petri(petri: PetriNetODESystem,
 def sample_petri(petri:PetriNetODESystem,
                  timepoints: Iterable[float],
                  num_samples: int,
-                 inferred_parameters: Optional[PetriInferredParameters] = None) -> PetriSolution:
+                 inferred_parameters: Optional[PetriInferredParameters] = None,
+                 method="dopri") -> PetriSolution:
     
     '''
     Sample `num_samples` trajectories from the prior or posterior distribution over ODE models.
@@ -109,7 +110,7 @@ def sample_petri(petri:PetriNetODESystem,
     logging_events = [LoggingEvent(timepoint) for timepoint in timepoints]
     new_petri = copy.deepcopy(petri)
     new_petri.load_events(logging_events)
-    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)()
+    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)(method=method)
 
 @optimize.register
 def optimize_petri(petri:PetriNetODESystem,
