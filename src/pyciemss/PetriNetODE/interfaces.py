@@ -83,7 +83,7 @@ def calibrate_petri(petri: PetriNetODESystem,
 
     guide = pyro.infer.autoguide.AutoLowRankMultivariateNormal(new_petri)
     optim = pyro.optim.Adam({"lr": lr})
-    loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
+    loss = pyro.infer.Trace_ELBO(num_particles=num_particles, vectorize_particles=True)
     svi = pyro.infer.SVI(new_petri, guide, optim, loss=loss)
 
     pyro.clear_param_store()
@@ -108,7 +108,7 @@ def sample_petri(petri:PetriNetODESystem,
     logging_events = [LoggingEvent(timepoint) for timepoint in timepoints]
     new_petri = copy.deepcopy(petri)
     new_petri.load_events(logging_events)
-    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)()
+    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples, parallel=True)()
 
 @optimize.register
 def optimize_petri(petri:PetriNetODESystem,
