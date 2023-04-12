@@ -418,10 +418,10 @@ class ScaledBeta(TransformedDistribution):
         loc (float or Tensor): mean of log of distribution
         scale (float or Tensor): standard deviation of log of the distribution
     """
-    arg_constraints = {'mean': constraints.positive, 'max': constraints.positive, 'pseudocount': constraints.positive}
+    arg_constraints = {'mean': constraints.interval(0, self._max), 'max': constraints.positive, 'pseudocount': constraints.positive}
     # TODO: Fix constraints
     # We really want 0 <= mean <= max and support = [0, max]. Can we express that?
-    support = constraints.positive
+    support = constraints.interval(0, self._max)
     has_rsample = True
 
     def __init__(self, _mean, _max, pseudocount, validate_args=None):
