@@ -406,17 +406,14 @@ from torch.distributions.transforms import AffineTransform
 class ScaledBeta(TransformedDistribution):
     r"""
     Creates a scaled beta distribution parameterized by
-    :attr:`loc` and :attr:`scale` where::
-        X ~ Normal(loc, scale)
-        Y = exp(X) ~ LogNormal(loc, scale)
-    Example::
-        >>> # xdoctest: +IGNORE_WANT("non-deterinistic")
-        >>> m = LogNormal(torch.tensor([0.0]), torch.tensor([1.0]))
-        >>> m.sample()  # log-normal distributed with mean=0 and stddev=1
-        tensor([ 0.1046])
+    :attr:`mean`, :attr:`max`, and :attr:`pseudocount` where::
+        scaled_mean = mean / max
+        X ~ Beta(scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount)
+        Y = X * max ~ ScaledBeta(mean, max, pseudocount)
     Args:
-        loc (float or Tensor): mean of log of distribution
-        scale (float or Tensor): standard deviation of log of the distribution
+        mean (float or Tensor): mean of the distribution
+        max (float or Tensor): maximum value of the distribution
+        pseudocount (float or Tensor): pseudocount for the distribution ( == a + b in the underlying Beta distribution)
     """
     arg_constraints = {'mean': constraints.interval(0, self._max), 'max': constraints.positive, 'pseudocount': constraints.positive}
     # TODO: Fix constraints
