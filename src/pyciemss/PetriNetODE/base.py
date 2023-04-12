@@ -422,13 +422,14 @@ class ScaledBeta(TransformedDistribution):
     support = constraints.positive
     has_rsample = True
 
-    def __init__(self, mean, max, pseudocount, validate_args=None):
-        self._mean = mean
-        self._max = max
+    def __init__(self, _mean, _max, pseudocount, validate_args=None):
+        self._mean = _mean
+        self._max = _max
         self._pseudocount = pseudocount
-        scaled_mean = self._scaled_mean = mean / max
+        scaled_mean = self._mean / self._max
+        self._scaled_mean = scaled_mean
         base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
-        super().__init__(base_dist, AffineTransform(0, max), validate_args=validate_args)
+        super().__init__(base_dist, AffineTransform(0, _max), validate_args=validate_args)
 
     def expand(self, batch_shape, _instance=None):
         new = self._get_checked_instance(ScaledBeta, _instance)
