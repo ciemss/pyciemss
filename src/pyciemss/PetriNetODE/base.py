@@ -389,9 +389,9 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     def __repr__(self):
-        par_string = ", ".join([f"({get_name(p)}={p.value})" for p in self.G.parameters.values()])
+        par_string = ",\n".join([f"({get_name(p)}={p.value})" for p in self.G.parameters.values()])
         count_string = f"pseudocount={self.pseudocount}"
-        return f"{self.__class__.__name__}({par_string}, {count_string})"
+        return f"{self.__class__.__name__}({par_string},\n{count_string})"
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
