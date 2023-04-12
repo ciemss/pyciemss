@@ -371,7 +371,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
-class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
+class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
@@ -395,6 +395,53 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
-        mu = solution[var_name]
-        n = self.pseudocount
-        pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, max, pseudocount).to_event(1))
+
+from torch.distributions import constraints
+from torch.distributions import TransformedDistribution
+from torch.distributions.transforms import AffineTransform
+class ScaledBeta(TransformedDistribution):
+    r"""
+    Creates a scaled beta distribution parameterized by
+    :attr:`loc` and :attr:`scale` where::
+        X ~ Normal(loc, scale)
+        Y = exp(X) ~ LogNormal(loc, scale)
+    Example::
+        >>> # xdoctest: +IGNORE_WANT("non-deterinistic")
+        >>> m = LogNormal(torch.tensor([0.0]), torch.tensor([1.0]))
+        >>> m.sample()  # log-normal distributed with mean=0 and stddev=1
+        tensor([ 0.1046])
+    Args:
+        loc (float or Tensor): mean of log of distribution
+        scale (float or Tensor): standard deviation of log of the distribution
+    """
+    arg_constraints = {'mean': constraints.positive, 'max': constraints.positive, 'pseudocount': constraints.positive}
+    support = constraints.positive
+    has_rsample = True
+
+    def __init__(self, mean, max, pseudocount, validate_args=None):
+        self._mean = mean
+        self._max = max
+        self._pseudocount = pseudocount
+        scaled_mean = self._scaled_mean = mean / max
+        base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
+        super().__init__(base_dist, AffineTransform(0, max), validate_args=validate_args)
+
+    def expand(self, batch_shape, _instance=None):
+        new = self._get_checked_instance(ScaledBeta, _instance)
+        return super().expand(batch_shape, _instance=new)
+
+    @property
+    def mean(self):
+        return self.base_dist.mean() * self.max
+
+    @property
+    def max(self):
+        return self.base_dist.scale
+
+
+    @property
+    def variance(self):
+        return self.base_dist.variance() * self._max ** 2
