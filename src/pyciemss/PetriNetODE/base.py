@@ -397,6 +397,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     def observation_model(self, solution: Solution, var_name: str) -> None:
         mean = solution[var_name]
         pseudocount = self.pseudocount
+        # TODO: Get `max` from the initial state
         pyro.sample(var_name, ScaledBeta(mean, max, pseudocount).to_event(1))
 
 from torch.distributions import constraints
@@ -439,7 +440,7 @@ class ScaledBeta(TransformedDistribution):
 
     @property
     def max(self):
-        return self.base_dist.scale
+        return self._max
 
 
     @property
