@@ -430,7 +430,7 @@ class ScaledBeta(TransformedDistribution):
         self._pseudocount = pseudocount
         scaled_mean = self._mean / self._max
         self._scaled_mean = scaled_mean
-        base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
+        base_dist = pyro.distributions.Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
         super().__init__(base_dist, AffineTransform(0, _max), validate_args=validate_args)
 
     def expand(self, batch_shape, _instance=None):
