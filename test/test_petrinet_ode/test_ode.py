@@ -4,7 +4,7 @@ import os
 import torch
 from copy import deepcopy
 
-from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, BetaNoisePetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 
 from pyro.infer.autoguide import AutoNormal
@@ -20,7 +20,7 @@ class TestODE(unittest.TestCase):
         STARTERKIT_PATH = "test/models/starter_kit_examples/"
         filename = "CHIME-SIR/model_petri.json"
         filename = os.path.join(STARTERKIT_PATH, filename)
-        self.model = BetaNoisePetriNetODESystem.from_mira(filename)
+        self.model = ScaledBetaNoisePetriNetODESystem.from_mira(filename)
 
     # Clean up after tests
     def tearDown(self):

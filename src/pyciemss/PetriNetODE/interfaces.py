@@ -2,7 +2,7 @@ import pyro
 import torch
 from pyro.infer import Predictive
 
-from pyciemss.PetriNetODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem, MiraPetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem, ScaledBetaNoisePetriNetODESystem, MiraPetriNetODESystem
 from pyciemss.risk.ouu import solveOUU
 
 from typing import Iterable, Optional, Tuple, Union
@@ -25,7 +25,7 @@ def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateMode
     Load a petri net from a file and compile it into a probabilistic program.
     '''
     if add_uncertainty:
-        return BetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        return ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
     else:
         return MiraPetriNetODESystem.from_mira(petri_model_or_path)
 
