@@ -16,6 +16,7 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
+from pyciemss.utils.distributions import ScaledBeta
 
 import bisect
 
@@ -39,6 +40,7 @@ class PetriNetODESystem(DynamicalSystem):
         super().__init__()
         # The order of the variables in the state vector used in the `deriv` method.
         self.var_order = self.create_var_order()
+        self.total_population = None
 
         self.reset()
 
@@ -74,6 +76,11 @@ class PetriNetODESystem(DynamicalSystem):
         self._load_event(event)
 
         if isinstance(event, StaticEvent):
+            # If the event is a start event, we need to assign
+            # self.total_population to the sum of the initial populations.
+            if isinstance(event, StartEvent):
+                self.total_population = sum(event.initial_state.values())
+
             # If the event is a static event, then we need to set up the observation indices and values again.
             # We'll do this in the `forward` method if necessary.
             self._observation_indices_and_values_are_set_up = False
@@ -371,7 +378,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
-class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
+class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
@@ -389,12 +396,12 @@ class BetaNoisePetriNetODESystem(MiraPetriNetODESystem):
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     def __repr__(self):
-        par_string = ", ".join([f"({get_name(p)}={p.value})" for p in self.G.parameters.values()])
-        count_string = f"pseudocount={self.pseudocount}"
-        return f"{self.__class__.__name__}({par_string}, {count_string})"
+        par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
+        count_string = f"pseudocount = {self.pseudocount}"
+        return f"{self.__class__.__name__}(\n\t{par_string},\n\t{count_string}\n)"
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
-        mu = solution[var_name]
-        n = self.pseudocount
-        pyro.sample(var_name, pyro.distributions.Beta(mu * n, (1 - mu) * n).to_event(1))
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))

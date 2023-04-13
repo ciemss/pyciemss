@@ -2,7 +2,7 @@ import pyro
 import torch
 from pyro.infer import Predictive
 
-from pyciemss.PetriNetODE.base import PetriNetODESystem, BetaNoisePetriNetODESystem, MiraPetriNetODESystem
+from pyciemss.PetriNetODE.base import PetriNetODESystem, ScaledBetaNoisePetriNetODESystem, MiraPetriNetODESystem
 from pyciemss.risk.ouu import solveOUU
 
 from typing import Iterable, Optional, Tuple, Union
@@ -25,7 +25,7 @@ def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateMode
     Load a petri net from a file and compile it into a probabilistic program.
     '''
     if add_uncertainty:
-        return BetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        return ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
     else:
         return MiraPetriNetODESystem.from_mira(petri_model_or_path)
 
@@ -71,6 +71,8 @@ def calibrate_petri(petri: PetriNetODESystem,
                     lr: float = 0.03, 
                     verbose: bool = False,
                     num_particles: int = 1,
+                    autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+                    method="dopri5"
                     ) -> PetriInferredParameters:
     
     '''
@@ -81,7 +83,7 @@ def calibrate_petri(petri: PetriNetODESystem,
 
     new_petri.load_events(observations)
 
-    guide = pyro.infer.autoguide.AutoLowRankMultivariateNormal(new_petri)
+    guide = autoguide(new_petri)
     optim = pyro.optim.Adam({"lr": lr})
     loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
     svi = pyro.infer.SVI(new_petri, guide, optim, loss=loss)
@@ -89,7 +91,7 @@ def calibrate_petri(petri: PetriNetODESystem,
     pyro.clear_param_store()
 
     for i in range(num_iterations):
-        loss = svi.step()
+        loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
@@ -100,7 +102,8 @@ def calibrate_petri(petri: PetriNetODESystem,
 def sample_petri(petri:PetriNetODESystem,
                  timepoints: Iterable[float],
                  num_samples: int,
-                 inferred_parameters: Optional[PetriInferredParameters] = None) -> PetriSolution:
+                 inferred_parameters: Optional[PetriInferredParameters] = None,
+                 method="dopri5") -> PetriSolution:
     
     '''
     Sample `num_samples` trajectories from the prior or posterior distribution over ODE models.
@@ -108,7 +111,7 @@ def sample_petri(petri:PetriNetODESystem,
     logging_events = [LoggingEvent(timepoint) for timepoint in timepoints]
     new_petri = copy.deepcopy(petri)
     new_petri.load_events(logging_events)
-    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)()
+    return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)(method=method)
 
 @optimize.register
 def optimize_petri(petri:PetriNetODESystem,
