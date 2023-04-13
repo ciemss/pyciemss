@@ -16,6 +16,7 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
+from pyciemss.utils.distributions import ScaledBeta
 
 import bisect
 
@@ -39,6 +40,7 @@ class PetriNetODESystem(DynamicalSystem):
         super().__init__()
         # The order of the variables in the state vector used in the `deriv` method.
         self.var_order = self.create_var_order()
+        self.total_population = None
 
         self.reset()
 
@@ -77,6 +79,7 @@ class PetriNetODESystem(DynamicalSystem):
             # If the event is a static event, then we need to set up the observation indices and values again.
             # We'll do this in the `forward` method if necessary.
             self._observation_indices_and_values_are_set_up = False
+            self.total_population = ... # TODO: sum up all of the initial populations
             bisect.insort(self._static_events, event)
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
@@ -398,4 +401,4 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
         mean = solution[var_name]
         pseudocount = self.pseudocount
         # TODO: Get `max` from the initial state
-        pyro.sample(var_name, ScaledBeta(mean, max, pseudocount).to_event(1))
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
