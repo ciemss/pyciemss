@@ -1,7 +1,8 @@
 from torch.distributions import constraints
 from torch.distributions import TransformedDistribution
 from torch.distributions.transforms import AffineTransform
-from pyro.distributions import Beta
+from pyro.distributions import Beta, TransformedDistribution
+
 
 class ScaledBeta(TransformedDistribution):
     r"""
@@ -19,10 +20,6 @@ class ScaledBeta(TransformedDistribution):
     # We really want 0 <= mean <= max and support = [0, max]. Can we express that?
     has_rsample = True
 
-    @constraints.dependent_property(event_dim=0)
-    def support(self):
-        return constraints.interval(0, self.max)
-
     def __init__(self, _mean, _max, pseudocount, validate_args=None):
         self._mean = _mean
         self._max = _max
@@ -31,10 +28,6 @@ class ScaledBeta(TransformedDistribution):
         self._scaled_mean = scaled_mean
         base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
         super().__init__(base_dist, AffineTransform(0, _max), validate_args=validate_args)
-
-    def expand(self, batch_shape, _instance=None):
-        new = self._get_checked_instance(ScaledBeta, _instance)
-        return super().expand(batch_shape, _instance=new)
 
     @property
     def mean(self):

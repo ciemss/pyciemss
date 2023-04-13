@@ -76,10 +76,14 @@ class PetriNetODESystem(DynamicalSystem):
         self._load_event(event)
 
         if isinstance(event, StaticEvent):
+            # If the event is a start event, we need to assign
+            # self.total_population to the sum of the initial populations.
+            if isinstance(event, StartEvent):
+                self.total_population = sum(event.initial_state.values())
+
             # If the event is a static event, then we need to set up the observation indices and values again.
             # We'll do this in the `forward` method if necessary.
             self._observation_indices_and_values_are_set_up = False
-            self.total_population = ... # TODO: sum up all of the initial populations
             bisect.insort(self._static_events, event)
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
