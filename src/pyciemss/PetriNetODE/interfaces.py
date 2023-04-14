@@ -80,6 +80,8 @@ def calibrate_petri(petri: PetriNetODESystem,
     '''
     new_petri = copy.deepcopy(petri)
     observations = [ObservationEvent(timepoint, observation) for timepoint, observation in data]
+    
+    assert all(0 <= sum(obs.observation.values()) <= petri.total_population for obs in observations)
 
     new_petri.load_events(observations)
 
