@@ -86,7 +86,7 @@ def calibrate_petri(petri: PetriNetODESystem,
         for v in obs.observation.values():
             s += v
             assert 0 <= v <= petri.total_population
-        assert 0 <= s <= petri.total_population
+        assert s <= petri.total_population
 
     new_petri.load_events(observations)
 
