@@ -8,6 +8,7 @@ from pyro.nn import pyro_method
 
 from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem, PetriNetODESystem, Time, State, Solution
 from pyciemss.utils import state_flux_constraint
+from pyciemss.utils.distributions import ScaledBeta
 
 class SVIIvR(PetriNetODESystem):
     def __init__(self,
@@ -87,23 +88,11 @@ class SVIIvR(PetriNetODESystem):
 
 
 class MIRA_SVIIvR(ScaledBetaNoisePetriNetODESystem):
-
-    def __init__(self, G, *, noise_var: float = 1):
-        super().__init__(G)
-        self.register_buffer("noise_var", torch.as_tensor(noise_var))
-
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
-        with pyro.condition(data=data if data is not None else {}):
-            output = {}
-            named_solution = dict(zip(self.var_order, solution))
-            for name, value in named_solution.items():
-                if name == "I_v":
-                    continue
-                if name == "I":
-                    value = value + named_solution["I_v"]
-                output[name] = pyro.sample(
-                    f"{name}_obs",
-                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
-                )
-            return tuple(output.get(v, named_solution[v]) for v in self.var_order)
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """In the observation model, I_obs is the sum of I and Iv."""
+        if var_name == "I_obs":
+            mean = solution["I"] + solution["I_v"]
+        else:
+            mean = solution[var_name]
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount).to_event(1))
