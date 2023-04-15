@@ -6,9 +6,8 @@ import pyro.distributions as dist
 
 from pyro.nn import pyro_method
 
-from pyciemss.PetriNetODE.base import MiraPetriNetODESystem, PetriNetODESystem, BetaNoisePetriNetODESystem, Time, State, Solution
+from pyciemss.PetriNetODE.base import MiraPetriNetODESystem, PetriNetODESystem, Time, State, Solution
 from pyciemss.utils import state_flux_constraint
-
 
 class SVIIvR(PetriNetODESystem):
     def __init__(self,
@@ -73,7 +72,7 @@ class SVIIvR(PetriNetODESystem):
         S, V, I, Iv, R = solution
 
         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data is None:
+        if data == None:
             data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
 
         # TODO: Make sure observations are strictly greater than 0.
@@ -87,23 +86,24 @@ class SVIIvR(PetriNetODESystem):
         return (S_obs, V_obs, I_obs, R_obs)
 
 
-class MIRA_SVIIvR(BetaNoisePetriNetODESystem):
+class MIRA_SVIIvR(MiraPetriNetODESystem):
 
     def __init__(self, G, *, noise_var: float = 1):
         super().__init__(G)
         self.register_buffer("noise_var", torch.as_tensor(noise_var))
 
     @pyro.nn.pyro_method
-    def observation_model(self, solution: Solution, var_name: str) -> None:
-        """
-        This is the observation model for the MIRA model.
-        It is assumed that I_obs is the sum of I and I_v.
-        """
-        if var_name == "I_obs":
-            value = solution["I"] + solution["I_v"]
-        else:
-            value = solution[var_name]
-        pyro.sample(
-            var_name,
-            pyro.distributions.Normal(value, self.noise_var).to_event(1),
-        )
+    def observation_model(self, solution: Solution, data: Optional[Dict[str, State]] = None) -> Solution:
+        with pyro.condition(data=data if data is not None else {}):
+            output = {}
+            named_solution = dict(zip(self.var_order, solution))
+            for name, value in named_solution.items():
+                if name == "I_v":
+                    continue
+                if name == "I":
+                    value = value + named_solution["I_v"]
+                output[name] = pyro.sample(
+                    f"{name}_obs",
+                    pyro.distributions.Normal(value, self.noise_var).to_event(1),
+                )
+            return tuple(output.get(v, named_solution[v]) for v in self.var_order)
