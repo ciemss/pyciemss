@@ -5,8 +5,8 @@ import pyro
 import pyro.distributions as dist
 
 from pyro.nn import pyro_method
-
-from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem, PetriNetODESystem, Time, State, Solution
+import mira
+from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem, MiraPetriNetODESystem, PetriNetODESystem, Time, State, Solution, get_name
 from pyciemss.utils import state_flux_constraint
 from pyciemss.utils.distributions import ScaledBeta
 
@@ -95,4 +95,34 @@ class MIRA_SVIIvR(ScaledBetaNoisePetriNetODESystem):
             mean = solution["I"] + solution["I_v"]
         else:
             mean = solution[var_name]
-        pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount).to_event(1))
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount*mean).to_event(1))
+
+
+class MIRA_I_obs_with_scaled_Gaussian_noise(MiraPetriNetODESystem):
+    '''
+    This is the same as the MIRA model, but with Scaled Gaussian noise instead of ScaledBeta noise.
+    '''
+    def __init__(self, G: mira.modeling.Model, total_population: int = 1, data_reliability: float = 4.0):
+        self.total_population = total_population
+        self.data_reliability = data_reliability
+        for param_info in G.parameters.values():
+            param_value = param_info.value
+            if param_value is None:
+                param_info.value = pyro.distributions.Uniform(0.0, 1.0)
+            elif isinstance(param_value, (int, float)):
+                param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+        super().__init__(G)
+
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """In the observation model, I_obs is the sum of I and Iv."""
+        if var_name == "I_obs":
+            mean = solution["I"] + solution["I_v"]
+        else:
+            mean = solution[var_name]
+        pyro.sample(var_name, dist.Normal(mean, torch.sqrt(mean)/self.data_reliability).to_event(1))
+
+    def __repr__(self):
+        par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
+        return f"{self.__class__.__name__}(\n\t{par_string},\n\ttotal_population = {self.total_population},\n\tdata_reliability = {self.data_reliability}\n)"
