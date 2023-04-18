@@ -92,7 +92,7 @@ def calibrate_petri(petri: PetriNetODESystem,
         for v in obs.observation.values():
             s += v
             assert 0 <= v <= petri.total_population
-        assert torch.isclose(s, petri.total_population)
+        assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
     guide = autoguide(new_petri)
