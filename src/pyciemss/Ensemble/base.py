@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Union, OrderedDict
 # TODO: refactor this to use a more general event class
 from pyciemss.PetriNetODE.events import Event
 
-class Ensemble(DynamicalSystem):
+class EnsembleSystem(DynamicalSystem):
     '''
     Base class for ensembles of dynamical systems.
     '''
