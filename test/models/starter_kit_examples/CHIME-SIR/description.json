@@ -1,3 +1,0 @@
-{
-    "description": "The CHIME (COVID-19 Hospital Impact Model for Epidemics) App is designed to assist hospitals and public health officials understand hospital capacity needs as they relate to the COVID-19 pandemic. CHIME enables capacity planning by providing estimates of total daily (i.e. new) and running totals of (i.e. census) inpatient hospitalizations, ICU admissions, and patients requiring ventilation. These estimates are generated using a SIR (Susceptible, Infected, Recovered) model, a standard epidemiological modeling technique."
-}

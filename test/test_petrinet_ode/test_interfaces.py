@@ -12,11 +12,12 @@ class TestODEInterfaces(unittest.TestCase):
     
     # Setup for the tests
     def setUp(self):
-        STARTERKIT_PATH = "test/models/starter_kit_examples/"
-        filename = "CHIME-SIR/model_petri.json"
-        self.filename = os.path.join(STARTERKIT_PATH, filename)
+        MIRA_PATH = "test/models/evaluation_examples/scenario_1/"
+
+        filename = "scenario1_sir_mira.json"
+        self.filename = os.path.join(MIRA_PATH, filename)
         self.initial_time = 0.0
-        self.initial_state = {"S": 0.9, "I": 0.1, "R": 0.0}
+        self.initial_state = {"susceptible_population": 0.99, "infected_population": 0.01, "immune_population": 0.0}
 
     def test_load_petri_from_file(self):
         '''Test the load_petri function when called on a string.'''
@@ -36,15 +37,15 @@ class TestODEInterfaces(unittest.TestCase):
     
     def test_setup_model(self):
         '''Test the setup_model function.'''
-        model = load_petri_model(self.filename)
+        for model in [load_petri_model(self.filename), 
+                      load_petri_model(self.filename, pseudocount=2.0)]:
+            new_model = setup_model(model, self.initial_time, self.initial_state)
 
-        new_model = setup_model(model, self.initial_time, self.initial_state)
-        
-        self.assertIsNotNone(new_model)
-        self.assertEqual(len(new_model._static_events), 1)
-        
-        # Check that setup_model is not inplace.
-        self.assertEqual(len(model._static_events), 0)
+            self.assertIsNotNone(new_model)
+            self.assertEqual(len(new_model._static_events), 1)
+
+            # Check that setup_model is not inplace.
+            self.assertEqual(len(model._static_events), 0)
         
     def test_reset_model(self):
         '''Test the reset_model function.'''
@@ -80,7 +81,7 @@ class TestODEInterfaces(unittest.TestCase):
         model = load_petri_model(self.filename)
         model = setup_model(model, self.initial_time, self.initial_state)
         
-        data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
+        data = [(0.2, {"infected_population": 0.1}), (0.4, {"infected_population": 0.2}), (0.6, {"infected_population": 0.3})]
         parameters = calibrate(model, data, num_iterations=2)
 
         self.assertIsNotNone(parameters)
@@ -95,19 +96,19 @@ class TestODEInterfaces(unittest.TestCase):
         # Test that sample works without inferred parameters
         simulation = sample(model, timepoints, num_samples)
         
-        self.assertEqual(simulation['I_sol'].shape[0], num_samples)
-        self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
+        self.assertEqual(simulation['infected_population_sol'].shape[0], num_samples)
+        self.assertEqual(simulation['infected_population_sol'].shape[1], len(timepoints))
         
-        data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
+        data = [(0.2, {"infected_population": 0.1}), (0.4, {"infected_population": 0.2}), (0.6, {"infected_population": 0.3})]
         parameters = calibrate(model, data, num_iterations=2)
         # Test that sample works with inferred parameters
         simulation = sample(model, timepoints, num_samples, parameters)
 
-        self.assertEqual(simulation['I_sol'].shape[0], num_samples)
-        self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
+        self.assertEqual(simulation['infected_population_sol'].shape[0], num_samples)
+        self.assertEqual(simulation['infected_population_sol'].shape[1], len(timepoints))
 
         # Test that samples are different when num_samples > 1
-        self.assertTrue(torch.all(simulation['I_sol'][0, :] != simulation['I_sol'][1, :]))
+        self.assertTrue(torch.all(simulation['infected_population_sol'][0, :] != simulation['infected_population_sol'][1, :]))
 
     def test_sample_from_mira_registry(self):
         '''Test the sample function when called on a mira.modeling.Model'''
