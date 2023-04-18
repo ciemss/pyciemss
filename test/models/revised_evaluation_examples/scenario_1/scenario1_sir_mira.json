@@ -1,0 +1,113 @@
+{
+ "templates": [
+  {
+   "rate_law": "beta*infected_population*susceptible_population",
+   "type": "ControlledConversion",
+   "controller": {
+    "name": "infected_population",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "subject": {
+    "name": "susceptible_population",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "infected_population",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "gamma*infected_population",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "infected_population",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "immune_population",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  }
+ ],
+ "parameters": {
+  "beta": {
+   "name": "beta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.1,
+   "distribution": null
+  },
+  "gamma": {
+   "name": "gamma",
+   "identifiers": {},
+   "context": {},
+   "value": 0.2,
+   "distribution": null
+  }
+ },
+ "initials": {
+  "susceptible_population": {
+   "concept": {
+    "name": "susceptible_population",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "value": 1.0
+  },
+  "infected_population": {
+   "concept": {
+    "name": "infected_population",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "value": 2.0
+  },
+  "immune_population": {
+   "concept": {
+    "name": "immune_population",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "value": 3.0
+  }
+ },
+ "observables": {},
+ "annotations": {
+  "name": null,
+  "description": null,
+  "license": null,
+  "authors": [],
+  "references": [],
+  "time_scale": null,
+  "time_start": null,
+  "time_end": null,
+  "locations": [],
+  "pathogens": [],
+  "diseases": [],
+  "hosts": [],
+  "model_types": []
+ }
+}

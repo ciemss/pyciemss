@@ -1,0 +1,448 @@
+{
+ "S": [
+  {
+   "sname": "susceptible_population_middle",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000514')]",
+    "mira_context": "[('age', 'middle')]",
+    "mira_concept": "{\"name\": \"susceptible_population_middle\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"middle\"}}"
+   },
+   "concentration": 1.0
+  },
+  {
+   "sname": "infected_population_middle",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000511')]",
+    "mira_context": "[('age', 'middle')]",
+    "mira_concept": "{\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}"
+   },
+   "concentration": 2.0
+  },
+  {
+   "sname": "infected_population_old",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000511')]",
+    "mira_context": "[('age', 'old')]",
+    "mira_concept": "{\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}"
+   },
+   "concentration": 2.0
+  },
+  {
+   "sname": "infected_population_young",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000511')]",
+    "mira_context": "[('age', 'young')]",
+    "mira_concept": "{\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}"
+   },
+   "concentration": 2.0
+  },
+  {
+   "sname": "susceptible_population_old",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000514')]",
+    "mira_context": "[('age', 'old')]",
+    "mira_concept": "{\"name\": \"susceptible_population_old\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"old\"}}"
+   },
+   "concentration": 1.0
+  },
+  {
+   "sname": "susceptible_population_young",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000514')]",
+    "mira_context": "[('age', 'young')]",
+    "mira_concept": "{\"name\": \"susceptible_population_young\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"young\"}}"
+   },
+   "concentration": 1.0
+  },
+  {
+   "sname": "immune_population_middle",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000592')]",
+    "mira_context": "[('age', 'middle')]",
+    "mira_concept": "{\"name\": \"immune_population_middle\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"middle\"}}"
+   },
+   "concentration": 3.0
+  },
+  {
+   "sname": "immune_population_old",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000592')]",
+    "mira_context": "[('age', 'old')]",
+    "mira_concept": "{\"name\": \"immune_population_old\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"old\"}}"
+   },
+   "concentration": 3.0
+  },
+  {
+   "sname": "immune_population_young",
+   "sprop": {
+    "is_observable": false,
+    "mira_ids": "[('identity', 'ido:0000592')]",
+    "mira_context": "[('age', 'young')]",
+    "mira_concept": "{\"name\": \"immune_population_young\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"young\"}}"
+   },
+   "concentration": 3.0
+  }
+ ],
+ "T": [
+  {
+   "tname": "t1",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_0",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_0*infected_population_middle*susceptible_population_middle\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"subject\": {\"name\": \"susceptible_population_middle\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"middle\"}}, \"outcome\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_0*infected_population_middle*susceptible_population_middle",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>0</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_0\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_0\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t2",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_1",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_1*infected_population_old*susceptible_population_middle\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"subject\": {\"name\": \"susceptible_population_middle\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"middle\"}}, \"outcome\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_1*infected_population_old*susceptible_population_middle",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>1</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_1\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_1\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t3",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_2",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_2*infected_population_young*susceptible_population_middle\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"subject\": {\"name\": \"susceptible_population_middle\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"middle\"}}, \"outcome\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_2*infected_population_young*susceptible_population_middle",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>2</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_2\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_2\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t4",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_3",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_3*infected_population_old*susceptible_population_old\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"subject\": {\"name\": \"susceptible_population_old\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"old\"}}, \"outcome\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_3*infected_population_old*susceptible_population_old",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>3</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_3\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_3\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t5",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_4",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_4*infected_population_middle*susceptible_population_old\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"subject\": {\"name\": \"susceptible_population_old\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"old\"}}, \"outcome\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_4*infected_population_middle*susceptible_population_old",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>4</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_4\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_4\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t6",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_5",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_5*infected_population_young*susceptible_population_old\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"subject\": {\"name\": \"susceptible_population_old\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"old\"}}, \"outcome\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_5*infected_population_young*susceptible_population_old",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>5</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_5\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_5\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t7",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_6",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_6*infected_population_young*susceptible_population_young\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"subject\": {\"name\": \"susceptible_population_young\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"young\"}}, \"outcome\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_6*infected_population_young*susceptible_population_young",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>6</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_6\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_6\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t8",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_7",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_7*infected_population_middle*susceptible_population_young\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"subject\": {\"name\": \"susceptible_population_young\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"young\"}}, \"outcome\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_7*infected_population_middle*susceptible_population_young",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>7</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_7\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_7\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t9",
+   "tprop": {
+    "template_type": "ControlledConversion",
+    "parameter_name": "beta_8",
+    "parameter_value": 0.1,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"beta_8*infected_population_old*susceptible_population_young\", \"type\": \"ControlledConversion\", \"controller\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"subject\": {\"name\": \"susceptible_population_young\", \"identifiers\": {\"ido\": \"0000514\"}, \"context\": {\"age\": \"young\"}}, \"outcome\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"provenance\": []}",
+    "mira_rate_law": "beta_8*infected_population_old*susceptible_population_young",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#946;</mml:mi><mml:mi>8</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci><ci><mml:msub><mml:mi>susceptible</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"beta_8\": 0.1}",
+    "mira_parameter_distributions": "{\"beta_8\": null}"
+   },
+   "rate": 0.1
+  },
+  {
+   "tname": "t10",
+   "tprop": {
+    "template_type": "NaturalConversion",
+    "parameter_name": "gamma_0",
+    "parameter_value": 0.2,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"gamma_0*infected_population_middle\", \"type\": \"NaturalConversion\", \"subject\": {\"name\": \"infected_population_middle\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"middle\"}}, \"outcome\": {\"name\": \"immune_population_middle\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"middle\"}}, \"provenance\": []}",
+    "mira_rate_law": "gamma_0*infected_population_middle",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#947;</mml:mi><mml:mi>0</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>middle</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"gamma_0\": 0.2}",
+    "mira_parameter_distributions": "{\"gamma_0\": null}"
+   },
+   "rate": 0.2
+  },
+  {
+   "tname": "t11",
+   "tprop": {
+    "template_type": "NaturalConversion",
+    "parameter_name": "gamma_1",
+    "parameter_value": 0.2,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"gamma_1*infected_population_old\", \"type\": \"NaturalConversion\", \"subject\": {\"name\": \"infected_population_old\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"old\"}}, \"outcome\": {\"name\": \"immune_population_old\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"old\"}}, \"provenance\": []}",
+    "mira_rate_law": "gamma_1*infected_population_old",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#947;</mml:mi><mml:mi>1</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>old</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"gamma_1\": 0.2}",
+    "mira_parameter_distributions": "{\"gamma_1\": null}"
+   },
+   "rate": 0.2
+  },
+  {
+   "tname": "t12",
+   "tprop": {
+    "template_type": "NaturalConversion",
+    "parameter_name": "gamma_2",
+    "parameter_value": 0.2,
+    "parameter_distribution": null,
+    "mira_template": "{\"rate_law\": \"gamma_2*infected_population_young\", \"type\": \"NaturalConversion\", \"subject\": {\"name\": \"infected_population_young\", \"identifiers\": {\"ido\": \"0000511\"}, \"context\": {\"age\": \"young\"}}, \"outcome\": {\"name\": \"immune_population_young\", \"identifiers\": {\"ido\": \"0000592\"}, \"context\": {\"age\": \"young\"}}, \"provenance\": []}",
+    "mira_rate_law": "gamma_2*infected_population_young",
+    "mira_rate_law_mathml": "<apply><times/><ci><mml:msub><mml:mi>&#947;</mml:mi><mml:mi>2</mml:mi></mml:msub></ci><ci><mml:msub><mml:mi>infected</mml:mi><mml:mrow><mml:mi>population</mml:mi><mml:mo> </mml:mo><mml:mi>young</mml:mi></mml:mrow></mml:msub></ci></apply>",
+    "mira_parameters": "{\"gamma_2\": 0.2}",
+    "mira_parameter_distributions": "{\"gamma_2\": null}"
+   },
+   "rate": 0.2
+  }
+ ],
+ "I": [
+  {
+   "is": 2,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 3,
+   "it": 2
+  },
+  {
+   "is": 1,
+   "it": 2
+  },
+  {
+   "is": 4,
+   "it": 3
+  },
+  {
+   "is": 1,
+   "it": 3
+  },
+  {
+   "is": 3,
+   "it": 4
+  },
+  {
+   "is": 5,
+   "it": 4
+  },
+  {
+   "is": 2,
+   "it": 5
+  },
+  {
+   "is": 5,
+   "it": 5
+  },
+  {
+   "is": 4,
+   "it": 6
+  },
+  {
+   "is": 5,
+   "it": 6
+  },
+  {
+   "is": 4,
+   "it": 7
+  },
+  {
+   "is": 6,
+   "it": 7
+  },
+  {
+   "is": 2,
+   "it": 8
+  },
+  {
+   "is": 6,
+   "it": 8
+  },
+  {
+   "is": 3,
+   "it": 9
+  },
+  {
+   "is": 6,
+   "it": 9
+  },
+  {
+   "is": 2,
+   "it": 10
+  },
+  {
+   "is": 3,
+   "it": 11
+  },
+  {
+   "is": 4,
+   "it": 12
+  }
+ ],
+ "O": [
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  },
+  {
+   "os": 2,
+   "ot": 2
+  },
+  {
+   "os": 4,
+   "ot": 3
+  },
+  {
+   "os": 2,
+   "ot": 3
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 2,
+   "ot": 5
+  },
+  {
+   "os": 3,
+   "ot": 5
+  },
+  {
+   "os": 4,
+   "ot": 6
+  },
+  {
+   "os": 3,
+   "ot": 6
+  },
+  {
+   "os": 4,
+   "ot": 7
+  },
+  {
+   "os": 4,
+   "ot": 7
+  },
+  {
+   "os": 2,
+   "ot": 8
+  },
+  {
+   "os": 4,
+   "ot": 8
+  },
+  {
+   "os": 3,
+   "ot": 9
+  },
+  {
+   "os": 4,
+   "ot": 9
+  },
+  {
+   "os": 7,
+   "ot": 10
+  },
+  {
+   "os": 8,
+   "ot": 11
+  },
+  {
+   "os": 9,
+   "ot": 12
+  }
+ ]
+}

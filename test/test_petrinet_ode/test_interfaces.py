@@ -36,15 +36,15 @@ class TestODEInterfaces(unittest.TestCase):
     
     def test_setup_model(self):
         '''Test the setup_model function.'''
-        model = load_petri_model(self.filename)
+        for model in [load_petri_model(self.filename), 
+                      load_petri_model(self.filename, pseudocount=2.0)]:
+            new_model = setup_model(model, self.initial_time, self.initial_state)
 
-        new_model = setup_model(model, self.initial_time, self.initial_state)
-        
-        self.assertIsNotNone(new_model)
-        self.assertEqual(len(new_model._static_events), 1)
-        
-        # Check that setup_model is not inplace.
-        self.assertEqual(len(model._static_events), 0)
+            self.assertIsNotNone(new_model)
+            self.assertEqual(len(new_model._static_events), 1)
+
+            # Check that setup_model is not inplace.
+            self.assertEqual(len(model._static_events), 0)
         
     def test_reset_model(self):
         '''Test the reset_model function.'''
