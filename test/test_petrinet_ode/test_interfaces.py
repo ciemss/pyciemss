@@ -17,6 +17,10 @@ class TestODEInterfaces(unittest.TestCase):
         self.filename = os.path.join(STARTERKIT_PATH, filename)
         self.initial_time = 0.0
         self.initial_state = {"S": 0.9, "I": 0.1, "R": 0.0}
+        self.models = [load_petri_model(self.filename, add_uncertainty=True), 
+                       load_petri_model(self.filename, add_uncertainty=False),
+                       load_petri_model(sir, add_uncertainty=True),
+                       load_petri_model(sir, add_uncertainty=False)]
 
     def test_load_petri_from_file(self):
         '''Test the load_petri function when called on a string.'''
@@ -49,62 +53,62 @@ class TestODEInterfaces(unittest.TestCase):
     def test_reset_model(self):
         '''Test the reset_model function.'''
         
-        model = load_petri_model(self.filename)
-        model = setup_model(model, self.initial_time, self.initial_state)
-        self.assertEqual(len(model._static_events), 1)
-        
-        new_model = reset_model(model)
-        self.assertEqual(len(new_model._static_events), 0)
+        for model in self.models:
+            model = setup_model(model, self.initial_time, self.initial_state)
+            self.assertEqual(len(model._static_events), 1)
+            
+            new_model = reset_model(model)
+            self.assertEqual(len(new_model._static_events), 0)
 
-        # Check that reset_model is not inplace.
-        self.assertEqual(len(model._static_events), 1)
+            # Check that reset_model is not inplace.
+            self.assertEqual(len(model._static_events), 1)
 
     def test_intervene(self):
         '''Test the intervene function.'''
-        model = load_petri_model(self.filename)
-        model = setup_model(model, self.initial_time, self.initial_state)
-        
-        t = 0.2
-        intervened_parameter = "beta"
-        new_value = 0.5
+        for model in self.models:
+            model = setup_model(model, self.initial_time, self.initial_state)
+            
+            t = 0.2
+            intervened_parameter = "beta"
+            new_value = 0.5
 
-        new_model = intervene(model, [(t, intervened_parameter, new_value)])
-        
-        self.assertEqual(len(new_model._static_events), 2)
+            new_model = intervene(model, [(t, intervened_parameter, new_value)])
+            
+            self.assertEqual(len(new_model._static_events), 2)
 
-        # Check that intervene is not inplace.
-        self.assertEqual(len(model._static_events), 1)
+            # Check that intervene is not inplace.
+            self.assertEqual(len(model._static_events), 1)
 
     def test_calibrate(self):
         '''Test the calibrate function.'''
-        model = load_petri_model(self.filename)
-        model = setup_model(model, self.initial_time, self.initial_state)
-        
-        data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
-        parameters = calibrate(model, data, num_iterations=2)
+        for model in self.models:
+            model = setup_model(model, self.initial_time, self.initial_state)
+            
+            data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
+            parameters = calibrate(model, data, num_iterations=2)
 
-        self.assertIsNotNone(parameters)
+            self.assertIsNotNone(parameters)
 
     def test_sample(self):
         '''Test the sample function.'''
-        model = load_petri_model(self.filename)
-        model = setup_model(model, self.initial_time, self.initial_state)
-        
-        timepoints = [0.2, 0.4, 0.6]
-        num_samples = 10
-        # Test that sample works without inferred parameters
-        simulation = sample(model, timepoints, num_samples)
-        
-        self.assertEqual(simulation['I_sol'].shape[0], num_samples)
-        self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
-        
-        data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
-        parameters = calibrate(model, data, num_iterations=2)
-        # Test that sample works with inferred parameters
-        simulation = sample(model, timepoints, num_samples, parameters)
+        for model in self.models:
+            model = setup_model(model, self.initial_time, self.initial_state)
+            
+            timepoints = [0.2, 0.4, 0.6]
+            num_samples = 10
+            # Test that sample works without inferred parameters
+            simulation = sample(model, timepoints, num_samples)
+            
+            self.assertEqual(simulation['I_sol'].shape[0], num_samples)
+            self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
+            
+            data = [(0.2, {"I": 0.1}), (0.4, {"I": 0.2}), (0.6, {"I": 0.3})]
+            parameters = calibrate(model, data, num_iterations=2)
+            # Test that sample works with inferred parameters
+            simulation = sample(model, timepoints, num_samples, parameters)
 
-        self.assertEqual(simulation['I_sol'].shape[0], num_samples)
-        self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
+            self.assertEqual(simulation['I_sol'].shape[0], num_samples)
+            self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
 
         # Test that samples are different when num_samples > 1
         self.assertTrue(torch.all(simulation['I_sol'][0, :] != simulation['I_sol'][1, :]))
