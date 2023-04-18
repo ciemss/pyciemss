@@ -106,12 +106,9 @@ class TestODEInterfaces(unittest.TestCase):
         self.assertEqual(simulation['I_sol'].shape[0], num_samples)
         self.assertEqual(simulation['I_sol'].shape[1], len(timepoints))
 
-<<<<<<< HEAD
         # Test that samples are different when num_samples > 1
         self.assertTrue(torch.all(simulation['I_sol'][0, :] != simulation['I_sol'][1, :]))
 
-=======
->>>>>>> 934027a (added mira loading tests)
     def test_sample_from_mira_registry(self):
         '''Test the sample function when called on a mira.modeling.Model'''
         model = load_petri_model(sir)
