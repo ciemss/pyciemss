@@ -20,12 +20,18 @@ from pyciemss.PetriNetODE.events import StartEvent, ObservationEvent, LoggingEve
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
-def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model], add_uncertainty=True) -> PetriNetODESystem:
+def load_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model], 
+                     add_uncertainty=True,
+                     pseudocount = 1.0,
+                     ) -> PetriNetODESystem:
     '''
     Load a petri net from a file and compile it into a probabilistic program.
     '''
+
     if add_uncertainty:
-        return ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model.pseudocount = torch.tensor(pseudocount)
+        return model
     else:
         return MiraPetriNetODESystem.from_mira(petri_model_or_path)
 
