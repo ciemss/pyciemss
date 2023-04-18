@@ -269,7 +269,7 @@ def _get_name_transition(trans: mira.modeling.Transition) -> str:
 
 @get_name.register
 def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
-    return f"{param.key[-1]}_{param.key}"
+    return param.key
 
 
 class MiraPetriNetODESystem(PetriNetODESystem):
@@ -330,7 +330,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @from_mira.register(dict)
     @classmethod
     def _from_json(cls, model_json: dict):
-        return cls.from_mira(mira.sources.petri.template_model_from_petri_json(model_json))
+        return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json))
 
     @from_mira.register(str)
     @classmethod
