@@ -17,9 +17,9 @@ class TestODE(unittest.TestCase):
 
     # Setup for the tests
     def setUp(self):
-        STARTERKIT_PATH = "test/models/starter_kit_examples/"
-        filename = "CHIME-SIR/model_petri.json"
-        filename = os.path.join(STARTERKIT_PATH, filename)
+        MIRA_PATH = "test/models/revised_evaluation_examples/scenario_1/"
+        filename = "scenario1_sir_mira.json"
+        filename = os.path.join(MIRA_PATH, filename)
         self.model = ScaledBetaNoisePetriNetODESystem.from_mira(filename)
 
     # Clean up after tests
@@ -36,9 +36,9 @@ class TestODE(unittest.TestCase):
 
     def test_from_mira(self):
         '''Test the from_mira method.'''
-        STARTERKIT_PATH = "test/models/starter_kit_examples/"
-        filename = "CHIME-SIR/model_petri.json"
-        filename = os.path.join(STARTERKIT_PATH, filename)
+        MIRA_PATH = "test/models/revised_evaluation_examples/scenario_1/"
+        filename = "scenario1_sir_mira.json"
+        filename = os.path.join(MIRA_PATH, filename)
         model = MiraPetriNetODESystem.from_mira(filename)
         self.assertIsNotNone(model)
 
