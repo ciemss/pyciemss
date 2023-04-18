@@ -1,0 +1,759 @@
+{
+ "templates": [
+  {
+   "rate_law": "Diagnosed*Susceptible*beta",
+   "type": "ControlledConversion",
+   "controller": {
+    "name": "Diagnosed",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "subject": {
+    "name": "Susceptible",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Ailing*Susceptible*gamma",
+   "type": "ControlledConversion",
+   "controller": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "subject": {
+    "name": "Susceptible",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Recognized*Susceptible*delta",
+   "type": "ControlledConversion",
+   "controller": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "subject": {
+    "name": "Susceptible",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Infected*Susceptible*alpha",
+   "type": "ControlledConversion",
+   "controller": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "subject": {
+    "name": "Susceptible",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Infected*epsilon",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Diagnosed",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Infected*zeta",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Infected*XXlambdaXX",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "outcome": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Diagnosed*eta",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Diagnosed",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "outcome": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Diagnosed*rho",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Diagnosed",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "outcome": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Ailing*theta",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "outcome": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Ailing*kappa",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "outcome": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Ailing*mu",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "outcome": {
+    "name": "Threatened",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25467"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Recognized*nu",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "outcome": {
+    "name": "Threatened",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25467"
+    }
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Recognized*xi",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "outcome": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Threatened*tau",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Threatened",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25467"
+    }
+   },
+   "outcome": {
+    "name": "Extinct",
+    "identifiers": {
+     "ncit": "C28554"
+    },
+    "context": {}
+   },
+   "provenance": []
+  },
+  {
+   "rate_law": "Threatened*sigma",
+   "type": "NaturalConversion",
+   "subject": {
+    "name": "Threatened",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25467"
+    }
+   },
+   "outcome": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "provenance": []
+  }
+ ],
+ "parameters": {
+  "alpha": {
+   "name": "alpha",
+   "identifiers": {},
+   "context": {},
+   "value": 0.57,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.45599999999999996,
+     "maximum": 0.6839999999999999
+    }
+   }
+  },
+  "beta": {
+   "name": "beta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.011,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.008799999999999999,
+     "maximum": 0.0132
+    }
+   }
+  },
+  "gamma": {
+   "name": "gamma",
+   "identifiers": {},
+   "context": {},
+   "value": 0.456,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.3648,
+     "maximum": 0.5472
+    }
+   }
+  },
+  "delta": {
+   "name": "delta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.011,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.008799999999999999,
+     "maximum": 0.0132
+    }
+   }
+  },
+  "epsilon": {
+   "name": "epsilon",
+   "identifiers": {},
+   "context": {},
+   "value": 0.171,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.1368,
+     "maximum": 0.20520000000000002
+    }
+   }
+  },
+  "theta": {
+   "name": "theta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.371,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.2968,
+     "maximum": 0.4452
+    }
+   }
+  },
+  "zeta": {
+   "name": "zeta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.125,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.1,
+     "maximum": 0.15
+    }
+   }
+  },
+  "eta": {
+   "name": "eta",
+   "identifiers": {},
+   "context": {},
+   "value": 0.125,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.1,
+     "maximum": 0.15
+    }
+   }
+  },
+  "mu": {
+   "name": "mu",
+   "identifiers": {},
+   "context": {},
+   "value": 0.017,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.013600000000000001,
+     "maximum": 0.0204
+    }
+   }
+  },
+  "nu": {
+   "name": "nu",
+   "identifiers": {},
+   "context": {},
+   "value": 0.027,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.0216,
+     "maximum": 0.0324
+    }
+   }
+  },
+  "tau": {
+   "name": "tau",
+   "identifiers": {},
+   "context": {},
+   "value": 0.01,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.008,
+     "maximum": 0.012
+    }
+   }
+  },
+  "kappa": {
+   "name": "kappa",
+   "identifiers": {},
+   "context": {},
+   "value": 0.017,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.013600000000000001,
+     "maximum": 0.0204
+    }
+   }
+  },
+  "rho": {
+   "name": "rho",
+   "identifiers": {},
+   "context": {},
+   "value": 0.034,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.027200000000000002,
+     "maximum": 0.0408
+    }
+   }
+  },
+  "sigma": {
+   "name": "sigma",
+   "identifiers": {},
+   "context": {},
+   "value": 0.017,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.013600000000000001,
+     "maximum": 0.0204
+    }
+   }
+  },
+  "xi": {
+   "name": "xi",
+   "identifiers": {},
+   "context": {},
+   "value": 0.017,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.013600000000000001,
+     "maximum": 0.0204
+    }
+   }
+  },
+  "epsilon_modifier": {
+   "name": "epsilon_modifier",
+   "identifiers": {},
+   "context": {},
+   "value": 1.0,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.8,
+     "maximum": 1.2
+    }
+   }
+  },
+  "alpha_modifier": {
+   "name": "alpha_modifier",
+   "identifiers": {},
+   "context": {},
+   "value": 1.0,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.8,
+     "maximum": 1.2
+    }
+   }
+  },
+  "XXlambdaXX": {
+   "name": "XXlambdaXX",
+   "identifiers": {},
+   "context": {},
+   "value": 0.034,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.027200000000000002,
+     "maximum": 0.0408
+    }
+   }
+  }
+ },
+ "initials": {
+  "Susceptible": {
+   "concept": {
+    "name": "Susceptible",
+    "identifiers": {
+     "ido": "0000514"
+    },
+    "context": {}
+   },
+   "value": 0.9999963
+  },
+  "Infected": {
+   "concept": {
+    "name": "Infected",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {}
+   },
+   "value": 3.33333333e-06
+  },
+  "Diagnosed": {
+   "concept": {
+    "name": "Diagnosed",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "value": 3.33333333e-07
+  },
+  "Ailing": {
+   "concept": {
+    "name": "Ailing",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25269",
+     "diagnosis": "ncit:C113725"
+    }
+   },
+   "value": 1.66666666e-08
+  },
+  "Recognized": {
+   "concept": {
+    "name": "Recognized",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "diagnosis": "ncit:C15220"
+    }
+   },
+   "value": 3.33333333e-08
+  },
+  "Threatened": {
+   "concept": {
+    "name": "Threatened",
+    "identifiers": {
+     "ido": "0000511"
+    },
+    "context": {
+     "disease_severity": "ncit:C25467"
+    }
+   },
+   "value": 0.0
+  },
+  "Healed": {
+   "concept": {
+    "name": "Healed",
+    "identifiers": {
+     "ido": "0000592"
+    },
+    "context": {}
+   },
+   "value": 0.0
+  },
+  "Extinct": {
+   "concept": {
+    "name": "Extinct",
+    "identifiers": {
+     "ncit": "C28554"
+    },
+    "context": {}
+   },
+   "value": 0.0
+  }
+ },
+ "observables": {
+  "Cases": {
+   "name": "Cases",
+   "identifiers": {
+    "ido": "0000511"
+   },
+   "context": {
+    "diagnosed": "ncit:C113725"
+   },
+   "expression": "Diagnosed + Recognized + Threatened"
+  },
+  "Hospitalizations": {
+   "name": "Hospitalizations",
+   "identifiers": {
+    "ido": "0000511"
+   },
+   "context": {
+    "hospitalization": "ncit:C25179"
+   },
+   "expression": "Recognized + Threatened"
+  },
+  "Deaths": {
+   "name": "Deaths",
+   "identifiers": {
+    "ncit": "C28554"
+   },
+   "context": {},
+   "expression": "Extinct"
+  }
+ },
+ "annotations": {
+  "name": "Giordano2020 - SIDARTHE model of COVID-19 spread in Italy",
+  "description": null,
+  "license": "CC0",
+  "authors": [],
+  "references": [
+   "pubmed:32322102"
+  ],
+  "time_scale": null,
+  "time_start": null,
+  "time_end": null,
+  "locations": [],
+  "pathogens": [
+   "ncbitaxon:2697049"
+  ],
+  "diseases": [
+   "doid:0080600"
+  ],
+  "hosts": [
+   "ncbitaxon:9606"
+  ],
+  "model_types": [
+   "mamo:0000028"
+  ]
+ }
+}
