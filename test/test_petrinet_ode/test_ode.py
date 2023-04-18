@@ -17,7 +17,7 @@ class TestODE(unittest.TestCase):
 
     # Setup for the tests
     def setUp(self):
-        MIRA_PATH = "test/models/revised_evaluation_examples/scenario_1/"
+        MIRA_PATH = "test/models/evaluation_examples/scenario_1/"
         filename = "scenario1_sir_mira.json"
         filename = os.path.join(MIRA_PATH, filename)
         self.model = ScaledBetaNoisePetriNetODESystem.from_mira(filename)
@@ -36,7 +36,7 @@ class TestODE(unittest.TestCase):
 
     def test_from_mira(self):
         '''Test the from_mira method.'''
-        MIRA_PATH = "test/models/revised_evaluation_examples/scenario_1/"
+        MIRA_PATH = "test/models/evaluation_examples/scenario_1/"
         filename = "scenario1_sir_mira.json"
         filename = os.path.join(MIRA_PATH, filename)
         model = MiraPetriNetODESystem.from_mira(filename)
