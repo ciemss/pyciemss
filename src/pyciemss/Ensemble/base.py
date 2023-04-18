@@ -13,7 +13,12 @@ class Ensemble(DynamicalSystem):
         super().__init__()
         self.models = models
         self.weights = weights
+        
         assert(len(self.models) == len(self.weights))
+
+        # Check that all models are of the same type.
+        model_types = set([type(model) for model in self.models])
+        assert(len(model_types) == 1)
 
     def reset(self):
         for model in self.models:
