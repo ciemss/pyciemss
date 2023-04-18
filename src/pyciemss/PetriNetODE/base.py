@@ -43,8 +43,6 @@ class PetriNetODESystem(DynamicalSystem):
         self.var_order = self.create_var_order()
         self.total_population = None
 
-        self.reset()
-
     def reset(self) -> None:
         '''
         Resets the model to its initial state.

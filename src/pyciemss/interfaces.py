@@ -23,6 +23,10 @@ class DynamicalSystem(pyro.nn.PyroModule):
     '''
     def __init__(self) -> None:
         super().__init__()
+        self.reset()
+
+    def reset(self):
+        raise NotImplementedError
 
     def forward(self):
         raise NotImplementedError  
