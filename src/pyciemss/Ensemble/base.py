@@ -1,7 +1,9 @@
 from pyciemss.interfaces import DynamicalSystem
 
 import pyro
+import torch
 
+from pyro.contrib.autoname import scope, name_count
 from typing import Dict, List, Optional, Union, OrderedDict
 
 # TODO: refactor this to use a more general event class
@@ -12,7 +14,7 @@ class EnsembleSystem(DynamicalSystem):
     Base class for ensembles of dynamical systems.
     '''
 
-    def __init__(self, models: List[DynamicalSystem], weights: List[float]) -> None:
+    def __init__(self, models: List[DynamicalSystem], weights: torch.tensor) -> None:
         self.models = models
         self.weights = weights
         
@@ -23,6 +25,10 @@ class EnsembleSystem(DynamicalSystem):
         assert(len(model_types) == 1)
 
         super().__init__()
+
+    def reset(self) -> None:
+        for model in self.models:
+            model.reset()
 
     # TODO: this approach is extremely flexible, but not as discoverable as it could be.
     # This allows us to call a method on the ensemble and have it call the same method on all of the models in the ensemble.
@@ -45,9 +51,9 @@ class EnsembleSystem(DynamicalSystem):
         else:
             return [getattr(model, attr) for model in self.models]
     
-    def forward(self):
+    def forward(self, *args, **kwargs):
         model_assignment = pyro.sample('model_assignment', pyro.distributions.Categorical(self.weights))
-        return self.models[model_assignment].forward()
+        return self.models[model_assignment](*args, **kwargs)
     
     def __repr__(self) -> str:
         return f'Ensemble of {len(self.models)} models. \n\n \tWeights: {self.weights}. \n\n \tModels: {self.models}'
