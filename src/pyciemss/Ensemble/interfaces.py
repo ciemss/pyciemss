@@ -6,7 +6,7 @@ from pyciemss.interfaces import setup_model, reset_model, intervene, sample, cal
 
 from pyciemss.Ensemble.base import EnsembleSystem
 
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Tuple
 import copy
 
 # TODO: probably refactor this out later.
@@ -15,14 +15,20 @@ from pyciemss.PetriNetODE.events import StartEvent, ObservationEvent, LoggingEve
 EnsembleSolution = Iterable[dict[str, torch.Tensor]]
 EnsembleInferredParameters = pyro.nn.PyroModule
 
-@setup_model.register
-def setup_ensemble_model(models: Iterable[DynamicalSystem], weights: Iterable[float], event: StartEvent) -> EnsembleSystem:
+# TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
+@setup_model.register(list)
+def setup_ensemble_model(models: list[DynamicalSystem], 
+                         weights: Iterable[float], 
+                         start_time: float,
+                         start_states: Iterable[dict[str, float]],
+                         ) -> EnsembleSystem:
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
-    start_event = StartEvent(event.start_time, event.start_state)
-    ensemble_model = copy.deepcopy(EnsembleSystem(models, weights))
-    ensemble_model.load_event(start_event)
+    ensemble_model = copy.deepcopy(EnsembleSystem(models, torch.as_tensor(weights)))
+    for i, m in enumerate(ensemble_model.models):
+        start_event = StartEvent(start_time, start_states[i])
+        m.load_event(start_event)
     return ensemble_model
 
 @reset_model.register
@@ -40,9 +46,10 @@ def intervene_ensemble_model(ensemble: EnsembleSystem, interventions: Iterable[T
     '''
     Intervene on a model.
     '''
-    new_ensemble = copy.deepcopy(ensemble)
-    new_ensemble.intervene(interventions)
-    return new_ensemble
+    raise NotImplementedError
+    # new_ensemble = copy.deepcopy(ensemble)
+    # new_ensemble.intervene(interventions)
+    # return new_ensemble
 
 @calibrate.register
 def calibrate_ensemble_model(ensemble: EnsembleSystem, observations: Iterable[ObservationEvent]) -> EnsembleInferredParameters:
@@ -53,6 +60,7 @@ def sample_ensemble_model(ensemble: EnsembleSystem,
                           timepoints: Iterable[float],
                           num_samples: int,
                           inferred_parameters: Optional[EnsembleInferredParameters] = None,
+                          *args,
                           **kwargs) -> EnsembleSolution:
     '''
     Sample from an ensemble model.
@@ -62,4 +70,4 @@ def sample_ensemble_model(ensemble: EnsembleSystem,
     new_ensemble = copy.deepcopy(ensemble)
     new_ensemble.load_events(logging_events)
     # **kwargs is used to pass in optional model parameters, such as the solver method for an ODE.
-    return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(**kwargs)
+    return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(*args, **kwargs)
