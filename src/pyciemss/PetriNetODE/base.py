@@ -229,7 +229,6 @@ class PetriNetODESystem(DynamicalSystem):
         '''
         Compute likelihoods for observations.
         '''
-        # Compute likelihoods for observations
         for var_name in self._observation_var_names:
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
