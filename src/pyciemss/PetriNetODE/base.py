@@ -16,6 +16,9 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
+
+from mira.metamodel.ops import aggregate_parameters
+
 from pyciemss.utils.distributions import ScaledBeta
 
 import bisect
@@ -323,7 +326,16 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
-        return cls.from_mira(mira.modeling.Model(model_template))
+        try:
+            return cls.from_mira(mira.modeling.Model(model_template))
+        except TypeError as e:
+            if str(e) == "attribute name must be string, not 'tuple'":
+                # If we run into a tuple attribute name, it's probably because we're using a non-mass action template model.
+                # In that case, we can aggregate the parameters and try again.
+                new_template = aggregate_parameters(model_template)
+                return cls.from_mira(mira.modeling.Model(new_template))
+            else:
+                raise e
 
     @from_mira.register(dict)
     @classmethod
@@ -387,6 +399,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
             param_value = param_info.value
             if param_value is None:
                 param_info.value = pyro.distributions.Uniform(0.0, 1.0)
+            elif param_value <= 0:
+                param_info.value = pyro.distributions.Uniform(0.0, 0.1)
             elif isinstance(param_value, (int, float)):
                 param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
 
