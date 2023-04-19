@@ -4,7 +4,7 @@ import pyro
 import torch
 
 from pyro.contrib.autoname import scope, name_count
-from typing import Dict, List, Optional, Union, OrderedDict
+from typing import Dict, List, Optional, Union, OrderedDict, Callable
 
 # TODO: refactor this to use a more general event class
 from pyciemss.PetriNetODE.events import Event
@@ -13,10 +13,14 @@ class EnsembleSystem(DynamicalSystem):
     '''
     Base class for ensembles of dynamical systems.
     '''
-
-    def __init__(self, models: List[DynamicalSystem], weights: torch.tensor) -> None:
+    # TODO: add type hints for solution_mappings. It should be a mapping from dict to dict.
+    def __init__(self, 
+                 models: List[DynamicalSystem], 
+                 weights: torch.tensor,
+                 solution_mappings: Callable) -> None:
         self.models = models
         self.weights = weights
+        self.solution_mappings = solution_mappings
         
         assert(len(self.models) == len(self.weights))
 
@@ -24,6 +28,7 @@ class EnsembleSystem(DynamicalSystem):
         model_types = set([type(model) for model in self.models])
         assert(len(model_types) == 1)
 
+        #TODO: Check that all of the solution mappings map to the same set of variables.
         super().__init__()
 
     def reset(self) -> None:
@@ -46,14 +51,47 @@ class EnsembleSystem(DynamicalSystem):
                     return None
                 else:
                     return result
-
             return call
         else:
             return [getattr(model, attr) for model in self.models]
     
-    def forward(self, *args, **kwargs):
-        model_assignment = pyro.sample('model_assignment', pyro.distributions.Categorical(self.weights))
-        return self.models[model_assignment](*args, **kwargs)
+    def setup_before_solve(self):
+        for model in self.models:
+            model.setup_before_solve()
+
+    def param_prior(self):
+        '''
+        Prior distribution over model parameters.
+        This avoids name collisions if multiple models have the same parameter name.
+        '''
+        for i, model in enumerate(self.models):
+            with scope(prefix=f'model_{i}'):
+                model.param_prior()
+            
+        
+    def log_solution(self, solution):
+        '''
+        Log the solution of the ensemble.
+        '''
+        return solution
+        
+    def get_solution(self, *args, **kwargs):
+        '''
+        Get the solution of the ensemble.
+        '''
+        model_weights = pyro.sample('model_assignment', pyro.distributions.Dirichlet(self.weights))
+
+        solutions = [mapping(model.get_solution(*args, **kwargs)) for model, mapping in zip(self.models, self.solution_mappings)]
+
+        solution = {k: sum([model_weights[i] * v[k] for i, v in enumerate(solutions)]) for k in solutions[0].keys()}
+
+        return solution
+
+
+    def add_observation_likelihoods(self, solution):
+        pass
+        #TODO: pick up here.
+        
     
     def __repr__(self) -> str:
         return f'Ensemble of {len(self.models)} models. \n\n \tWeights: {self.weights}. \n\n \tModels: {self.models}'

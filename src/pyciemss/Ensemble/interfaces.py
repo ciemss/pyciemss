@@ -1,12 +1,14 @@
 import pyro
 import torch
+
 from pyro.infer import Predictive
+from pyro import poutine
 
 from pyciemss.interfaces import setup_model, reset_model, intervene, sample, calibrate, optimize, DynamicalSystem
 
 from pyciemss.Ensemble.base import EnsembleSystem
 
-from typing import Iterable, Optional, Tuple
+from typing import Iterable, Optional, Tuple, Callable
 import copy
 
 # TODO: probably refactor this out later.
@@ -17,15 +19,17 @@ EnsembleInferredParameters = pyro.nn.PyroModule
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
 @setup_model.register(list)
-def setup_ensemble_model(models: list[DynamicalSystem], 
+def setup_ensemble_model(models: list[DynamicalSystem],
                          weights: Iterable[float], 
+                         solution_mappings: Iterable[Callable],
                          start_time: float,
                          start_states: Iterable[dict[str, float]],
+
                          ) -> EnsembleSystem:
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
-    ensemble_model = copy.deepcopy(EnsembleSystem(models, torch.as_tensor(weights)))
+    ensemble_model = copy.deepcopy(EnsembleSystem(models, torch.as_tensor(weights), solution_mappings))
     for i, m in enumerate(ensemble_model.models):
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
@@ -71,3 +75,6 @@ def sample_ensemble_model(ensemble: EnsembleSystem,
     new_ensemble.load_events(logging_events)
     # **kwargs is used to pass in optional model parameters, such as the solver method for an ODE.
     return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(*args, **kwargs)
+    
+    # return poutine.trace(new_ensemble).get_trace(*args, **kwargs)
+    
