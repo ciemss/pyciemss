@@ -182,8 +182,14 @@ class PetriNetODESystem(DynamicalSystem):
         '''
         raise NotImplementedError
 
+    def setup_before_solve(self) -> None:
+        '''
+        Inplace method for setting up the model.
+        '''
+        self._setup_observation_indices_and_values()
+
     @pyro.nn.pyro_method
-    def get_solution(self, method="dopri5", **kwargs) -> Solution:
+    def get_solution(self, method="dopri5") -> Solution:
         # Check that the start event is the first event
         assert isinstance(self._static_events[0], StartEvent)
 
@@ -236,30 +242,17 @@ class PetriNetODESystem(DynamicalSystem):
             with pyro.condition(data={var_name: observation_values}):
                 self.observation_model(filtered_solution, var_name)
     
-
-    def forward(self, method="dopri5", **kwargs) -> Solution:
+    def log_solution(self, solution: Solution) -> Solution:
+        ''' 
+        This method wraps the solution in a pyro.deterministic call to ensure it is in the trace.
         '''
-        Joint distribution over model parameters, trajectories, and noisy observations.
-        '''
-        # Setup the memoized observation indices and values
-        self._setup_observation_indices_and_values()
-
-        # Sample parameters from the prior
-        self.param_prior()
-
-        # Solve the ODE
-        solution = self.get_solution(method=method, **kwargs)        
-
-        # Add the observation likelihoods
-        self.add_observation_likelihoods(solution)
-
         # Log the solution
         logging_indices = [i for i, event in enumerate(self._static_events) if isinstance(event, LoggingEvent)]
 
         # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
-        return logged_solution
+        return logged_solution       
 
 @functools.singledispatch
 def get_name(obj) -> str:
