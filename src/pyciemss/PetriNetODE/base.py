@@ -178,16 +178,8 @@ class PetriNetODESystem(DynamicalSystem):
         '''
         raise NotImplementedError
 
-    def forward(self, method="dopri5", **kwargs) -> Solution:
-        '''
-        Joint distribution over model parameters, trajectories, and noisy observations.
-        '''
-        # Setup the memoized observation indices and values
-        self._setup_observation_indices_and_values()
-
-        # Sample parameters from the prior
-        self.param_prior()
-
+    @pyro.nn.pyro_method
+    def get_solution(self, method="dopri5", **kwargs) -> Solution:
         # Check that the start event is the first event
         assert isinstance(self._static_events[0], StartEvent)
 
@@ -226,6 +218,13 @@ class PetriNetODESystem(DynamicalSystem):
         solution = tuple(torch.cat(s) for s in zip(*solutions))
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
+        return solution
+    
+    @pyro.nn.pyro_method
+    def add_observation_likelihoods(self, solution: Solution) -> None:
+        '''
+        Compute likelihoods for observations.
+        '''
         # Compute likelihoods for observations
         for var_name in self._observation_var_names:
             observation_indices = self._observation_indices[var_name]
@@ -233,6 +232,23 @@ class PetriNetODESystem(DynamicalSystem):
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
                 self.observation_model(filtered_solution, var_name)
+    
+
+    def forward(self, method="dopri5", **kwargs) -> Solution:
+        '''
+        Joint distribution over model parameters, trajectories, and noisy observations.
+        '''
+        # Setup the memoized observation indices and values
+        self._setup_observation_indices_and_values()
+
+        # Sample parameters from the prior
+        self.param_prior()
+
+        # Solve the ODE
+        solution = self.get_solution(method=method, **kwargs)        
+
+        # Add the observation likelihoods
+        self.add_observation_likelihoods(solution)
 
         # Log the solution
         logging_indices = [i for i, event in enumerate(self._static_events) if isinstance(event, LoggingEvent)]
