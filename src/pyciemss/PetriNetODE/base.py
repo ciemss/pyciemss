@@ -27,7 +27,8 @@ from torchdiffeq import odeint
 
 from pyciemss.interfaces import DynamicalSystem
 
-from pyciemss.PetriNetODE.events import Event, StaticEvent, StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
+from pyciemss.PetriNetODE.events import (Event, StaticEvent, StartEvent, ObservationEvent,
+                                         LoggingEvent, StaticParameterInterventionEvent)
 
 Time = Union[float, torch.tensor]
 State = tuple[torch.tensor]
@@ -89,7 +90,7 @@ class PetriNetODESystem(DynamicalSystem):
         else:
             # If the event is a dynamic event, then we need to add it to the list of dynamic events.
             raise NotImplementedError
-    
+
     @functools.singledispatchmethod
     def _load_event(self, event:Event) -> None:
         '''
@@ -112,8 +113,11 @@ class PetriNetODESystem(DynamicalSystem):
             self._observation_indices = {}
             self._observation_values = {}
             for var_name in self._observation_var_names:
-                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events) if isinstance(event, ObservationEvent) and var_name in event.observation.keys()]
-                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name] for i in self._observation_indices[var_name]])
+                self._observation_indices[var_name] = [i for i, event in enumerate(self._static_events)
+                                                       if isinstance(event, ObservationEvent)
+                                                       and var_name in event.observation.keys()]
+                self._observation_values[var_name] = torch.stack([self._static_events[i].observation[var_name]
+                                                                  for i in self._observation_indices[var_name]])
 
             self._observation_indices_and_values_are_set_up = True
 
@@ -171,7 +175,7 @@ class PetriNetODESystem(DynamicalSystem):
         This needs to be called once for each `var_name` in the set of observed variables.
         '''
         raise NotImplementedError
-    
+
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         '''
         Inplace method defining how interventions are applied to modify the model parameters.
@@ -303,7 +307,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     def create_var_order(self) -> dict[str, int]:
         '''
-        Returns the order of the variables in the state vector used in the `deriv` method. 
+        Returns the order of the variables in the state vector used in the `deriv` method.
         Specialization of the base class method using the Mira graph object.
         '''
         return collections.OrderedDict(
@@ -364,7 +368,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-    
+
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_info in self.G.parameters.values():
