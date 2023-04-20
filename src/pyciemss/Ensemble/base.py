@@ -68,13 +68,12 @@ class EnsembleSystem(DynamicalSystem):
         for i, model in enumerate(self.models):
             with scope(prefix=f'model_{i}'):
                 model.param_prior()
-            
         
     def log_solution(self, solution):
         '''
         Log the solution of the ensemble.
         '''
-        return solution
+        return self.models[0].log_solution(solution)
         
     def get_solution(self, *args, **kwargs):
         '''
@@ -90,8 +89,11 @@ class EnsembleSystem(DynamicalSystem):
 
 
     def add_observation_likelihoods(self, solution):
-        # This will be a bit tricky, and we'll probably need to rethink how we map solutions to observations.
-        pass
+        '''
+        For now we assume that observations map to the names and scale of the first model in the ensemble.
+        This is not very robust at all, and should be fixed.
+        '''
+        self.models[0].add_observation_likelihoods(solution)
         
     
     def __repr__(self) -> str:

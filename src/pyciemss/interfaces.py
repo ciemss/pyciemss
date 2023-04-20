@@ -88,6 +88,13 @@ def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwarg
     '''
     raise NotImplementedError
 
+@functools.singledispatch
+def assert_observations_valid(model: DynamicalSystem, data: Data, *args, **kwargs) -> None:
+    '''
+    Check that the observations are valid for the given model.
+    '''
+    raise NotImplementedError
+
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
 def calibrate(model: DynamicalSystem, data: Data, *args, **kwargs) -> InferredParameters:
