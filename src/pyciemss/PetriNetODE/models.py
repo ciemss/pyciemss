@@ -40,37 +40,38 @@ class SVIIvR(PetriNetODESystem):
         self.gammaV_prior = gammaV_prior
         self.nu_prior = nu_prior
 
-    @pyro_method
-    def deriv(self, t: Time, state: State) -> State:
-        S, V, I, Iv, R = state
+    ### TODO: write a hand-coded version of SVIIvR using the new PetriNetODESystem class.
+    # @pyro_method
+    # def deriv(self, t: Time, state: State) -> State:
+    #     S, V, I, Iv, R = state
 
-        # Local fluxes exposed to pyro for interventions.
-        # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
-        SV_flux_ = pyro.deterministic("SV_flux %f" % (t), self.nu * S)
-        SI_flux_ = pyro.deterministic(
-            "SI_flux %f" % (t), self.beta * S * (I + Iv) / self.N
-        )
-        VIv_flux_ = pyro.deterministic(
-            "VIv_flux %f" % (t), self.betaV * V * (I + Iv) / self.N
-        )
-        IR_flux_ = pyro.deterministic("IR_flux %f" % (t), self.gamma * I)
-        IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
+    #     # Local fluxes exposed to pyro for interventions.
+    #     # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
+    #     SV_flux_ = pyro.deterministic("SV_flux %f" % (t), self.nu * S)
+    #     SI_flux_ = pyro.deterministic(
+    #         "SI_flux %f" % (t), self.beta * S * (I + Iv) / self.N
+    #     )
+    #     VIv_flux_ = pyro.deterministic(
+    #         "VIv_flux %f" % (t), self.betaV * V * (I + Iv) / self.N
+    #     )
+    #     IR_flux_ = pyro.deterministic("IR_flux %f" % (t), self.gamma * I)
+    #     IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
 
-        # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
-        SV_flux = state_flux_constraint(S, SV_flux_)
-        SI_flux = state_flux_constraint(S, SI_flux_)
-        VIv_flux = state_flux_constraint(V, VIv_flux_)
-        IR_flux = state_flux_constraint(I, IR_flux_)
-        IvR_flux = state_flux_constraint(Iv, IvR_flux_)
+    #     # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
+    #     SV_flux = state_flux_constraint(S, SV_flux_)
+    #     SI_flux = state_flux_constraint(S, SI_flux_)
+    #     VIv_flux = state_flux_constraint(V, VIv_flux_)
+    #     IR_flux = state_flux_constraint(I, IR_flux_)
+    #     IvR_flux = state_flux_constraint(Iv, IvR_flux_)
 
-        # Where the real magic happens.
-        dSdt = -SI_flux - SV_flux
-        dVdt = -VIv_flux + SV_flux
-        dIdt = SI_flux - IR_flux
-        dIvdt = VIv_flux - IvR_flux
-        dRdt = IR_flux + IvR_flux
+    #     # Where the real magic happens.
+    #     dSdt = -SI_flux - SV_flux
+    #     dVdt = -VIv_flux + SV_flux
+    #     dIdt = SI_flux - IR_flux
+    #     dIvdt = VIv_flux - IvR_flux
+    #     dRdt = IR_flux + IvR_flux
 
-        return dSdt, dVdt, dIdt, dIvdt, dRdt
+    #     return dSdt, dVdt, dIdt, dIvdt, dRdt
 
     @pyro_method
     def param_prior(self) -> None:
