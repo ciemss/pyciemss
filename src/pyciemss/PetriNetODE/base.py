@@ -289,22 +289,6 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         self.G = G
         super().__init__()
 
-        for param_info in self.G.parameters.values():
-            param_name = get_name(param_info)
-
-            param_value = param_info.value
-            if param_value is None:  # TODO remove this placeholder when MIRA is updated
-                param_value = torch.nn.Parameter(torch.tensor(0.1))
-
-            if isinstance(param_value, torch.nn.Parameter):
-                setattr(self, param_name, pyro.nn.PyroParam(param_value))
-            elif isinstance(param_value, pyro.distributions.Distribution):
-                setattr(self, param_name, pyro.nn.PyroSample(param_value))
-            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
-            else:
-                raise TypeError(f"Unknown parameter type: {type(param_value)}")
-
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
             for var in self.var_order.values():
                 self.register_buffer(
@@ -334,16 +318,14 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
-        try:
-            return cls.from_mira(mira.modeling.Model(model_template))
-        except TypeError as e:
-            if str(e) == "attribute name must be string, not 'tuple'":
-                # If we run into a tuple attribute name, it's probably because we're using a non-mass action template model.
-                # In that case, we can aggregate the parameters and try again.
-                new_template = aggregate_parameters(model_template)
-                return cls.from_mira(mira.modeling.Model(new_template))
-            else:
-                raise e
+        model = cls.from_mira(mira.modeling.Model(model_template))
+
+        # Check if all parameter names are strings
+        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
+            return model
+        else:
+            new_template = aggregate_parameters(model_template)
+            return cls.from_mira(mira.modeling.Model(new_template))
 
     @from_mira.register(dict)
     @classmethod
@@ -361,11 +343,6 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
-
-    @pyro.nn.pyro_method
-    def param_prior(self):
-        for param_info in self.G.parameters.values():
-            getattr(self, get_name(param_info))
 
     @pyro.nn.pyro_method
     def deriv(self, t: Time, state: State) -> StateDeriv:
@@ -388,6 +365,24 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
         return tuple(derivs[v] for v in self.var_order.values())
     
+    @pyro.nn.pyro_method
+    def param_prior(self):
+        for param_info in self.G.parameters.values():
+            param_name = get_name(param_info)
+
+            param_value = param_info.value
+            if param_value is None:  # TODO remove this placeholder when MIRA is updated
+                param_value = torch.nn.Parameter(torch.tensor(0.1))
+            if isinstance(param_value, torch.nn.Parameter):
+                setattr(self, param_name, pyro.param(param_name, param_value))
+            elif isinstance(param_value, pyro.distributions.Distribution):
+                # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
+                setattr(self, param_name, pyro.sample(param_name, param_value))
+            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
+                self.register_buffer(param_name, torch.as_tensor(param_value))
+            else:
+                raise TypeError(f"Unknown parameter type: {type(param_value)}")
+
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         # Default implementation just records the observation, with no randomness.
