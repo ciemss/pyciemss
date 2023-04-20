@@ -22,7 +22,7 @@ class EnsembleSystem(DynamicalSystem):
         self.weights = weights
         self.solution_mappings = solution_mappings
         
-        assert(len(self.models) == len(self.weights))
+        assert(len(self.models) == len(self.weights) == len(self.solution_mappings))
 
         # Check that all models are of the same type.
         model_types = set([type(model) for model in self.models])
@@ -32,6 +32,7 @@ class EnsembleSystem(DynamicalSystem):
         super().__init__()
 
     def reset(self) -> None:
+        # It's unclear why we need this given __getattr__ below, but it seems necessary...
         for model in self.models:
             model.reset()
 
@@ -79,7 +80,7 @@ class EnsembleSystem(DynamicalSystem):
         '''
         Get the solution of the ensemble.
         '''
-        model_weights = pyro.sample('model_assignment', pyro.distributions.Dirichlet(self.weights))
+        model_weights = pyro.sample('model_weights', pyro.distributions.Dirichlet(self.weights))
 
         solutions = [mapping(model.get_solution(*args, **kwargs)) for model, mapping in zip(self.models, self.solution_mappings)]
 
