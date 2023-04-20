@@ -90,8 +90,8 @@ class EnsembleSystem(DynamicalSystem):
 
 
     def add_observation_likelihoods(self, solution):
+        # This will be a bit tricky, and we'll probably need to rethink how we map solutions to observations.
         pass
-        #TODO: pick up here.
         
     
     def __repr__(self) -> str:
