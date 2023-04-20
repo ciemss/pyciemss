@@ -231,16 +231,19 @@ class PetriNetODESystem(DynamicalSystem):
         return solution
     
     @pyro.nn.pyro_method
-    def add_observation_likelihoods(self, solution: Solution) -> None:
+    def add_observation_likelihoods(self, solution: Solution, observation_model=None) -> None:
         '''
         Compute likelihoods for observations.
         '''
+        if observation_model is None:
+            observation_model = self.observation_model
+
         for var_name in self._observation_var_names:
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
-                self.observation_model(filtered_solution, var_name)
+                observation_model(filtered_solution, var_name)
     
     def log_solution(self, solution: Solution) -> Solution:
         ''' 
