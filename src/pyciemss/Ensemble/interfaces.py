@@ -51,14 +51,54 @@ def intervene_ensemble_model(ensemble: EnsembleSystem, interventions: Iterable[T
     Intervene on a model.
     '''
     raise NotImplementedError
-    # new_ensemble = copy.deepcopy(ensemble)
-    # new_ensemble.intervene(interventions)
-    # return new_ensemble
 
 @calibrate.register
-def calibrate_ensemble_model(ensemble: EnsembleSystem, observations: Iterable[ObservationEvent]) -> EnsembleInferredParameters:
-    raise NotImplementedError
+def calibrate_ensemble_model(ensemble: EnsembleSystem,
+                            data: Iterable[Tuple[float, dict[str, float]]],
+                            num_iterations: int = 1000, 
+                            lr: float = 0.03, 
+                            verbose: bool = False,
+                            num_particles: int = 1,
+                            autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+                            method="dopri5"
+                            ) -> EnsembleInferredParameters:
+    '''
+    Calibrate a model. Dispatches to the calibrate method of the underlying model.
+    This method is only implemented for petri net models. 
+    '''
+    # TODO: Refactor the codebase so that this can be implemented for any model that has a calibrate method.
+    # This will require pulling out functions for checking the validity of the data, and for setting up the model.
 
+    new_ensemble = copy.deepcopy(ensemble)
+    observations = [ObservationEvent(timepoint, observation) for timepoint, observation in data]
+
+    # Again, here we assume that all observations are scaled to the first model in the ensemble.
+    test_petri = new_ensemble.models[0]
+
+    for obs in observations:
+        s = 0.0 
+        for v in obs.observation.values():
+            s += v
+            assert 0 <= v <= test_petri.total_population
+        assert s <= test_petri.total_population or torch.isclose(s, test_petri.total_population)
+
+    new_ensemble.load_events(observations)
+
+    guide = autoguide(new_ensemble)
+    optim = pyro.optim.Adam({"lr": lr})
+    loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
+    svi = pyro.infer.SVI(new_ensemble, guide, optim, loss=loss)
+
+    pyro.clear_param_store()
+
+    for i in range(num_iterations):
+        loss = svi.step(method=method)
+        if verbose:
+            if i % 25 == 0:
+                print(f"iteration {i}: loss = {loss}")
+    
+    return guide
+    
 @sample.register
 def sample_ensemble_model(ensemble: EnsembleSystem,
                           timepoints: Iterable[float],
@@ -75,6 +115,4 @@ def sample_ensemble_model(ensemble: EnsembleSystem,
     new_ensemble.load_events(logging_events)
     # **kwargs is used to pass in optional model parameters, such as the solver method for an ODE.
     return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(*args, **kwargs)
-    
-    # return poutine.trace(new_ensemble).get_trace(*args, **kwargs)
     
