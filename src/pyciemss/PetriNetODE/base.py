@@ -285,7 +285,7 @@ def _get_name_transition(trans: mira.modeling.Transition) -> str:
 
 @get_name.register
 def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
-    return param.key
+    return str(param.key)
 
 
 class MiraPetriNetODESystem(PetriNetODESystem):
