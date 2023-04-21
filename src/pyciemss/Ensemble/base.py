@@ -91,6 +91,7 @@ class EnsembleSystem(DynamicalSystem):
 
         solutions = [mapping(model.get_solution(*args, **kwargs)) for model, mapping in zip(self.models, self.solution_mappings)]
 
+        # TODO: make this broadcasted instead of looping over the keys.
         solution = {k: sum([model_weights[i] * v[k] for i, v in enumerate(solutions)]) for k in solutions[0].keys()}
 
         return solution

@@ -26,12 +26,12 @@ def setup_ensemble_model(models: list[DynamicalSystem],
                          start_states: Iterable[dict[str, float]],
                          total_population: float = 1.0,
                          noise_pseudocount: float = 1.0,
-                         dirichlet_dispersion: float = 1.0
+                         dirichlet_concentration: float = 1.0
                          ) -> EnsembleSystem:
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
-    ensemble_model = copy.deepcopy(ScaledBetaNoiseEnsembleSystem(models, torch.as_tensor(weights)/dirichlet_dispersion, solution_mappings, total_population, noise_pseudocount))
+    ensemble_model = copy.deepcopy(ScaledBetaNoiseEnsembleSystem(models, torch.as_tensor(weights) * dirichlet_concentration, solution_mappings, total_population, noise_pseudocount))
     for i, m in enumerate(ensemble_model.models):
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
@@ -43,9 +43,7 @@ def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
     Reset a model to its initial state.
     reset_model * setup_model = id
     '''
-    new_ensemble = copy.deepcopy(ensemble)
-    new_ensemble.reset()
-    return new_ensemble
+    raise NotImplementedError
 
 @intervene.register
 def intervene_ensemble_model(ensemble: EnsembleSystem, interventions: Iterable[Tuple[float, str, float]]) -> EnsembleSystem:
