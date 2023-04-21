@@ -1,4 +1,4 @@
-,date,location,length_of_stay,admissions,census
+,date,location,length_of_stay,admissions,hospital_census
 0,2020-07-27,US,6,6099,6099
 1,2020-07-28,US,6,5256,11355
 2,2020-07-29,US,6,5387,16742
