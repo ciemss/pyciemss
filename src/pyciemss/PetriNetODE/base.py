@@ -3,6 +3,7 @@ import functools
 import json
 import operator
 import os
+import warnings
 from typing import Dict, List, Optional, Union, OrderedDict
 
 import networkx
@@ -231,16 +232,18 @@ class PetriNetODESystem(DynamicalSystem):
         return solution
 
     @pyro.nn.pyro_method
-    def add_observation_likelihoods(self, solution: Solution) -> None:
+    def add_observation_likelihoods(self, solution: Solution, observation_model=None) -> None:
         '''
         Compute likelihoods for observations.
         '''
+        if observation_model is None:
+            observation_model = self.observation_model
         for var_name in self._observation_var_names:
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
-                self.observation_model(filtered_solution, var_name)
+                observation_model(filtered_solution, var_name)
 
     def log_solution(self, solution: Solution) -> Solution:
         '''
@@ -370,6 +373,24 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         return tuple(derivs[v] for v in self.var_order.values())
 
     @pyro.nn.pyro_method
+    def param_prior(self):
+        for param_info in self.G.parameters.values():
+            param_name = get_name(param_info)
+
+            param_value = param_info.value
+            if param_value is None:  # TODO remove this placeholder when MIRA is updated
+                param_value = torch.nn.Parameter(torch.tensor(0.1))
+            if isinstance(param_value, torch.nn.Parameter):
+                setattr(self, param_name, pyro.param(param_name, param_value))
+            elif isinstance(param_value, pyro.distributions.Distribution):
+                # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
+                setattr(self, param_name, pyro.sample(param_name, param_value))
+            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
+                self.register_buffer(param_name, torch.as_tensor(param_value))
+            else:
+                raise TypeError(f"Unknown parameter type: {type(param_value)}")
+
+    @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         # Default implementation just records the observation, with no randomness.
         pyro.deterministic(var_name, solution[var_name])
@@ -389,6 +410,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
             if param_value is None:
                 param_info.value = pyro.distributions.Uniform(0.0, 1.0)
             elif param_value <= 0:
+                warnings.warn(f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)")
                 param_info.value = pyro.distributions.Uniform(0.0, 0.1)
             elif isinstance(param_value, (int, float)):
                 param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)

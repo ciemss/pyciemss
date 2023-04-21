@@ -6,7 +6,8 @@ from pyro import poutine
 
 from pyciemss.interfaces import setup_model, reset_model, intervene, sample, calibrate, optimize, DynamicalSystem
 
-from pyciemss.Ensemble.base import EnsembleSystem
+from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
+
 
 from typing import Iterable, Optional, Tuple, Callable
 import copy
@@ -20,16 +21,18 @@ EnsembleInferredParameters = pyro.nn.PyroModule
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
 @setup_model.register(list)
 def setup_ensemble_model(models: list[DynamicalSystem],
-                         weights: Iterable[float], 
+                         weights: Iterable[float],
                          solution_mappings: Iterable[Callable],
                          start_time: float,
                          start_states: Iterable[dict[str, float]],
-
+                         total_population: float = 1.0,
+                         noise_pseudocount: float = 1.0,
+                         dirichlet_concentration: float = 1.0
                          ) -> EnsembleSystem:
     '''
     Instatiate a model for a particular configuration of initial conditions
     '''
-    ensemble_model = copy.deepcopy(EnsembleSystem(models, torch.as_tensor(weights), solution_mappings))
+    ensemble_model = copy.deepcopy(ScaledBetaNoiseEnsembleSystem(models, torch.as_tensor(weights) * dirichlet_concentration, solution_mappings, total_population, noise_pseudocount))
     for i, m in enumerate(ensemble_model.models):
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
@@ -41,9 +44,7 @@ def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
     Reset a model to its initial state.
     reset_model * setup_model = id
     '''
-    new_ensemble = copy.deepcopy(ensemble)
-    new_ensemble.reset()
-    return new_ensemble
+    raise NotImplementedError
 
 @intervene.register
 def intervene_ensemble_model(ensemble: EnsembleSystem, interventions: Iterable[Tuple[float, str, float]]) -> EnsembleSystem:
@@ -55,8 +56,8 @@ def intervene_ensemble_model(ensemble: EnsembleSystem, interventions: Iterable[T
 @calibrate.register
 def calibrate_ensemble_model(ensemble: EnsembleSystem,
                             data: Iterable[Tuple[float, dict[str, float]]],
-                            num_iterations: int = 1000, 
-                            lr: float = 0.03, 
+                            num_iterations: int = 1000,
+                            lr: float = 0.03,
                             verbose: bool = False,
                             num_particles: int = 1,
                             autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal,
@@ -64,7 +65,7 @@ def calibrate_ensemble_model(ensemble: EnsembleSystem,
                             ) -> EnsembleInferredParameters:
     '''
     Calibrate a model. Dispatches to the calibrate method of the underlying model.
-    This method is only implemented for petri net models. 
+    This method is only implemented for petri net models.
     '''
     # TODO: Refactor the codebase so that this can be implemented for any model that has a calibrate method.
     # This will require pulling out functions for checking the validity of the data, and for setting up the model.
@@ -76,7 +77,7 @@ def calibrate_ensemble_model(ensemble: EnsembleSystem,
     test_petri = new_ensemble.models[0]
 
     for obs in observations:
-        s = 0.0 
+        s = 0.0
         for v in obs.observation.values():
             s += v
             assert 0 <= v <= test_petri.total_population
@@ -96,9 +97,9 @@ def calibrate_ensemble_model(ensemble: EnsembleSystem,
         if verbose:
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
-    
+
     return guide
-    
+
 @sample.register
 def sample_ensemble_model(ensemble: EnsembleSystem,
                           timepoints: Iterable[float],
@@ -115,4 +116,3 @@ def sample_ensemble_model(ensemble: EnsembleSystem,
     new_ensemble.load_events(logging_events)
     # **kwargs is used to pass in optional model parameters, such as the solver method for an ODE.
     return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(*args, **kwargs)
-    
