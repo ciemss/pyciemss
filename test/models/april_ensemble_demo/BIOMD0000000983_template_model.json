@@ -232,7 +232,7 @@
    "provenance": []
   },
   {
-   "rate_law": "XXlambdaXX*theta*(1.0 - Quarantined)",
+   "rate_law": "Quarantined*theta*(1.0 - XXlambdaXX)",
    "type": "NaturalConversion",
    "subject": {
     "name": "Quarantined",
