@@ -229,7 +229,7 @@ class PetriNetODESystem(DynamicalSystem):
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         return solution
-    
+
     @pyro.nn.pyro_method
     def add_observation_likelihoods(self, solution: Solution) -> None:
         '''
@@ -241,9 +241,9 @@ class PetriNetODESystem(DynamicalSystem):
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
                 self.observation_model(filtered_solution, var_name)
-    
+
     def log_solution(self, solution: Solution) -> Solution:
-        ''' 
+        '''
         This method wraps the solution in a pyro.deterministic call to ensure it is in the trace.
         '''
         # Log the solution
@@ -252,7 +252,7 @@ class PetriNetODESystem(DynamicalSystem):
         # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
-        return logged_solution       
+        return logged_solution
 
 @functools.singledispatch
 def get_name(obj) -> str:
@@ -368,24 +368,6 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 derivs[p] += flux
 
         return tuple(derivs[v] for v in self.var_order.values())
-
-    @pyro.nn.pyro_method
-    def param_prior(self):
-        for param_info in self.G.parameters.values():
-            param_name = get_name(param_info)
-
-            param_value = param_info.value
-            if param_value is None:  # TODO remove this placeholder when MIRA is updated
-                param_value = torch.nn.Parameter(torch.tensor(0.1))
-            if isinstance(param_value, torch.nn.Parameter):
-                setattr(self, param_name, pyro.param(param_name, param_value))
-            elif isinstance(param_value, pyro.distributions.Distribution):
-                # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
-                setattr(self, param_name, pyro.sample(param_name, param_value))
-            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
-            else:
-                raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
