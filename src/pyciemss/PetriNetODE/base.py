@@ -411,7 +411,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
             if param_value is None:
                 param_info.value = pyro.distributions.Uniform(0.0, 1.0)
             elif param_value <= 0:
-                warnings.warn(f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)")
+                warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                warnings.warn(warnings_string)
                 param_info.value = pyro.distributions.Uniform(0.0, 0.1)
             elif isinstance(param_value, (int, float)):
                 param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
