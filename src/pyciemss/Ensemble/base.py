@@ -81,6 +81,8 @@ class EnsembleSystem(DynamicalSystem):
         '''
         Log the solution of the ensemble.
         '''
+        # When we initialized the model we checked that all of the models are of the same class.
+        # Therefore, we can call the log_solution method of any arbitrary model in the ensemble.
         return self.models[0].log_solution(solution)
         
     def get_solution(self, *args, **kwargs):
