@@ -15,6 +15,7 @@ ObjectiveFunction      = TypeVar('ObjectiveFunction')
 Constraints            = TypeVar('Constraints')
 OptimizationAlgorithm  = TypeVar('OptimizationAlgorithm')
 OptimizationResult     = TypeVar('OptimizationResult')
+Solution               = TypeVar('Solution')
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 class DynamicalSystem(pyro.nn.PyroModule):
@@ -23,9 +24,43 @@ class DynamicalSystem(pyro.nn.PyroModule):
     '''
     def __init__(self) -> None:
         super().__init__()
+        self.reset()
 
-    def forward(self):
-        raise NotImplementedError  
+    def reset(self):
+        raise NotImplementedError
+    
+    def setup_before_solve(self):
+        raise NotImplementedError
+    
+    def param_prior(self):
+        raise NotImplementedError
+    
+    def get_solution(self, *args, **kwargs) -> Solution:
+        raise NotImplementedError
+    
+    def add_observation_likelihoods(self, solution: Solution):
+        raise NotImplementedError
+    
+    def log_solution(self, solution: Solution) -> Solution:
+        raise NotImplementedError
+
+    def forward(self, *args, **kwargs) -> Solution:
+        '''
+        Joint distribution over model parameters, trajectories, and noisy observations.
+        '''
+        # Setup the anything the dynamical system needs before solving.
+        self.setup_before_solve()
+
+        # Sample parameters from the prior
+        self.param_prior()
+
+        # Solve the ODE
+        solution = self.get_solution(*args, **kwargs)        
+
+        # Add the observation likelihoods
+        self.add_observation_likelihoods(solution)
+
+        return self.log_solution(solution) 
      
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
@@ -50,6 +85,13 @@ def reset_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
 def intervene(model: DynamicalSystem, intervention: Intervention, *args, **kwargs) -> DynamicalSystem:
     '''
     `intervene(model, intervention)` returns a new model where the intervention has been applied.
+    '''
+    raise NotImplementedError
+
+@functools.singledispatch
+def assert_observations_valid(model: DynamicalSystem, data: Data, *args, **kwargs) -> None:
+    '''
+    Check that the observations are valid for the given model.
     '''
     raise NotImplementedError
 

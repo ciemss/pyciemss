@@ -1,9 +1,7 @@
 import numpy as np
 from scipy.optimize import basinhopping, minimize
-
-# from causal_pyro.query.do_messenger import do
+from pyciemss.interfaces import intervene
 from pyro.infer import Predictive
-
 from pyciemss.risk.risk_measures import alpha_superquantile
 
 class RandomDisplacementBounds():
@@ -14,10 +12,10 @@ class RandomDisplacementBounds():
         self.xmin = xmin
         self.xmax = xmax
         self.stepsize = stepsize
-    
+
     def __call__(self, x):
         return np.clip(x + np.random.uniform(-self.stepsize, self.stepsize, np.shape(x)), self.xmin, self.xmax)
-    
+
 
 class computeRisk():
     '''
@@ -50,20 +48,20 @@ class computeRisk():
 
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
-        
+
         # Compute risk measure
         return self.risk_measure(sample_qoi)
-    
-    
+
+
     def propagate_uncertainty(self, x):
         '''
         Perform forward uncertainty propagation.
         '''
         # Apply intervention to model
-        intervened_model = do(self.model, self.intervention_fun(x))
-        
+        intervened_model = intervene(self.model, self.intervention_fun(x))
+
         samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-            
+
         return samples
 
 
@@ -91,7 +89,7 @@ class solveOUU():
         self.minimizer_kwargs = minimizer_kwargs.update({"constraints": self.constraints})
         self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
-        
+
         self.kwargs = kwargs
 
     def solve(self):
@@ -117,7 +115,7 @@ class solveOUU():
             )
 
         return result
-    
+
     # TODO: implement logging callback for optimizer
     def _save(self):
         raise NotImplementedError
