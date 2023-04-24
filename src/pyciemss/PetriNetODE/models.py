@@ -127,6 +127,40 @@ class MIRA_SVIIvR(ScaledBetaNoisePetriNetODESystem):
             ),
         )
 
+class IDART_obs(ScaledBetaNoisePetriNetODESystem):
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """In the observation model, IDART_obs is the sum of Infected, Diagnosed, Ailing, Recognized, and Threatened."""
+
+        IDART_vars = ["Infected", "Diagnosed", "Ailing", "Recognized", "Threatened"]
+        if var_name == "IDART_obs":
+            mean = sum([solution[v] for v in IDART_vars])
+        else:
+            mean = solution[var_name]
+        pyro.sample(
+            var_name,
+            ScaledBeta(mean, self.total_population, self.pseudocount * mean).to_event(
+                1
+            ),
+        )
+
+class Case_obs(ScaledBetaNoisePetriNetODESystem):
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """In the observation model, Case_obs is the sum of Diagnosed, Recognized."""
+
+        Case_vars = ["Diagnosed", "Recognized"]
+        if var_name == "Case_obs":
+            mean = sum([solution[v] for v in Case_vars])
+        else:
+            mean = solution[var_name]
+        pyro.sample(
+            var_name,
+            ScaledBeta(mean, self.total_population, self.pseudocount * mean).to_event(
+                1
+            ),
+        )
+
 
 class MIRA_I_obs_with_scaled_Gaussian_noise(MiraPetriNetODESystem):
     """
