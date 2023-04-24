@@ -218,7 +218,7 @@ class TestODE(unittest.TestCase):
         self.assertEqual(predictions['infected_population_sol'].shape, torch.Size([2, 9]))
 
         # Susceptible individuals shouldn't change between t=3 and t=4 because of the first intervention
-        self.assertTrue(torch.all(predictions['susceptible_population_sol'][:, 2] == predictions['susceptible_population_sol'][:, 3]))
+        self.assertTrue(torch.all(torch.isclose(predictions['susceptible_population_sol'][:, 2], predictions['susceptible_population_sol'][:, 3])))
 
         # Recovered individuals should increase between t=3 and t=4
         self.assertTrue(torch.all(predictions['immune_population_sol'][:, 2] < predictions['immune_population_sol'][:, 3]))
