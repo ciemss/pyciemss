@@ -123,3 +123,6 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
         '''
         mean = solution[var_name]
         pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount).to_event(1))
+
+    def __rep__(self) -> str:
+        return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}'
