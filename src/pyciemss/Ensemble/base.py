@@ -97,20 +97,6 @@ class EnsembleSystem(DynamicalSystem):
         solution = {k: sum([model_weights[i] * v[k] for i, v in enumerate(solutions)]) for k in solutions[0].keys()}
 
         return solution
-
-
-    # def add_observation_likelihoods(self, solution):
-    #     '''
-    #     Add observation likelihoods to the solution.
-    #     This calls the add_observation_likelihoods method of the first model in the ensemble, but applied to the 
-    #     solution of the ensemble.
-    #     '''
-        
-    #     # Call the add_observation_likelihoods method of the first model in the ensemble, but applied to the
-    #     # solution of the ensemble. Importantly, this means that the observation likelihoods are applied to the ensemble
-    #     # itself, not to the individual models in the ensemble.
-    #     self.models[0].add_observation_likelihoods(solution)
-        
     
     def __repr__(self) -> str:
         return f'Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models}'
@@ -137,3 +123,6 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
         '''
         mean = solution[var_name]
         pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount).to_event(1))
+
+    def __rep__(self) -> str:
+        return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}'
