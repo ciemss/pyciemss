@@ -5,6 +5,7 @@
    "type": "ControlledConversion",
    "controller": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -14,6 +15,7 @@
    },
    "subject": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -23,6 +25,7 @@
    },
    "outcome": {
     "name": "Exposed",
+    "description": null,
     "identifiers": {
      "apollosv": "00000154"
     },
@@ -35,6 +38,7 @@
    "type": "ControlledConversion",
    "controller": {
     "name": "Infected_unreported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -44,6 +48,7 @@
    },
    "subject": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -53,6 +58,7 @@
    },
    "outcome": {
     "name": "Exposed",
+    "description": null,
     "identifiers": {
      "apollosv": "00000154"
     },
@@ -65,6 +71,7 @@
    "type": "ControlledConversion",
    "controller": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -74,6 +81,7 @@
    },
    "subject": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -83,6 +91,7 @@
    },
    "outcome": {
     "name": "Quarantined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -97,6 +106,7 @@
    "type": "ControlledConversion",
    "controller": {
     "name": "Infected_unreported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -106,6 +116,7 @@
    },
    "subject": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -115,6 +126,7 @@
    },
    "outcome": {
     "name": "Quarantined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -129,6 +141,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Quarantined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -138,6 +151,7 @@
    },
    "outcome": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -152,6 +166,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Exposed",
+    "description": null,
     "identifiers": {
      "apollosv": "00000154"
     },
@@ -159,6 +174,7 @@
    },
    "outcome": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -173,6 +189,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Exposed",
+    "description": null,
     "identifiers": {
      "apollosv": "00000154"
     },
@@ -180,6 +197,7 @@
    },
    "outcome": {
     "name": "Infected_unreported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -194,6 +212,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -203,6 +222,7 @@
    },
    "outcome": {
     "name": "Recovered",
+    "description": null,
     "identifiers": {
      "ido": "0000592"
     },
@@ -215,6 +235,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Infected_unreported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -224,6 +245,7 @@
    },
    "outcome": {
     "name": "Recovered",
+    "description": null,
     "identifiers": {
      "ido": "0000592"
     },
@@ -236,6 +258,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Quarantined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -245,6 +268,7 @@
    },
    "outcome": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -259,6 +283,7 @@
    "type": "NaturalConversion",
    "subject": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -268,6 +293,7 @@
    },
    "outcome": {
     "name": "Deceased",
+    "description": null,
     "identifiers": {
      "ncit": "C28554"
     },
@@ -279,6 +305,7 @@
  "parameters": {
   "f": {
    "name": "f",
+   "description": "f",
    "identifiers": {},
    "context": {},
    "value": 0.2,
@@ -292,6 +319,7 @@
   },
   "n": {
    "name": "n",
+   "description": "n",
    "identifiers": {},
    "context": {},
    "value": 0.5,
@@ -303,8 +331,23 @@
     }
    }
   },
+  "XXlambdaXX": {
+   "name": "XXlambdaXX",
+   "description": "lambda",
+   "identifiers": {},
+   "context": {},
+   "value": 0.3,
+   "distribution": {
+    "type": "StandardUniform1",
+    "parameters": {
+     "minimum": 0.24,
+     "maximum": 0.36
+    }
+   }
+  },
   "q": {
    "name": "q",
+   "description": "q",
    "identifiers": {},
    "context": {},
    "value": 0.83,
@@ -318,6 +361,7 @@
   },
   "sigma": {
    "name": "sigma",
+   "description": "sigma",
    "identifiers": {},
    "context": {},
    "value": 0.2,
@@ -331,6 +375,7 @@
   },
   "beta": {
    "name": "beta",
+   "description": "beta",
    "identifiers": {},
    "context": {},
    "value": 2.115e-08,
@@ -344,6 +389,7 @@
   },
   "mu": {
    "name": "mu",
+   "description": "mu",
    "identifiers": {},
    "context": {},
    "value": 0.2,
@@ -357,6 +403,7 @@
   },
   "eta_r": {
    "name": "eta_r",
+   "description": "eta_r",
    "identifiers": {},
    "context": {},
    "value": 0.1,
@@ -370,6 +417,7 @@
   },
   "eta_u": {
    "name": "eta_u",
+   "description": "eta_u",
    "identifiers": {},
    "context": {},
    "value": 0.25,
@@ -383,6 +431,7 @@
   },
   "theta": {
    "name": "theta",
+   "description": "theta",
    "identifiers": {},
    "context": {},
    "value": 0.07142857,
@@ -396,6 +445,7 @@
   },
   "_1": {
    "name": "_1",
+   "description": "France",
    "identifiers": {},
    "context": {},
    "value": 1.0,
@@ -407,21 +457,9 @@
     }
    }
   },
-  "XXlambdaXX": {
-   "name": "XXlambdaXX",
-   "identifiers": {},
-   "context": {},
-   "value": 0.3,
-   "distribution": {
-    "type": "StandardUniform1",
-    "parameters": {
-     "minimum": 0.24,
-     "maximum": 0.36
-    }
-   }
-  },
   "h": {
    "name": "h",
+   "description": null,
    "identifiers": {},
    "context": {},
    "value": 0.05,
@@ -438,6 +476,7 @@
   "Susceptible_confined": {
    "concept": {
     "name": "Susceptible_confined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -450,6 +489,7 @@
   "Susceptible_unconfined": {
    "concept": {
     "name": "Susceptible_unconfined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -462,6 +502,7 @@
   "Exposed": {
    "concept": {
     "name": "Exposed",
+    "description": null,
     "identifiers": {
      "apollosv": "00000154"
     },
@@ -472,6 +513,7 @@
   "Infected_reported": {
    "concept": {
     "name": "Infected_reported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -484,6 +526,7 @@
   "Infected_unreported": {
    "concept": {
     "name": "Infected_unreported",
+    "description": null,
     "identifiers": {
      "ido": "0000511"
     },
@@ -496,6 +539,7 @@
   "Recovered": {
    "concept": {
     "name": "Recovered",
+    "description": null,
     "identifiers": {
      "ido": "0000592"
     },
@@ -506,6 +550,7 @@
   "Quarantined": {
    "concept": {
     "name": "Quarantined",
+    "description": null,
     "identifiers": {
      "ido": "0000514"
     },
@@ -519,6 +564,7 @@
  "observables": {
   "Cases": {
    "name": "Cases",
+   "description": null,
    "identifiers": {
     "ido": "0000511"
    },
@@ -529,6 +575,7 @@
   },
   "Hospitalizations": {
    "name": "Hospitalizations",
+   "description": null,
    "identifiers": {
     "ido": "0000511"
    },
@@ -539,6 +586,7 @@
   },
   "Deaths": {
    "name": "Deaths",
+   "description": null,
    "identifiers": {
     "ncit": "C28554"
    },
