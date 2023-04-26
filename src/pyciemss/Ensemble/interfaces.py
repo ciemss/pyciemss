@@ -58,6 +58,7 @@ def calibrate_ensemble_model(ensemble: EnsembleSystem,
                             num_iterations: int = 1000, 
                             lr: float = 0.03, 
                             verbose: bool = False,
+                            verbose_every: int = 25,
                             num_particles: int = 1,
                             autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal,
                             method="dopri5"
@@ -94,7 +95,7 @@ def calibrate_ensemble_model(ensemble: EnsembleSystem,
     for i in range(num_iterations):
         loss = svi.step(method=method)
         if verbose:
-            if i % 25 == 0:
+            if i % verbose_every == 0:
                 print(f"iteration {i}: loss = {loss}")
     
     return guide
