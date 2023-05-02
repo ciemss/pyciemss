@@ -60,7 +60,7 @@ class SIR_with_uncertainty(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
         """define the prior distributions for the parameters"""
-       setattr(self, 'beta', pyro.sample('beta', self.beta)))
+       setattr(self, 'beta', pyro.sample('beta', self.beta))
        setattr(self, 'gamma', pyro.sample('gamma', self.gamma))
 
     @pyro.nn.pyro_method
