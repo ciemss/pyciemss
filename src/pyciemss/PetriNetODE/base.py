@@ -388,7 +388,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-
+                self.register_buffer(param_name, torch.as_tensor(param_value))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
