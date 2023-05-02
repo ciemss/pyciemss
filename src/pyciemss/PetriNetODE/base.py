@@ -230,7 +230,7 @@ class PetriNetODESystem(DynamicalSystem):
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         return solution
-    
+
     @pyro.nn.pyro_method
     def add_observation_likelihoods(self, solution: Solution, observation_model=None) -> None:
         '''
@@ -245,9 +245,9 @@ class PetriNetODESystem(DynamicalSystem):
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
                 observation_model(filtered_solution, var_name)
-    
+
     def log_solution(self, solution: Solution) -> Solution:
-        ''' 
+        '''
         This method wraps the solution in a pyro.deterministic call to ensure it is in the trace.
         '''
         # Log the solution
@@ -256,8 +256,9 @@ class PetriNetODESystem(DynamicalSystem):
         # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
-        return logged_solution       
+        return logged_solution
 
+## why is this here? It should be in MiraPetriNetODESystem if it is Mira specific
 @functools.singledispatch
 def get_name(obj) -> str:
     """
@@ -387,7 +388,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
+
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
