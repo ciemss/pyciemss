@@ -44,7 +44,7 @@ class SIR_with_uncertainty(PetriNetODESystem):
         return {"susceptible_population": 0, "infected_population": 1, "immune_population": 2}
 
     @pyro.nn.pyro_method
-    def deriv(self, t: Time, state: State) -> StateDeriv:
+    def deriv(self, t: Time, state: State) -> State:
         """compute the state derivative at time t
         :param t: time
         :param state: state vector
@@ -60,8 +60,8 @@ class SIR_with_uncertainty(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
         """define the prior distributions for the parameters"""
-       setattr(self, 'beta', pyro.sample('beta', self.beta))
-       setattr(self, 'gamma', pyro.sample('gamma', self.gamma))
+        setattr(self, 'beta', pyro.sample('beta', self.beta))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma))
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
