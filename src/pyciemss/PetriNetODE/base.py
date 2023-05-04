@@ -192,7 +192,7 @@ class PetriNetODESystem(DynamicalSystem):
     @pyro.nn.pyro_method
     def get_solution(self, method="dopri5") -> Solution:
         # Check that the start event is the first event
-        assert isinstance(self._static_events[0], StartEvent)
+        assert isinstance(self._static_events[0], StartEvent), "Please initialize the model before sampling."
 
         # Load initial state
         initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())

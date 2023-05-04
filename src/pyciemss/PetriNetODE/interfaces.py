@@ -121,6 +121,9 @@ def sample_petri(petri:PetriNetODESystem,
     '''
     Sample `num_samples` trajectories from the prior or posterior distribution over ODE models.
     '''
+    assert hasattr(petri, "_static_events"), "Please initialize the model before sampling."
+    assert len(petri._static_events) > 0, "No events initialized."
+    assert isinstance(petri._static_events[0], StartEvent), "First event should be a StartEvent."
     logging_events = [LoggingEvent(timepoint) for timepoint in timepoints]
     new_petri = copy.deepcopy(petri)
     new_petri.load_events(logging_events)

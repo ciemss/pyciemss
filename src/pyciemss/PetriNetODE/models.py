@@ -34,8 +34,8 @@ class SIR_with_uncertainty(PetriNetODESystem):
         """
         super().__init__()
         self.total_population = N
-        self.beta =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
-        self.gamma = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
         self.pseudocount = pseudocount
 
 
@@ -50,7 +50,7 @@ class SIR_with_uncertainty(PetriNetODESystem):
         :param state: state vector
         :return: state derivative vector
         """
-        assert sum(state) == self.total_population
+        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
         S, I, R = state
         dSdt = -self.beta * S * I / self.total_population
         dIdt = self.beta * S * I / self.total_population - self.gamma * I
@@ -60,8 +60,8 @@ class SIR_with_uncertainty(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
         """define the prior distributions for the parameters"""
-        setattr(self, 'beta', pyro.sample('beta', self.beta))
-        setattr(self, 'gamma', pyro.sample('gamma', self.gamma))
+        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
