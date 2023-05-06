@@ -49,6 +49,31 @@ def setup_petri_model(petri: PetriNetODESystem,
     new_petri.load_event(start_event)
     return new_petri
 
+@load_and_setup_model.register
+def load_and_setup_petri_model(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model], 
+                               add_uncertainty=True,
+                               pseudocount = 1.0,
+                               start_time: float,
+                               start_state: dict[str, float],
+                               ) -> PetriNetODESystem:
+    '''
+    Load petri net from file, compile into a probabilistic program, and instatiate for a particular initial condition config.
+    '''
+    # Load model
+    if add_uncertainty:
+        model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model.pseudocount = torch.tensor(pseudocount)
+    else:
+        model = MiraPetriNetODESystem.from_mira(petri_model_or_path)
+    
+    # Setup model
+    start_event = StartEvent(start_time, start_state)
+    new_model = copy.deepcopy(model)
+    new_model.load_event(start_event)
+    
+    return new_model
+    
+
 @reset_model.register
 def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
     '''
