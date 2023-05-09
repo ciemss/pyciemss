@@ -20,6 +20,10 @@ from pyciemss.utils.distributions import ScaledBeta
 
 
 class SIR_with_uncertainty(PetriNetODESystem):
+    """SIR model built by hand to compare against the MIRA SIR model
+    See https://github.com/ciemss/pyciemss/issues/144 
+    for more detail.
+    """
     def __init__(
             self,
             N: int,
