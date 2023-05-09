@@ -192,7 +192,7 @@ class PetriNetODESystem(DynamicalSystem):
     @pyro.nn.pyro_method
     def get_solution(self, method="dopri5") -> Solution:
         # Check that the start event is the first event
-        assert isinstance(self._static_events[0], StartEvent)
+        assert isinstance(self._static_events[0], StartEvent), "Please initialize the model before sampling."
 
         # Load initial state
         initial_state = tuple(self._static_events[0].initial_state[v] for v in self.var_order.keys())
@@ -230,7 +230,7 @@ class PetriNetODESystem(DynamicalSystem):
         solution = {v: solution[i] for i, v in enumerate(self.var_order.keys())}
 
         return solution
-    
+
     @pyro.nn.pyro_method
     def add_observation_likelihoods(self, solution: Solution, observation_model=None) -> None:
         '''
@@ -245,9 +245,9 @@ class PetriNetODESystem(DynamicalSystem):
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
             with pyro.condition(data={var_name: observation_values}):
                 observation_model(filtered_solution, var_name)
-    
+
     def log_solution(self, solution: Solution) -> Solution:
-        ''' 
+        '''
         This method wraps the solution in a pyro.deterministic call to ensure it is in the trace.
         '''
         # Log the solution
@@ -256,8 +256,9 @@ class PetriNetODESystem(DynamicalSystem):
         # Return the logged solution wrapped in a pyro.deterministic call to ensure it is in the trace
         logged_solution = {v: pyro.deterministic(f"{v}_sol", solution[logging_indices]) for v, solution in solution.items()}
 
-        return logged_solution       
+        return logged_solution
 
+## why is this here? It should be in MiraPetriNetODESystem if it is Mira specific
 @functools.singledispatch
 def get_name(obj) -> str:
     """
