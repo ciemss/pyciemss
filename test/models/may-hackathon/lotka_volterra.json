@@ -1,0 +1,70 @@
+{
+  "name": "Lotka Volterra",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/regnet_v0.1/regnet/regnet_schema.json",
+  "description": "Lotka Volterra model",
+  "model_version": "0.1",
+  "model": {
+    "vertices": [
+      {
+        "id": "R",
+        "name": "Rabbits",
+        "grounding": {},
+        "initial": "R0",
+        "rate_constant": "alpha",
+        "sign": false
+      },
+      {
+        "id": "W",
+        "name": "Wolves",
+        "grounding": {},
+        "initial": 1,
+        "rate_constant": 0.2,
+        "sign": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "rabbit_growth",
+        "source": "R",
+        "target": "R",
+        "sign": true,
+        "properties": {
+          "name": "Rabbit growth",
+          "rate_constant": 0.2
+        }
+      },
+      {
+        "id": "wolf_growth",
+        "source": "W",
+        "target": "W",
+        "sign": true,
+        "properties": {
+          "rate_constant": "beta"
+        }
+      },
+      {
+        "id": "predation",
+        "source": "W",
+        "target": "R",
+        "sign": false,
+        "properties": {}
+      }
+    ],
+    "parameters": [
+      {
+        "id": "R0",
+        "description": "Initial rabbit population",
+        "value": 10
+      },
+      {
+        "id": "alpha",
+        "description": "Natural decay of rabbits",
+        "value": 0.01
+      },
+      {
+        "id": "beta",
+        "value": 0.02
+      }
+    ]
+  }
+}

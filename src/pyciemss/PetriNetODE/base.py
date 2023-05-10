@@ -17,7 +17,10 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
-
+from mira.sources.askenet.petrinet import (
+    template_model_from_askenet_json,
+    model_from_json_file as template_model_from_askenet_json_file
+)
 from mira.metamodel.ops import aggregate_parameters
 
 from pyciemss.utils.distributions import ScaledBeta
@@ -319,6 +322,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             (get_name(var), var) for var in sorted(self.G.variables.values(), key=get_name)
         )
 
+
+
+    
     @functools.singledispatchmethod
     @classmethod
     def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
@@ -348,6 +354,24 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             raise ValueError(f"Model file not found: {model_json_path}")
         with open(model_json_path, "r") as f:
             return cls.from_mira(json.load(f))
+
+    @functools.singledispatchmethod
+    @classmethod
+    def from_askenet(cls, askenet_json_path: str) -> "MiraPetriNetODESystem":
+        return cls(template_model_from_askenet_json_file(model))
+
+    @from_askenet.register(dict)
+    @classmethod
+    def askenet_from_json(cls, askenet_json: dict):
+        return cls(template_model_from_askenet_json(askenet_json))
+
+    @from_askenet.register(str)
+    @classmethod
+    def _from_json_file(cls, model_json_path: str):
+        if not os.path.exists(model_json_path):
+            raise ValueError(f"Model file not found: {model_json_path}")
+        with open(model_json_path, "r") as f:
+            return cls.from_askenet(json.load(f))
 
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load

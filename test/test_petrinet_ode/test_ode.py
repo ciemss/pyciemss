@@ -11,6 +11,8 @@ from pyro.infer.autoguide import AutoNormal
 from pyro.infer import SVI, Trace_ELBO, Predictive
 from pyro.optim import Adam
 import pyro
+from mira.sources.askenet.petrinet import model_from_json_file
+
 
 class TestODE(unittest.TestCase):
     '''Tests for the ODE module.'''
@@ -45,6 +47,13 @@ class TestODE(unittest.TestCase):
     def test_from_mira_with_noise(self):
         self.assertIsNotNone(self.model)
 
+    def test_from_askenet(self):
+        '''Test the import from askenet json'''
+        ASKENET_PATH = "test/models/"
+        filename = "askenet_sir.json"
+        filename = os.path.join(ASKENET_PATH, filename)
+        model = MiraPetriNetODESystem.from_askenet(filename)
+        
     def test_load_remove_start_event(self):
         '''Test the load_event method for StartEvent and the remove_start_event methods.'''
         event = StartEvent(0.0, {"susceptible_population": 0.9, "infected_population": 0.1, "immune_population": 0.0})
