@@ -2,4 +2,4 @@
 set -euxo pipefail
 
 ./scripts/lint.sh
-pytest -s --cov=causal_pyro/ --cov=tests --cov-report=term-missing ${@-} --cov-report html
+pytest -s --cov=src/pyciemss/ --cov=test --cov-report=term-missing ${@-} --cov-report html

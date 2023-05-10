@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-mypy --ignore-missing-imports causal_pyro/
-isort --check --profile black --diff causal_pyro/ tests/
-black --check causal_pyro/ tests/
-flake8 causal_pyro/ tests/
+mypy --ignore-missing-imports src/pyciemss/
+isort --check --profile black --diff src/pyciemss/ test/
+black --check src/pyciemss/ test/
+flake8 src/pyciemss/ test/
