@@ -31,6 +31,7 @@ class LotkaVolterra(PetriNetODESystem):
         """initialize alpha, beta, gamma, delta priors"""
         self.add_uncertainty = add_uncertainty
         self.pseudocount = pseudocount
+        super().__init__()
         if self.add_uncertainty:
             self.alpha_prior = pyro.distributions.Uniform(max(0.9 * alpha, 0.0), 1.1 * alpha)
             self.beta_prior = pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
@@ -38,11 +39,11 @@ class LotkaVolterra(PetriNetODESystem):
             self.delta_prior = pyro.distributions.Uniform(max(0.9 * delta, 0.0), 1.1 * delta)
             self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
         else:
-            self.alpha_prior = torch.nn.Parameter(alpha)
-            self.beta_prior = torch.nn.Parameter(beta)
-            self.gamma_prior = torch.nn.Parameter(gamma)
-            self.delta_prior = torch.nn.Parameter(delta)
-        super().__init__()
+            self.alpha_prior = torch.nn.Parameter(torch.as_tensor(alpha))
+            self.beta_prior = torch.nn.Parameter(torch.as_tensor(beta))
+            self.gamma_prior = torch.nn.Parameter(torch.as_tensor(gamma))
+            self.delta_prior = torch.nn.Parameter(torch.as_tensor(delta))
+
 
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
@@ -70,7 +71,7 @@ class LotkaVolterra(PetriNetODESystem):
         """
         prey_population, predator_population = state
         dxdt = self.alpha * prey_population - self.beta * prey_population * predator_population
-        dydt = self.delta * prey_population * y - self.gamma * predator_population
+        dydt = self.delta * prey_population * predator_population - self.gamma * predator_population
         return dxdt, dydt
               
     def create_var_order(self) -> dict[str, int]:
@@ -88,6 +89,12 @@ class LotkaVolterra(PetriNetODESystem):
         total_population = sum(solution.values())
         pyro.sample(var_name, ScaledBeta(mean, total_population, pseudocount).to_event(1))
 
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
 
 
 class SIR_with_uncertainty(PetriNetODESystem):

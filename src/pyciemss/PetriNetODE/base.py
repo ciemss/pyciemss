@@ -362,7 +362,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     @from_askenet.register(dict)
     @classmethod
-    def askenet_from_json(cls, askenet_json: dict):
+    def from_askenet_json(cls, askenet_json: dict):
         return cls(template_model_from_askenet_json(askenet_json))
 
     @from_askenet.register(str)
