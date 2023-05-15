@@ -3,16 +3,22 @@ import unittest
 import os
 import torch
 from copy import deepcopy
-
+import pyciemss
+import pyciemss.PetriNetODE
 from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
-
+from pyciemss.PetriNetODE.models import MiraRegNetODESystem, LotkaVolterra
 from pyro.infer.autoguide import AutoNormal
 from pyro.infer import SVI, Trace_ELBO, Predictive
 from pyro.optim import Adam
 import pyro
-from mira.sources.askenet.petrinet import model_from_json_file
-
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
+from mira.modeling.askenet.regnet import AskeNetRegNetModel
+import mira.sources.askenet.petrinet as askenet_petrinet
+import mira.sources.askenet.regnet as askenet_regnet
+from mira.examples.sir import sir as mira_sir
+import json
+import mira
 
 class TestODE(unittest.TestCase):
     '''Tests for the ODE module.'''
@@ -47,12 +53,42 @@ class TestODE(unittest.TestCase):
     def test_from_mira_with_noise(self):
         self.assertIsNotNone(self.model)
 
-    def test_from_askenet(self):
+    def test_from_askenet_petrinet(self):
         '''Test the import from askenet json'''
         ASKENET_PATH = "test/models/"
         filename = "askenet_sir.json"
         filename = os.path.join(ASKENET_PATH, filename)
-        model = MiraPetriNetODESystem.from_askenet(filename)
+        mira_model = askenet_petrinet.model_from_json_file(filename)
+        model = MiraPetriNetODESystem.from_askenet_petrinet(filename)
+        self.assertIsNotNone(model)
+        self.assertTrue(isinstance(model, MiraPetriNetODESystem))
+        with open(filename, "r") as fname:
+            json_dict = json.load(fname)
+        model2 = MiraPetriNetODESystem.from_askenet_petrinet(json_dict)
+        self.assertIsNotNone(model2)
+        self.assertTrue(isinstance(model2, MiraPetriNetODESystem))
+        model3 = MiraPetriNetODESystem.from_askenet_petrinet(AskeNetPetriNetModel(mira.modeling.Model(mira_sir)))
+        self.assertIsNotNone(model3)
+        self.assertTrue(isinstance(model3, MiraPetriNetODESystem))
+
+    def test_from_askenet_regnet(self):
+        '''Test the import from askenet json'''
+        ASKENET_PATH = "test/models/may-hackathon"
+        filename = "lotka_volterra.json"
+        filename = os.path.join(ASKENET_PATH, filename)
+        regnet_model = askenet_regnet.model_from_json_file(filename)
+        model = MiraRegNetODESystem.from_askenet_regnet(filename)
+        self.assertIsNotNone(model)
+        self.assertTrue(isinstance(model, MiraRegNetODESystem))
+        with open(filename, "r") as fname:
+            json_dict = json.load(fname)
+        model2 = MiraRegNetODESystem.from_askenet_regnet(json_dict)
+        self.assertIsNotNone(model2)
+        self.assertTrue(isinstance(model2, MiraRegNetODESystem))
+        # model3 = MiraRegNetODESystem.from_askenet_regnet(AskeNetRegNetModel(mira.modeling.Model(regnet_model)))
+        # self.assertIsNotNone(model3)
+        # self.assertTrue(isinstance(model3, MiraRegNetODESystem))
+    
         
     def test_load_remove_start_event(self):
         '''Test the load_event method for StartEvent and the remove_start_event methods.'''

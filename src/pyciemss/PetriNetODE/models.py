@@ -19,6 +19,20 @@ from pyciemss.utils import state_flux_constraint
 from pyciemss.utils.distributions import ScaledBeta
 
 
+class MiraRegNetODESystem(MiraPetriNetODESystem):
+    """
+    MIRA RegNet model.
+    """
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        return self.net(t, state)
+    
+    
+
 class LotkaVolterra(PetriNetODESystem):
     """Lotka-Volterra model built by hand to compare against MIRA Regnet model.
     See https://github.com/ciemss/pyciemss/issues/153

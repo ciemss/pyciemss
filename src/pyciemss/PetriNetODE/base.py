@@ -17,13 +17,12 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
-from mira.sources.askenet.petrinet import (
-    template_model_from_askenet_json,
-    model_from_json_file as template_model_from_askenet_json_file
-)
-from mira.metamodel.ops import aggregate_parameters
-
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
+from mira.modeling.askenet.regnet import AskeNetRegNetModel
+import mira.sources.askenet.petrinet as askenet_petrinet
+import mira.sources.askenet.regnet as askenet_regnet
 from pyciemss.utils.distributions import ScaledBeta
+from mira.metamodel.ops import aggregate_parameters
 
 import bisect
 
@@ -38,7 +37,6 @@ Time = Union[float, torch.tensor]
 State = tuple[torch.tensor]
 StateDeriv = tuple[torch.tensor]
 Solution = Dict[str, torch.tensor]
-
 class PetriNetODESystem(DynamicalSystem):
     '''
     Base class for ordinary differential equations models in PyCIEMSS.
@@ -355,24 +353,52 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         with open(model_json_path, "r") as f:
             return cls.from_mira(json.load(f))
 
+    
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, askenet_json_path: str) -> "MiraPetriNetODESystem":
-        return cls(template_model_from_askenet_json_file(model))
+    def from_askenet_petrinet(cls, askenet_petrinet_model: AskeNetPetriNetModel) -> "MiraPetriNetODESystem":
+        """return a MiraPetriNetODESystem from an askenet petrinet model."""
+        return cls.from_mira(askenet_petrinet_model.model)
 
-    @from_askenet.register(dict)
+    @from_askenet_petrinet.register(dict)
     @classmethod
-    def from_askenet_json(cls, askenet_json: dict):
-        return cls(template_model_from_askenet_json(askenet_json))
+    def _from_askenet_petrinet_json(cls, askenet_petrinet_json: dict) -> "MiraPetriNetODESystem":
+        """return a MiraPetriNetODESystem from an askenet petrinet json."""
+        return cls.from_mira(askenet_petrinet.template_model_from_askenet_json(askenet_petrinet_json))
 
-    @from_askenet.register(str)
+    @from_askenet_petrinet.register(str)
     @classmethod
-    def _from_json_file(cls, model_json_path: str):
-        if not os.path.exists(model_json_path):
-            raise ValueError(f"Model file not found: {model_json_path}")
-        with open(model_json_path, "r") as f:
-            return cls.from_askenet(json.load(f))
+    def _from_askent_petrinet_json_file(cls, askenet_petrinet_json_path: str) -> "MiraPetriNetODESystem":
+        """return a MiraPetriNetODESystem from an askenet petrinet json file."""
+        if not os.path.exists(askenet_petrinet_json_path):
+            raise ValueError(f"Model file not found: {askenet_petrinet_json_path}")
+        with open(askenet_petrinet_json_path, "r") as f:
+            return cls.from_askenet_petrinet(json.load(f))
 
+
+    @functools.singledispatchmethod
+    @classmethod
+    def from_askenet_regnet(cls, askenet_regnet_model: AskeNetRegNetModel) -> "MiraPetriNetODESystem":
+        """return a MiraRegnetNetODESystem from an askenet regnet model."""
+        return cls.from_mira(askenet_regnet_model.model)
+
+    @from_askenet_regnet.register(dict)
+    @classmethod
+    def _from_askenet_regnet_json(cls, askenet_regnet_json: dict) -> "MiraPetriNetODESystem":
+        """return a MiraRegnetNetODESystem from an askenet regnet json."""
+        return cls.from_mira(askenet_regnet.template_model_from_askenet_json(askenet_regnet_json))
+
+
+    @from_askenet_regnet.register(str)
+    @classmethod
+    def _from_askenet_regnet_json_file(cls, askenet_regnet_json_path: str):
+        """return a MiraRegnetNetODESystem from an askenet regnet json file."""
+        if not os.path.exists(askenet_regnet_json_path):
+            raise ValueError(f"Model file not found: {askenet_regnet_json_path}")
+        with open(askenet_regnet_json_path, "r") as f:
+            return cls.from_askenet_regnet(json.load(f))
+
+        
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
