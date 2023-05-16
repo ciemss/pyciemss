@@ -94,14 +94,23 @@ class LotkaVolterra(PetriNetODESystem):
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
-        """define the observation model for the given variable
-        :param solution: solution of the ODE system
-        :param var_name: variable name
-        """
+        """In the observation model, I_obs is the sum of I and Iv.  We scale the noise by the square root of the mean, so that the noise variance is proportional to the mean."""
         mean = solution[var_name]
-        pseudocount = self.pseudocount
-        total_population = sum(solution.values())
-        pyro.sample(var_name, ScaledBeta(mean, total_population, pseudocount).to_event(1))
+        pyro.sample(
+            var_name,
+            dist.Normal(mean, torch.sqrt(mean) / self.pseudocount).to_event(1),
+        )
+
+    # @pyro.nn.pyro_method
+    # def observation_model(self, solution: Solution, var_name: str) -> None:
+    #     """define the observation model for the given variable
+    #     :param solution: solution of the ODE system
+    #     :param var_name: variable name
+    #     """
+    #     mean = solution[var_name]
+    #     pseudocount = self.pseudocount
+    #     total_population = sum(solution.values())
+    #     pyro.sample(var_name, ScaledBeta(mean, total_population, pseudocount).to_event(1))
 
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
         """set a static parameter intervention
