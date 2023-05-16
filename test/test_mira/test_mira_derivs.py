@@ -2,16 +2,12 @@ import unittest
 import torch
 from mira.examples.sir import sir_parameterized as sir # MIRA model
 from pyciemss.interfaces import DynamicalSystem
-import pyciemss.PetriNetODE
+import pyciemss.PetriNetODE.utils import reparameterize
 from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
 from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene,
                                              sample, calibrate, optimize, load_petri_model)
 from pyciemss.utils import get_tspan
 
-def reparameterize(model: DynamicalSystem, parameters: dict) -> DynamicalSystem:
-    """Intervenes on an initialized model to set the parameters as specified in the dictionary."""
-    parameter_interventions = [ ((i+1)*1e-5, param, value) for i, (param, value) in enumerate(parameters.items())]
-    return intervene(model, parameter_interventions)
 
 class TestInterventions(unittest.TestCase):
     '''

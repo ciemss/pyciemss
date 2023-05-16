@@ -31,7 +31,13 @@ __all__ = ['seq_id_suffix',
            'unorder_state',
            'duplicate_petri_net',
            'intervene_petri_net',
+           'reparameterize'
            ]
+
+def reparameterize(model: DynamicalSystem, parameters: dict) -> DynamicalSystem:
+    """Intervenes on an initialized model to set the parameters as specified in the dictionary."""
+    parameter_interventions = [ ((i+1)*1e-5, param, value) for i, (param, value) in enumerate(parameters.items())]
+    return intervene(model, parameter_interventions)
 
 
 def seq_id_suffix(df):
