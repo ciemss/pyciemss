@@ -2,7 +2,7 @@ import unittest
 import torch
 from mira.examples.sir import sir_parameterized as sir # MIRA model
 from pyciemss.interfaces import DynamicalSystem
-import pyciemss.PetriNetODE.utils import reparameterize
+from pyciemss.utils import reparameterize
 from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
 from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene,
                                              sample, calibrate, optimize, load_petri_model)
