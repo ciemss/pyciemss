@@ -1,5 +1,6 @@
 from typing import Dict, Optional
-
+import functools
+import operator
 import torch
 import pyro
 import pyro.distributions as dist
@@ -19,17 +20,35 @@ from pyciemss.utils import state_flux_constraint
 from pyciemss.utils.distributions import ScaledBeta
 
 
-class MiraRegNetODESystem(MiraPetriNetODESystem):
+class MiraRegNetODESystem(ScaledBetaNoisePetriNetODESystem):
     """
     MIRA RegNet model.
     """
     def deriv(self, t: Time, state: State) -> State:
-        """compute the state derivative at time t
+        """compute the state derivative at time t.
         :param t: time
         :param state: state vector
         :return: state derivative vector
         """
-        return self.net(t, state)
+        states = {k: state[i] for i, k in enumerate(self.var_order.values())}
+        derivs = {k: 0. for k in states}
+
+        population_size = 1.0 #sum(states.values())
+
+        for transition in self.G.transitions.values():
+            flux = getattr(self, get_name(transition.rate)) * functools.reduce(
+                operator.mul, [states[k] for k in transition.consumed], 1
+            )
+            if len(transition.control) > 0:
+                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control], 1) / population_size**len(transition.control)
+
+            for c in transition.consumed:
+                derivs[c] -= flux
+            for p in transition.produced:
+                derivs[p] += flux
+
+        return tuple(derivs[v] for v in self.var_order.values())
+
     
     
 

@@ -11,59 +11,67 @@
         "grounding": {},
         "initial": "R0",
         "rate_constant": "alpha",
-        "sign": false
+        "sign": true
       },
       {
         "id": "W",
         "name": "Wolves",
         "grounding": {},
-        "initial": 1,
-        "rate_constant": 0.2,
+        "initial": "W0",
+        "rate_constant": "gamma",
         "sign": false
       }
     ],
     "edges": [
       {
-        "id": "rabbit_growth",
-        "source": "R",
-        "target": "R",
-        "sign": true,
-        "properties": {
-          "name": "Rabbit growth",
-          "rate_constant": 0.2
-        }
-      },
-      {
-        "id": "wolf_growth",
+        "id": "wolf_eats_rabbit",
         "source": "W",
-        "target": "W",
-        "sign": true,
+        "target": "R",
+        "sign": false,
         "properties": {
           "rate_constant": "beta"
         }
       },
       {
-        "id": "predation",
-        "source": "W",
-        "target": "R",
-        "sign": false,
-        "properties": {}
+        "id": "rabbit_feeds_wolf",
+        "source": "R",
+        "target": "W",
+        "sign": true,
+        "properties": {
+          "rate_constant": "delta"
+        }
       }
     ],
     "parameters": [
       {
         "id": "R0",
         "description": "Initial rabbit population",
-        "value": 10
+        "value": 2
+      },
+      {
+        "id": "W0",
+        "description": "Initial wolf population",
+        "value": 1
       },
       {
         "id": "alpha",
-        "description": "Natural decay of rabbits",
-        "value": 0.01
+        "description": "Maximum per capita prey growth rate",
+        "value": 0.667
       },
       {
         "id": "beta",
-        "value": 0.02
+        "description": "Effect of predators on prey",
+        "value": 1.333
+      },
+      {
+        "id": "gamma",
+        "description": "Effect of prey on predators",
+        "value": 1
+      },
+      {
+        "id": "delta",
+        "description": "Maximum per capita predator death rate",
+        "value": 1
       }
     ]
   }
