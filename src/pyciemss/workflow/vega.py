@@ -61,7 +61,7 @@ def histogram_multi(
     def as_value_list(label, data):
         try:
             return data["state_values"].rename(label)
-        except:
+        except BaseException:
             return pd.Series(data).rename(label)
 
     data = {k: as_value_list(k, subset) for k, subset in data.items()}
@@ -80,7 +80,7 @@ def histogram_multi(
     schema["data"][2] = {"name": "yref", "values": [{"count": v} for v in yrefs]}
 
     if return_bins:
-        return schema, pd.DataFrame(desc)
+        return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
     else:
         return schema
 

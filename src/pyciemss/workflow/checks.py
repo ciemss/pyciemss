@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict, Any, Callable
+from typing import List, Dict, Any, Callable
 from numbers import Number
 
 import pyciemss.workflow.vega as vega
@@ -6,35 +6,68 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
 
+from dataclasses import dataclass
+
 # TODO: Look at scipy's KL and JS
 
 
+@dataclass(repr=False)
+class Result:
+    """Results of a check.
+    At a minimum, the combined check, the individual checks and
+    a visual representation of the evidence. May also include additional
+    information computed for that individual check.
+    """
+    status: bool
+    checks: Dict[str, Any]
+    schema: Dict
+
+    def __repr__(self):
+        always_display = ["status", "checks", "schema"]
+        schema = "<missing>" if self.schema is None else "<present>"
+
+        additional = [f for f in dir(self)
+                      if not f.startswith("_") and f not in always_display]
+        extras = (f"; Additional Fields: {additional}"
+                  if len(additional) > 0 else "")
+        return f"Result(status:{self.status}, checks:{self.checks}, schema:{schema}{extras})"
+
+
 def contains(
-    ref_lower: Number, ref_upper: Number, pct: float = None
+    ref_lower: Number,
+    ref_upper: Number,
+    pct: float = None
 ) -> Callable[[pd.DataFrame], bool]:
     """Check-generator function. Returns a function that performs a test.
 
-    returns -- A functiont that takes a list of bins and tests the lower/upper bound against those bins.
-               The signature of the returned function is (List[Number]) -> bool.
+    returns -- A function that takes a dataframe tests it against the bounds.
 
-               If pct IS NOT SUPPLIED to the generator function, the returned function checks
-               if ref_lower and ref_upper are within the distribution range.
+               If pct IS NOT SUPPLIED, the returned function needs
+               a dataframe with bin-boundaries on the index.  It
+               checks if ref_lower and ref_upper are within the
+               distribution range.
 
-               If pct IS SUPPLIED, teh returned function checks that the precent of
-               distribution between ref_lower and ref_upper is AT LEAST pct% of the total data.
+               If pct IS SUPPLIED, the returned function checks takes
+               a dataframe with  bin-boundaries on the index and a 'count'
+               column.  It checks if the distribution between ref_lower
+               and ref_upper is AT LEAST pct% of the total data.
     """
 
     def pct_test(bins: pd.DataFrame) -> bool:
         total = bins["count"].sum()
-        covered = bins[(bins["bin0"] >= ref_lower) & (bins["bin1"] <= ref_upper)][
-            "count"
-        ].sum()
+        level0 = bins.index.get_level_values(0)
+        level1 = bins.index.get_level_values(1)
+        subset = bins[(level0 >= ref_lower) & (level1 <= ref_upper)]
+        covered = subset["count"].sum()
 
         return covered / total >= pct
 
     def simple_test(bins: pd.DataFrame) -> bool:
-        data_lower = min(bins["bin0"].min(), bins["bin1"].min())
-        data_upper = max(bins["bin0"].max(), bins["bin1"].max())
+        level0 = bins.index.get_level_values(0)
+        level1 = bins.index.get_level_values(1)
+
+        data_lower = min(level0.min(), level1.min())
+        data_upper = max(level0.max(), level1.max())
         return (data_lower <= ref_lower <= data_upper) and (
             data_lower <= ref_upper <= data_upper
         )
@@ -65,81 +98,105 @@ def JS(max_acceptable: float, *, verbose: bool = False) -> Callable[[Any, Any], 
     return _inner
 
 
-def prior_predictive(
-    posterior: pd.DataFrame,
+def check_distribution_range(
+    distribution: pd.DataFrame,
     lower: Number,
     upper: Number,
     *,
-    label: str = "posterior",
-    tests: List[Callable] = [],
+    label: str = "distribution",
+    tests: (Dict[str, Callable[[pd.DataFrame, Number, Number], bool]]
+            | List[Callable[[pd.DataFrame, Number, Number], bool]]) = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
-) -> Tuple[List[bool], Dict[str, Any]]:
+) -> Result:
     """
-    Prior predictive check compares posterior distributions against a reference point.
-    It is used **prior** to running a simulation (thus the name), not on the "priors"
-    of a simulation.
+    Checks a single distribution against a lower- and upper-bound.
 
-    posterior -- Posterior to compare to
-    lower -- Lower bound to compare to the posterior
-    upper -- Upper bound to compare to the posterior
+    distribution -- Distribution to check
+    lower -- Lower bound to compare to the distribution
+    upper -- Upper bound to compare to the distribution
+
+    label -- Label to put on resulting plot
+    tests -- Tests to make against the distribution
+    combiner -- Combines the results of the test
     """
+    if isinstance(tests, list):
+        tests = dict(enumerate(tests))
 
-    combined_args = {**{label: posterior}, **kwargs}
+    combined_args = {**{label: distribution}, **kwargs}
     schema, bins = vega.histogram_multi(
         xrefs=[lower, upper], return_bins=True, **combined_args
     )
 
-    checks = [test(bins) for test in tests]
-    status = combiner(checks)
+    checks = {label: test(bins) for label, test in tests.items()}
+    status = combiner([*checks.values()])
     if not status:
-        status_msg = f"Failed ({sum(checks)/len(checks):.0%} passing)"
+        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
     else:
         status_msg = "Passed"
 
-    schema["title"]["text"] = ["Prior Predictive Test (Histogram)", status_msg]
+    schema["title"]["text"] = ["Distribution Check (Histogram)", status_msg]
 
-    return checks, schema
+    rslt = Result(status, checks, schema)
+    rslt.bins = bins
+    return rslt
 
 
-def posterior_predictive(
-    posterior: pd.DataFrame,
-    data: pd.DataFrame,
+def compare_distributions(
+    subject: pd.DataFrame,
+    reference: pd.DataFrame,
     *,
-    tests: List[Callable[[Any, Any], bool]] = [],
+    tests: (Dict[str, Callable[[pd.DataFrame, pd.DataFrame], bool]]
+            | List[Callable[[pd.DataFrame, pd.DataFrame], bool]]) = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
-) -> Tuple[List[bool], Dict[str, Any]]:
+) -> Result:
     """
-    Posterior predictive check is for comparing a posterior to a dataset.
-    This function returns a histogram visualization of the posterior and the data
+    Compares two distributions.
+
+    This function returns a histogram visualization of the two distributions
     and the result running passed checks against those two distributions.
+
+    NOTE: As tests may be non-symetric, tests will be called with an aligned
+          distribution built from the subject and the reference.  The subject
+          distribution will be passed first as the first argument.
     """
+    if isinstance(tests, list):
+        tests = dict(enumerate(tests))
 
     schema, bins = vega.histogram_multi(
-        Posterior=posterior, Reference=data, return_bins=True, **kwargs
+        Subject=subject, Reference=reference, return_bins=True, **kwargs
     )
 
     groups = dict([*bins.groupby("label")])
-    posterior_dist = (
-        groups["Posterior"].rename(columns={"count": "post"}).drop(columns=["label"])
+    subject_dist = (
+        groups["Subject"]
+        .rename(columns={"count": "subject"})
+        .drop(columns=["label"])
     )
     reference_dist = (
-        groups["Reference"].rename(columns={"count": "ref"}).drop(columns=["label"])
+        groups["Reference"]
+        .rename(columns={"count": "ref"})
+        .drop(columns=["label"])
     )
+
     aligned = (
-        posterior_dist.set_index(["bin0", "bin1"])
-        .join(reference_dist.set_index(["bin0", "bin1"]), how="outer")
+        subject_dist
+        .join(reference_dist, how="outer")
         .fillna(0)
     )
 
-    checks = [test(aligned["ref"].values, aligned["post"].values) for test in tests]
-    status = combiner(checks)
+    checks = {label: test(aligned["subject"].values, aligned["ref"].values)
+              for label, test in tests.items()}
+    status = combiner([*checks.values()])
+
     if not status:
-        status_msg = f"Failed ({sum(checks)/len(checks):.0%} passing)"
+        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
     else:
         status_msg = "Passed"
 
-    schema["title"]["text"] = ["Posterior Predictive Check (Histogram)", status_msg]
+    schema["title"]["text"] = ["Distribution Comparison", status_msg]
 
-    return checks, schema
+    rslt = Result(status, checks, schema)
+    rslt.aligned = aligned
+    return rslt
