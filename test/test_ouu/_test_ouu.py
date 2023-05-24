@@ -17,13 +17,13 @@
 #     Test for the risk-based OUU methods and classes.
 #     '''
 #     def setUp(self):
-        
+
 #         # Total population, N.
 #         self.N = 100000.0
-        
+
 #         # Initial number of infected and recovered individuals, I0 and R0.
 #         self.V0, self.I0, self.Iv0, self.R0 = 0., 81.0, 0., 0.
-        
+
 #         # Everyone else, S0, is susceptible to infection initially.
 #         self.S0 = self.N - self.I0 - self.Iv0 - self.V0 - self.R0
 
@@ -39,9 +39,9 @@
 #                 gamma_prior=dist.Uniform(0.05, 0.35),
 #                 gammaV_prior=dist.Uniform(0.1, 0.4),
 #                 nu_prior=dist.Uniform(0.001, 0.01))
-        
+
 #         self.N_SAMPLES = 10
-        
+
 #         torch.manual_seed(42)
 #         self.dataCube = Predictive(self.model, num_samples=10)(self.initial_state, self.tspan)
 
@@ -56,7 +56,7 @@
 #             risk_measure=alpha_quantile,
 #             num_samples=self.N_SAMPLES
 #         )
-        
+
 #         torch.manual_seed(0)
 #         actual = self.Risk(0.05)
 #         expected = 1.0

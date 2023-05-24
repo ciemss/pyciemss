@@ -1,17 +1,15 @@
-from pyciemss.interfaces import DynamicalSystem
+from typing import Callable, Dict, List, Optional, OrderedDict, Union
 
 import pyro
 import torch
-
+from pyro.contrib.autoname import name_count, scope
 from torch import Tensor
 
-from pyro.contrib.autoname import scope, name_count
-from typing import Dict, List, Optional, Union, OrderedDict, Callable
-
-from pyciemss.utils.distributions import ScaledBeta
+from pyciemss.interfaces import DynamicalSystem
 
 # TODO: refactor this to use a more general event class
 from pyciemss.PetriNetODE.events import Event
+from pyciemss.utils.distributions import ScaledBeta
 
 
 class EnsembleSystem(DynamicalSystem):

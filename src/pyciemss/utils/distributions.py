@@ -1,6 +1,6 @@
+from pyro.distributions import Beta, TransformedDistribution
 from torch.distributions import constraints
 from torch.distributions.transforms import AffineTransform
-from pyro.distributions import Beta, TransformedDistribution
 
 
 class ScaledBeta(TransformedDistribution):

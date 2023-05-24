@@ -1,7 +1,7 @@
-import pyro
-
-from typing import TypeVar, Optional
 import functools
+from typing import Optional, TypeVar
+
+import pyro
 
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.

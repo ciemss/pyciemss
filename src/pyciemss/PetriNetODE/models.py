@@ -1,23 +1,22 @@
 from typing import Dict, Optional
 
-import torch
+import mira
 import pyro
 import pyro.distributions as dist
-
+import torch
 from pyro.nn import pyro_method
-import mira
-from pyciemss.PetriNetODE.base import (
-    ScaledBetaNoisePetriNetODESystem,
-    MiraPetriNetODESystem,
-    PetriNetODESystem,
-    Time,
-    State,
-    StateDeriv,
-    Solution,
-    get_name,
-)
 from torch import Tensor
 
+from pyciemss.PetriNetODE.base import (
+    MiraPetriNetODESystem,
+    PetriNetODESystem,
+    ScaledBetaNoisePetriNetODESystem,
+    Solution,
+    State,
+    StateDeriv,
+    Time,
+    get_name,
+)
 from pyciemss.utils.distributions import ScaledBeta
 
 

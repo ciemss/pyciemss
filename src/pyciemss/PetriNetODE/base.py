@@ -1,43 +1,36 @@
+import bisect
 import collections
 import functools
 import json
 import operator
 import os
 import warnings
-from typing import Dict, List, Optional, Union, OrderedDict, Tuple
-
-import networkx
-import numpy
-import torch
-import pyro
-
-from torch import Tensor
+from typing import Dict, Iterable, List, Optional, OrderedDict, Tuple, Union
 
 import mira
+import mira.metamodel
 import mira.modeling
 import mira.modeling.petri
-import mira.metamodel
 import mira.sources
 import mira.sources.petri
-
+import networkx
+import numpy
+import pyro
+import torch
 from mira.metamodel.ops import aggregate_parameters
-
-from pyciemss.utils.distributions import ScaledBeta
-
-import bisect
-
+from torch import Tensor
 from torchdiffeq import odeint
 
 from pyciemss.interfaces import DynamicalSystem
-
 from pyciemss.PetriNetODE.events import (
     Event,
-    StaticEvent,
-    StartEvent,
-    ObservationEvent,
     LoggingEvent,
+    ObservationEvent,
+    StartEvent,
+    StaticEvent,
     StaticParameterInterventionEvent,
 )
+from pyciemss.utils.distributions import ScaledBeta
 
 Time = Union[float, Tensor]
 State = Tuple[Tensor, ...]
@@ -73,7 +66,7 @@ class PetriNetODESystem(DynamicalSystem):
         """
         raise NotImplementedError
 
-    def load_events(self, events: List[Event]) -> None:
+    def load_events(self, events: Iterable[Event]) -> None:
         """
         Loads a list of events into the model.
         """

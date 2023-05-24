@@ -1,10 +1,11 @@
-import numpy as np
-from scipy.optimize import basinhopping, minimize
-from pyciemss.interfaces import intervene
-from pyro.infer import Predictive
-from pyciemss.risk.risk_measures import alpha_superquantile
-
 from typing import Callable as callable
+
+import numpy as np
+from pyro.infer import Predictive
+from scipy.optimize import basinhopping, minimize
+
+from pyciemss.interfaces import intervene
+from pyciemss.risk.risk_measures import alpha_superquantile
 
 
 class RandomDisplacementBounds:
