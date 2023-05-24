@@ -12,25 +12,28 @@ from pyciemss.PetriNetODE.base import (
     PetriNetODESystem,
     Time,
     State,
+    StateDeriv,
     Solution,
     get_name,
 )
-from pyciemss.utils import state_flux_constraint
+from torch import Tensor
+
 from pyciemss.utils.distributions import ScaledBeta
 
 
 class SIR_with_uncertainty(PetriNetODESystem):
     """SIR model built by hand to compare against the MIRA SIR model
-    See https://github.com/ciemss/pyciemss/issues/144 
+    See https://github.com/ciemss/pyciemss/issues/144
     for more detail.
     """
+
     def __init__(
-            self,
-            N: int,
-            beta: float,
-            gamma: float,
-            pseudocount: float = 1.0,
-            ) -> None:
+        self,
+        N: int,
+        beta: float,
+        gamma: float,
+        pseudocount: float = 1.0,
+    ) -> None:
         """initialize total population beta and gamma parameters
         :param N: total population
         :param beta: infection rate
@@ -38,24 +41,33 @@ class SIR_with_uncertainty(PetriNetODESystem):
         """
         super().__init__()
         self.total_population = N
-        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
-        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.beta_prior = pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.gamma_prior = pyro.distributions.Uniform(
+            max(0.9 * gamma, 0.0), 1.1 * gamma
+        )
         self.pseudocount = pseudocount
-
 
     def create_var_order(self) -> dict[str, int]:
         """create the variable order for the state vector"""
-        return {"susceptible_population": 0, "infected_population": 1, "immune_population": 2}
+        return {
+            "susceptible_population": 0,
+            "infected_population": 1,
+            "immune_population": 2,
+        }
 
     @pyro.nn.pyro_method
-    def deriv(self, t: Time, state: State) -> State:
+    def deriv(self, t: Time, state: State) -> StateDeriv:
         """compute the state derivative at time t
         :param t: time
         :param state: state vector
         :return: state derivative vector
         """
-        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+        assert torch.isclose(
+            torch.as_tensor(sum(state)), self.total_population
+        ), f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+
         S, I, R = state
+
         dSdt = -self.beta * S * I / self.total_population
         dIdt = self.beta * S * I / self.total_population - self.gamma * I
         dRdt = self.gamma * I
@@ -64,8 +76,8 @@ class SIR_with_uncertainty(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
         """define the prior distributions for the parameters"""
-        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
-        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+        setattr(self, "beta", pyro.sample("beta", self.beta_prior))
+        setattr(self, "gamma", pyro.sample("gamma", self.gamma_prior))
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
@@ -75,106 +87,110 @@ class SIR_with_uncertainty(PetriNetODESystem):
         """
         mean = solution[var_name]
         pseudocount = self.pseudocount
-        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+        pyro.sample(
+            var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1)
+        )
 
-    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+    def static_parameter_intervention(
+        self, parameter: str, value: torch.Tensor
+    ) -> None:
         """set a static parameter intervention
         :param parameter: parameter name
         :param value: parameter value
         """
         setattr(self, parameter, value)
 
-class SVIIvR(PetriNetODESystem):
-    def __init__(
-        self,
-        N,
-        noise_prior=dist.Uniform(5.0, 10.0),
-        beta_prior=dist.Uniform(0.1, 0.3),
-        betaV_prior=dist.Uniform(0.025, 0.05),
-        gamma_prior=dist.Uniform(0.05, 0.35),
-        gammaV_prior=dist.Uniform(0.1, 0.4),
-        nu_prior=dist.Uniform(0.001, 0.01),
-    ):
-        super().__init__()
 
-        self.N = N
-        self.noise_prior = noise_prior
-        self.beta_prior = beta_prior
-        self.betaV_prior = betaV_prior
-        self.gamma_prior = gamma_prior
-        self.gammaV_prior = gammaV_prior
-        self.nu_prior = nu_prior
+# class SVIIvR(PetriNetODESystem):
+#     def __init__(
+#         self,
+#         N,
+#         noise_prior=dist.Uniform(5.0, 10.0),
+#         beta_prior=dist.Uniform(0.1, 0.3),
+#         betaV_prior=dist.Uniform(0.025, 0.05),
+#         gamma_prior=dist.Uniform(0.05, 0.35),
+#         gammaV_prior=dist.Uniform(0.1, 0.4),
+#         nu_prior=dist.Uniform(0.001, 0.01),
+#     ):
+#         super().__init__()
 
-    ### TODO: write a hand-coded version of SVIIvR using the new PetriNetODESystem class.
-    # @pyro_method
-    # def deriv(self, t: Time, state: State) -> State:
-    #     S, V, I, Iv, R = state
+#         self.N = N
+#         self.noise_prior = noise_prior
+#         self.beta_prior = beta_prior
+#         self.betaV_prior = betaV_prior
+#         self.gamma_prior = gamma_prior
+#         self.gammaV_prior = gammaV_prior
+#         self.nu_prior = nu_prior
 
-    #     # Local fluxes exposed to pyro for interventions.
-    #     # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
-    #     SV_flux_ = pyro.deterministic("SV_flux %f" % (t), self.nu * S)
-    #     SI_flux_ = pyro.deterministic(
-    #         "SI_flux %f" % (t), self.beta * S * (I + Iv) / self.N
-    #     )
-    #     VIv_flux_ = pyro.deterministic(
-    #         "VIv_flux %f" % (t), self.betaV * V * (I + Iv) / self.N
-    #     )
-    #     IR_flux_ = pyro.deterministic("IR_flux %f" % (t), self.gamma * I)
-    #     IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
+#     ### TODO: write a hand-coded version of SVIIvR using the new PetriNetODESystem class.
+#     # @pyro_method
+#     # def deriv(self, t: Time, state: State) -> State:
+#     #     S, V, I, Iv, R = state
 
-    #     # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
-    #     SV_flux = state_flux_constraint(S, SV_flux_)
-    #     SI_flux = state_flux_constraint(S, SI_flux_)
-    #     VIv_flux = state_flux_constraint(V, VIv_flux_)
-    #     IR_flux = state_flux_constraint(I, IR_flux_)
-    #     IvR_flux = state_flux_constraint(Iv, IvR_flux_)
+#     #     # Local fluxes exposed to pyro for interventions.
+#     #     # Note: This only works with solvers that use fixed time increments, such as Euler's method. Otherwise, we have name collisions.
+#     #     SV_flux_ = pyro.deterministic("SV_flux %f" % (t), self.nu * S)
+#     #     SI_flux_ = pyro.deterministic(
+#     #         "SI_flux %f" % (t), self.beta * S * (I + Iv) / self.N
+#     #     )
+#     #     VIv_flux_ = pyro.deterministic(
+#     #         "VIv_flux %f" % (t), self.betaV * V * (I + Iv) / self.N
+#     #     )
+#     #     IR_flux_ = pyro.deterministic("IR_flux %f" % (t), self.gamma * I)
+#     #     IvR_flux_ = pyro.deterministic("IvR_flux %f" % (t), self.gammaV * Iv)
 
-    #     # Where the real magic happens.
-    #     dSdt = -SI_flux - SV_flux
-    #     dVdt = -VIv_flux + SV_flux
-    #     dIdt = SI_flux - IR_flux
-    #     dIvdt = VIv_flux - IvR_flux
-    #     dRdt = IR_flux + IvR_flux
+#     #     # these state_flux_constraints ensure that we don't have vaccinated people become susceptible, etc.
+#     #     SV_flux = state_flux_constraint(S, SV_flux_)
+#     #     SI_flux = state_flux_constraint(S, SI_flux_)
+#     #     VIv_flux = state_flux_constraint(V, VIv_flux_)
+#     #     IR_flux = state_flux_constraint(I, IR_flux_)
+#     #     IvR_flux = state_flux_constraint(Iv, IvR_flux_)
 
-    #     return dSdt, dVdt, dIdt, dIvdt, dRdt
+#     #     # Where the real magic happens.
+#     #     dSdt = -SI_flux - SV_flux
+#     #     dVdt = -VIv_flux + SV_flux
+#     #     dIdt = SI_flux - IR_flux
+#     #     dIvdt = VIv_flux - IvR_flux
+#     #     dRdt = IR_flux + IvR_flux
 
-    @pyro_method
-    def param_prior(self) -> None:
+#     #     return dSdt, dVdt, dIdt, dIvdt, dRdt
 
-        self.noise_var = pyro.sample("noise_var", self.noise_prior)
-        self.beta = pyro.sample("beta", self.beta_prior)
-        self.betaV = pyro.sample("betaV", self.betaV_prior)
-        self.gamma = pyro.sample("gamma", self.gamma_prior)
-        self.gammaV = pyro.sample("gammaV", self.gammaV_prior)
-        self.nu = pyro.sample("nu", self.nu_prior)
+#     @pyro_method
+#     def param_prior(self) -> None:
+#         self.noise_var = pyro.sample("noise_var", self.noise_prior)
+#         self.beta = pyro.sample("beta", self.beta_prior)
+#         self.betaV = pyro.sample("betaV", self.betaV_prior)
+#         self.gamma = pyro.sample("gamma", self.gamma_prior)
+#         self.gammaV = pyro.sample("gammaV", self.gammaV_prior)
+#         self.nu = pyro.sample("nu", self.nu_prior)
 
-    @pyro_method
-    def observation_model(
-        self, solution: Solution, data: Optional[Dict[str, State]] = None
-    ) -> Solution:
-        S, V, I, Iv, R = solution
+#     @pyro_method
+#     def observation_model(
+#         self, solution: Solution, data: Optional[Dict[str, State]] = None
+#     ) -> Solution:
+#         S, V, I, Iv, R = solution
 
-        # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
-        if data == None:
-            data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
+#         # It's a little clunky that we have to do `None` handling for each implementation of 'observation_model'...
+#         if data == None:
+#             data = {k: None for k in ["S_obs", "V_obs", "I_obs", "R_obs"]}
 
-        # TODO: Make sure observations are strictly greater than 0.
+#         # TODO: Make sure observations are strictly greater than 0.
 
-        S_obs = pyro.sample(
-            "S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"]
-        )
-        V_obs = pyro.sample(
-            "V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"]
-        )
-        # We only observe the total number of infected people we don't know which of them are vaccinated.
-        I_obs = pyro.sample(
-            "I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"]
-        )
-        R_obs = pyro.sample(
-            "R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"]
-        )
+#         S_obs = pyro.sample(
+#             "S_obs", dist.Normal(S, self.noise_var).to_event(1), obs=data["S_obs"]
+#         )
+#         V_obs = pyro.sample(
+#             "V_obs", dist.Normal(V, self.noise_var).to_event(1), obs=data["V_obs"]
+#         )
+#         # We only observe the total number of infected people we don't know which of them are vaccinated.
+#         I_obs = pyro.sample(
+#             "I_obs", dist.Normal(I + Iv, self.noise_var).to_event(1), obs=data["I_obs"]
+#         )
+#         R_obs = pyro.sample(
+#             "R_obs", dist.Normal(R, self.noise_var).to_event(1), obs=data["R_obs"]
+#         )
 
-        return (S_obs, V_obs, I_obs, R_obs)
+#         return (S_obs, V_obs, I_obs, R_obs)
 
 
 class MIRA_SVIIvR(ScaledBetaNoisePetriNetODESystem):
