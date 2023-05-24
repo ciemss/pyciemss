@@ -1,5 +1,6 @@
 import copy
-from typing import Callable, Iterable, Optional, Tuple
+from typing import Callable, Sequence, Optional, Tuple
+from typing_extensions import TypeAlias
 
 import pyro
 import torch
@@ -25,17 +26,18 @@ from pyciemss.PetriNetODE.events import (
     StaticParameterInterventionEvent,
 )
 
-EnsembleSolution = Iterable[dict[str, torch.Tensor]]
-EnsembleInferredParameters = pyro.nn.PyroModule
+EnsembleSolution = Sequence[dict[str, torch.Tensor]]
+EnsembleInferredParameters: TypeAlias = pyro.nn.PyroModule
+
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
-@setup_model.register(list)
+@setup_model.register(list)  # type: ignore
 def setup_ensemble_model(
     models: list[DynamicalSystem],
-    weights: Iterable[float],
-    solution_mappings: Iterable[Callable],
+    weights: Sequence[float],
+    solution_mappings: Sequence[Callable],
     start_time: float,
-    start_states: Iterable[dict[str, float]],
+    start_states: Sequence[dict[str, float]],
     total_population: float = 1.0,
     noise_pseudocount: float = 1.0,
     dirichlet_concentration: float = 1.0,
@@ -69,7 +71,7 @@ def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
 
 @intervene.register
 def intervene_ensemble_model(
-    ensemble: EnsembleSystem, interventions: Iterable[Tuple[float, str, float]]
+    ensemble: EnsembleSystem, interventions: Sequence[Tuple[float, str, float]]
 ) -> EnsembleSystem:
     """
     Intervene on a model.
@@ -80,7 +82,7 @@ def intervene_ensemble_model(
 @calibrate.register
 def calibrate_ensemble_model(
     ensemble: EnsembleSystem,
-    data: Iterable[Tuple[float, dict[str, float]]],
+    data: Sequence[Tuple[float, dict[str, float]]],
     num_iterations: int = 1000,
     lr: float = 0.03,
     verbose: bool = False,
@@ -105,7 +107,7 @@ def calibrate_ensemble_model(
     test_petri = new_ensemble.models[0]
 
     for obs in observations:
-        s = 0.0
+        s = torch.tensor(0.0)
         for v in obs.observation.values():
             s += v
             assert 0 <= v <= test_petri.total_population
@@ -134,7 +136,7 @@ def calibrate_ensemble_model(
 @sample.register
 def sample_ensemble_model(
     ensemble: EnsembleSystem,
-    timepoints: Iterable[float],
+    timepoints: Sequence[float],
     num_samples: int,
     inferred_parameters: Optional[EnsembleInferredParameters] = None,
     *args,

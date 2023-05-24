@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional, OrderedDict, Union
+from typing import Callable, Dict, Sequence, Optional, OrderedDict, Union
 
 import pyro
 import torch
@@ -20,9 +20,9 @@ class EnsembleSystem(DynamicalSystem):
     # TODO: add type hints for solution_mappings. It should be a mapping from dict to dict.
     def __init__(
         self,
-        models: List[DynamicalSystem],
+        models: Sequence[DynamicalSystem],
         dirichlet_alpha: Tensor,
-        solution_mappings: List[Callable],
+        solution_mappings: Sequence[Callable],
     ) -> None:
         self.models = models
         self.dirichlet_alpha = dirichlet_alpha
@@ -128,9 +128,9 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
 
     def __init__(
         self,
-        models: List[DynamicalSystem],
+        models: Sequence[DynamicalSystem],
         dirichlet_alpha: Tensor,
-        solution_mappings: List[Callable],
+        solution_mappings: Sequence[Callable],
         total_population: float,
         pseudocount: float = 1.0,
     ) -> None:
