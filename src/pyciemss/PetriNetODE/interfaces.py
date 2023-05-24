@@ -1,6 +1,5 @@
 import copy
 from typing import Iterable, Optional, Tuple, Union, cast
-from typing_extensions import TypeAlias
 
 import mira
 import pyro
@@ -8,6 +7,7 @@ import torch
 from pyro.infer import Predictive
 from pyro.nn import PyroModule
 from torch import Tensor
+from typing_extensions import TypeAlias
 
 # Load base interfaces
 from pyciemss.interfaces import (

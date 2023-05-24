@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Sequence, Optional, OrderedDict, Union
+from typing import Callable, Dict, Optional, OrderedDict, Sequence, Union
 
 import pyro
 import torch
