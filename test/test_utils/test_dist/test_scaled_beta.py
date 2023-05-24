@@ -1,5 +1,4 @@
 import torch
-from pyro.distributions import Beta
 
 from pyciemss.utils.distributions import ScaledBeta
 

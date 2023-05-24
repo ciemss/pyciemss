@@ -1,29 +1,13 @@
-import copy
 import os
 import unittest
 
 import torch
 
-import pyciemss
 from pyciemss.Ensemble.base import EnsembleSystem
-from pyciemss.Ensemble.interfaces import (
+from pyciemss.Ensemble.interfaces import (  # intervene,; optimize,; reset_model,
     calibrate,
-    intervene,
-    optimize,
-    reset_model,
     sample,
     setup_model,
-)
-from pyciemss.PetriNetODE.base import (
-    MiraPetriNetODESystem,
-    ScaledBetaNoisePetriNetODESystem,
-)
-from pyciemss.PetriNetODE.events import (
-    Event,
-    LoggingEvent,
-    ObservationEvent,
-    StartEvent,
-    StaticParameterInterventionEvent,
 )
 from pyciemss.PetriNetODE.interfaces import load_petri_model
 

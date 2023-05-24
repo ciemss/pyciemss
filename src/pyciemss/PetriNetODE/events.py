@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Union
+from typing import Dict
 
 import torch
 from torch import Tensor, nn

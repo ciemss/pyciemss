@@ -22,7 +22,8 @@
 #     Note that the first argument of `f` must be time.
 #     '''
 #     # Partially evaluating `f` at `t` results in a collection of functions of only `x` indexed by time.
-#     # Causal pyro interprets interventions to callables `f` by calling `f` to what the value otherwise would have been.
+#     # Causal pyro interprets interventions to callables `f` by calling `f`
+#     # to what the value otherwise would have been.
 #     return {name + " %f" % (t): functools.partial(f, t) for t in tspan}
 
 

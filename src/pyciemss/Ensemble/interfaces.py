@@ -3,28 +3,21 @@ from typing import Callable, Optional, Sequence, Tuple
 
 import pyro
 import torch
-from pyro import poutine
 from pyro.infer import Predictive
 from typing_extensions import TypeAlias
 
 from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
-from pyciemss.interfaces import (
+from pyciemss.interfaces import (  # optimize,
     DynamicalSystem,
     calibrate,
     intervene,
-    optimize,
     reset_model,
     sample,
     setup_model,
 )
 
 # TODO: probably refactor this out later.
-from pyciemss.PetriNetODE.events import (
-    LoggingEvent,
-    ObservationEvent,
-    StartEvent,
-    StaticParameterInterventionEvent,
-)
+from pyciemss.PetriNetODE.events import LoggingEvent, ObservationEvent, StartEvent
 
 EnsembleSolution = Sequence[dict[str, torch.Tensor]]
 EnsembleInferredParameters: TypeAlias = pyro.nn.PyroModule

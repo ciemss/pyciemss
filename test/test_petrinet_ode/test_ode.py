@@ -39,7 +39,7 @@ class TestODE(unittest.TestCase):
         """Test the ODE base class."""
         # Assert that the constructor requires var_order
         with self.assertRaises(NotImplementedError):
-            model = PetriNetODESystem()
+            PetriNetODESystem()
 
         # TODO: add more tests here as handwritten implementations of ODEs are added
 
@@ -137,7 +137,10 @@ class TestODE(unittest.TestCase):
         self.assertEqual(self.model._observation_var_names, [])
 
     def test_load_remove_static_parameter_intervention_events(self):
-        """Test the load_events method for StaticParameterIntervention and the remove_static_parameter_interventions methods."""
+        """
+        Test the load_events method for StaticParameterIntervention
+        and the remove_static_parameter_interventions methods.
+        """
         # Load some static parameter intervention events
         intervention1 = StaticParameterInterventionEvent(2.99, "beta", 0.0)
         intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
@@ -192,7 +195,6 @@ class TestODE(unittest.TestCase):
         )
 
     def test_integration(self):
-
         model = self.model
 
         # Load the start event
@@ -282,7 +284,7 @@ class TestODE(unittest.TestCase):
         svi.step()
 
         # Check that the parameters have been updated
-        for (i, p) in enumerate(guide.parameters()):
+        for i, p in enumerate(guide.parameters()):
             self.assertNotEqual(p, old_params[i])
 
         # Remove the observation events and add logging events.

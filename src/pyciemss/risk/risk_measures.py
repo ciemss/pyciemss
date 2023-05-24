@@ -57,7 +57,8 @@ def alpha_quantile(samples, alpha=0.95):
 
 def alpha_superquantile(samples, alpha=0.95):
     """
-    upper alpha-superquantile for a given alpha in [0,1] a.k.a conditional value-at-risk (CVaR), expected shortfall, average value-at-risk.
+    upper alpha-superquantile for a given alpha in [0,1]
+    a.k.a conditional value-at-risk (CVaR), expected shortfall, average value-at-risk.
     """
     nsamples = int(samples.shape[0])
     sorted_samples = np.sort(samples)[::-1]  # sort samples in descending order

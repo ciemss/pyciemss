@@ -4,11 +4,10 @@ import unittest
 import torch
 from mira.examples.sir import sir_parameterized as sir
 
-from pyciemss.PetriNetODE.interfaces import (
+from pyciemss.PetriNetODE.interfaces import (  # optimize,
     calibrate,
     intervene,
     load_petri_model,
-    optimize,
     reset_model,
     sample,
     setup_model,

@@ -5,7 +5,7 @@ import json
 import operator
 import os
 import warnings
-from typing import Dict, Iterable, List, Optional, OrderedDict, Tuple, Union
+from typing import Dict, Iterable, List, Tuple, Union
 
 import mira
 import mira.metamodel
@@ -13,7 +13,6 @@ import mira.modeling
 import mira.modeling.petri
 import mira.sources
 import mira.sources.petri
-import networkx
 import numpy
 import pyro
 import torch
@@ -299,7 +298,7 @@ class PetriNetODESystem(DynamicalSystem):
         return logged_solution
 
 
-## why is this here? It should be in MiraPetriNetODESystem if it is Mira specific
+# why is this here? It should be in MiraPetriNetODESystem if it is Mira specific
 @functools.singledispatch
 def get_name(obj) -> str:
     """
@@ -464,7 +463,10 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
             if param_value is None:
                 param_info.value = pyro.distributions.Uniform(0.0, 1.0)
             elif param_value <= 0:
-                warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                warnings_string = (
+                    f"Parameter {get_name(param_info)} has value"
+                    f"{param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                )
                 warnings.warn(warnings_string)
                 param_info.value = pyro.distributions.Uniform(0.0, 0.1)
             elif isinstance(param_value, (int, float)):

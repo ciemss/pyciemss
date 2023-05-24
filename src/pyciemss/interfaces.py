@@ -1,5 +1,4 @@
 import functools
-from typing import Optional, TypeVar
 
 import pyro
 
@@ -91,7 +90,8 @@ def assert_observations_valid(model: DynamicalSystem, data, *args, **kwargs) -> 
 @functools.singledispatch
 def calibrate(model: DynamicalSystem, data, *args, **kwargs):
     """
-    Infer parameters for a DynamicalSystem model conditional on data. This is typically done using a variational approximation.
+    Infer parameters for a DynamicalSystem model conditional on data.
+    This is typically done using a variational approximation.
     """
     raise NotImplementedError
 
@@ -100,7 +100,8 @@ def calibrate(model: DynamicalSystem, data, *args, **kwargs):
 @functools.singledispatch
 def sample(model: DynamicalSystem, inferred_parameters=None, *args, **kwargs):
     """
-    Sample trajectories from a given `model`, conditional on specified `inferred_parameters`. If `inferred_parameters` is not given, this will sample from the prior distribution.
+    Sample trajectories from a given `model`, conditional on specified `inferred_parameters`.
+    If `inferred_parameters` is not given, this will sample from the prior distribution.
     """
     raise NotImplementedError
 

@@ -1,14 +1,10 @@
-from typing import Callable, Dict, Optional, OrderedDict, Sequence, Union
+from typing import Callable, Sequence
 
 import pyro
-import torch
-from pyro.contrib.autoname import name_count, scope
+from pyro.contrib.autoname import scope
 from torch import Tensor
 
 from pyciemss.interfaces import DynamicalSystem
-
-# TODO: refactor this to use a more general event class
-from pyciemss.PetriNetODE.events import Event
 from pyciemss.utils.distributions import ScaledBeta
 
 
@@ -38,11 +34,11 @@ class EnsembleSystem(DynamicalSystem):
         # TODO: Check that all of the solution mappings map to the same set of variables.
         super().__init__()
 
-        # Set the method for adding observation likelihoods to be the same as one of the models in the ensemble.
-        # Note: that self.models[j].__class__ is constant for all j, therefore we can use self.models[0].__class__ arbitrarily.
-        # TODO: This will need a test.
-
     def add_observation_likelihoods(self, solution):
+        # Set the method for adding observation likelihoods to be the same as one of the models in the ensemble.
+        # Note: that self.models[j].__class__ is constant for all j,
+        # therefore we can use self.models[0].__class__ arbitrarily.
+        # TODO: This will need a test.
         return self.models[0].add_observation_likelihoods(
             solution, self.observation_model
         )
@@ -53,14 +49,15 @@ class EnsembleSystem(DynamicalSystem):
             model.reset()
 
     # TODO: this approach is extremely flexible, but not as discoverable as it could be.
-    # This allows us to call a method on the ensemble and have it call the same method on all of the models in the ensemble.
+    # This allows us to call a method on the ensemble and have
+    # it call the same method on all of the models in the ensemble.
     def __getattr__(self, attr: str):
         """
         Call the attribute or method of all of the models in the ensemble.
         """
         # Check if the attribute is callable.
         if callable(getattr(self.models[0], attr)):
-            # If so, return a function that calls the attribute or method of all of the models in the ensemble.
+            # If so, return a function that calls the attribute or method of all models in the ensemble.
             def call(*args, **kwargs):
                 result = [
                     getattr(model, attr)(*args, **kwargs) for model in self.models
@@ -118,7 +115,10 @@ class EnsembleSystem(DynamicalSystem):
         return solution
 
     def __repr__(self) -> str:
-        return f"Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models}"
+        da_string = f"Dirichlet Alpha: {self.dirichlet_alpha}"
+        m_string = f"Models: {self.models}"
+
+        return f"Ensemble of {len(self.models)} models. \n\n \t{da_string}. \n\n \t{m_string}"
 
 
 class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
@@ -150,4 +150,8 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
         )
 
     def __rep__(self) -> str:
-        return f"Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}"
+        noise_string = f"Scaled Beta Noise Ensemble of {len(self.models)} models."
+        da_string = f"Dirichlet Alpha: {self.dirichlet_alpha}."
+        m_string = f"Models: {self.models}."
+        p_string = f"Pseudocount: {self.pseudocount}."
+        return f"{noise_string} \n\n \t{da_string} \n\n \t{m_string} \n\n \t{p_string}"

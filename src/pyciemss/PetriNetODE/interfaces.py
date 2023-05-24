@@ -28,10 +28,10 @@ from pyciemss.PetriNetODE.events import (
     LoggingEvent,
     ObservationEvent,
     StartEvent,
-    StaticEvent,
     StaticParameterInterventionEvent,
 )
-from pyciemss.risk.ouu import solveOUU
+
+# from pyciemss.risk.ouu import solveOUU
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
