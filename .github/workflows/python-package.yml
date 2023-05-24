@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+ # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: PyCiemss Build and Test
@@ -29,12 +29,15 @@ jobs:
         # python -m pip install --upgrade pip
         # python -m pip install flake8 pytest
         pip install -e .[tests]
-    # - name: Lint with flake8
-    #  run: |
-    #    # stop the build if there are Python syntax errors or undefined names
-    #    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    #    # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-    #    flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Lint
+     run: |
+
+      mypy src/pyciemss/ test/
+
+      isort --check --profile black --diff src/pyciemss/ test/
+      black --check src/pyciemss/ test/
+      flake8 src/pyciemss/ test/
+
     - name: Test with pytest
       run: |
-        pytest
+        pytest test/ -v -n auto --cov=src/pyciemss/ --cov-report=xml --cov-report=term-missing
