@@ -1,5 +1,6 @@
 import copy
 from typing import Iterable, Optional, Tuple, Union, cast
+from typing_extensions import TypeAlias
 
 import mira
 import pyro
@@ -35,7 +36,7 @@ from pyciemss.risk.ouu import solveOUU
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, Tensor]
-PetriInferredParameters = PyroModule
+PetriInferredParameters: TypeAlias = PyroModule
 
 
 def load_petri_model(
