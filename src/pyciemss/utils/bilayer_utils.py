@@ -102,7 +102,6 @@
 #         implicit_subject["layer"] = "input"
 
 
-
 #         G.add_node(subject["id"], **subject)
 #         G.add_node(implicit_outcome["id"], **implicit_outcome)
 #         G.add_node(outcome["id"], **outcome)
@@ -125,4 +124,4 @@
 #             G.add_node(controller["id"], **controller)
 #             G.add_edge(controller["id"], template["id"], type="input")
 
-    return G
+#    return G
