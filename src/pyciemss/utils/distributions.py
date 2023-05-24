@@ -1,7 +1,6 @@
 from torch.distributions import constraints
 from torch.distributions import TransformedDistribution
 from torch.distributions.transforms import AffineTransform
-from pyro.distributions import Beta, TransformedDistribution
 
 
 class ScaledBeta(TransformedDistribution):
@@ -26,8 +25,14 @@ class ScaledBeta(TransformedDistribution):
         self._pseudocount = pseudocount
         scaled_mean = self._mean / self._max
         self._scaled_mean = scaled_mean
-        base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
-        super().__init__(base_dist, AffineTransform(0, _max), validate_args=validate_args)
+        base_dist = Beta(
+            scaled_mean * pseudocount,
+            (1 - scaled_mean) * pseudocount,
+            validate_args=validate_args,
+        )
+        super().__init__(
+            base_dist, AffineTransform(0, _max), validate_args=validate_args
+        )
 
     @property
     def mean(self):
@@ -39,4 +44,4 @@ class ScaledBeta(TransformedDistribution):
 
     @property
     def variance(self):
-        return self.base_dist.variance() * self._max ** 2
+        return self.base_dist.variance() * self._max**2
