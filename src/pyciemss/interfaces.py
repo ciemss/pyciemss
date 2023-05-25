@@ -52,25 +52,6 @@ class DynamicalSystem(pyro.nn.PyroModule):
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def setup_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
-    """
-    Instatiate a model for a particular configuration of initial conditions, boundary conditions, logging events, etc.
-    """
-    raise NotImplementedError
-
-
-# TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
-@functools.singledispatch
-def reset_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
-    """
-    Reset a model to its initial state.
-    reset_model * setup_model = id
-    """
-    raise NotImplementedError
-
-
-# TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
-@functools.singledispatch
 def intervene(model: DynamicalSystem, intervention, *args, **kwargs) -> DynamicalSystem:
     """
     `intervene(model, intervention)` returns a new model where the intervention has been applied.
