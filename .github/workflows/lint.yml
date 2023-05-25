@@ -14,7 +14,8 @@ jobs:
         python-version: ["3.9"]
 
     steps:
-      - uses: actions/checkout@v2
+      - Name: Checkout
+        uses: actions/checkout@v2
 
       - name: pip cache
         uses: actions/cache@v1
@@ -31,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -e .[test]
+          pip install -e .[tests]
 
       - name: Lint
         run: ./scripts/lint.sh
