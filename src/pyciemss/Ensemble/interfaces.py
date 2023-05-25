@@ -7,12 +7,11 @@ from pyro.infer import Predictive
 from typing_extensions import TypeAlias
 
 from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
-from pyciemss.interfaces import (  # optimize,
+from pyciemss.interfaces import (  # optimize,; setup_model,
     DynamicalSystem,
     calibrate,
     intervene,
     sample,
-    # setup_model,
 )
 
 # TODO: probably refactor this out later.

@@ -10,12 +10,7 @@ from torch import Tensor
 from typing_extensions import TypeAlias
 
 # Load base interfaces
-from pyciemss.interfaces import (
-    calibrate,
-    intervene,
-    optimize,
-    sample,
-)
+from pyciemss.interfaces import calibrate, intervene, optimize, sample
 from pyciemss.PetriNetODE.base import (
     MiraPetriNetODESystem,
     PetriNetODESystem,
