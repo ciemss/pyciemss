@@ -32,14 +32,14 @@ jobs:
             ${{ matrix.os }}-${{ matrix.python-version }}-
 
     - name: macOS cache
-      uses: actions/cache@v1
-      if: startsWith(matrix.os, 'macOS')
-      with:
-        path: ~/Library/Caches/pip
-        key:
-          ${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-
+        uses: actions/cache@v1
+        if: startsWith(matrix.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key:
+            ${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
