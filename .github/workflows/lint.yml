@@ -14,8 +14,7 @@ jobs:
         python-version: ["3.9"]
 
     steps:
-      - Name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: pip cache
         uses: actions/cache@v1
