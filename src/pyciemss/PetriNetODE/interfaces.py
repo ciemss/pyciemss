@@ -14,14 +14,13 @@ from pyciemss.interfaces import (
     calibrate,
     intervene,
     optimize,
-    reset_model,
     sample,
-    setup_model,
 )
 from pyciemss.PetriNetODE.base import (
     MiraPetriNetODESystem,
     PetriNetODESystem,
     ScaledBetaNoisePetriNetODESystem,
+    get_name,
 )
 from pyciemss.PetriNetODE.events import (
     Event,
@@ -41,8 +40,10 @@ PetriInferredParameters: TypeAlias = PyroModule
 
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
-    add_uncertainty=True,
-    pseudocount=1.0,
+    start_time: float = 0.0,
+    start_state: Optional[dict[str, float]] = None,
+    add_uncertainty: bool = True,
+    pseudocount: float = 1.0,
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
@@ -51,36 +52,17 @@ def load_petri_model(
     if add_uncertainty:
         model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
         model.pseudocount = torch.tensor(pseudocount)
-        return model
     else:
-        return MiraPetriNetODESystem.from_mira(petri_model_or_path)
+        model = MiraPetriNetODESystem.from_mira(petri_model_or_path)
 
+    if start_state is None:
+        start_state = {
+            get_name(v): v.data["initial_value"] for v in model.G.variables.values()
+        }
 
-@setup_model.register
-def setup_petri_model(
-    petri: PetriNetODESystem,
-    start_time: float,
-    start_state: dict[str, float],
-) -> PetriNetODESystem:
-    """
-    Instatiate a model for a particular configuration of initial conditions
-    """
-    # TODO: Figure out how to do this without copying the petri net.
     start_event = StartEvent(start_time, start_state)
-    new_petri = copy.deepcopy(petri)
-    new_petri.load_event(start_event)
-    return new_petri
-
-
-@reset_model.register
-def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
-    """
-    Reset a model to its initial state.
-    reset_model * setup_model = id
-    """
-    new_petri = copy.deepcopy(petri)
-    new_petri.reset()
-    return new_petri
+    model.load_event(start_event)
+    return model
 
 
 @intervene.register
