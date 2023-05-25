@@ -11,9 +11,8 @@ from pyciemss.interfaces import (  # optimize,
     DynamicalSystem,
     calibrate,
     intervene,
-    reset_model,
     sample,
-    setup_model,
+    # setup_model,
 )
 
 # TODO: probably refactor this out later.
@@ -24,7 +23,7 @@ EnsembleInferredParameters: TypeAlias = pyro.nn.PyroModule
 
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
-@setup_model.register(list)  # type: ignore
+# @setup_model.register(list)  # type: ignore
 def setup_ensemble_model(
     models: list[DynamicalSystem],
     weights: Sequence[float],
@@ -51,15 +50,6 @@ def setup_ensemble_model(
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
     return ensemble_model
-
-
-@reset_model.register
-def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
-    """
-    Reset a model to its initial state.
-    reset_model * setup_model = id
-    """
-    raise NotImplementedError
 
 
 @intervene.register
