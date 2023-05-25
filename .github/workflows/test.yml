@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-    
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,12 +26,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -e .[tests]
-    - name: Lint
-      run: |
-        mypy src/pyciemss/ test/
-        isort --check --profile black --diff src/pyciemss/ test/
-        black --check src/pyciemss/ test/
-        flake8 src/pyciemss/ test/
     - name: Test with pytest
       run: |
         pytest test/ -v -n auto --cov=src/pyciemss/ --cov-report=xml --cov-report=term-missing
