@@ -29,16 +29,16 @@ jobs:
           restore-keys: |
             ${{ matrix.python-version }}-
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
-      run: |
-        pip install -e .[tests]
+      - name: Install dependencies
+        run: |
+          pip install -e .[tests]
 
-    - name: Test with pytest
-      shell: bash
-      run: |
-        pytest test/ -v -n auto --cov=src/pyciemss/ --cov-report=xml --cov-report=term-missing
+      - name: Test with pytest
+        shell: bash
+        run: |
+          pytest test/ -v -n auto --cov=src/pyciemss/ --cov-report=xml --cov-report=term-missing
