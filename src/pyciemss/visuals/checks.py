@@ -104,8 +104,7 @@ def check_distribution_range(
     upper: Number,
     *,
     label: str = "distribution",
-    tests: (Dict[str, Callable[[pd.DataFrame, Number, Number], bool]]
-            | List[Callable[[pd.DataFrame, Number, Number], bool]]) = {},
+    tests: Dict[str, Callable[[pd.DataFrame, Number, Number], bool]] = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
 ) -> Result:
@@ -117,7 +116,8 @@ def check_distribution_range(
     upper -- Upper bound to compare to the distribution
 
     label -- Label to put on resulting plot
-    tests -- Tests to make against the distribution
+    tests -- Tests to make against the distribution 
+             (Typed as dict of label/value, but can be list of callables instead)
     combiner -- Combines the results of the test
     """
     if isinstance(tests, list):
