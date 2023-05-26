@@ -146,8 +146,7 @@ def compare_distributions(
     subject: pd.DataFrame,
     reference: pd.DataFrame,
     *,
-    tests: (Dict[str, Callable[[pd.DataFrame, pd.DataFrame], bool]]
-            | List[Callable[[pd.DataFrame, pd.DataFrame], bool]]) = {},
+    tests: Dict[str, Callable[[pd.DataFrame, pd.DataFrame], bool]] = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
 ) -> Result:
