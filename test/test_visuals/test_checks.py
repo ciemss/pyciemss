@@ -1,11 +1,10 @@
-from pyciemss.workflow import checks
-from pyciemss.workflow import vega
+from pyciemss.visuals import checks, vega
 from pathlib import Path
 import unittest
 import numpy as np
 import xarray as xr
 
-_data_file = Path(__file__).parent/"data"/"ciemss_datacube.nc"
+_data_file = Path(__file__).parent.parent/"data"/"ciemss_datacube.nc"
 
 
 class TestCheck(unittest.TestCase):

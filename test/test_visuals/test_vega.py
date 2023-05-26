@@ -1,11 +1,11 @@
-from pyciemss.workflow import vega
+from pyciemss.visuals import vega
 from pathlib import Path
 import unittest
 import pandas as pd
 import xarray as xr
 
 
-_data_file = Path(__file__).parent/"data"/"ciemss_datacube.nc"
+_data_file = Path(__file__).parent.parent/"data"/"ciemss_datacube.nc"
 
 def by_key_value(targets, key, value):
     for entry in targets:

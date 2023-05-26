@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Callable
 from numbers import Number
 
-import pyciemss.workflow.vega as vega
+from . import vega
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
