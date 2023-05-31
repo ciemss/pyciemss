@@ -65,21 +65,6 @@ class DynamicalSystem(pyro.nn.PyroModule):
         return self.log_solution(solution)
 
 
-@functools.singdispatch
-def load_and_sample(path: str, *args, **kwargs) -> Solution:
-    """
-    Load a model from a file and sample from it.
-    """
-    raise NotImplementedError
-
-
-def load_and_calibrate_and_sample(path: str, *args, **kwargs) -> Solution:
-    """
-    Load a model from a file, calibrate it, and sample from it.
-    """
-    raise NotImplementedError
-
-
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
 def setup_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
