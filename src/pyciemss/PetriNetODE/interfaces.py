@@ -6,6 +6,7 @@ from pyciemss.PetriNetODE.base import (
     PetriNetODESystem,
     ScaledBetaNoisePetriNetODESystem,
     MiraPetriNetODESystem,
+    get_name,
 )
 from pyciemss.risk.ouu import solveOUU
 
@@ -41,10 +42,10 @@ def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
     timepoints: Iterable[float],
-    start_state: dict[str, float],
+    start_state: Optional[dict[str, float]] = None,
     add_uncertainty: bool = True,
     pseudocount: float = 1.0,
-    start_time: float = 0.0,
+    start_time: float = -1e-10,
     method="dopri5",
 ) -> PetriSolution:
     """
@@ -55,6 +56,13 @@ def load_and_sample_petri_model(
         add_uncertainty=add_uncertainty,
         pseudocount=pseudocount,
     )
+
+    # If the user doesn't override the start state, use the initial values from the model.
+    if start_state is None:
+        start_state = {
+            get_name(v): v.data["initial_value"] for v in model.G.variables.values()
+        }
+
     model = setup_model(model, start_time=start_time, start_state=start_state)
     samples = sample(
         model,
@@ -73,10 +81,10 @@ def load_and_calibrate_and_sample_petri_model(
     data: Iterable[Tuple[float, dict[str, float]]],
     num_samples: int,
     timepoints: Iterable[float],
-    start_state: dict[str, float],
+    start_state: Optional[dict[str, float]] = None,
     add_uncertainty: bool = True,
     pseudocount: float = 1.0,
-    start_time: float = 0.0,
+    start_time: float = -1e-10,
     num_iterations: int = 1000,
     lr: float = 0.03,
     verbose: bool = False,
@@ -92,6 +100,13 @@ def load_and_calibrate_and_sample_petri_model(
         add_uncertainty=add_uncertainty,
         pseudocount=pseudocount,
     )
+
+    # If the user doesn't override the start state, use the initial values from the model.
+    if start_state is None:
+        start_state = {
+            get_name(v): v.data["initial_value"] for v in model.G.variables.values()
+        }
+
     model = setup_model(model, start_time=start_time, start_state=start_state)
     inferred_parameters = calibrate(
         model,
