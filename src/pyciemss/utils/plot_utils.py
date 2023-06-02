@@ -9,7 +9,7 @@ __all__ = ['setup_ax',
            'sideaxis',
            'sideaxishist']
 
-def setup_ax(ax=None, xlabel='Time (days)', ylabel='Infectious (1000s)'):
+def setup_ax(ax=None, xlabel='Time (days)', ylabel='Infectious'):
 
     if not ax:
         fig = plt.figure(facecolor='w', figsize=(9, 9))
@@ -20,8 +20,8 @@ def setup_ax(ax=None, xlabel='Time (days)', ylabel='Infectious (1000s)'):
     return ax
 
 def plot_predictive(datacube, tspan, tmin=None, ax=None, alpha=0.2, color="black", ptiles=[0.05,0.95], vars=["I_obs"], **kwargs):
-    if vars[0]=='I_obs':
-            datacube['I_obs'] = datacube['I_sol'] + datacube['I_v_sol']    # TODO: This is too specific and needs to be changed
+    if vars[0] not in datacube and vars[0]=='I_obs':
+        datacube['I_obs'] = datacube['I_sol'] + datacube['I_v_sol']    # TODO: This is too specific and needs to be changed
     
     I_low = torch.quantile(datacube[vars[0]], ptiles[0], dim=0).detach().numpy()
     I_up = torch.quantile(datacube[vars[0]], ptiles[1], dim=0).detach().numpy()
@@ -33,7 +33,7 @@ def plot_predictive(datacube, tspan, tmin=None, ax=None, alpha=0.2, color="black
 
     if not ax:
         fig = plt.figure(facecolor='w')
-        ax = fig.add_subplot(111, facecolor='#dddddd', axisbelow=True)
+        ax = fig.add_subplot(111, axisbelow=True)
     
     ax.fill_between(tspan[indeces], I_low[indeces], I_up[indeces], alpha=alpha, color=color, **kwargs)
 
@@ -43,12 +43,12 @@ def plot_predictive(datacube, tspan, tmin=None, ax=None, alpha=0.2, color="black
     return ax
 
 def plot_trajectory(datacube, tspan,  ax=None, color='black', alpha=0.5, lw=0, marker='.', label=None, vars=["I_obs"]):
-    if vars[0]=='I_obs':
-            datacube['I_obs'] = datacube['I_sol'] + datacube['I_v_sol']    # TODO: This is too specific and needs to be changed
+    if vars[0] not in datacube and vars[0]=='I_obs':
+        datacube['I_obs'] = datacube['I_sol'] + datacube['I_v_sol']    # TODO: This is too specific and needs to be changed
     # Plot the data on three separate curves for S(t), I(t) and R(t)
     if not ax:
         fig = plt.figure(facecolor='w')
-        ax = fig.add_subplot(111, facecolor='#dddddd', axisbelow=True)
+        ax = fig.add_subplot(111, axisbelow=True)
 
     ax.plot(tspan, datacube[vars[0]].squeeze().detach().numpy(), color, alpha=alpha, lw=lw, marker=marker, label=label)
     
@@ -57,7 +57,7 @@ def plot_trajectory(datacube, tspan,  ax=None, color='black', alpha=0.5, lw=0, m
 def plot_intervention_line(t, ax=None):
     if not ax:
         fig = plt.figure(facecolor='w')
-        ax = fig.add_subplot(111, facecolor='#dddddd', axisbelow=True)
+        ax = fig.add_subplot(111, axisbelow=True)
 
     ylim = ax.get_ylim()
 

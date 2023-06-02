@@ -1,7 +1,7 @@
 import numpy as np
 # from pyciemss.risk.risk_measures import pof
 
-def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, dt: float =1., contexts: list=None) -> np.ndarray:
+def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, contexts: list=None) -> np.ndarray:
     '''
     Return estimate of n-day average of samples.
     dataCube is is the output from a Pyro Predictive object.
@@ -16,12 +16,11 @@ def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, dt
         else:
             dataCube = dataCube[contexts[0]].detach().numpy()
 
-    ndayavg = dataCube[:, int(tf/dt)-ndays:int(tf/dt)]
+    ndayavg = dataCube[:, int(tf)-ndays:int(tf)]
     return np.mean(ndayavg, axis=1)
 
 
 def fraction_infected(dataCube) -> np.ndarray:
-    # return np.elementwise_division(dataCube["I_obs"], dataCube["N"])
     raise NotImplementedError
 
 

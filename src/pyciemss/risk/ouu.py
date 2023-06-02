@@ -45,7 +45,6 @@ class computeRisk():
         self.tspan = tspan
         self.guide = guide
         logging_events = [LoggingEvent(timepoint) for timepoint in self.tspan]
-        # new_petri = copy.deepcopy(petri)
         self.model.load_events(logging_events)
 
 
@@ -70,9 +69,6 @@ class computeRisk():
         # intervened_model = intervene(self.model, self.intervention_fun(x))
         # intervened_model = self.intervention_fun(x)
         # samples = sample(intervened_model, timepoints=self.tspan, num_samples=self.num_samples, inferred_parameters=self.guide)
-        # timepoints=self.tspan
-        # logging_events = [LoggingEvent(timepoint) for timepoint in timepoints]
-        # # new_petri = copy.deepcopy(petri)
         # intervened_model.load_events(logging_events)
         # TODO: generalize for more sophisticated interventions.
         x = np.atleast_1d(x)

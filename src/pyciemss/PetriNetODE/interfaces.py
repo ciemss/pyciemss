@@ -132,6 +132,39 @@ def optimize_petri(petri:PetriNetODESystem,
                    objective_function,
                    constraints,
                    optimizer):
+    '''
+    '''
+    control_model = copy.deepcopy(petri)
+    # Objective function
+    objfun = lambda x: np.abs(x)
+    RISK = computeRisk(model=control_model,
+                   interventions=INTERVENTION,
+                    qoi=QOI,
+                    tspan=full_tspan,
+                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+                    num_samples=n_samples_ouu,
+                    guide=calibrated_parameters
+                    )
+
+    # Define problem constraints
+    constraints = (
+                    # risk constraint
+                    {'type': 'ineq', 'fun': lambda x: risk_bound - RISK(x)},
+                    # bounds on control
+                    {'type': 'ineq', 'fun': lambda x: x - u_min},
+                    {'type': 'ineq', 'fun': lambda x: u_max - x}
+                )
+    print("Performing risk-based optimization under uncertainty (using alpha-superquantile)...")
+    print(f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds.")
+    start_time = time.time()
+    sq_result = solveOUU(
+                        x0=init_guess,
+                        objfun=objfun,
+                        constraints=constraints,
+                        maxiter=maxiter,
+                        maxfeval=maxfeval,
+                        ).solve()
+    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds. Optimal solution:\t{sq_result.x}")
         # TODO: This probably won't work out of the box. Will need to work with Anirban to refactor this.
 #        return solveOUU(initial_guess,
 #                    objective_function,
