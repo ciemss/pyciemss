@@ -2,7 +2,7 @@
 
 1. Install anaconda distribution of Python 3.10 https://docs.anaconda.com/anaconda/install/index.html
 2. In GitHub, go to https://github.com/settings/tokens
-3. Generate a new token (classic) with the maximum expiration date
+3. Generate a new token (classic) with a long expiration date (you can always make another if need be)
 4. Under "Select Scopes" check `repo`, `workflow`, `write:packages`
 5. Click the green "Create Personal Access Token" button and save the number it gives you
 6. Create an empty local directory and navigate to it `mkdir CIEMSS; cd CIEMSS`
