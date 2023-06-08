@@ -19,6 +19,71 @@ from pyciemss.utils import state_flux_constraint
 from pyciemss.utils.distributions import ScaledBeta
 
 
+class SIR_with_uncertainty(PetriNetODESystem):
+    """SIR model built by hand to compare against the MIRA SIR model
+    See https://github.com/ciemss/pyciemss/issues/144 
+    for more detail.
+    """
+    def __init__(
+            self,
+            N: int,
+            beta: float,
+            gamma: float,
+            pseudocount: float = 1.0,
+            ) -> None:
+        """initialize total population beta and gamma parameters
+        :param N: total population
+        :param beta: infection rate
+        :param gamma: recovery rate
+        """
+        super().__init__()
+        self.total_population = N
+        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.pseudocount = pseudocount
+
+
+    def create_var_order(self) -> dict[str, int]:
+        """create the variable order for the state vector"""
+        return {"susceptible_population": 0, "infected_population": 1, "immune_population": 2}
+
+    @pyro.nn.pyro_method
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+        S, I, R = state
+        dSdt = -self.beta * S * I / self.total_population
+        dIdt = self.beta * S * I / self.total_population - self.gamma * I
+        dRdt = self.gamma * I
+        return dSdt, dIdt, dRdt
+
+    @pyro.nn.pyro_method
+    def param_prior(self) -> None:
+        """define the prior distributions for the parameters"""
+        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """define the observation model for the given variable
+        :param solution: solution of the ODE system
+        :param var_name: variable name
+        """
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
+
 class SVIIvR(PetriNetODESystem):
     def __init__(
         self,
