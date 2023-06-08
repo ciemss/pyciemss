@@ -6,7 +6,7 @@ from mira.examples.sir import sir_parameterized as sir
 import torch
 
 from pyciemss.PetriNetODE.interfaces import load_petri_model, setup_model, reset_model, intervene, sample, calibrate, optimize
-from pyciemss.risk.qoi import scenario2dec_sample_average
+from pyciemss.risk.qoi import scenario2dec_nday_average
 
 class TestODEInterfaces(unittest.TestCase):
     '''Tests for the ODE interfaces.'''
@@ -139,7 +139,7 @@ class TestODEInterfaces(unittest.TestCase):
         model = load_petri_model(self.filename)
         model = setup_model(model, self.initial_time, self.initial_state)
         INTERVENTION= {"intervention1": [0.2, "beta"]}
-        QOI = lambda y: scenario2dec_sample_average(y, contexts=["infected_population_sol"])
+        QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"])
         timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
         ouu_policy = optimize(model,
                         timepoints=timepoints_qoi,
