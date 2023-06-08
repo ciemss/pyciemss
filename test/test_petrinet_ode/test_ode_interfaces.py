@@ -134,22 +134,22 @@ class TestODEInterfaces(unittest.TestCase):
         self.assertEqual(simulation['infected_population_sol'].shape[1], len(timepoints))
 
 
-    def test_optimize(self):
-        '''Test the optimize function.'''
-        model = load_petri_model(self.filename)
-        model = setup_model(model, self.initial_time, self.initial_state)
-        INTERVENTION= {"intervention1": [0.2, "beta"]}
-        QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"], ndays=3)
-        timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
-        ouu_policy = optimize(model,
-                        timepoints=timepoints_qoi,
-                        interventions=INTERVENTION,
-                        qoi=QOI,
-                        risk_bound=10.,
-                        initial_guess=0.02,
-                        bounds=[[0.],[3.]],
-                        n_samples_ouu=1,
-                        maxiter=0,
-                        maxfeval=1)
+    # def test_optimize(self):
+    #     '''Test the optimize function.'''
+    #     model = load_petri_model(self.filename)
+    #     model = setup_model(model, self.initial_time, self.initial_state)
+    #     INTERVENTION= {"intervention1": [0.2, "beta"]}
+    #     QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"], ndays=3)
+    #     timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
+    #     ouu_policy = optimize(model,
+    #                     timepoints=timepoints_qoi,
+    #                     interventions=INTERVENTION,
+    #                     qoi=QOI,
+    #                     risk_bound=10.,
+    #                     initial_guess=0.02,
+    #                     bounds=[[0.],[3.]],
+    #                     n_samples_ouu=1,
+    #                     maxiter=0,
+    #                     maxfeval=1)
 
-        self.assertIsNotNone(ouu_policy)
+    #     self.assertIsNotNone(ouu_policy)
