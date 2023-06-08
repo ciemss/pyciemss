@@ -25,5 +25,6 @@ from .plot_utils import (setup_ax,
            plot_predictive,
            plot_trajectory,
            plot_intervention_line,
+           plot_ouu_risk,
            sideaxis,
            sideaxishist)

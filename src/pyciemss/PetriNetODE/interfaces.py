@@ -3,7 +3,11 @@ import torch
 from pyro.infer import Predictive
 
 from pyciemss.PetriNetODE.base import PetriNetODESystem, ScaledBetaNoisePetriNetODESystem, MiraPetriNetODESystem
-from pyciemss.risk.ouu import solveOUU
+from pyciemss.risk.ouu import computeRisk, solveOUU
+from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
+
+import time
+import numpy as np
 
 from typing import Iterable, Optional, Tuple, Union
 import copy
@@ -127,25 +131,49 @@ def sample_petri(petri:PetriNetODESystem,
     return Predictive(new_petri, guide=inferred_parameters, num_samples=num_samples)(method=method)
 
 @optimize.register
-def optimize_petri(petri:PetriNetODESystem,
-                   initial_guess,
-                   objective_function,
-                   constraints,
-                   optimizer):
+def optimize_petri(petri: PetriNetODESystem,
+                   timepoints: Iterable,
+                   interventions: dict,
+                   qoi: callable,
+                   risk_bound: float,
+                   initial_guess: Iterable[float] = 0.5,
+                   bounds: Iterable[float] = [[0.],[1.]],
+                   inferred_parameters: Optional[PetriInferredParameters] = None,
+                   n_samples_ouu: int = int(1e2),
+                   maxiter: int = 2,
+                   maxfeval: int = 25,
+                   method="dopri5") -> dict:
     '''
+    Optimization under uncertainty with risk-based constraints over ODE models.
     '''
-    control_model = copy.deepcopy(petri)
+    # maxfeval: Maximum number of function evaluations for each local optimization step
+    # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
+    timepoints = [float(x) for x in list(timepoints)]
+    bounds = np.atleast_2d(bounds)
+    u_min = bounds[0,:]
+    u_max = bounds[1,:]
     # Objective function
     objfun = lambda x: np.abs(x)
-    RISK = computeRisk(model=control_model,
-                   interventions=INTERVENTION,
-                    qoi=QOI,
-                    tspan=full_tspan,
-                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-                    num_samples=n_samples_ouu,
-                    guide=calibrated_parameters
-                    )
-
+    # Set up risk estimation
+    control_model = copy.deepcopy(petri)
+    RISK = computeRisk(model=control_model, interventions=interventions, qoi=qoi, tspan=timepoints,
+                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95), num_samples=1,
+                    guide=inferred_parameters, method=method)
+    
+    # Run one sample to estimate model evaluation time
+    start_time = time.time()
+    init_prediction = RISK.propagate_uncertainty(initial_guess)
+    RISK.qoi(init_prediction)
+    end_time = time.time()
+    forward_time = end_time - start_time
+    time_per_eval = forward_time / 1.
+    print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation)...")
+    
+    # Assign the required number of MC samples for each OUU iteration
+    control_model = copy.deepcopy(petri)
+    RISK = computeRisk(model=control_model, interventions=interventions, qoi=qoi, tspan=timepoints,
+                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95), num_samples=n_samples_ouu,
+                    guide=inferred_parameters, method=method)
     # Define problem constraints
     constraints = (
                     # risk constraint
@@ -155,19 +183,26 @@ def optimize_petri(petri:PetriNetODESystem,
                     {'type': 'ineq', 'fun': lambda x: u_max - x}
                 )
     print("Performing risk-based optimization under uncertainty (using alpha-superquantile)...")
-    print(f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds.")
+    print(f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds...")
     start_time = time.time()
-    sq_result = solveOUU(
-                        x0=init_guess,
-                        objfun=objfun,
-                        constraints=constraints,
-                        maxiter=maxiter,
-                        maxfeval=maxfeval,
-                        ).solve()
-    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds. Optimal solution:\t{sq_result.x}")
-        # TODO: This probably won't work out of the box. Will need to work with Anirban to refactor this.
-#        return solveOUU(initial_guess,
-#                    objective_function,
-#                    constraints,
-#                    optimizer_algorithm=optimizer).solve()
-    raise NotImplementedError
+    opt_results = solveOUU(x0=initial_guess, objfun=objfun, constraints=constraints, maxiter=maxiter, maxfeval=maxfeval).solve()
+    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds. Optimal solution:\t{opt_results.x}")
+
+    # Check for some interventions that lead to no feasible solutions
+    if opt_results.x<0:
+        print("No solution found")
+
+    # Post-process OUU results
+    print("Post-processing optimal policy...")
+    RISK.num_samples=int(1e3)
+    # tspan = [float(x) for x in list(range(1,int(timepoints[-1])))]
+    # control_model = copy.deepcopy(petri)
+    # RISK = computeRisk(model=control_model, interventions=interventions, qoi=qoi, tspan=timepoints,
+    #                 risk_measure=lambda z: alpha_superquantile(z, alpha=0.95), num_samples=int(1e3),
+    #                 guide=inferred_parameters, method=method)
+    sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
+    qois_sq = RISK.qoi(sq_optimal_prediction)
+    sq_est = RISK.risk_measure(qois_sq)
+    ouu_results = {"policy": opt_results.x, "risk": sq_est, "samples": sq_optimal_prediction, "qoi": qois_sq, "tspan": RISK.tspan}
+    print('Estimated risk at optimal policy', ouu_results["risk"])
+    return ouu_results

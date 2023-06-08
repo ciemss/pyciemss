@@ -1,10 +1,9 @@
 import numpy as np
 from scipy.optimize import basinhopping, minimize
 from pyro.infer import Predictive
+import pyro
 # TODO: generalize below to other models also
-# from pyciemss.PetriNetODE.events import LoggingEvent
-from pyciemss.PetriNetODE.events import StartEvent, ObservationEvent, LoggingEvent, StaticParameterInterventionEvent
-# from pyciemss.PetriNetODE.interfaces import intervene
+from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
 
 class RandomDisplacementBounds():
@@ -27,30 +26,27 @@ class computeRisk():
     def __init__(self,
                  model: callable,
                  interventions: list,
-                #  sampling_fun: callable,
                  qoi: callable,
-                #  model_state: tuple,
                  tspan: np.ndarray,
                  risk_measure: callable = alpha_superquantile,
                  num_samples: int = 1000,
                  guide=None,
-                ):
-        self.model = model    # Model is not required here if wrapped in intervention function
+                 method="dopri5"):
+        self.model = model
         self.interventions = interventions
-        # self.sample = sampling_fun
         self.qoi = qoi
         self.risk_measure = risk_measure
         self.num_samples = num_samples
-        # self.model_state = model_state
         self.tspan = tspan
         self.guide = guide
         logging_events = [LoggingEvent(timepoint) for timepoint in self.tspan]
         self.model.load_events(logging_events)
+        self.method = method
 
 
     # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
     def __call__(self, x):
-        # Apply intervention, perform forward uncertainty propagation
+        # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
@@ -62,24 +58,19 @@ class computeRisk():
         '''
         Perform forward uncertainty propagation.
         '''
-        # # Apply intervention to model
-        # intervened_model = intervene(self.model, self.intervention_fun(x))
-        # samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-        # Apply intervention to model
-        # intervened_model = intervene(self.model, self.intervention_fun(x))
-        # intervened_model = self.intervention_fun(x)
-        # samples = sample(intervened_model, timepoints=self.tspan, num_samples=self.num_samples, inferred_parameters=self.guide)
-        # intervened_model.load_events(logging_events)
+        pyro.set_rng_seed(0)
         # TODO: generalize for more sophisticated interventions.
         x = np.atleast_1d(x)
         interventions = []
-        for count in range(len(self.interventions)):
-            interventions.append(StaticParameterInterventionEvent(self.interventions[count][0], self.interventions[count][1], x[count]))
-        # interventions = [StaticParameterInterventionEvent(intervention_param[0], intervention_param[1], x[count]) for count, intervention_param
-        #                 in self.interventions]
-        # new_petri = copy.deepcopy(petri)
+        count=0
+        for k in self.interventions:
+            interventions.append(StaticParameterInterventionEvent(self.interventions[k][0], self.interventions[k][1], x[count]))
+            count=count+1
+        # Apply intervention to model
         self.model.load_events(interventions)
-        samples = Predictive(self.model, guide=self.guide, num_samples=self.num_samples)(method="dopri5")
+        # Sample from intervened model
+        samples = Predictive(self.model, guide=self.guide, num_samples=self.num_samples)(method=self.method)
+        # Remove intervention events
         self.model.remove_static_parameter_intervention_events()
         return samples
 
@@ -123,7 +114,3 @@ class solveOUU():
                           interval=2, disp=False) 
 
         return result
-    
-    # # TODO: implement logging callback for optimizer
-    # def _save(self):
-    #     raise NotImplementedError

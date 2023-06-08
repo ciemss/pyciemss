@@ -1,7 +1,17 @@
 import numpy as np
-# from pyciemss.risk.risk_measures import pof
 
-def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, contexts: list=None) -> np.ndarray:
+def scenario2dec_sample_average(dataCube, contexts: list=['I_obs']) -> np.ndarray:
+    # Extract specific context response to compute on.
+    if contexts is not None:
+        if contexts[0] not in dataCube and contexts[0]=='I_obs':
+            dataCube['I_obs'] = dataCube['I_sol'] + dataCube['I_v_sol']    # TODO: This is too specific and needs to be changed
+            dataQoI = dataCube[contexts[0]].detach().numpy()
+        else:
+            dataQoI = dataCube[contexts[0]].detach().numpy()
+
+    return np.mean(dataQoI, axis=1)
+
+def scenario2dec_nday_rolling_average(dataCube, tf: float=90-1., ndays: int=7, contexts: list=['I_obs']) -> np.ndarray:
     '''
     Return estimate of n-day average of samples.
     dataCube is is the output from a Pyro Predictive object.
@@ -12,11 +22,11 @@ def nday_rolling_average(dataCube: np.ndarray, tf: float=90-1., ndays: int=7, co
     if contexts is not None:
         if contexts[0]=='I_obs':
             dataCube['I_obs'] = dataCube['I_sol'] + dataCube['I_v_sol']    # TODO: This is too specific and needs to be changed
-            dataCube = dataCube[contexts[0]].detach().numpy()
+            dataQoI = dataCube[contexts[0]].detach().numpy()
         else:
-            dataCube = dataCube[contexts[0]].detach().numpy()
+            dataQoI = dataCube[contexts[0]].detach().numpy()
 
-    ndayavg = dataCube[:, int(tf)-ndays:int(tf)]
+    ndayavg = dataQoI[:, int(tf)-ndays:int(tf)]
     return np.mean(ndayavg, axis=1)
 
 
