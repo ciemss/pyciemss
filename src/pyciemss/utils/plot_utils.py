@@ -62,7 +62,7 @@ def plot_ouu_risk(datacube, ax=None, xlabel: str='7-day average infections at 90
                   alpha=0.5, label: list=['alpha-superquantile']):
     if not ax:
         ax = setup_ax()
-    ax = plot_predictive(datacube["samples"], torch.tensor(datacube["tspan"]), ax=ax, color='#a65628', ptiles=[0.0,1.])
+    ax = plot_predictive(datacube["samples"], torch.tensor(datacube["tspan"]), ax=ax, color='#a65628', ptiles=[0.0,1.], alpha=alpha)
 
     bins_hist = 50
     plt.figure()
