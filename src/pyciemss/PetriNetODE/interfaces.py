@@ -8,6 +8,7 @@ from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
 
 import time
 import numpy as np
+from math import ceil
 
 from typing import Iterable, Optional, Tuple, Union
 import copy
@@ -170,7 +171,7 @@ def optimize_petri(petri: PetriNetODESystem,
     end_time = time.time()
     forward_time = end_time - start_time
     time_per_eval = forward_time / 1.
-    print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation)...")
+    print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
     
     # Assign the required number of MC samples for each OUU iteration
     control_model = copy.deepcopy(petri)
@@ -185,11 +186,18 @@ def optimize_petri(petri: PetriNetODESystem,
                     {'type': 'ineq', 'fun': lambda x: x - u_min},
                     {'type': 'ineq', 'fun': lambda x: u_max - x}
                 )
-    print("Performing risk-based optimization under uncertainty (using alpha-superquantile)...")
+    print("Performing risk-based optimization under uncertainty (using alpha-superquantile)")
     print(f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds...")
     start_time = time.time()
     opt_results = solveOUU(x0=initial_guess, objfun=objfun, constraints=constraints, maxiter=maxiter, maxfeval=maxfeval).solve()
-    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds. Optimal solution:\t{opt_results.x}")
+    # Rounding up to given number of decimal places 
+    # TODO: move to utilities
+    def round_up(num, dec=4):
+        return ceil(num * 10**dec)/(10**dec)
+    
+    opt_results.x = round_up(opt_results.x)
+    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
+    print(f"Optimal policy:\t{opt_results.x}")
 
     # Check for some interventions that lead to no feasible solutions
     if opt_results.x<0:
@@ -205,7 +213,7 @@ def optimize_petri(petri: PetriNetODESystem,
                     guide=inferred_parameters, method=method)
     sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
     qois_sq = RISK.qoi(sq_optimal_prediction)
-    sq_est = RISK.risk_measure(qois_sq)
+    sq_est = round_up(RISK.risk_measure(qois_sq))
     ouu_results = {"policy": opt_results.x, "risk": [sq_est], "samples": sq_optimal_prediction, "qoi": qois_sq, "tspan": RISK.tspan}
     print('Estimated risk at optimal policy', ouu_results["risk"])
     return ouu_results

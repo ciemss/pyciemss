@@ -1,8 +1,8 @@
 import numpy as np
-from scipy.optimize import basinhopping, minimize
+from scipy.optimize import basinhopping
 from pyro.infer import Predictive
 import pyro
-# TODO: generalize below to other models also
+# TODO: generalize to other models also
 from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
 
@@ -44,7 +44,6 @@ class computeRisk():
         self.method = method
 
 
-    # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
     def __call__(self, x):
         # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
