@@ -127,3 +127,4 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
 
     def __rep__(self) -> str:
         return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}'
+
