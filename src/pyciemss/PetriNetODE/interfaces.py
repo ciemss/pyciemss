@@ -140,13 +140,15 @@ def optimize_petri(petri: PetriNetODESystem,
                    interventions: dict,
                    qoi: callable,
                    risk_bound: float,
+                   objfun: callable = lambda x: np.abs(x),
                    initial_guess: Iterable[float] = 0.5,
                    bounds: Iterable[float] = [[0.],[1.]],
                    inferred_parameters: Optional[PetriInferredParameters] = None,
                    n_samples_ouu: int = int(1e2),
                    maxiter: int = 2,
                    maxfeval: int = 25,
-                   method="dopri5") -> dict:
+                   method="dopri5",
+                   roundup_decimal: int = 4) -> dict:
     '''
     Optimization under uncertainty with risk-based constraints over ODE models.
     '''
@@ -156,8 +158,6 @@ def optimize_petri(petri: PetriNetODESystem,
     bounds = np.atleast_2d(bounds)
     u_min = bounds[0,:]
     u_max = bounds[1,:]
-    # Objective function
-    objfun = lambda x: np.abs(x)
     # Set up risk estimation
     control_model = copy.deepcopy(petri)
     RISK = computeRisk(model=control_model, interventions=interventions, qoi=qoi, tspan=timepoints,
@@ -192,7 +192,7 @@ def optimize_petri(petri: PetriNetODESystem,
     opt_results = solveOUU(x0=initial_guess, objfun=objfun, constraints=constraints, maxiter=maxiter, maxfeval=maxfeval).solve()
     # Rounding up to given number of decimal places 
     # TODO: move to utilities
-    def round_up(num, dec=4):
+    def round_up(num, dec=roundup_decimal):
         return ceil(num * 10**dec)/(10**dec)
     
     opt_results.x = round_up(opt_results.x)
