@@ -321,12 +321,55 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     @functools.singledispatchmethod
     @classmethod
+    def from_askenet(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
+        return cls(model)
+
+    @from_askenet.register(mira.metamodel.TemplateModel)
+    @classmethod
+    def _from_mira_template_model(cls, model_template: mira.metamodel.TemplateModel):
+        """load a mira template model into a MiraPetriNetODESystem."""
+        model = cls.from_mira(mira.modeling.Model(model_template))
+
+        # Check if all parameter names are strings
+        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
+            return model
+        else:
+            new_template = aggregate_parameters(model_template)
+            return cls.from_mira(mira.modeling.Model(new_template))
+
+    @from_askenet.register(dict)
+    @classmethod
+    def _from_json(cls, model_json: dict):
+        """load an ASKEM model representation json into a MiraPetriNetODESystem."""
+        return cls.from_mira(mira.sources.askenet.petrinet.model_from_askenet_json(model_json))
+
+    @from_mira.register(str)
+    @classmethod
+    def _from_json_file(cls, model_json_path: str):
+        """load an ASKEM model representation json file into a MiraPetriNetODESystem."""
+        if not os.path.exists(model_json_path):
+            raise ValueError(f"Model file not found: {model_json_path}")
+        with open(model_json_path, "r") as f:
+            return cls._from_json(json.load(f))
+
+    
+    @from_mira.register(requests.Response)
+    @classmethod
+    def _from_json_file(cls, model_url: requests.Response):
+        """load a MIRA model representation json file into a MiraPetriNetODESystem."""
+        return cls._from_json(mira.sources.askenet.petrinet.model_from_askenet_json(model_url.json()))
+    
+    
+    @functools.singledispatchmethod
+    @classmethod
     def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
+        """load a MIRA model into a MiraPetriNetODESystem."""
         return cls(model)
 
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
+        """load a mira template model into a MiraPetriNetODESystem."""
         model = cls.from_mira(mira.modeling.Model(model_template))
 
         # Check if all parameter names are strings
@@ -339,11 +382,13 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @from_mira.register(dict)
     @classmethod
     def _from_json(cls, model_json: dict):
+        """load a MIRA model representation json into a MiraPetriNetODESystem."""
         return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json))
 
     @from_mira.register(str)
     @classmethod
     def _from_json_file(cls, model_json_path: str):
+        """load a MIRA model representation json file into a MiraPetriNetODESystem."""
         if not os.path.exists(model_json_path):
             raise ValueError(f"Model file not found: {model_json_path}")
         with open(model_json_path, "r") as f:
