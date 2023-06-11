@@ -320,6 +320,13 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         )
 
     @functools.singledispatchmethod
+    def to_askenet(self, askenet_filename: str, name=None, description=None, model_version=None, **kwargs) -> "MiraPetriNetODESystem":
+        askenet_petri_model = mira.modeling.petrinet.AskeNetPetriNetModel(self.G)
+        askenet_petri_model.to_json_file(askenet_filename, name, description, model_version, **kwargs)
+        return askenet_petri_model
+
+    
+    @functools.singledispatchmethod
     @classmethod
     def from_askenet(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
         return cls(model)
