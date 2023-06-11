@@ -205,15 +205,14 @@ def optimize_petri(petri: PetriNetODESystem,
 
     # Post-process OUU results
     print("Post-processing optimal policy...")
-    RISK.num_samples=int(1e3)
     tspan_plot = [float(x) for x in list(range(1,int(timepoints[-1])))]
     control_model = copy.deepcopy(petri)
     RISK = computeRisk(model=control_model, interventions=interventions, qoi=qoi, tspan=tspan_plot,
-                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95), num_samples=int(1e3),
+                    risk_measure=lambda z: alpha_superquantile(z, alpha=0.95), num_samples=int(5e2),
                     guide=inferred_parameters, method=method)
     sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
     qois_sq = RISK.qoi(sq_optimal_prediction)
     sq_est = round_up(RISK.risk_measure(qois_sq))
-    ouu_results = {"policy": opt_results.x, "risk": [sq_est], "samples": sq_optimal_prediction, "qoi": qois_sq, "tspan": RISK.tspan}
+    ouu_results = {"policy": opt_results.x, "risk": [sq_est], "samples": sq_optimal_prediction, "qoi": qois_sq, "tspan": RISK.tspan, "OptResults": opt_results}
     print('Estimated risk at optimal policy', ouu_results["risk"])
     return ouu_results
