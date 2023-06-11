@@ -30,6 +30,7 @@ from pyciemss.interfaces import DynamicalSystem
 
 from pyciemss.PetriNetODE.events import (Event, StaticEvent, StartEvent, ObservationEvent,
                                          LoggingEvent, StaticParameterInterventionEvent)
+import requests
 
 Time = Union[float, torch.tensor]
 State = tuple[torch.tensor]
@@ -321,7 +322,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     @functools.singledispatchmethod
     def to_askenet(self, askenet_filename: str, name=None, description=None, model_version=None, **kwargs) -> "MiraPetriNetODESystem":
-        askenet_petri_model = mira.modeling.petrinet.AskeNetPetriNetModel(self.G)
+        askenet_petri_model = mira.modeling.askenet.petrinet.AskeNetPetriNetModel(self.G)
         askenet_petri_model.to_json_file(askenet_filename, name, description, model_version, **kwargs)
         return askenet_petri_model
 
@@ -350,7 +351,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         """load an ASKEM model representation json into a MiraPetriNetODESystem."""
         return cls.from_mira(mira.sources.askenet.petrinet.model_from_askenet_json(model_json))
 
-    @from_mira.register(str)
+    @from_askenet.register(str)
     @classmethod
     def _from_json_file(cls, model_json_path: str):
         """load an ASKEM model representation json file into a MiraPetriNetODESystem."""
@@ -360,9 +361,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             return cls._from_json(json.load(f))
 
     
-    @from_mira.register(requests.Response)
+    @from_askenet.register(requests.Response)
     @classmethod
-    def _from_json_file(cls, model_url: requests.Response):
+    def _from_url(cls, model_url: requests.Response):
         """load a MIRA model representation json file into a MiraPetriNetODESystem."""
         return cls._from_json(mira.sources.askenet.petrinet.model_from_askenet_json(model_url.json()))
     
@@ -373,6 +374,8 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         """load a MIRA model into a MiraPetriNetODESystem."""
         return cls(model)
 
+
+    
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
