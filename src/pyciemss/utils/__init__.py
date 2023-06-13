@@ -1,4 +1,5 @@
 from .petri_utils import (seq_id_suffix,
+                          reparameterize,
            load_sim_result,
            load,
            draw_petri,
