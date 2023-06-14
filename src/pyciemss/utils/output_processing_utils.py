@@ -20,9 +20,13 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
             # Any 1D array is a sample from the distribution over parameters.
             # Any 2D array is a sample from the distribution over states.
             name = name + "_param"
-            pyciemss_results["parameters"][name] = sample.data.numpy()
+            pyciemss_results["parameters"][name] = (
+                sample.data.detach().cpu().numpy().astype(np.float64)
+            )
         else:
-            pyciemss_results["states"][name] = sample.data.numpy()
+            pyciemss_results["states"][name] = (
+                sample.data.detach().cpu().numpy().astype(np.float64)
+            )
 
     num_samples, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
     d = {
