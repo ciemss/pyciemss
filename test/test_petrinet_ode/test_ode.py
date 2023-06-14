@@ -225,3 +225,6 @@ class TestODE(unittest.TestCase):
 
         # Susceptible individuals should decrease between t=4 and t=5 because of the second intervention
         self.assertTrue(torch.all(predictions['susceptible_population_sol'][:, 3] > predictions['susceptible_population_sol'][:, 4]))
+
+
+    
