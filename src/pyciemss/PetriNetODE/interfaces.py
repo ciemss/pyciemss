@@ -134,9 +134,9 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    # TODO: Dump samples to a file.
+    processed_samples = convert_to_output_format(samples)
 
-    return samples
+    return processed_samples
 
 
 def load_petri_model(
