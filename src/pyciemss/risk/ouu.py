@@ -1,7 +1,9 @@
 import numpy as np
-from scipy.optimize import basinhopping, minimize
-from pyciemss.interfaces import intervene
+from scipy.optimize import basinhopping
 from pyro.infer import Predictive
+import pyro
+# TODO: generalize to other models also
+from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
 
 class RandomDisplacementBounds():
@@ -12,7 +14,7 @@ class RandomDisplacementBounds():
         self.xmin = xmin
         self.xmax = xmax
         self.stepsize = stepsize
-
+    
     def __call__(self, x):
         return np.clip(x + np.random.uniform(-self.stepsize, self.stepsize, np.shape(x)), self.xmin, self.xmax)
 
@@ -23,33 +25,31 @@ class computeRisk():
     '''
     def __init__(self,
                  model: callable,
-                 intervention_fun: callable,
+                 interventions: list,
                  qoi: callable,
-                 model_state: tuple,
                  tspan: np.ndarray,
                  risk_measure: callable = alpha_superquantile,
                  num_samples: int = 1000,
                  guide=None,
-                ):
+                 method="dopri5"):
         self.model = model
-        self.intervention_fun = intervention_fun
+        self.interventions = interventions
         self.qoi = qoi
         self.risk_measure = risk_measure
         self.num_samples = num_samples
-        self.model_state = model_state
         self.tspan = tspan
         self.guide = guide
+        logging_events = [LoggingEvent(timepoint) for timepoint in self.tspan]
+        self.model.load_events(logging_events)
+        self.method = method
 
 
-    # TODO: figure out a way to pass samples between the constraint and the optimization objective function so as not to do double the labor.
     def __call__(self, x):
-        # Apply intervention, perform forward uncertainty propagation
+        # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
-
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
-
-        # Compute risk measure
+        # Estimate risk measure
         return self.risk_measure(sample_qoi)
 
 
@@ -57,11 +57,20 @@ class computeRisk():
         '''
         Perform forward uncertainty propagation.
         '''
+        pyro.set_rng_seed(0)
+        # TODO: generalize for more sophisticated interventions.
+        x = np.atleast_1d(x)
+        interventions = []
+        count=0
+        for k in self.interventions:
+            interventions.append(StaticParameterInterventionEvent(self.interventions[k][0], self.interventions[k][1], x[count]))
+            count=count+1
         # Apply intervention to model
-        intervened_model = intervene(self.model, self.intervention_fun(x))
-
-        samples = Predictive(intervened_model, guide=self.guide, num_samples=self.num_samples)(self.model_state, self.tspan)
-
+        self.model.load_events(interventions)
+        # Sample from intervened model
+        samples = Predictive(self.model, guide=self.guide, num_samples=self.num_samples)(method=self.method)
+        # Remove intervention events
+        self.model.remove_static_parameter_intervention_events()
         return samples
 
 
@@ -72,50 +81,35 @@ class solveOUU():
     def __init__(self,
                  x0: np.ndarray,
                  objfun: callable,
-                 constraints: dict,
+                 constraints: tuple,
                  minimizer_kwargs: dict = dict(
                         method="COBYLA",
-                        options={
-                                 "disp": False,
-                                },
+                        tol=1e-5, options={'disp': False, 'maxiter':  10},
                        ),
                  optimizer_algorithm: str = "basinhopping",
+                 maxfeval: int = 100,
                  maxiter: int = 100,
                  **kwargs
                 ):
-        self.x0 = x0
+        self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
         self.constraints = constraints
         self.minimizer_kwargs = minimizer_kwargs.update({"constraints": self.constraints})
         self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
-
-        self.kwargs = kwargs
+        self.maxfeval = maxfeval        
+        # self.kwargs = kwargs
 
     def solve(self):
-        # Thin wrapper around SciPy optimizer(s).
-        # Note: not sure that there is a cleaner way to specify the optimizer algorithm as this call must interface with the SciPy optimizer which is not consistent across algorithms.
+        # wrapper around SciPy optimizer(s).
+        minimizer_kwargs = dict(constraints=self.constraints, method='COBYLA', 
+                                tol=1e-5, options={'disp': False, 'maxiter':  self.maxfeval})
+        # take_step = RandomDisplacementBounds(self.u_bounds[0], self.u_bounds[1], stepsize=stepsize)
+        # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5, 
+        #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
 
-        if self.optimizer_algorithm == "basinhopping":
-            result = basinhopping(
-                func=self.objfun,
-                x0=self.x0,
-                niter=self.maxiter,
-                minimizer_kwargs=self.minimizer_kwargs,
-                **self.kwargs
-            )
-        else:
-            # TODO: extend so as not just to be a pass through to minimize
-            result = minimize(
-                fun=self.objfun,
-                x0=self.x0,
-                method=self.optimizer_algorithm,
-                constraints=self.constraints,
-                **self.kwargs
-            )
+        result = basinhopping(self.objfun, self.x0, stepsize=0.25, T=1.5, 
+                          niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, 
+                          interval=2, disp=False) 
 
         return result
-
-    # TODO: implement logging callback for optimizer
-    def _save(self):
-        raise NotImplementedError
