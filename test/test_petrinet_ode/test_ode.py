@@ -1,10 +1,9 @@
 import unittest
 
 import os
-import torch
 from copy import deepcopy
+import torch
 import pyciemss
-import pyciemss.PetriNetODE
 from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
 from pyciemss.PetriNetODE.models import MiraRegNetODESystem, LotkaVolterra
