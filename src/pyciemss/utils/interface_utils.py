@@ -3,6 +3,7 @@ import numpy as np
 
 import torch
 
+import csv
 from typing import Dict
 
 
@@ -53,3 +54,17 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
     }
 
     return pd.DataFrame(d)
+
+
+def csv_to_list(filename):
+    result = []
+    with open(filename, "r") as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        for row in reader:
+            # zip function pairs header elements and row elements together
+            # it will ignore extra values in either the header or the row
+            data_dict = dict(zip(header[1:], row[1:]))
+            # use float for the timestep, and convert the values in the dictionary to float
+            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items()}))
+    return result
