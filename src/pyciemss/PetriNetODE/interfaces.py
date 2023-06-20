@@ -1,44 +1,39 @@
+import copy
+import time
+from math import ceil
+from typing import Iterable, Optional, Tuple, Union
+
+import mira
+import numpy as np
+import pandas as pd
 import pyro
 import torch
 from pyro.infer import Predictive
 
+# Load base interfaces
+from pyciemss.interfaces import (
+    calibrate,
+    intervene,
+    optimize,
+    reset_model,
+    sample,
+    setup_model,
+)
 from pyciemss.PetriNetODE.base import (
+    MiraPetriNetODESystem,
     PetriNetODESystem,
     ScaledBetaNoisePetriNetODESystem,
-    MiraPetriNetODESystem,
     get_name,
+)
+from pyciemss.PetriNetODE.events import (
+    LoggingEvent,
+    ObservationEvent,
+    StartEvent,
+    StaticParameterInterventionEvent,
 )
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
 from pyciemss.utils.output_processing_utils import convert_to_output_format
-
-import time
-import numpy as np
-from math import ceil
-
-import pandas as pd
-
-from typing import Iterable, Optional, Tuple, Union
-import copy
-
-import mira
-
-# Load base interfaces
-from pyciemss.interfaces import (
-    setup_model,
-    reset_model,
-    intervene,
-    sample,
-    calibrate,
-    optimize,
-)
-
-from pyciemss.PetriNetODE.events import (
-    StartEvent,
-    ObservationEvent,
-    LoggingEvent,
-    StaticParameterInterventionEvent,
-)
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 

@@ -1,7 +1,7 @@
-import pyro
-
-from typing import TypeVar, Optional
 import functools
+from typing import Optional, TypeVar
+
+import pyro
 
 # Declare types
 # Note: this doesn't really do anything. More of a placeholder for how derived classes should be declared.

@@ -1,13 +1,12 @@
-from typing import List, Dict, Any, Callable
-from numbers import Number
-
-from copy import deepcopy
-import IPython.display
-import pandas as pd
-import numpy as np
-
-import pkgutil
 import json
+import pkgutil
+from copy import deepcopy
+from numbers import Number
+from typing import Any, Callable, Dict, List
+
+import IPython.display
+import numpy as np
+import pandas as pd
 
 
 def _histogram_multi_schema():

@@ -1,19 +1,28 @@
-import unittest
-
 import os
-import torch
+import unittest
 from copy import deepcopy
 
-from pyciemss.PetriNetODE.base import PetriNetODESystem, MiraPetriNetODESystem, ScaledBetaNoisePetriNetODESystem
-from pyciemss.PetriNetODE.events import ObservationEvent, LoggingEvent, StartEvent, StaticParameterInterventionEvent
-
-from pyro.infer.autoguide import AutoNormal
-from pyro.infer import SVI, Trace_ELBO, Predictive
-from pyro.optim import Adam
 import pyro
+import torch
+from pyro.infer import SVI, Predictive, Trace_ELBO
+from pyro.infer.autoguide import AutoNormal
+from pyro.optim import Adam
+
+from pyciemss.PetriNetODE.base import (
+    MiraPetriNetODESystem,
+    PetriNetODESystem,
+    ScaledBetaNoisePetriNetODESystem,
+)
+from pyciemss.PetriNetODE.events import (
+    LoggingEvent,
+    ObservationEvent,
+    StartEvent,
+    StaticParameterInterventionEvent,
+)
+
 
 class TestODE(unittest.TestCase):
-    '''Tests for the ODE module.'''
+    """Tests for the ODE module."""
 
     # Setup for the tests
     def setUp(self):
@@ -27,7 +36,7 @@ class TestODE(unittest.TestCase):
         self.model = None
 
     def test_ODE_base_class(self):
-        '''Test the ODE base class.'''
+        """Test the ODE base class."""
         # Assert that the constructor requires var_order
         with self.assertRaises(NotImplementedError):
             model = PetriNetODESystem()
@@ -35,7 +44,7 @@ class TestODE(unittest.TestCase):
         # TODO: add more tests here as handwritten implementations of ODEs are added
 
     def test_from_mira(self):
-        '''Test the from_mira method.'''
+        """Test the from_mira method."""
         MIRA_PATH = "test/models/evaluation_examples/scenario_1/"
         filename = "scenario1_sir_mira.json"
         filename = os.path.join(MIRA_PATH, filename)
@@ -46,24 +55,40 @@ class TestODE(unittest.TestCase):
         self.assertIsNotNone(self.model)
 
     def test_load_remove_start_event(self):
-        '''Test the load_event method for StartEvent and the remove_start_event methods.'''
-        event = StartEvent(0.0, {"susceptible_population": 0.9, "infected_population": 0.1, "immune_population": 0.0})
+        """Test the load_event method for StartEvent and the remove_start_event methods."""
+        event = StartEvent(
+            0.0,
+            {
+                "susceptible_population": 0.9,
+                "infected_population": 0.1,
+                "immune_population": 0.0,
+            },
+        )
 
         self.model.load_event(event)
-        
+
         self.assertEqual(len(self.model._static_events), 1)
 
         self.assertEqual(self.model._static_events[0].time, torch.tensor(0.0))
-        self.assertEqual(self.model._static_events[0].initial_state["susceptible_population"], torch.tensor(0.9))
-        self.assertEqual(self.model._static_events[0].initial_state["infected_population"], torch.tensor(0.1))
-        self.assertEqual(self.model._static_events[0].initial_state["immune_population"], torch.tensor(0.0))
-        
+        self.assertEqual(
+            self.model._static_events[0].initial_state["susceptible_population"],
+            torch.tensor(0.9),
+        )
+        self.assertEqual(
+            self.model._static_events[0].initial_state["infected_population"],
+            torch.tensor(0.1),
+        )
+        self.assertEqual(
+            self.model._static_events[0].initial_state["immune_population"],
+            torch.tensor(0.0),
+        )
+
         self.model.remove_start_event()
-        
+
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_load_remove_logging_event(self):
-        '''Test the load_events method for LoggingEvent and the remove_logging_events methods.'''
+        """Test the load_events method for LoggingEvent and the remove_logging_events methods."""
         self.model.load_events([LoggingEvent(1.0), LoggingEvent(2.0)])
 
         self.assertEqual(len(self.model._static_events), 2)
@@ -75,21 +100,35 @@ class TestODE(unittest.TestCase):
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_load_remove_observation_events(self):
-        '''Test the load_observation_events and the remove_observation_events methods.'''
-        observation1 = ObservationEvent(0.01, {"susceptible_population": 0.9, "infected_population": 0.1})
+        """Test the load_observation_events and the remove_observation_events methods."""
+        observation1 = ObservationEvent(
+            0.01, {"susceptible_population": 0.9, "infected_population": 0.1}
+        )
         observation2 = ObservationEvent(1.0, {"susceptible_population": 0.8})
 
         self.model.load_events([observation1, observation2])
-        
+
         self.assertEqual(len(self.model._static_events), 2)
 
         self.assertEqual(self.model._static_events[0].time, torch.tensor(0.01))
         self.assertEqual(self.model._static_events[1].time, torch.tensor(1.0))
-        self.assertEqual(self.model._static_events[0].observation["susceptible_population"], torch.tensor(0.9))
-        self.assertEqual(self.model._static_events[0].observation["infected_population"], torch.tensor(0.1))
-        self.assertEqual(self.model._static_events[1].observation["susceptible_population"], torch.tensor(0.8))
+        self.assertEqual(
+            self.model._static_events[0].observation["susceptible_population"],
+            torch.tensor(0.9),
+        )
+        self.assertEqual(
+            self.model._static_events[0].observation["infected_population"],
+            torch.tensor(0.1),
+        )
+        self.assertEqual(
+            self.model._static_events[1].observation["susceptible_population"],
+            torch.tensor(0.8),
+        )
 
-        self.assertEqual(set(self.model._observation_var_names), {"susceptible_population", "infected_population"})
+        self.assertEqual(
+            set(self.model._observation_var_names),
+            {"susceptible_population", "infected_population"},
+        )
 
         self.model.remove_observation_events()
 
@@ -98,7 +137,7 @@ class TestODE(unittest.TestCase):
         self.assertEqual(self.model._observation_var_names, [])
 
     def test_load_remove_static_parameter_intervention_events(self):
-        '''Test the load_events method for StaticParameterIntervention and the remove_static_parameter_interventions methods.'''
+        """Test the load_events method for StaticParameterIntervention and the remove_static_parameter_interventions methods."""
         # Load some static parameter intervention events
         intervention1 = StaticParameterInterventionEvent(2.99, "beta", 0.0)
         intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
@@ -114,33 +153,57 @@ class TestODE(unittest.TestCase):
         self.assertEqual(self.model._static_events[1].value, torch.tensor(10.0))
 
         self.model.remove_static_parameter_intervention_events()
-        
+
         self.assertEqual(len(self.model._static_events), 0)
 
     def test_observation_indices_and_values(self):
-        '''Test the _setup_observation_indices_and_values method.'''
+        """Test the _setup_observation_indices_and_values method."""
 
-        observation1 = ObservationEvent(0.01, {"susceptible_population": 0.9, "infected_population": 0.1})
+        observation1 = ObservationEvent(
+            0.01, {"susceptible_population": 0.9, "infected_population": 0.1}
+        )
         observation2 = ObservationEvent(1.0, {"susceptible_population": 0.8})
 
         self.model.load_events([observation1, observation2])
 
-        self.assertListEqual(self.model._observation_var_names, ["susceptible_population", "infected_population"])
+        self.assertListEqual(
+            self.model._observation_var_names,
+            ["susceptible_population", "infected_population"],
+        )
 
         self.model._setup_observation_indices_and_values()
 
-        self.assertEqual(self.model._observation_indices["susceptible_population"], [0, 1])
+        self.assertEqual(
+            self.model._observation_indices["susceptible_population"], [0, 1]
+        )
         self.assertEqual(self.model._observation_indices["infected_population"], [0])
 
-        self.assertTrue(torch.equal(self.model._observation_values["susceptible_population"], torch.tensor([0.9, 0.8]))) 
-        self.assertTrue(torch.equal(self.model._observation_values["infected_population"], torch.tensor([0.1])))
+        self.assertTrue(
+            torch.equal(
+                self.model._observation_values["susceptible_population"],
+                torch.tensor([0.9, 0.8]),
+            )
+        )
+        self.assertTrue(
+            torch.equal(
+                self.model._observation_values["infected_population"],
+                torch.tensor([0.1]),
+            )
+        )
 
     def test_integration(self):
 
         model = self.model
 
         # Load the start event
-        start_event = StartEvent(0.0, {"susceptible_population": 0.9, "infected_population": 0.1, "immune_population": 0.0})
+        start_event = StartEvent(
+            0.0,
+            {
+                "susceptible_population": 0.9,
+                "infected_population": 0.1,
+                "immune_population": 0.0,
+            },
+        )
         model.load_event(start_event)
 
         # Load the logging events
@@ -151,21 +214,37 @@ class TestODE(unittest.TestCase):
         # Run the model without observations
         solution = model()
 
-        self.assertEqual(len(solution["infected_population"]), len(solution["immune_population"]))
-        self.assertEqual(len(solution["infected_population"]), len(solution["susceptible_population"]))
+        self.assertEqual(
+            len(solution["infected_population"]), len(solution["immune_population"])
+        )
+        self.assertEqual(
+            len(solution["infected_population"]),
+            len(solution["susceptible_population"]),
+        )
         self.assertEqual(len(solution["infected_population"]), len(tspan))
 
         # Susceptible individuals should decrease over time
-        self.assertTrue(torch.all(solution["susceptible_population"][:-1] > solution["susceptible_population"][1:]))
+        self.assertTrue(
+            torch.all(
+                solution["susceptible_population"][:-1]
+                > solution["susceptible_population"][1:]
+            )
+        )
 
         # Recovered individuals should increase over time
-        self.assertTrue(torch.all(solution["immune_population"][:-1] < solution["immune_population"][1:]))
+        self.assertTrue(
+            torch.all(
+                solution["immune_population"][:-1] < solution["immune_population"][1:]
+            )
+        )
 
         # Remove the logs
         model.remove_logging_events()
 
         # Load the observation events
-        observation1 = ObservationEvent(0.01, {"susceptible_population": 0.9, "infected_population": 0.1})
+        observation1 = ObservationEvent(
+            0.01, {"susceptible_population": 0.9, "infected_population": 0.1}
+        )
         observation2 = ObservationEvent(1.0, {"susceptible_population": 0.8})
 
         self.model.load_events([observation1, observation2])
@@ -173,14 +252,19 @@ class TestODE(unittest.TestCase):
         solution = model()
 
         # No logging events, so we don't return anything.
-        self.assertEqual(len(solution["infected_population"]), len(solution["immune_population"]))
-        self.assertEqual(len(solution["infected_population"]), len(solution["susceptible_population"]))
+        self.assertEqual(
+            len(solution["infected_population"]), len(solution["immune_population"])
+        )
+        self.assertEqual(
+            len(solution["infected_population"]),
+            len(solution["susceptible_population"]),
+        )
         self.assertEqual(len(solution["infected_population"]), 0)
 
         # Run inference
         guide = AutoNormal(model)
 
-        optim = Adam({'lr': 0.03})
+        optim = Adam({"lr": 0.03})
         loss_f = Trace_ELBO(num_particles=1)
 
         svi = SVI(model, guide, optim, loss=loss_f)
@@ -200,7 +284,7 @@ class TestODE(unittest.TestCase):
         # Check that the parameters have been updated
         for (i, p) in enumerate(guide.parameters()):
             self.assertNotEqual(p, old_params[i])
-        
+
         # Remove the observation events and add logging events.
         model.remove_observation_events()
         model.load_events(logging_events)
@@ -210,21 +294,43 @@ class TestODE(unittest.TestCase):
         intervention2 = StaticParameterInterventionEvent(4.11, "beta", 10.0)
         model.load_events([intervention1, intervention2])
 
-        # Sample from the posterior predictive distribution  
+        # Sample from the posterior predictive distribution
         predictions = Predictive(model, guide=guide, num_samples=2)()
 
-        self.assertEqual(predictions['infected_population_sol'].shape, predictions['immune_population_sol'].shape)
-        self.assertEqual(predictions['infected_population_sol'].shape, predictions['susceptible_population_sol'].shape)
-        self.assertEqual(predictions['infected_population_sol'].shape, torch.Size([2, 9]))
+        self.assertEqual(
+            predictions["infected_population_sol"].shape,
+            predictions["immune_population_sol"].shape,
+        )
+        self.assertEqual(
+            predictions["infected_population_sol"].shape,
+            predictions["susceptible_population_sol"].shape,
+        )
+        self.assertEqual(
+            predictions["infected_population_sol"].shape, torch.Size([2, 9])
+        )
 
         # Susceptible individuals shouldn't change between t=3 and t=4 because of the first intervention
-        self.assertTrue(torch.all(torch.isclose(predictions['susceptible_population_sol'][:, 2], predictions['susceptible_population_sol'][:, 3])))
+        self.assertTrue(
+            torch.all(
+                torch.isclose(
+                    predictions["susceptible_population_sol"][:, 2],
+                    predictions["susceptible_population_sol"][:, 3],
+                )
+            )
+        )
 
         # Recovered individuals should increase between t=3 and t=4
-        self.assertTrue(torch.all(predictions['immune_population_sol'][:, 2] < predictions['immune_population_sol'][:, 3]))
+        self.assertTrue(
+            torch.all(
+                predictions["immune_population_sol"][:, 2]
+                < predictions["immune_population_sol"][:, 3]
+            )
+        )
 
         # Susceptible individuals should decrease between t=4 and t=5 because of the second intervention
-        self.assertTrue(torch.all(predictions['susceptible_population_sol'][:, 3] > predictions['susceptible_population_sol'][:, 4]))
-
-
-    
+        self.assertTrue(
+            torch.all(
+                predictions["susceptible_population_sol"][:, 3]
+                > predictions["susceptible_population_sol"][:, 4]
+            )
+        )

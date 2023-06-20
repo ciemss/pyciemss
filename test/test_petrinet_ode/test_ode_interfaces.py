@@ -1,29 +1,23 @@
-import unittest
 import os
-
-from mira.examples.sir import sir_parameterized as sir
-
-import torch
-
-from pyciemss.PetriNetODE.interfaces import (
-    load_petri_model,
-    setup_model,
-    reset_model,
-    intervene,
-    sample,
-    calibrate,
-    optimize,
-)
-from pyciemss.risk.qoi import scenario2dec_nday_average
-
 import unittest
-import os
+
 import numpy as np
 import pandas as pd
+import torch
+from mira.examples.sir import sir_parameterized as sir
+
 from pyciemss.PetriNetODE.interfaces import (
-    load_and_sample_petri_model,
+    calibrate,
+    intervene,
     load_and_calibrate_and_sample_petri_model,
+    load_and_sample_petri_model,
+    load_petri_model,
+    optimize,
+    reset_model,
+    sample,
+    setup_model,
 )
+from pyciemss.risk.qoi import scenario2dec_nday_average
 
 
 class Test_Samples_Format(unittest.TestCase):

@@ -32,7 +32,6 @@
 #             return y
 
 
-
 #         # def model5():
 #         #     x = pyro.sample("x", pyro.distributions.Normal(0, 1))
 #         #     y = pyro.deterministic("y", x)
@@ -88,7 +87,7 @@
 #         # self.assertTrue(is_intervention_density_equal(model2, model3, intervention={"x": 0}, num_samples=num_samples))
 #         # self.assertTrue(is_intervention_density_equal(model3, model4, intervention={"x": 0}, num_samples=num_samples))
 #         # self.assertFalse(is_intervention_density_equal(model3, model4, intervention={"x": 1}, num_samples=num_samples))
-       
+
 #         #self.assertTrue(is_density_equal(model5, model6))
 
 #         #self.assertFalse(is_density_equal(do(model5, intervention={'y': 0 }),

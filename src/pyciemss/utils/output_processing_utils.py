@@ -1,9 +1,8 @@
-import pandas as pd
-import numpy as np
-
-import torch
-
 from typing import Dict
+
+import numpy as np
+import pandas as pd
+import torch
 
 
 def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:

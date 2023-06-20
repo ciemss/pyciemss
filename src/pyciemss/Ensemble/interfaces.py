@@ -1,29 +1,27 @@
+import copy
+from typing import Callable, Iterable, Optional, Tuple
+
 import pyro
 import torch
-
-from pyro.infer import Predictive
 from pyro import poutine
-
-from pyciemss.interfaces import (
-    setup_model,
-    reset_model,
-    intervene,
-    sample,
-    calibrate,
-    optimize,
-    DynamicalSystem,
-)
+from pyro.infer import Predictive
 
 from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
-
-from typing import Iterable, Optional, Tuple, Callable
-import copy
+from pyciemss.interfaces import (
+    DynamicalSystem,
+    calibrate,
+    intervene,
+    optimize,
+    reset_model,
+    sample,
+    setup_model,
+)
 
 # TODO: probably refactor this out later.
 from pyciemss.PetriNetODE.events import (
-    StartEvent,
-    ObservationEvent,
     LoggingEvent,
+    ObservationEvent,
+    StartEvent,
     StaticParameterInterventionEvent,
 )
 
