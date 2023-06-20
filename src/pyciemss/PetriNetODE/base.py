@@ -415,7 +415,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
             if len(transition.control) > 0:
-                flux = flux * functools.reduce([states[k] for k in transition.control]) / population_size
+                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control]) / population_size
 
             for c in transition.consumed:
                 derivs[c] -= flux
