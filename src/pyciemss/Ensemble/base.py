@@ -26,9 +26,10 @@ class EnsembleSystem(DynamicalSystem):
         
         assert(len(self.models) == len(self.dirichlet_alpha) == len(self.solution_mappings))
 
-        # Check that all models are of the same class.
+        # Check that all models are of the same class. This is unnecessary.
         model_types = set([model.__class__ for model in self.models])
-        assert(len(model_types) == 1)
+        assert all([isinstance(model, DynamicalSystem) for model in self.models]
+                   ), f'All models in the ensemble must be of the same class. Instead, got {model_types}.'
 
         #TODO: Check that all of the solution mappings map to the same set of variables.
         super().__init__()
@@ -126,3 +127,4 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
 
     def __rep__(self) -> str:
         return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}'
+
