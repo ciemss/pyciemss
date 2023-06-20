@@ -110,10 +110,6 @@
         "type": "area",
         "from": {"data": "trajectory_split"},
         "encode": {
-          "enter": {
-            "fill": {"value": "#939597"},
-            "stroke": {"value": "#652c90"}
-          },
           "update": {
             "x": {"scale": "xscale", "field": "time"},
             "y": {"scale": "yscale", "field": "upper"},
