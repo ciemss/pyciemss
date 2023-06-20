@@ -1,21 +1,9 @@
 import functools
-from typing import Optional, TypeVar
+from typing import Generic, Optional, TypeVar
 
 import pyro
 
-# Declare types
-# Note: this doesn't really do anything. More of a placeholder for how derived classes should be declared.
-Data = TypeVar("Data")
-Intervention = TypeVar("Intervention")
-InferredParameters = TypeVar("InferredParameters")
-State = TypeVar("State")
-Simulation = TypeVar("Simulation")
-Variable = TypeVar("Variable")
-ObjectiveFunction = TypeVar("ObjectiveFunction")
-Constraints = TypeVar("Constraints")
-OptimizationAlgorithm = TypeVar("OptimizationAlgorithm")
-OptimizationResult = TypeVar("OptimizationResult")
-Solution = TypeVar("Solution")
+T = TypeVar("T")
 
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
@@ -37,16 +25,16 @@ class DynamicalSystem(pyro.nn.PyroModule):
     def param_prior(self):
         raise NotImplementedError
 
-    def get_solution(self, *args, **kwargs) -> Solution:
+    def get_solution(self, *args, **kwargs):
         raise NotImplementedError
 
-    def add_observation_likelihoods(self, solution: Solution):
+    def add_observation_likelihoods(self, solution: T):
         raise NotImplementedError
 
-    def log_solution(self, solution: Solution) -> Solution:
+    def log_solution(self, solution: T) -> T:
         raise NotImplementedError
 
-    def forward(self, *args, **kwargs) -> Solution:
+    def forward(self, *args, **kwargs):
         """
         Joint distribution over model parameters, trajectories, and noisy observations.
         """
@@ -86,9 +74,7 @@ def reset_model(model: DynamicalSystem, *args, **kwargs) -> DynamicalSystem:
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def intervene(
-    model: DynamicalSystem, intervention: Intervention, *args, **kwargs
-) -> DynamicalSystem:
+def intervene(model: DynamicalSystem, intervention, *args, **kwargs) -> DynamicalSystem:
     """
     `intervene(model, intervention)` returns a new model where the intervention has been applied.
     """
@@ -96,9 +82,7 @@ def intervene(
 
 
 @functools.singledispatch
-def assert_observations_valid(
-    model: DynamicalSystem, data: Data, *args, **kwargs
-) -> None:
+def assert_observations_valid(model: DynamicalSystem, data, *args, **kwargs) -> None:
     """
     Check that the observations are valid for the given model.
     """
@@ -107,9 +91,7 @@ def assert_observations_valid(
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
-def calibrate(
-    model: DynamicalSystem, data: Data, *args, **kwargs
-) -> InferredParameters:
+def calibrate(model: DynamicalSystem, data, *args, **kwargs):
     """
     Infer parameters for a DynamicalSystem model conditional on data. This is typically done using a variational approximation.
     """
@@ -119,11 +101,8 @@ def calibrate(
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
 @functools.singledispatch
 def sample(
-    model: DynamicalSystem,
-    inferred_parameters: Optional[InferredParameters] = None,
-    *args,
-    **kwargs
-) -> Simulation:
+    model: DynamicalSystem, inferred_parameters: Optional[T] = None, *args, **kwargs
+):
     """
     Sample trajectories from a given `model`, conditional on specified `inferred_parameters`. If `inferred_parameters` is not given, this will sample from the prior distribution.
     """
@@ -134,12 +113,12 @@ def sample(
 @functools.singledispatch
 def optimize(
     model: DynamicalSystem,
-    objective_function: ObjectiveFunction,
-    constraints: Constraints,
-    optimization_algorithm: OptimizationAlgorithm,
+    objective_function,
+    constraints,
+    optimization_algorithm,
     *args,
     **kwargs
-) -> OptimizationResult:
+):
     """
     Optimize the objective function subject to the constraints.
     """

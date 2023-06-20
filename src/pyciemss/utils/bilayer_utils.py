@@ -1,133 +1,133 @@
-import json
-import re
-from copy import deepcopy
-from itertools import groupby
+# import json
+# import re
+# from copy import deepcopy
+# from itertools import groupby
 
-import networkx as nx
-import petri_utils
+# import networkx as nx
+# import petri_utils
 
-# Look at algebriac julia...
+# # Look at algebriac julia...
 
-__all__ = ["as_petri", "draw", "load"]
-
-
-def as_petri(G):
-    """Converts a bilayer network to a petrinet representation."""
-
-    def root_id(id):
-        return id[:-1]
-
-    G2 = nx.MultiDiGraph()
-    transitions = [n for n, d in bilayerG.nodes(data=True) if d["layer"] == "mediator"]
-
-    states = [
-        *set(
-            [n for n, d in bilayerG.nodes(data=True) if d["layer"] == "input"]
-            + [
-                root_id(n)
-                for n, d in bilayerG.nodes(data=True)
-                if d["layer"] == "output"
-            ]
-        )
-    ]
-
-    inputs = [
-        {"is": states.index(a) + 1, "it": transitions.index(b) + 1}
-        for a, b, d in bilayerG.edges(data=True)
-        if d["type"] == "input"
-    ]
-
-    outputs = [
-        {"ot": transitions.index(a) + 1, "os": states.index(root_id(b)) + 1}
-        for a, b, d in bilayerG.edges(data=True)
-        if d["type"] == "outcome"
-    ]
-
-    transitions = [{"tname": n} for n in transitions]
-    states = [{"sname": s} for s in states]
-
-    pG = petri_utils.load({"S": states, "T": transitions, "I": inputs, "O": outputs})
-
-    return pG
+# __all__ = ["as_petri", "draw", "load"]
 
 
-def draw(G, subset_key="layer", ax=None):
-    pos = nx.multipartite_layout(G, subset_key=subset_key)
+# def as_petri(G):
+#     """Converts a bilayer network to a petrinet representation."""
 
-    edge_cmap = {
-        "input": "darkred",
-        "recursive": "darkred",
-        "outcome": "CornflowerBlue",
-    }
+#     def root_id(id):
+#         return id[:-1]
 
-    edge_colors = [edge_cmap[t] for t in nx.get_edge_attributes(G, "type").values()]
-    nx.draw_networkx_edges(G, pos=pos, ax=ax, edge_color=edge_colors)
+#     G2 = nx.MultiDiGraph()
+#     transitions = [n for n, d in bilayerG.nodes(data=True) if d["layer"] == "mediator"]
 
-    node_cmap = {"input": "slategray", "output": "green", "mediator": "mediumorchid"}
+#     states = [
+#         *set(
+#             [n for n, d in bilayerG.nodes(data=True) if d["layer"] == "input"]
+#             + [
+#                 root_id(n)
+#                 for n, d in bilayerG.nodes(data=True)
+#                 if d["layer"] == "output"
+#             ]
+#         )
+#     ]
 
-    node_colors = [node_cmap[n] for n in nx.get_node_attributes(G, "layer").values()]
+#     inputs = [
+#         {"is": states.index(a) + 1, "it": transitions.index(b) + 1}
+#         for a, b, d in bilayerG.edges(data=True)
+#         if d["type"] == "input"
+#     ]
 
-    nx.draw_networkx_nodes(G, pos=pos, ax=ax, node_color=node_colors)
+#     outputs = [
+#         {"ot": transitions.index(a) + 1, "os": states.index(root_id(b)) + 1}
+#         for a, b, d in bilayerG.edges(data=True)
+#         if d["type"] == "outcome"
+#     ]
 
-    nx.draw_networkx_labels(G, pos=pos, ax=ax)
+#     transitions = [{"tname": n} for n in transitions]
+#     states = [{"sname": s} for s in states]
+
+#     pG = petri_utils.load({"S": states, "T": transitions, "I": inputs, "O": outputs})
+
+#     return pG
 
 
-def load(bilayer_file):
-    """Loads a path-like object to networkx representation of a bilayer network."""
-    with open(bilayer_file) as f:
-        bilayer = json.load(f)
+# def draw(G, subset_key="layer", ax=None):
+#     pos = nx.multipartite_layout(G, subset_key=subset_key)
 
-    parameters = bilayer["parameters"]
+#     edge_cmap = {
+#         "input": "darkred",
+#         "recursive": "darkred",
+#         "outcome": "CornflowerBlue",
+#     }
 
-    def find_parameter_for(law):
-        for id in parameters:
-            law_parts = re.split("\+|\*", law)
-            if id in law_parts:
-                return id
+#     edge_colors = [edge_cmap[t] for t in nx.get_edge_attributes(G, "type").values()]
+#     nx.draw_networkx_edges(G, pos=pos, ax=ax, edge_color=edge_colors)
 
-    G = nx.DiGraph()
-    for template in bilayer["templates"]:
-        template = deepcopy(template)
-        subject = template.pop("subject")
-        implicit_outcome = deepcopy(subject)
-        outcome = template.pop("outcome")
-        implicit_subject = deepcopy(outcome)
+#     node_cmap = {"input": "slategray", "output": "green", "mediator": "mediumorchid"}
 
-        template["id"] = find_parameter_for(template["rate_law"])
-        template["layer"] = "mediator"
-        template = {**template, **parameters[template["id"]]}
+#     node_colors = [node_cmap[n] for n in nx.get_node_attributes(G, "layer").values()]
 
-        subject["id"] = subject["name"]
-        subject["layer"] = "input"
+#     nx.draw_networkx_nodes(G, pos=pos, ax=ax, node_color=node_colors)
 
-        implicit_outcome["id"] = f"{subject['name']}'"
-        implicit_outcome["layer"] = "output"
+#     nx.draw_networkx_labels(G, pos=pos, ax=ax)
 
-        outcome["id"] = f"{outcome['name']}'"
-        outcome["layer"] = "output"
 
-        implicit_subject["id"] = implicit_subject["name"]
-        implicit_subject["layer"] = "input"
+# def load(bilayer_file):
+#     """Loads a path-like object to networkx representation of a bilayer network."""
+#     with open(bilayer_file) as f:
+#         bilayer = json.load(f)
 
-        G.add_node(subject["id"], **subject)
-        G.add_node(implicit_outcome["id"], **implicit_outcome)
-        G.add_node(outcome["id"], **outcome)
-        G.add_node(implicit_subject["id"], **implicit_subject)
+#     parameters = bilayer["parameters"]
 
-        if "controller" in template:
-            controller = template.pop("controller")
-            controller["id"] = controller["name"]
-            controller["layer"] = "input"
-            G.add_node(controller["id"], **controller)
+#     def find_parameter_for(law):
+#         for id in parameters:
+#             law_parts = re.split("\+|\*", law)
+#             if id in law_parts:
+#                 return id
 
-        G.add_node(template["id"], **template)
+#     G = nx.DiGraph()
+#     for template in bilayer["templates"]:
+#         template = deepcopy(template)
+#         subject = template.pop("subject")
+#         implicit_outcome = deepcopy(subject)
+#         outcome = template.pop("outcome")
+#         implicit_subject = deepcopy(outcome)
 
-        G.add_edge(subject["id"], template["id"], type="input")
-        G.add_edge(template["id"], implicit_outcome["id"], type="recursive")
-        G.add_edge(template["id"], outcome["id"], type="outcome")
+#         template["id"] = find_parameter_for(template["rate_law"])
+#         template["layer"] = "mediator"
+#         template = {**template, **parameters[template["id"]]}
 
-        if controller is not None:
-            G.add_node(controller["id"], **controller)
-            G.add_edge(controller["id"], template["id"], type="input")
+#         subject["id"] = subject["name"]
+#         subject["layer"] = "input"
 
-    return G
+#         implicit_outcome["id"] = f"{subject['name']}'"
+#         implicit_outcome["layer"] = "output"
+
+#         outcome["id"] = f"{outcome['name']}'"
+#         outcome["layer"] = "output"
+
+#         implicit_subject["id"] = implicit_subject["name"]
+#         implicit_subject["layer"] = "input"
+
+#         G.add_node(subject["id"], **subject)
+#         G.add_node(implicit_outcome["id"], **implicit_outcome)
+#         G.add_node(outcome["id"], **outcome)
+#         G.add_node(implicit_subject["id"], **implicit_subject)
+
+#         if "controller" in template:
+#             controller = template.pop("controller")
+#             controller["id"] = controller["name"]
+#             controller["layer"] = "input"
+#             G.add_node(controller["id"], **controller)
+
+#         G.add_node(template["id"], **template)
+
+#         G.add_edge(subject["id"], template["id"], type="input")
+#         G.add_edge(template["id"], implicit_outcome["id"], type="recursive")
+#         G.add_edge(template["id"], outcome["id"], type="outcome")
+
+#         if controller is not None:
+#             G.add_node(controller["id"], **controller)
+#             G.add_edge(controller["id"], template["id"], type="input")
+
+#     return G
