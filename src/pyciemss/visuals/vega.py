@@ -112,7 +112,10 @@ def trajectories(observations,
     dataset = [*chain.from_iterable(d.iloc[:limit].to_dict(orient="records") for d in dfs)]
 
     schema = _trajectory_schema()
-    schema["data"][0] = {"name": "table", "values": dataset}
+    schema["data"] = replace_named_with(
+                        schema["data"], 
+                        "table", ["values"],
+                        dataset)
     
     return schema
 
@@ -190,11 +193,21 @@ def histogram_multi(
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]
 
-    # TODO: This index-based setting seems fragine beyond belief!  I would like to do it as
-    # 'search this dict-of-dicts and replace the innder-dict that has name-key Y'
-    schema["data"][0] = {"name": "binned", "values": desc}
-    schema["data"][1] = {"name": "xref", "values": [{"value": v} for v in xrefs]}
-    schema["data"][2] = {"name": "yref", "values": [{"count": v} for v in yrefs]}
+    # TODO: This index-based setting seems fragine beyond belief! Update to use 'replace_named_with'
+    schema["data"] = replace_named_with(
+                        schema["data"], 
+                        "binned", ["values"],
+                        desc)
+    
+    schema["data"] = replace_named_with(
+                        schema["data"], 
+                        "xref", ["values"],
+                        [{"value": v} for v in xrefs])
+    
+    schema["data"] = replace_named_with(
+                        schema["data"], 
+                        "yref", ["values"],
+                        [{"count": v} for v in yrefs])
 
     if return_bins:
         return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
@@ -235,3 +248,41 @@ def resize(schema: Dict[str, Any], *, w: int = None, h: int = None):
         schema["width"] = w
 
     return schema
+
+
+def replace_named_with(ls: List,
+                       name: str,
+                       path: List[Any],
+                       new_value: Any) -> List:
+    """Rebuilds the element with the given 'name' entry.
+    
+    An element is "named" if it has a key named "name".
+    Only replaces the FIRST item so named.
+    
+    name -- Name to look for
+    path -- Steps to the thing to actually replace
+    new_value -- Value to place at end of path
+    Path is a list of steps to take into the named entry.
+    
+    """
+    def _maybe_replace(e, done_replacing):
+        if done_replacing[0]:
+            return e
+        
+        if "name" in e and e["name"] == name:
+            e = deepcopy(e)    
+            part = e
+            for step in path[:-1]:
+                part = part[step]
+            part[path[-1]] = new_value
+            done_replacing[0] = True
+        
+        return e
+
+    done_replacing = [False]    
+    updated = [_maybe_replace(e, done_replacing) for e in ls]    
+    
+    if not done_replacing[0]:
+        raise ValueError(f"Attempted to replace, but {name=} not found.")
+    
+    return updated
