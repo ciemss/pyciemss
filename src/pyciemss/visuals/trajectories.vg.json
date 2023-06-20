@@ -1,0 +1,174 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 500,
+  "height": 300,
+
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "linear",
+      "range": "width",
+      "zero": false,
+      "domain": {"data": "table", "field": "time"}
+    },
+    {
+      "name": "yscale",
+      "type": "linear",
+      "range": "height",
+      "nice": true,
+      "zero": true,
+      "domain": {"data": "table", "field": "upper"}
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "range": "category",
+      "domain": {"data": "table", "field": "trajectory"}
+    }
+  ],
+
+  "axes": [
+    {"orient": "bottom", "scale": "xscale", "zindex": 1},
+    {"orient": "left", "scale": "yscale", "zindex": 1}
+  ],
+
+  "signals": [
+    {
+      "name": "clear", "value": true,
+      "on": [
+        {
+          "events": "mouseup[!event.item]",
+          "update": "true",
+          "force": true
+        }
+      ]
+    },
+    {
+      "name": "shift", "value": false,
+      "on": [
+        {
+          "events": "@legendSymbol:click, @legendLabel:click",
+          "update": "event.shiftKey",
+          "force":  true
+        }
+      ]
+    },
+    {
+      "name": "clicked", "value": null,
+      "on": [
+        {
+          "events": "@legendSymbol:click, @legendLabel:click",
+          "update": "{value: datum.value}",
+          "force":  true
+        }
+      ]
+    }
+  ],
+
+  "legends": [
+    {
+      "stroke": "color",
+      "encode": {
+        "symbols": {
+          "name": "legendSymbol",
+          "interactive": true,
+          "update": {
+            "fill": {"value": "transparent"},
+            "strokeWidth": {"value": 2},
+            "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 0.7},
+              {"value": 0.15}
+            ],
+            "size": {"value": 64}
+          }
+        },
+        "labels": {
+          "name": "legendLabel",
+          "interactive": true,
+          "update": {
+            "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 1},
+              {"value": 0.25}
+            ]
+          }
+        }
+      }
+    }
+  ],  
+
+  "marks": [
+    {"type": "group",
+     "from": {
+      "facet": {
+          "name": "trajectory_split",
+          "data": "table",
+          "groupby": "trajectory"
+      }
+     },
+     "marks": [
+      {
+        "type": "area",
+        "from": {"data": "trajectory_split"},
+        "encode": {
+          "enter": {
+            "fill": {"value": "#939597"},
+            "stroke": {"value": "#652c90"}
+          },
+          "update": {
+            "x": {"scale": "xscale", "field": "time"},
+            "y": {"scale": "yscale", "field": "upper"},
+            "y2": {"scale": "yscale", "field": "lower"},
+            "interpolate": {"value": "linear"},
+            
+            "fillOpacity": {"value": 0.5},
+            "strokeOpacity": {"value": 0.75},
+            "strokeWidth": {"value": 2},
+
+            "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+               "value": 0.7 },
+              {"value": 0.15}
+            ],
+
+            "fill": {"scale": "color", "field": "trajectory"},
+            "stroke": {"scale": "color", "field": "trajectory"}
+          },
+          "hover": {
+            "opacity": {"value": 0.5}
+          }
+        }
+      }
+     ]
+    }
+  ],
+
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {"time": 1, "upper": 10, "lower": 10, "trajectory": "a"}, 
+        {"time": 2, "upper": 20, "lower": 25, "trajectory": "a"},
+        {"time": 3, "upper": 30, "lower": 40, "trajectory": "a"},
+        {"time": 4, "upper": 20, "lower": 50, "trajectory": "a"},
+        {"time": 5, "upper": 10, "lower": 20, "trajectory": "a"}, 
+        {"time": 6, "upper": 0, "lower": 10, "trajectory": "a"},
+
+        {"time": 1, "upper": -30, "lower": -20, "trajectory": "b"}, 
+        {"time": 2, "upper": -40, "lower": -10, "trajectory": "b"},
+        {"time": 3, "upper": -20, "lower": 0, "trajectory": "b"},
+        {"time": 4, "upper": 0, "lower": 10, "trajectory": "b"},
+        {"time": 5, "upper": 10, "lower": 20, "trajectory": "b"}, 
+        {"time": 6, "upper": 30, "lower": 40, "trajectory": "b"}
+      ]
+    },
+    {
+      "name": "selected",
+      "on": [
+        {"trigger": "clear", "remove": true},
+        {"trigger": "!shift", "remove": true},
+        {"trigger": "!shift && clicked", "insert": "clicked"},
+        {"trigger": "shift && clicked", "toggle": "clicked"}
+      ]
+    }
+  ]
+}

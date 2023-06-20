@@ -5,14 +5,131 @@ from copy import deepcopy
 import IPython.display
 import pandas as pd
 import numpy as np
+import torch
 
 import pkgutil
 import json
+
+import re
+
+from itertools import tee, filterfalse, chain
 
 
 def _histogram_multi_schema():
     return json.loads(pkgutil.get_data(__name__, "histogram_static_bins_multi.vg.json"))
 
+def _trajectory_schema():
+    return json.loads(pkgutil.get_data(__name__, "trajectories.vg.json"))
+
+# General Utilities ---------------
+
+def partition(pred, iterable):
+    t1, t2 = tee(iterable)
+    return filterfalse(pred, t1), filter(pred, t2)
+
+
+def tensor_dump(tensors, path):
+    reformatted = {k: v.detach().numpy().tolist() 
+               for k,v in tensors.items()}
+
+    with open(path, "w") as f:
+        json.dump(reformatted, f)
+
+
+def tensor_load(path):
+    with open(path) as f:
+        data = json.load(f)
+        
+    data = {k: torch.from_numpy(np.array(v)) 
+            for k, v in data.items()}
+    
+    return data
+
+
+# Trajectory Visualizations ------------------
+
+def _quantiles(values, qlow, qhigh):
+    """Compute quantiles from torch tensors along the 0 dimension
+    """
+    low = torch.quantile(values, qlow, dim=0).detach().numpy()
+    high = torch.quantile(values, qhigh, dim=0).detach().numpy()
+    return {"lower": low, "upper": high}
+
+
+def trajectories(observations, 
+                      tspan, 
+                      *,
+                      obs_keys = all,
+                      qlow = 0.05,
+                      qhigh = 0.95,
+                      limit=None):
+    """_summary_
+
+    TODO: Interpolation method probably needs attention...
+
+    Args:
+        observations (_type_): _description_
+        tspan (_type_): _description_
+        obs_keys (any, optional): Subset the 'observations' based on keys/values.
+           - Default is the 'all' function, and it keeps all keys
+           - If a string is present, it is treated as a regex and matched against the key
+           - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
+           - Otherwise, assumed tob e a list-like of keys to keep
+    """
+    if obs_keys == all:
+        keep = observations.keys()
+    elif isinstance(obs_keys , str):
+        keep = [k for k in observations.keys()
+                if re.match(obs_keys , k)]
+    elif callable(obs_keys):
+        keep = [k for k, v in observations.items()
+                if obs_keys(k,v)]
+    else:
+        keep = obs_keys 
+        
+    observations = {k: v for k,v in observations.items() 
+                    if k in keep}
+    
+    exact = {k: v for k,v in observations.items() 
+              if len(v.shape) == 1}            
+
+    ranges = {k: _quantiles(v, qlow, qhigh) 
+              for k,v in observations.items()
+              if k not in exact}
+    
+    for title, values in exact.items():
+        print("NOT IMPLEMENTED: Single trajectory")
+        #Data poitns were handled by partial string-matching keys from data and observations before...
+        #  That implicit mechanism is fraught.  An explicit mapping or cross-matching function might be 
+        #  more useful over time
+        
+        break
+    
+    
+    dfs = [pd.DataFrame.from_dict(ranges[k]).assign(trajectory=k, time=tspan)
+            for k in ranges.keys()]
+
+    dataset = [*chain.from_iterable(d.iloc[:limit].to_dict(orient="records") for d in dfs)]
+
+    schema = _trajectory_schema()
+    schema["data"][0] = {"name": "table", "values": dataset}
+    
+    return schema
+
+
+## Things to check:
+# _trajectories(prior_samples, tspan) == [*prior_samples.keys()]
+# _trajectories(prior_samples, tspan, obs_keys = all) == [*prior_samples.keys()]
+# _trajectories(prior_samples, tspan, obs_keys = ".*_sol") == ['Rabbits_sol', 'Wolves_sol']
+
+## Called like:
+# plot = vega.trajectories(prior_samples, tspan, obs_keys=".*_sol")
+# with open("trajectories.json", "w") as f:
+#     json.dump(plot, f, indent=3)
+# vega.ipy_display(plot)
+
+
+## Histogram visualizations ------------------
 
 def sturges_bin(data):
     """Determine number of bin susing sturge's rule.
@@ -97,6 +214,10 @@ def ipy_display(spec: Dict[str, Any], *, lite=False):
 
     return IPython.display.display(bundle, raw=True)
 
+
+def save_schema(schema: Dict[str, Any], path: str):
+    with open(path, "w") as f:
+        json.dump(schema, f, indent=3)
 
 def resize(schema: Dict[str, Any], *, w: int = None, h: int = None):
     """Utility for changing the size of a schema.
