@@ -1,68 +1,73 @@
+import os
 from typing import List, Dict, Any, Callable
-from numbers import Number
+from collections.abc import Iterable
+from numbers import Integral, Number
 
 from copy import deepcopy
 import IPython.display
 import pandas as pd
 import numpy as np
 import torch
-
 import pkgutil
 import json
-
 import re
 
 from itertools import tee, filterfalse, chain
 
+VegaSchema = Dict[str, Any]
 
-def _histogram_multi_schema():
+
+def _histogram_multi_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "histogram_static_bins_multi.vg.json"))
 
-def _trajectory_schema():
+
+def _trajectory_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "trajectories.vg.json"))
 
-# General Utilities ---------------
 
-def partition(pred, iterable):
+# General Utilities ---------------
+def partition(
+    pred: Callable[[Any], bool], iterable: Iterable[Any]
+) -> tuple[List[Any], List[Any]]:
     t1, t2 = tee(iterable)
     return filterfalse(pred, t1), filter(pred, t2)
 
 
-def tensor_dump(tensors, path):
-    reformatted = {k: v.detach().numpy().tolist() 
-               for k,v in tensors.items()}
+def tensor_dump(tensors: Any, path: os.PathLike) -> None:
+    reformatted = {k: v.detach().numpy().tolist() for k, v in tensors.items()}
 
     with open(path, "w") as f:
         json.dump(reformatted, f)
 
 
-def tensor_load(path):
+def tensor_load(path: os.PathLike) -> Dict[Any, Any]:
     with open(path) as f:
         data = json.load(f)
-        
-    data = {k: torch.from_numpy(np.array(v)) 
-            for k, v in data.items()}
-    
+
+    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
+
     return data
 
 
 # Trajectory Visualizations ------------------
 
+
 def _quantiles(values, qlow, qhigh):
-    """Compute quantiles from torch tensors along the 0 dimension
-    """
+    """Compute quantiles from torch tensors along the 0 dimension"""
     low = torch.quantile(values, qlow, dim=0).detach().numpy()
     high = torch.quantile(values, qhigh, dim=0).detach().numpy()
     return {"lower": low, "upper": high}
 
 
-def trajectories(observations, 
-                      tspan, 
-                      *,
-                      obs_keys = all,
-                      qlow = 0.05,
-                      qhigh = 0.95,
-                      limit=None):
+def trajectories(
+    observations,
+    tspan,
+    *,
+    obs_keys: (str | Callable | list) = all,
+    qlow: float = 0.05,
+    qhigh: float = 0.95,
+    limit: (None | Integral) = None,
+) -> VegaSchema:
     """_summary_
 
     TODO: Interpolation method probably needs attention...
@@ -78,62 +83,57 @@ def trajectories(observations,
     """
     if obs_keys == all:
         keep = observations.keys()
-    elif isinstance(obs_keys , str):
-        keep = [k for k in observations.keys()
-                if re.match(obs_keys , k)]
+    elif isinstance(obs_keys, str):
+        keep = [k for k in observations.keys() if re.match(obs_keys, k)]
     elif callable(obs_keys):
-        keep = [k for k, v in observations.items()
-                if obs_keys(k,v)]
+        keep = [k for k, v in observations.items() if obs_keys(k, v)]
     else:
-        keep = obs_keys 
-        
-    observations = {k: v for k,v in observations.items() 
-                    if k in keep}
-    
-    exact = {k: v for k,v in observations.items() 
-              if len(v.shape) == 1}            
+        keep = obs_keys
 
-    ranges = {k: _quantiles(v, qlow, qhigh) 
-              for k,v in observations.items()
-              if k not in exact}
-    
+    observations = {k: v for k, v in observations.items() if k in keep}
+
+    exact = {k: v for k, v in observations.items() if len(v.shape) == 1}
+
+    ranges = {
+        k: _quantiles(v, qlow, qhigh) for k, v in observations.items() if k not in exact
+    }
+
     for title, values in exact.items():
         print("NOT IMPLEMENTED: Single trajectory")
-        #Data poitns were handled by partial string-matching keys from data and observations before...
-        #  That implicit mechanism is fraught.  An explicit mapping or cross-matching function might be 
+        # Data poitns were handled by partial string-matching keys from data and observations before...
+        #  That implicit mechanism is fraught.  An explicit mapping or cross-matching function might be
         #  more useful over time
-        
-        break
-    
-    
-    dfs = [pd.DataFrame.from_dict(ranges[k]).assign(trajectory=k, time=tspan)
-            for k in ranges.keys()]
 
-    dataset = [*chain.from_iterable(d.iloc[:limit].to_dict(orient="records") for d in dfs)]
+        break
+
+    dfs = [
+        pd.DataFrame.from_dict(ranges[k]).assign(trajectory=k, time=tspan)
+        for k in ranges.keys()
+    ]
+
+    dataset = [
+        *chain.from_iterable(d.iloc[:limit].to_dict(orient="records") for d in dfs)
+    ]
 
     schema = _trajectory_schema()
-    schema["data"] = replace_named_with(
-                        schema["data"], 
-                        "table", ["values"],
-                        dataset)
-    
+    schema["data"] = replace_named_with(schema["data"], "table", ["values"], dataset)
+
     return schema
 
 
-## Things to check:
+# Things to check:
 # _trajectories(prior_samples, tspan) == [*prior_samples.keys()]
 # _trajectories(prior_samples, tspan, obs_keys = all) == [*prior_samples.keys()]
 # _trajectories(prior_samples, tspan, obs_keys = ".*_sol") == ['Rabbits_sol', 'Wolves_sol']
 
-## Called like:
+# Called like:
 # plot = vega.trajectories(prior_samples, tspan, obs_keys=".*_sol")
 # with open("trajectories.json", "w") as f:
 #     json.dump(plot, f, indent=3)
 # vega.ipy_display(plot)
 
 
-## Histogram visualizations ------------------
-
+# Histogram visualizations ------------------
 def sturges_bin(data):
     """Determine number of bin susing sturge's rule.
     TODO: Consider Freedman-Diaconis (larger data sizes and spreads)
@@ -147,8 +147,8 @@ def histogram_multi(
     yrefs: List[Number] = [],
     bin_rule: Callable = sturges_bin,
     return_bins: bool = False,
-    **data
-):
+    **data,
+) -> VegaSchema:
     """
     Create a histogram with server-side binning.
 
@@ -194,20 +194,15 @@ def histogram_multi(
     desc = [item for sublist in hists.values() for item in sublist]
 
     # TODO: This index-based setting seems fragine beyond belief! Update to use 'replace_named_with'
+    schema["data"] = replace_named_with(schema["data"], "binned", ["values"], desc)
+
     schema["data"] = replace_named_with(
-                        schema["data"], 
-                        "binned", ["values"],
-                        desc)
-    
+        schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]
+    )
+
     schema["data"] = replace_named_with(
-                        schema["data"], 
-                        "xref", ["values"],
-                        [{"value": v} for v in xrefs])
-    
-    schema["data"] = replace_named_with(
-                        schema["data"], 
-                        "yref", ["values"],
-                        [{"count": v} for v in yrefs])
+        schema["data"], "yref", ["values"], [{"count": v} for v in yrefs]
+    )
 
     if return_bins:
         return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
@@ -232,7 +227,8 @@ def save_schema(schema: Dict[str, Any], path: str):
     with open(path, "w") as f:
         json.dump(schema, f, indent=3)
 
-def resize(schema: Dict[str, Any], *, w: int = None, h: int = None):
+
+def resize(schema: VegaSchema, *, w: int = None, h: int = None) -> VegaSchema:
     """Utility for changing the size of a schema.
     Always returns a copy of the original schema.
 
@@ -250,39 +246,37 @@ def resize(schema: Dict[str, Any], *, w: int = None, h: int = None):
     return schema
 
 
-def replace_named_with(ls: List,
-                       name: str,
-                       path: List[Any],
-                       new_value: Any) -> List:
+def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> List:
     """Rebuilds the element with the given 'name' entry.
-    
+
     An element is "named" if it has a key named "name".
     Only replaces the FIRST item so named.
-    
+
     name -- Name to look for
     path -- Steps to the thing to actually replace
     new_value -- Value to place at end of path
     Path is a list of steps to take into the named entry.
-    
+
     """
+
     def _maybe_replace(e, done_replacing):
         if done_replacing[0]:
             return e
-        
+
         if "name" in e and e["name"] == name:
-            e = deepcopy(e)    
+            e = deepcopy(e)
             part = e
             for step in path[:-1]:
                 part = part[step]
             part[path[-1]] = new_value
             done_replacing[0] = True
-        
+
         return e
 
-    done_replacing = [False]    
-    updated = [_maybe_replace(e, done_replacing) for e in ls]    
-    
+    done_replacing = [False]
+    updated = [_maybe_replace(e, done_replacing) for e in ls]
+
     if not done_replacing[0]:
         raise ValueError(f"Attempted to replace, but {name=} not found.")
-    
+
     return updated
