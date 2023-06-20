@@ -63,10 +63,11 @@ def trajectories(
     observations,
     tspan,
     *,
-    obs_keys: (str | Callable | list) = all,
+    subset: (str | Callable | list) = all,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: (None | Integral) = None,
+    relabel: (None | Dict[str, str]) = None,
 ) -> VegaSchema:
     """_summary_
 
@@ -75,22 +76,28 @@ def trajectories(
     Args:
         observations (_type_): _description_
         tspan (_type_): _description_
-        obs_keys (any, optional): Subset the 'observations' based on keys/values.
+        subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
            - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
            - Otherwise, assumed tob e a list-like of keys to keep
+        relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
+            after key subsetting.
+        limit --
     """
-    if obs_keys == all:
+    if subset == all:
         keep = observations.keys()
-    elif isinstance(obs_keys, str):
-        keep = [k for k in observations.keys() if re.match(obs_keys, k)]
-    elif callable(obs_keys):
-        keep = [k for k, v in observations.items() if obs_keys(k, v)]
+    elif isinstance(subset, str):
+        keep = [k for k in observations.keys() if re.match(subset, k)]
+    elif callable(subset):
+        keep = [k for k, v in observations.items() if subset(k, v)]
     else:
-        keep = obs_keys
+        keep = subset
 
     observations = {k: v for k, v in observations.items() if k in keep}
+
+    if relabel:
+        observations = {relabel.get(k, k): v for k, v in observations.items()}
 
     exact = {k: v for k, v in observations.items() if len(v.shape) == 1}
 
@@ -242,6 +249,26 @@ def resize(schema: VegaSchema, *, w: int = None, h: int = None) -> VegaSchema:
         schema["height"] = h
     if w is not None:
         schema["width"] = w
+
+    return schema
+
+
+def pad(schema: VegaSchema, qty: None | Number) -> VegaSchema:
+    """Add padding to a schema.
+
+    Args:
+        schema (VegaSchema): Schema to update
+        qty (None | Number): Value to set padding to
+         If None, removes padding if present
+
+    Returns:
+        VegaSchema: Schema with modified padding
+    """
+    schema = deepcopy(schema)
+    if qty is None and "padding" in schema:
+        del schema["padding"]
+    else:
+        schema["padding"] = qty
 
     return schema
 
