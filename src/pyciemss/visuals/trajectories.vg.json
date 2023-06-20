@@ -120,21 +120,27 @@
             "y2": {"scale": "yscale", "field": "lower"},
             "interpolate": {"value": "linear"},
             
-            "fillOpacity": {"value": 0.5},
-            "strokeOpacity": {"value": 0.75},
             "strokeWidth": {"value": 2},
 
-            "opacity": [
+            "fillOpacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
-               "value": 0.7 },
+               "value": 0.5 },
+              {"value": 0.15}
+            ],
+
+
+            "strokeOpacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+               "value": 0.75},
               {"value": 0.15}
             ],
 
             "fill": {"scale": "color", "field": "trajectory"},
             "stroke": {"scale": "color", "field": "trajectory"}
+
           },
           "hover": {
-            "opacity": {"value": 0.5}
+            "fillOpacity": {"value": 0.9}
           }
         }
       }
