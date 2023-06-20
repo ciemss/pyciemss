@@ -72,6 +72,7 @@ def trajectories(
     """_summary_
 
     TODO: Interpolation method probably needs attention...
+    TODO: Pass in a color mapping? (Use the keys for subsetting?)
 
     Args:
         observations (_type_): _description_
@@ -81,6 +82,7 @@ def trajectories(
            - If a string is present, it is treated as a regex and matched against the key
            - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
            - Otherwise, assumed tob e a list-like of keys to keep
+           If subset is specified, the color scale ordering follows the subset order.
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after key subsetting.
         limit --
@@ -99,31 +101,52 @@ def trajectories(
     if relabel:
         observations = {relabel.get(k, k): v for k, v in observations.items()}
 
-    exact = {k: v for k, v in observations.items() if len(v.shape) == 1}
+    tracks = {k: v for k, v in observations.items() if len(v.shape) == 1}
 
-    ranges = {
-        k: _quantiles(v, qlow, qhigh) for k, v in observations.items() if k not in exact
+    dists = {
+        k: _quantiles(v, qlow, qhigh)
+        for k, v in observations.items()
+        if k not in tracks
     }
 
-    for title, values in exact.items():
-        print("NOT IMPLEMENTED: Single trajectory")
-        # Data poitns were handled by partial string-matching keys from data and observations before...
-        #  That implicit mechanism is fraught.  An explicit mapping or cross-matching function might be
-        #  more useful over time
+    schema = _trajectory_schema()
+    if len(tracks) > 0:
+        # TODO: Would it be cleaner to just duplicate these tracks? Then the min/max for dists might work
+        tracks = (
+            pd.DataFrame(tracks)
+            .assign(time=tspan)
+            .iloc[:limit]
+            .melt(value_vars=tracks.keys(), id_vars="time")
+            .rename(columns={"variable": "trajectory", "value": "upper"})
+            .pipe(lambda df: df.assign(lower=df["upper"]))
+            .to_dict(orient="records")
+        )
+    else:
+        tracks = []
 
-        break
+    if len(dists) > 0:
+        distributions = [
+            pd.DataFrame.from_dict(dists[k]).assign(trajectory=k, time=tspan)
+            for k in dists.keys()
+        ]
 
-    dfs = [
-        pd.DataFrame.from_dict(ranges[k]).assign(trajectory=k, time=tspan)
-        for k in ranges.keys()
-    ]
+        distributions = [
+            *chain.from_iterable(
+                d.iloc[:limit].to_dict(orient="records") for d in distributions
+            )
+        ]
+    else:
+        distributions = []
 
-    dataset = [
-        *chain.from_iterable(d.iloc[:limit].to_dict(orient="records") for d in dfs)
-    ]
+    all_data = [*chain(tracks, distributions)]
 
     schema = _trajectory_schema()
-    schema["data"] = replace_named_with(schema["data"], "table", ["values"], dataset)
+    schema["data"] = replace_named_with(schema["data"], "table", ["values"], all_data)
+
+    if keep is not None:
+        schema["scales"] = replace_named_with(
+            schema["scales"], "color", ["domain"], [*observations.keys()]
+        )
 
     return schema
 
