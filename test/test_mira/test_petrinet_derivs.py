@@ -76,9 +76,9 @@ class TestPetrinetDerivatives(unittest.TestCase):
 
     def setup_SIDARTHE(self):
         """Set up the MIRA and ASKENET SIDARTHE models."""
-        sidarthe_mira = load_petri_model('test/models/evaluation_examples/scenario_2/scenario2_sidarthe_mira.json')
+        sidarthe_mira = load_petri_model('https://raw.githubusercontent.com/indralab/mira/main/notebooks/evaluation_2023.01/scenario1_sir_mira.json')
         askenet = AskeNetPetriNetModel(sidarthe_mira.G)
-        sidarthe_askenet = ScaledBetaNoisePetriNetODESystem.from_askenet(askenet.to_json())
+        sidarthe_askenet = load_petri_model(askenet.to_json())
         initial_state = {param: self.sidarthe_mira.initials[param].value for param in self.sidarthe_mira.initials.keys()}
         self.sidarthe_mira = setup_model(sidarthe_meta, start_time=0, start_state=initial_state)
         self.sidarthe_askenet = setup_model(sidarthe_askenet, start_time=0, start_state=initial_state)
