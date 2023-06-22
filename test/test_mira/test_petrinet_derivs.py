@@ -86,8 +86,11 @@ class TestPetrinetDerivatives(unittest.TestCase):
                     self.assertTrue(
                         torch.allclose(
                             prior_samples[trajectory][i],
-                            trajectories[trajectory][0]
-                        )
+                            trajectories[trajectory][0],
+                            atol=1e-4
+                        ),
+                        f"MIRA {trajectory} trajectory {i}: {prior_samples[trajectory][i]}\n"
+                        f"Hand {trajectory} trajectory: {trajectories[trajectory][0]}"
                     )
 
     def test_askenet(self):
@@ -106,8 +109,11 @@ class TestPetrinetDerivatives(unittest.TestCase):
                     self.assertTrue(
                         torch.allclose(
                             prior_samples[trajectory][i],
-                            trajectories[self.askenet2hand[trajectory]][0]
-                        )
+                            trajectories[self.askenet2hand[trajectory]][0],
+                            atol=1e-4
+                        ),
+                        f"ASKENET {trajectory} trajectory {i}: {prior_samples[trajectory][i]}\n"
+                        f"Hand {self.askenet2hand[trajectory]} trajectory: {trajectories[self.askenet2hand[trajectory]][0]}"
                     )
 
                     

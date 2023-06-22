@@ -33,7 +33,7 @@ class MiraRegNetODESystem(ScaledBetaNoisePetriNetODESystem):
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 
-        population_size = 1.0 #sum(states.values())
+        population_size = sum(states.values())
 
         for transition in self.G.transitions.values():
             flux = getattr(self, get_name(transition.rate)) * functools.reduce(

@@ -17,10 +17,9 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
-from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
-from mira.modeling.askenet.regnet import AskeNetRegNetModel
-import mira.sources.askenet.petrinet as askenet_petrinet
-import mira.sources.askenet.regnet as askenet_regnet
+from mira.sources.askenet import model_from_url, model_from_json_file
+import mira.sources.askenet.petrinet as petrinet
+import mira.sources.askenet.regnet as regnet
 from pyciemss.utils.distributions import ScaledBeta
 from mira.metamodel.ops import aggregate_parameters
 
@@ -326,19 +325,12 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @functools.singledispatchmethod
     @classmethod
     def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
-        return cls(model)
+        return cls.from_askenet(model)
 
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
     def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
-        model = cls.from_mira(mira.modeling.Model(model_template))
-
-        # Check if all parameter names are strings
-        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
-            return model
-        else:
-            new_template = aggregate_parameters(model_template)
-            return cls.from_mira(mira.modeling.Model(new_template))
+        return cls.from_askenet(model_template)
 
     @from_mira.register(dict)
     @classmethod
@@ -353,52 +345,59 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         with open(model_json_path, "r") as f:
             return cls.from_mira(json.load(f))
 
+    @functools.singledispatchmethod
+    @classmethod
+    def from_askenet(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
+        """Return a model from a MIRA model."""
+        return cls(model)
+
+
+    @from_askenet.register(mira.metamodel.TemplateModel)
+    @classmethod
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
+        """Return a model from a MIRA model template."""
+        model = cls.from_askenet(mira.modeling.Model(model_template))
+
+        # Check if all parameter names are strings
+        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
+            return model
+        else:
+            new_template = aggregate_parameters(model_template)
+            return cls.from_askenet(mira.modeling.Model(new_template))
+
+
+    @from_askenet.register(dict)
+    @classmethod
+    def _from_json(cls, model_json: dict):
+        """Return a model from an ASKEM Model Representation json."""
+        if "templates" in model_json:
+            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
+        elif 'petrinet' in model_json['schema']:
+            return petrinet.template_model_from_askenet_json(model_json)
+        elif 'regnet' in model_json['schema']:
+            return regnet.template_model_from_askenet_json(model_json)
+
+
     
-    @functools.singledispatchmethod
+    @from_askenet.register(str)
     @classmethod
-    def from_askenet_petrinet(cls, askenet_petrinet_model: AskeNetPetriNetModel) -> "MiraPetriNetODESystem":
-        """return a MiraPetriNetODESystem from an askenet petrinet model."""
-        return cls.from_mira(askenet_petrinet_model.model)
+    def _from_path(cls, model_json_path: str):
+        """Return a model from an ASKEM Model Representation path (either url or local file)."""
+        if "https://" in model_json_path:
+            return cls.from_askenet(model_from_url(model_json_path))
+        else:
+            if not os.path.exists(model_json_path):
+                raise ValueError(f"Model file not found: {model_json_path}")
+            return cls.from_askenet(model_from_json_file(model_json_path))
 
-    @from_askenet_petrinet.register(dict)
-    @classmethod
-    def _from_askenet_petrinet_json(cls, askenet_petrinet_json: dict) -> "MiraPetriNetODESystem":
-        """return a MiraPetriNetODESystem from an askenet petrinet json."""
-        return cls.from_mira(askenet_petrinet.template_model_from_askenet_json(askenet_petrinet_json))
+    def to_askenet_petrinet(self) -> dict:
+        """Return an ASKEM Petrinet Model Representation json."""
+        return AskeNetPetriNetModel(self.G).to_json()
 
-    @from_askenet_petrinet.register(str)
-    @classmethod
-    def _from_askent_petrinet_json_file(cls, askenet_petrinet_json_path: str) -> "MiraPetriNetODESystem":
-        """return a MiraPetriNetODESystem from an askenet petrinet json file."""
-        if not os.path.exists(askenet_petrinet_json_path):
-            raise ValueError(f"Model file not found: {askenet_petrinet_json_path}")
-        with open(askenet_petrinet_json_path, "r") as f:
-            return cls.from_askenet_petrinet(json.load(f))
-
-
-    @functools.singledispatchmethod
-    @classmethod
-    def from_askenet_regnet(cls, askenet_regnet_model: AskeNetRegNetModel) -> "MiraPetriNetODESystem":
-        """return a MiraRegnetNetODESystem from an askenet regnet model."""
-        return cls.from_mira(askenet_regnet_model.model)
-
-    @from_askenet_regnet.register(dict)
-    @classmethod
-    def _from_askenet_regnet_json(cls, askenet_regnet_json: dict) -> "MiraPetriNetODESystem":
-        """return a MiraRegnetNetODESystem from an askenet regnet json."""
-        return cls.from_mira(askenet_regnet.template_model_from_askenet_json(askenet_regnet_json))
-
-
-    @from_askenet_regnet.register(str)
-    @classmethod
-    def _from_askenet_regnet_json_file(cls, askenet_regnet_json_path: str):
-        """return a MiraRegnetNetODESystem from an askenet regnet json file."""
-        if not os.path.exists(askenet_regnet_json_path):
-            raise ValueError(f"Model file not found: {askenet_regnet_json_path}")
-        with open(askenet_regnet_json_path, "r") as f:
-            return cls.from_askenet_regnet(json.load(f))
-
-        
+    def to_askenet_regnet(self) -> dict:
+        """Return an ASKEM Regnet Model Representation json."""
+        return AskeNetRegNetModel(self.G).to_json()
+    
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
         return load(mira.modeling.petri.PetriNetModel(self.G).to_json())
@@ -414,8 +413,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             flux = getattr(self, get_name(transition.rate)) * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
+            n = len(transition.control)
             if len(transition.control) > 0:
-                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control]) / population_size
+                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control]) / population_size**n
 
             for c in transition.consumed:
                 derivs[c] -= flux
