@@ -9,7 +9,7 @@ from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene
 from pyciemss.utils import get_tspan
 
 
-class TestPetrinetDerivatives(unittest.TestCase):
+class TestRegnetDerivatives(unittest.TestCase):
     '''
     Test the MIRA model derivatives against Hand-coded model
     '''
