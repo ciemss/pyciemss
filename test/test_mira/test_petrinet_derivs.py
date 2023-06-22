@@ -1,8 +1,11 @@
 import unittest
 import torch
+import mira
 from mira.examples.sir import sir_parameterized as sir # MIRA model
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
 from pyciemss.interfaces import DynamicalSystem
 from pyciemss.utils import reparameterize
+from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
 from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene,
                                              sample, calibrate, optimize, load_petri_model)
@@ -18,6 +21,7 @@ class TestPetrinetDerivatives(unittest.TestCase):
         self.setUp_MIRA()
         self.setUp_Hand()
         self.setup_ASKENET()
+        self.setup_SIDARTHE()
         
     def setUp_MIRA(self):
         """Load the SIR mira model and initialize it."""
@@ -69,7 +73,16 @@ class TestPetrinetDerivatives(unittest.TestCase):
         initial_state = {self.hand2askenet[k]: v for k, v in self.initial_state.items()}
 
         self.ASKENET_model = setup_model(self.sir_askenet, start_time=0, start_state=initial_state)
-        
+
+    def setup_SIDARTHE(self):
+        """Set up the MIRA and ASKENET SIDARTHE models."""
+        sidarthe_mira = load_petri_model('test/models/evaluation_examples/scenario_2/scenario2_sidarthe_mira.json')
+        askenet = AskeNetPetriNetModel(sidarthe_mira.G)
+        sidarthe_askenet = ScaledBetaNoisePetriNetODESystem.from_askenet(askenet.to_json())
+        initial_state = {param: self.sidarthe_mira.initials[param].value for param in self.sidarthe_mira.initials.keys()}
+        self.sidarthe_mira = setup_model(sidarthe_meta, start_time=0, start_state=initial_state)
+        self.sidarthe_askenet = setup_model(sidarthe_askenet, start_time=0, start_state=initial_state)
+
     def test_derivs(self):
         """Sample from the MIRA object and set the parameters of the manual object to be the same."""
         nsamples = 5
@@ -116,5 +129,29 @@ class TestPetrinetDerivatives(unittest.TestCase):
                         f"Hand {self.askenet2hand[trajectory]} trajectory: {trajectories[self.askenet2hand[trajectory]][0]}"
                     )
 
-                    
+    def test_sidarthe(self):
+        """Test the ASKENET model representation against a manual model."""
+        nsamples = 5
+        timepoints = [1.0, 2.0, 3.0]
+        prior_samples = sample(self.sidarthe_mira, timepoints, nsamples)
+        for i in range(nsamples):
+            sidarthe_askenet = reparameterize(self.sidarthe_askenet, {
+                param : prior_samples[param][i]
+                for param in prior_samples.keys()                 
+                if '_sol' not in param
+                }
+            )
+            trajectories = sample(sidarthe_askenet, timepoints, 1)
+            for state_variable in prior_samples:
+                if '_sol' in state_variable:
+                    self.assertTrue(
+                        torch.allclose(
+                            prior_samples[state_variable][i],
+                            trajectories[state_variable][0],
+                            atol=1e-4
+                        ),
+                        f"MIRA {state_variable} trajectory {i}: {prior_samples[state_variable][i]}\n"
+                        f"ASKENET {state_variable} trajectory: {trajectories[state_variable][0]}"
+                    )
+                
         
