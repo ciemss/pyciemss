@@ -1,9 +1,13 @@
 import unittest
 import torch
 import mira
+
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
+import mira
+import requests
 from mira.examples.sir import sir_parameterized as sir # MIRA model
 from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
-from pyciemss.interfaces import DynamicalSystem
+from pyciemss.interfaces import DynamicalSystem, setup_model
 from pyciemss.utils import reparameterize
 from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
@@ -76,12 +80,21 @@ class TestPetrinetDerivatives(unittest.TestCase):
 
     def setup_SIDARTHE(self):
         """Set up the MIRA and ASKENET SIDARTHE models."""
-        sidarthe_mira = load_petri_model('https://raw.githubusercontent.com/indralab/mira/main/notebooks/evaluation_2023.01/scenario1_sir_mira.json')
-        askenet = AskeNetPetriNetModel(sidarthe_mira.G)
-        sidarthe_askenet = load_petri_model(askenet.to_json())
-        initial_state = {param: self.sidarthe_mira.initials[param].value for param in self.sidarthe_mira.initials.keys()}
-        self.sidarthe_mira = setup_model(sidarthe_meta, start_time=0, start_state=initial_state)
-        self.sidarthe_askenet = setup_model(sidarthe_askenet, start_time=0, start_state=initial_state)
+
+        url = 'https://raw.githubusercontent.com/indralab/mira/main/notebooks/ensemble/BIOMD0000000955_template_model.json'
+        res = requests.get(url)
+        model_json = res.json()
+        sidarthe_template = mira.metamodel.TemplateModel.from_json(model_json)
+        sidarthe_model = mira.modeling.Model(sidarthe_template)
+        askenet_sidarthe = AskeNetPetriNetModel(sidarthe_model)
+        
+        initial_state = {param: sidarthe_model.template_model.initials[param].value for param in sidarthe_model.template_model.initials.keys()}
+        sidarthe_beta_mira = load_petri_model(sidarthe_model)
+        sidarthe_beta_askenet = load_petri_model(askenet_sidarthe.to_json())
+        self.sidarthe_beta_mira = setup_model(sidarthe_beta_askenet, start_time=0, start_state=initial_state)
+        self.sidarthe_beta_askenet = setup_model(sidarthe_beta_askenet, start_time=0, start_state=initial_state)
+
+
 
     def test_derivs(self):
         """Sample from the MIRA object and set the parameters of the manual object to be the same."""
@@ -133,9 +146,9 @@ class TestPetrinetDerivatives(unittest.TestCase):
         """Test the ASKENET model representation against a manual model."""
         nsamples = 5
         timepoints = [1.0, 2.0, 3.0]
-        prior_samples = sample(self.sidarthe_mira, timepoints, nsamples)
+        prior_samples = sample(self.sidarthe_beta_mira, timepoints, nsamples)
         for i in range(nsamples):
-            sidarthe_askenet = reparameterize(self.sidarthe_askenet, {
+            sidarthe_askenet = reparameterize(self.sidarthe_beta_askenet, {
                 param : prior_samples[param][i]
                 for param in prior_samples.keys()                 
                 if '_sol' not in param
