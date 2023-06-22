@@ -1,0 +1,649 @@
+{
+"name": "SIR Model",
+"schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+"description": "SIR model",
+"schema_name": "petrinet",
+"model_version": "0.1",
+"model": {
+"states": [
+{
+"id": "S",
+"name": "Susceptible",
+"description": "Number of individuals that are 'susceptible' to a disease infection",
+"grounding": {
+"identifiers": {
+"ido": "0000514"
+}
+},
+"units": {
+"expression": "person",
+"expression_mathml": "<ci>person</ci>"
+}
+},
+{
+"id": "I",
+"name": "Infected",
+"description": "Number of individuals that are 'infected' by a disease",
+"grounding": {
+"identifiers": {
+"ido": "0000511"
+}
+},
+"units": {
+"expression": "person",
+"expression_mathml": "<ci>person</ci>"
+}
+},
+{
+"id": "R",
+"name": "Recovered",
+"description": "Number of individuals that have 'recovered' from a disease infection",
+"grounding": {
+"identifiers": {
+"ido": "0000592"
+}
+},
+"units": {
+"expression": "person",
+"expression_mathml": "<ci>person</ci>"
+}
+}
+],
+"transitions": [
+{
+"id": "inf",
+"input": [
+"S",
+"I"
+],
+"output": [
+"I",
+"I"
+],
+"properties": {
+"name": "Infection",
+"description": "Infective process between individuals"
+}
+},
+{
+"id": "rec",
+"input": [
+"I"
+],
+"output": [
+"R"
+],
+"properties": {
+"name": "Recovery",
+"description": "Recovery process of a infected individual"
+}
+}
+]
+},
+"semantics": {
+"ode": {
+"rates": [
+{
+"target": "inf",
+"expression": "S*I*beta",
+"expression_mathml": "<apply><times/><ci>S</ci><ci>I</ci><ci>beta</ci></apply>"
+},
+{
+"target": "rec",
+"expression": "I*gamma",
+"expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci></apply>"
+}
+],
+"initials": [
+{
+"target": "S",
+"expression": "S0",
+"expression_mathml": "<ci>S0</ci>"
+},
+{
+"target": "I",
+"expression": "I0",
+"expression_mathml": "<ci>I0</ci>"
+},
+{
+"target": "R",
+"expression": "R0",
+"expression_mathml": "<ci>R0</ci>"
+}
+],
+"parameters": [
+{
+"id": "beta",
+"name": "β",
+"description": "infection rate",
+"units": {
+"expression": "1/(person*day)",
+"expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>person</ci><ci>day</ci></apply></apply>"
+},
+"value": 2.7e-7,
+"distribution": {
+"type": "StandardUniform1",
+"parameters": {
+"minimum": 2.6e-7,
+"maximum": 2.8e-7
+}
+}
+},
+{
+"id": "gamma",
+"name": "γ",
+"description": "recovery rate",
+"grounding": {
+"identifiers": {
+"askemo": "0000013"
+}
+},
+"units": {
+"expression": "1/day",
+"expression_mathml": "<apply><divide/><cn>1</cn><ci>day</ci></apply>"
+},
+"value": 0.14,
+"distribution": {
+"type": "StandardUniform1",
+"parameters": {
+"minimum": 0.1,
+"maximum": 0.18
+}
+}
+},
+{
+"id": "S0",
+"name": "S₀",
+"description": "Total susceptible population at timestep 0",
+"value": 1000
+},
+{
+"id": "I0",
+"name": "I₀",
+"description": "Total infected population at timestep 0",
+"value": 1
+},
+{
+"id": "R0",
+"name": "R₀",
+"description": "Total recovered population at timestep 0",
+"value": 0
+}
+],
+"observables": [
+{
+"id": "noninf",
+"name": "Non-infectious",
+"states": [
+"S",
+"R"
+],
+"expression": "S+R",
+"expression_mathml": "<apply><plus/><ci>S</ci><ci>R</ci></apply>"
+}
+],
+"time": {
+"id": "t",
+"units": {
+"expression": "day",
+"expression_mathml": "<ci>day</ci>"
+}
+}
+}
+},
+"metadata": {
+"attributes": [
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "R:190348269"
+},
+"names": [
+{
+"id": {
+"id": "T:-1709799622"
+},
+"name": "Bucky",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 738,
+"char_end": 743,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974474"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:-486841659"
+},
+"source": "time",
+"grounding": [
+{
+"grounding_text": "time since time scale zero",
+"grounding_id": "apollosv:00000272",
+"source": [],
+"score": 0.8945620059967041,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.974644"
+}
+}
+],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 732,
+"char_end": 736,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974474"
+}
+}
+],
+"value_specs": [],
+"groundings": []
+}
+},
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "R:159895595"
+},
+"names": [
+{
+"id": {
+"id": "T:2131207786"
+},
+"name": "SEIR",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 56,
+"char_end": 60,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974780"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:-1520869470"
+},
+"source": "spatially distributed",
+"grounding": [],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 34,
+"char_end": 55,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974780"
+}
+}
+],
+"value_specs": [],
+"groundings": []
+}
+},
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "E:-337831219"
+},
+"names": [
+{
+"id": {
+"id": "T:1326919589"
+},
+"name": "S",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 562,
+"char_end": 563,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974931"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:1687413640"
+},
+"source": "fraction of the population",
+"grounding": [
+{
+"grounding_text": "count of simulated population",
+"grounding_id": "apollosv:00000022",
+"source": [],
+"score": 0.8330355286598206,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.975009"
+}
+}
+],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 570,
+"char_end": 596,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.974931"
+}
+}
+],
+"value_specs": [],
+"groundings": [
+{
+"grounding_text": "Meruvax I",
+"grounding_id": "vo:0003109",
+"source": [],
+"score": 0.7847759127616882,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.974960"
+}
+}
+]
+}
+},
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "E:-1921441554"
+},
+"names": [
+{
+"id": {
+"id": "T:-24678027"
+},
+"name": "asym frac",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 142,
+"char_end": 151,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975127"
+}
+},
+{
+"id": {
+"id": "v10"
+},
+"name": "α",
+"extraction_source": null,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:1244663286"
+},
+"source": "percentage of infections",
+"grounding": [
+{
+"grounding_text": "percentage of cases",
+"grounding_id": "cemo:percentage_of_cases",
+"source": [],
+"score": 0.8812347650527954,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.975201"
+}
+}
+],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 94,
+"char_end": 118,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975127"
+}
+},
+{
+"id": {
+"id": "v10"
+},
+"source": " Rate of infections that are asymptomatic",
+"grounding": null,
+"extraction_source": null,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+}
+],
+"value_specs": [],
+"groundings": [
+{
+"grounding_text": "Van",
+"grounding_id": "geonames:298117",
+"source": [],
+"score": 1,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+},
+{
+"grounding_text": "Sanaa",
+"grounding_id": "geonames:71137",
+"source": [],
+"score": 1,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+}
+]
+}
+},
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "E:392549189"
+},
+"names": [
+{
+"id": {
+"id": "T:-24678027"
+},
+"name": "asym frac",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 142,
+"char_end": 151,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975270"
+}
+},
+{
+"id": {
+"id": "v18"
+},
+"name": "asym_frac",
+"extraction_source": null,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:1244663286"
+},
+"source": "percentage of infections",
+"grounding": [
+{
+"grounding_text": "percentage of cases",
+"grounding_id": "cemo:percentage_of_cases",
+"source": [],
+"score": 0.8812347650527954,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.975340"
+}
+}
+],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 94,
+"char_end": 118,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975270"
+}
+},
+{
+"id": {
+"id": "v18"
+},
+"source": " Fraction of infections that are asymptomatic",
+"grounding": null,
+"extraction_source": null,
+"provenance": {
+"method": "MIT extractor V1.0 - text, dataset, formula annotation (chunwei@mit.edu)",
+"timestamp": "2023-06-15T22:59:13.177022"
+}
+}
+],
+"value_specs": [],
+"groundings": []
+}
+},
+{
+"type": "anchored_extraction",
+"payload": {
+"id": {
+"id": "E:-1790112729"
+},
+"names": [
+{
+"id": {
+"id": "T:-24678027"
+},
+"name": "asym frac",
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 142,
+"char_end": 151,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975409"
+}
+}
+],
+"descriptions": [
+{
+"id": {
+"id": "T:1244663286"
+},
+"source": "percentage of infections",
+"grounding": [
+{
+"grounding_text": "percentage of cases",
+"grounding_id": "cemo:percentage_of_cases",
+"source": [],
+"score": 0.8812347650527954,
+"provenance": {
+"method": "SKEMA-TR-Embedding",
+"timestamp": "2023-06-15T22:59:11.975479"
+}
+}
+],
+"extraction_source": {
+"page": 0,
+"block": 0,
+"char_start": 94,
+"char_end": 118,
+"document_reference": {
+"id": "buckymodel_webdocs.pdf"
+}
+},
+"provenance": {
+"method": "Skema TR Pipeline rules",
+"timestamp": "2023-06-15T22:59:11.975409"
+}
+}
+],
+"value_specs": [],
+"groundings": []
+}
+}
+]
+}
+}

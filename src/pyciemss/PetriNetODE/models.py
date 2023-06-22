@@ -1,5 +1,6 @@
 from typing import Dict, Optional
-
+import functools
+import operator
 import torch
 import pyro
 import pyro.distributions as dist
@@ -17,6 +18,125 @@ from pyciemss.PetriNetODE.base import (
 )
 from pyciemss.utils import state_flux_constraint
 from pyciemss.utils.distributions import ScaledBeta
+
+
+class MiraRegNetODESystem(ScaledBetaNoisePetriNetODESystem):
+    """
+    MIRA RegNet model.
+    """
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t.
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        states = {k: state[i] for i, k in enumerate(self.var_order.values())}
+        derivs = {k: 0. for k in states}
+
+        population_size = sum(states.values())
+
+        for transition in self.G.transitions.values():
+            flux = getattr(self, get_name(transition.rate)) * functools.reduce(
+                operator.mul, [states[k] for k in transition.consumed], 1
+            )
+            if len(transition.control) > 0:
+                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control], 1) / population_size**len(transition.control)
+
+            for c in transition.consumed:
+                derivs[c] -= flux
+            for p in transition.produced:
+                derivs[p] += flux
+
+        return tuple(derivs[v] for v in self.var_order.values())
+
+    
+    
+
+class LotkaVolterra(PetriNetODESystem):
+    """Lotka-Volterra model built by hand to compare against MIRA Regnet model.
+    See https://github.com/ciemss/pyciemss/issues/153
+    for more detail.
+    """
+    def __init__(self, alpha: float, beta: float,
+                 gamma: float, delta: float,
+                 add_uncertainty=True,
+                 pseudocount=1) -> None:
+        """initialize alpha, beta, gamma, delta priors"""
+        self.add_uncertainty = add_uncertainty
+        self.pseudocount = pseudocount
+        super().__init__()
+        if self.add_uncertainty:
+            self.alpha_prior = pyro.distributions.Uniform(max(0.9 * alpha, 0.0), 1.1 * alpha)
+            self.beta_prior = pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+            self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+            self.delta_prior = pyro.distributions.Uniform(max(0.9 * delta, 0.0), 1.1 * delta)
+            self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        else:
+            self.alpha_prior = torch.nn.Parameter(torch.as_tensor(alpha))
+            self.beta_prior = torch.nn.Parameter(torch.as_tensor(beta))
+            self.gamma_prior = torch.nn.Parameter(torch.as_tensor(gamma))
+            self.delta_prior = torch.nn.Parameter(torch.as_tensor(delta))
+
+
+    @pyro.nn.pyro_method
+    def param_prior(self) -> None:
+        '''
+        Inplace method defining the prior distribution over model parameters.
+        All random variables must be defined using `pyro.sample` or `PyroSample` methods.
+        '''
+        if self.add_uncertainty:
+            self.alpha = pyro.sample('alpha', self.alpha_prior)
+            self.beta = pyro.sample('beta', self.beta_prior)
+            self.gamma = pyro.sample('gamma', self.gamma_prior)
+            self.delta = pyro.sample('delta', self.delta_prior)
+        else:
+            self.alpha = pyro.param('alpha', self.alpha_prior)
+            self.beta = pyro.param('beta', self.beta_prior)
+            self.gamma = pyro.param('gamma', self.gamma_prior)
+            self.delta = pyro.param('delta', self.delta_prior)
+
+    @pyro.nn.pyro_method
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        prey_population, predator_population = state
+        dxdt = self.alpha * prey_population - self.beta * prey_population * predator_population
+        dydt = self.delta * prey_population * predator_population - self.gamma * predator_population
+        return dxdt, dydt
+              
+    def create_var_order(self) -> dict[str, int]:
+        """create the variable order for the state vector"""
+        return dict(prey_population=0, predator_population=1)
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """In the observation model, I_obs is the sum of I and Iv.  We scale the noise by the square root of the mean, so that the noise variance is proportional to the mean."""
+        mean = solution[var_name]
+        pyro.sample(
+            var_name,
+            dist.Normal(mean, torch.sqrt(mean) / self.pseudocount).to_event(1),
+        )
+
+    # @pyro.nn.pyro_method
+    # def observation_model(self, solution: Solution, var_name: str) -> None:
+    #     """define the observation model for the given variable
+    #     :param solution: solution of the ODE system
+    #     :param var_name: variable name
+    #     """
+    #     mean = solution[var_name]
+    #     pseudocount = self.pseudocount
+    #     total_population = sum(solution.values())
+    #     pyro.sample(var_name, ScaledBeta(mean, total_population, pseudocount).to_event(1))
+
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
 
 
 class SIR_with_uncertainty(PetriNetODESystem):
@@ -64,8 +184,8 @@ class SIR_with_uncertainty(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self) -> None:
         """define the prior distributions for the parameters"""
-        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
-        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+        self.beta =  pyro.sample('beta', self.beta_prior)
+        self.gamma = pyro.sample('gamma', self.gamma_prior)
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:

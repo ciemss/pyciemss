@@ -1,0 +1,78 @@
+{
+  "name": "Lotka Volterra",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/regnet_v0.1/regnet/regnet_schema.json",
+  "description": "Lotka Volterra model",
+  "model_version": "0.1",
+  "model": {
+    "vertices": [
+      {
+        "id": "R",
+        "name": "Rabbits",
+        "grounding": {},
+        "initial": "R0",
+        "rate_constant": "alpha",
+        "sign": true
+      },
+      {
+        "id": "W",
+        "name": "Wolves",
+        "grounding": {},
+        "initial": "W0",
+        "rate_constant": "gamma",
+        "sign": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "wolf_eats_rabbit",
+        "source": "W",
+        "target": "R",
+        "sign": false,
+        "properties": {
+          "rate_constant": "beta"
+        }
+      },
+      {
+        "id": "rabbit_feeds_wolf",
+        "source": "R",
+        "target": "W",
+        "sign": true,
+        "properties": {
+          "rate_constant": "delta"
+        }
+      }
+    ],
+    "parameters": [
+      {
+        "id": "R0",
+        "description": "Initial rabbit population",
+        "value": 2
+      },
+      {
+        "id": "W0",
+        "description": "Initial wolf population",
+        "value": 1
+      },
+      {
+        "id": "alpha",
+        "description": "Maximum per capita prey growth rate",
+        "value": 0.667
+      },
+      {
+        "id": "beta",
+        "description": "Effect of predators on prey",
+        "value": 1.333
+      },
+      {
+        "id": "gamma",
+        "description": "Effect of prey on predators",
+        "value": 1
+      },
+      {
+        "id": "delta",
+        "description": "Maximum per capita predator death rate",
+        "value": 1
+      }
+    ]
+  }
+}
