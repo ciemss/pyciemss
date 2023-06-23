@@ -190,6 +190,18 @@
         "properties": {
           "name": "t9"
         }
+      },
+      {
+        "id": "t10",
+        "input": [
+          "recovered_population"
+        ],
+        "output": [
+          "susceptible_population"
+        ],
+        "properties": {
+          "name": "t10"
+        }
       }
     ]
   },
@@ -240,6 +252,11 @@
           "target": "t9",
           "expression": "dh*hospitalized_population/los",
           "expression_mathml": "<apply><divide/><apply><times/><ci>dh</ci><ci>hospitalized_population</ci></apply><ci>los</ci></apply>"
+        },
+        {
+          "target": "t10",
+          "expression": "recovered_population/tau",
+          "expression_mathml": "<apply><divide/><ci>recovered_population</ci><ci>tau</ci></apply>"
         }
       ],
       "initials": [
@@ -319,6 +336,10 @@
         {
           "id": "dh",
           "value": 0.1
+        },
+        {
+          "id": "tau",
+          "value": 30.0
         }
       ],
       "observables": [],
