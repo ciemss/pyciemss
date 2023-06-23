@@ -105,7 +105,7 @@ def load_and_calibrate_and_sample_petri_model(
     """
 
     data = csv_to_list(data_path)
-  
+
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=add_uncertainty,
@@ -152,11 +152,11 @@ def load_petri_model(
     """
 
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path)
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_mira(petri_model_or_path)
+        return MiraPetriNetODESystem.from_askenet(petri_model_or_path)
 
 
 @setup_model.register
