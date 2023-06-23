@@ -11,6 +11,7 @@ from pyciemss.PetriNetODE.base import (
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
+from mira.sources.askenet import model_from_json_file
 
 import time
 import numpy as np
@@ -48,7 +49,7 @@ PetriInferredParameters = pyro.nn.PyroModule
 
 
 def load_and_sample_petri_model(
-    petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
+    amr_path: str,
     num_samples: int,
     timepoints: Iterable[float],
     start_state: Optional[dict[str, float]] = None,
@@ -60,8 +61,10 @@ def load_and_sample_petri_model(
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
     """
+    template_model = model_from_json_file(amr_path)
+
     model = load_petri_model(
-        petri_model_or_path=petri_model_or_path,
+        petri_model_or_path=template_model,
         add_uncertainty=add_uncertainty,
         pseudocount=pseudocount,
     )
@@ -86,7 +89,7 @@ def load_and_sample_petri_model(
 
 
 def load_and_calibrate_and_sample_petri_model(
-    petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
+    amr_path: str,
     data_path: str,
     num_samples: int,
     timepoints: Iterable[float],
@@ -107,11 +110,10 @@ def load_and_calibrate_and_sample_petri_model(
 
     data = csv_to_list(data_path)
 
-    model_json = json.load(f)
-    template_model = mira.metamodel.TemplateModel.from_json(model_json)
+    template_model = model_from_json_file(amr_path)
 
     model = load_petri_model(
-        petri_model_or_path=petri_model_or_path,
+        petri_model_or_path=template_model,
         add_uncertainty=add_uncertainty,
         pseudocount=pseudocount,
     )
