@@ -38,9 +38,9 @@ from pyciemss.interfaces import DynamicalSystem, intervene
 
 
 
-def reparameterize(model: DynamicalSystem, parameters: dict) -> DynamicalSystem:
+def reparameterize(model: DynamicalSystem, parameters: dict, t0=0, delta_t=1e-5) -> DynamicalSystem:
     """Intervenes on an initialized model to set the parameters as specified in the dictionary."""
-    parameter_interventions = [ ((i+1)*1e-5, param, value) for i, (param, value) in enumerate(parameters.items())]
+    parameter_interventions = [(t0+(i+1)*delta_t, param, value) for i, (param, value) in enumerate(parameters.items())]
     return intervene(model, parameter_interventions)
 
 

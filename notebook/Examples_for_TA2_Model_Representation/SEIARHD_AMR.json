@@ -58,8 +58,8 @@
         }
       },
       {
-        "id": "deaceased_population",
-        "name": "deaceased_population",
+        "id": "deceased_population",
+        "name": "deceased_population",
         "grounding": {
           "identifiers": {
             "ncit": "C168970"
@@ -137,7 +137,7 @@
           "symptomatic_population"
         ],
         "output": [
-          "deaceased_population"
+          "deceased_population"
         ],
         "properties": {
           "name": "t5"
@@ -173,7 +173,7 @@
           "hospitalized_population"
         ],
         "output": [
-          "deaceased_population"
+          "deceased_population"
         ],
         "properties": {
           "name": "t8"
@@ -252,6 +252,11 @@
           "expression_mathml": "<cn>0.0</cn>"
         },
         {
+          "target": "deceased_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
           "target": "hospitalized_population",
           "expression": "0.0",
           "expression_mathml": "<cn>0.0</cn>"
@@ -263,24 +268,20 @@
           "value": 100000.0
         },
         {
-          "id": "delta",
-          "value": 1.5
-        },
-        {
           "id": "beta",
           "value": 0.55
         },
         {
-          "id": "alpha",
-          "value": 4.0
+          "id": "delta",
+          "value": 1.5
         },
         {
           "id": "pS",
           "value": 0.7
         },
         {
-          "id": "gamma",
-          "value": 0.2
+          "id": "alpha",
+          "value": 4.0
         },
         {
           "id": "dnh",
@@ -289,6 +290,10 @@
         {
           "id": "hosp",
           "value": 0.1
+        },
+        {
+          "id": "gamma",
+          "value": 0.2
         },
         {
           "id": "dh",
@@ -306,16 +311,18 @@
     }
   },
   "metadata": {
-    "license": null,
-    "authors": [],
-    "references": [],
-    "time_scale": null,
-    "time_start": null,
-    "time_end": null,
-    "locations": [],
-    "pathogens": [],
-    "diseases": [],
-    "hosts": [],
-    "model_types": []
+    "annotations": {
+      "license": null,
+      "authors": [],
+      "references": [],
+      "time_scale": null,
+      "time_start": null,
+      "time_end": null,
+      "locations": [],
+      "pathogens": [],
+      "diseases": [],
+      "hosts": [],
+      "model_types": []
+    }
   }
 }
