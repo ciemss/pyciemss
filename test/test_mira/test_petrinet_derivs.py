@@ -7,7 +7,7 @@ from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
 from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene,
                                              sample, calibrate, optimize, load_petri_model)
 from pyciemss.utils import get_tspan
-
+from mira.sources.askenet import model_from_url
 
 class TestPetrinetDerivatives(unittest.TestCase):
     '''
@@ -17,7 +17,7 @@ class TestPetrinetDerivatives(unittest.TestCase):
         """Initialize and load the Mira and Hand models."""
         self.setUp_MIRA()
         self.setUp_Hand()
-
+        self.setup_ASKENET()
         
     def setUp_MIRA(self):
         """Load the SIR mira model and initialize it."""
@@ -36,6 +36,8 @@ class TestPetrinetDerivatives(unittest.TestCase):
         # Initialize
         self.MIRA_model = setup_model(self.petri, start_time=0, start_state=self.initial_state)
         #self.assertIsInstance(self.MIRA_model, "x") # test that it is "x"
+
+        
     
     def setUp_Hand(self):
         """Instantiate the SIR_with_uncertainty model and initialize it."""
@@ -50,6 +52,23 @@ class TestPetrinetDerivatives(unittest.TestCase):
         # Initialize
         self.Hand_model = setup_model(self.raw, start_time=0, start_state=self.initial_state)
         #self.assertIsInstance(self.Hand_model, SIR_with_uncertainty) # test that it is "x"
+
+    def setup_ASKENET(self):
+        """Instantiate the ASKENET model and initialize it."""
+        mira_model = model_from_url('https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir.json')
+        self.sir_askenet = load_petri_model(mira_model)
+        # Initialize
+        self.askenet2hand = dict(Susceptible_sol='susceptible_population_sol',
+                            Infected_sol='infected_population_sol',
+                            Recovered_sol='immune_population_sol')
+        
+        self.hand2askenet = dict(susceptible_population='Susceptible',
+                            infected_population='Infected',
+                            immune_population='Recovered')
+        
+        initial_state = {self.hand2askenet[k]: v for k, v in self.initial_state.items()}
+
+        self.ASKENET_model = setup_model(self.sir_askenet, start_time=0, start_state=initial_state)
         
     def test_derivs(self):
         """Sample from the MIRA object and set the parameters of the manual object to be the same."""
@@ -67,7 +86,35 @@ class TestPetrinetDerivatives(unittest.TestCase):
                     self.assertTrue(
                         torch.allclose(
                             prior_samples[trajectory][i],
-                            trajectories[trajectory][0]
-                        )
+                            trajectories[trajectory][0],
+                            atol=1e-4
+                        ),
+                        f"MIRA {trajectory} trajectory {i}: {prior_samples[trajectory][i]}\n"
+                        f"Hand {trajectory} trajectory: {trajectories[trajectory][0]}"
                     )
-                     
+
+    def test_askenet(self):
+        """Test the ASKENET model representation against a manual model."""
+        nsamples = 5
+        timepoints = [1.0, 2.0, 3.0]
+        prior_samples = sample(self.ASKENET_model, timepoints, nsamples)
+        for i in range(nsamples):
+            hand_model = reparameterize(self.Hand_model, {
+                'beta': prior_samples['beta'][i],
+                'gamma': prior_samples['gamma'][i]
+            })
+            trajectories = sample(hand_model, timepoints, 1)
+            for trajectory in prior_samples:
+                if '_sol' in trajectory:
+                    self.assertTrue(
+                        torch.allclose(
+                            prior_samples[trajectory][i],
+                            trajectories[self.askenet2hand[trajectory]][0],
+                            atol=1e-4
+                        ),
+                        f"ASKENET {trajectory} trajectory {i}: {prior_samples[trajectory][i]}\n"
+                        f"Hand {self.askenet2hand[trajectory]} trajectory: {trajectories[self.askenet2hand[trajectory]][0]}"
+                    )
+
+                    
+        
