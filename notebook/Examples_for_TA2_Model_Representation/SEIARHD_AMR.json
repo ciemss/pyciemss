@@ -186,8 +186,8 @@
       "rates": [
         {
           "target": "t1",
-          "expression": "beta*susceptible_population*(asymptomatic_population + delta*sympomatic_population)/total_population",
-          "expression_mathml": "<apply><divide/><apply><times/><ci>beta</ci><ci>susceptible_population</ci><apply><plus/><ci>asymptomatic_population</ci><apply><times/><ci>delta</ci><ci>sympomatic_population</ci></apply></apply></apply><ci>total_population</ci></apply>"
+          "expression": "beta*susceptible_population*(asymptomatic_population + delta*symptomatic_population)/total_population",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>beta</ci><ci>susceptible_population</ci><apply><plus/><ci>asymptomatic_population</ci><apply><times/><ci>delta</ci><ci>symptomatic_population</ci></apply></apply></apply><ci>total_population</ci></apply>"
         },
         {
           "target": "t2",
@@ -201,13 +201,13 @@
         },
         {
           "target": "t4",
-          "expression": "gamma*sympomatic_population*(-dnh - hosp + 1)",
-          "expression_mathml": "<apply><times/><ci>gamma</ci><ci>sympomatic_population</ci><apply><plus/><apply><minus/><apply><minus/><ci>dnh</ci></apply><ci>hosp</ci></apply><cn>1</cn></apply></apply>"
+          "expression": "gamma*symptomatic_population*(-dnh - hosp + 1)",
+          "expression_mathml": "<apply><times/><ci>gamma</ci><ci>symptomatic_population</ci><apply><plus/><apply><minus/><apply><minus/><ci>dnh</ci></apply><ci>hosp</ci></apply><cn>1</cn></apply></apply>"
         },
         {
           "target": "t5",
-          "expression": "dnh*gamma*sympomatic_population",
-          "expression_mathml": "<apply><times/><ci>dnh</ci><ci>gamma</ci><ci>sympomatic_population</ci></apply>"
+          "expression": "dnh*gamma*symptomatic_population",
+          "expression_mathml": "<apply><times/><ci>dnh</ci><ci>gamma</ci><ci>symptomatic_population</ci></apply>"
         },
         {
           "target": "t6",
@@ -259,12 +259,16 @@
       ],
       "parameters": [
         {
-          "id": "beta",
-          "value": 0.55
+          "id": "total_population",
+          "value": 100000.0
         },
         {
           "id": "delta",
           "value": 1.5
+        },
+        {
+          "id": "beta",
+          "value": 0.55
         },
         {
           "id": "alpha",
@@ -275,24 +279,24 @@
           "value": 0.7
         },
         {
-          "id": "hosp",
-          "value": 0.1
+          "id": "gamma",
+          "value": 0.2
         },
         {
           "id": "dnh",
           "value": 0.001
         },
         {
-          "id": "gamma",
-          "value": 0.2
-        },
-        {
-          "id": "los",
-          "value": 7.0
+          "id": "hosp",
+          "value": 0.1
         },
         {
           "id": "dh",
           "value": 0.1
+        },
+        {
+          "id": "los",
+          "value": 7.0
         }
       ],
       "observables": [],
