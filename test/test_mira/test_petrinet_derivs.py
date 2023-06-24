@@ -6,7 +6,7 @@ from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
 from pyciemss.interfaces import DynamicalSystem
 from pyciemss.utils import reparameterize
 from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
-from pyciemss.PetriNetODE.models import SIR_with_uncertainty # Hand model
+from pyciemss.PetriNetODE.models import SIR_with_uncertainty, SEIARHD # Hand model
 from pyciemss.PetriNetODE.interfaces import (setup_model, reset_model, intervene,
                                              sample, calibrate, optimize, load_petri_model)
 from pyciemss.utils import get_tspan
@@ -21,7 +21,7 @@ class TestPetrinetDerivatives(unittest.TestCase):
         self.setUp_MIRA()
         self.setUp_Hand()
         self.setup_ASKENET()
-        self.setup_SIDARTHE()
+        self.setup_amr_vs_hand()
         
     def setUp_MIRA(self):
         """Load the SIR mira model and initialize it."""
@@ -74,15 +74,17 @@ class TestPetrinetDerivatives(unittest.TestCase):
 
         self.ASKENET_model = setup_model(self.sir_askenet, start_time=0, start_state=initial_state)
 
-    def setup_SIDARTHE(self):
-        """Set up the MIRA and ASKENET SIDARTHE models."""
-        sidarthe_mira = load_petri_model('https://raw.githubusercontent.com/indralab/mira/main/notebooks/evaluation_2023.01/scenario1_sir_mira.json')
-        askenet = AskeNetPetriNetModel(sidarthe_mira.G)
-        sidarthe_askenet = load_petri_model(askenet.to_json())
-        initial_state = {param: self.sidarthe_mira.initials[param].value for param in self.sidarthe_mira.initials.keys()}
-        self.sidarthe_mira = setup_model(sidarthe_meta, start_time=0, start_state=initial_state)
-        self.sidarthe_askenet = setup_model(sidarthe_askenet, start_time=0, start_state=initial_state)
-
+    def setup_amr_vs_hand(self):
+        """Convert between AMR and MIRA models."""
+        N = 100000
+        seiarhd_hand_model = SEIARHD(N=N, beta=0.55, delta=1.5, alpha=4, pS=0.7, gamma=0.2, hosp=0.1, los=7, dh=0.1, dnh=0.001)
+        initial_state = seiarhd_hand_model.create_start_state_symp(N)
+        self.seiarhd_hand_model = setup_model(seiarhd_hand_model, start_time=0, start_state=initial_state)
+        url = 'https://raw.githubusercontent.com/ciemss/pyciemss/177-examples-for-ta2-model-representation-issues/notebook/Examples_for_TA2_Model_Representation/SEIARHD_AMR.json'
+        seiarhd_amr_model = load_petri_model(url)
+        #initial_state = {param: amr_model.G.template_model.initials[param].value for param in amr_model.G.template_model.initials.keys()}
+        self.seiarhd_amr_model = setup_model(seiarhd_amr_model, start_time=0, start_state=initial_state)
+        
     def test_derivs(self):
         """Sample from the MIRA object and set the parameters of the manual object to be the same."""
         nsamples = 5
@@ -129,29 +131,29 @@ class TestPetrinetDerivatives(unittest.TestCase):
                         f"Hand {self.askenet2hand[trajectory]} trajectory: {trajectories[self.askenet2hand[trajectory]][0]}"
                     )
 
-    def test_sidarthe(self):
+    def test_amr_vs_hand(self):
         """Test the ASKENET model representation against a manual model."""
         nsamples = 5
         timepoints = [1.0, 2.0, 3.0]
-        prior_samples = sample(self.sidarthe_mira, timepoints, nsamples)
+        hand_trajectories = sample(self.seiarhd_hand_model, timepoints, nsamples)
         for i in range(nsamples):
-            sidarthe_askenet = reparameterize(self.sidarthe_askenet, {
-                param : prior_samples[param][i]
-                for param in prior_samples.keys()                 
+            seiarhd_amr_model = reparameterize(self.seiarhd_amr_model, {
+                param : hand_trajectories[param][i]
+                for param in hand_trajectories.keys()                 
                 if '_sol' not in param
                 }
             )
-            trajectories = sample(sidarthe_askenet, timepoints, 1)
-            for state_variable in prior_samples:
+            amr_trajectories = sample(seiarhd_amr_model, timepoints, 1)
+            for state_variable in hand_trajectories:
                 if '_sol' in state_variable:
                     self.assertTrue(
                         torch.allclose(
-                            prior_samples[state_variable][i],
-                            trajectories[state_variable][0],
+                            hand_trajectories[state_variable][i],
+                            amr_trajectories[state_variable][0],
                             atol=1e-4
                         ),
-                        f"MIRA {state_variable} trajectory {i}: {prior_samples[state_variable][i]}\n"
-                        f"ASKENET {state_variable} trajectory: {trajectories[state_variable][0]}"
+                        f"Hand {state_variable} trajectory {i}: {hand_trajectories[state_variable][i]}\n"
+                        f"ASKENET {state_variable} trajectory: {amr_trajectories[state_variable][0]}"
                     )
                 
         

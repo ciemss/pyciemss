@@ -36,7 +36,14 @@ __all__ = ['seq_id_suffix',
 
 from pyciemss.interfaces import DynamicalSystem, intervene
 
-
+def convert_mira_template_to_askenet_json(url: str) -> dict:
+    """Converts a url pointing to a MIRA template to an AskeNet JSON model."""
+    res = requests.get(url)
+    model_json = res.json()
+    model_template = mira.metamodel.TemplateModel.from_json(model_json)
+    mira_model = mira.modeling.Model(model_template)
+    askenet_model = AskeNetPetriNetModel(mira_model)
+    return askenet_model.to_json()
 
 def reparameterize(model: DynamicalSystem, parameters: dict, t0: float=0.0, delta_t: float=1e-5) -> DynamicalSystem:
     """Intervenes on an initialized model to set the parameters as specified in the dictionary."""

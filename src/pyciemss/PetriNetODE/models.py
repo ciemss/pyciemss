@@ -354,3 +354,321 @@ class MIRA_I_obs_with_scaled_Gaussian_noise(MiraPetriNetODESystem):
             [f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()]
         )
         return f"{self.__class__.__name__}(\n\t{par_string},\n\ttotal_population = {self.total_population},\n\tdata_reliability = {self.data_reliability}\n)"
+
+
+class SEIARHD(PetriNetODESystem):
+    """Susceptible (S), Exposed(E), Symptomatic Infectious (I), Asymptomatic Infectious (A), Recovered (R), Hospitalized (H), Deceased (D)."""
+    def __init__(
+            self,
+            N: int,
+            beta: float,
+            delta: float,
+            alpha: float,
+            pS: float,
+            gamma: float,
+            hosp: float,
+            los: float,
+            dh: float,
+            dnh: float,
+            pseudocount: float = 1.0,
+            ) -> None:
+        """initialize parameters
+        :param N: total population
+        :param beta: transmission rate
+        :param delta: difference in infectiousness symptomatic/asymptomatic
+        :param alpha: latency period
+        :param pS: percent of exposures which become symptomatic
+        :param gamma: recovery rate
+        :param hosp: hospitalization rate of infectious individuals
+        :param los: average length (days) of hospital stay
+        :param dh: death rate of hospitalized individuals
+        :param dnh: death rate of infectious individuals (never hospitalized)
+        """
+        super().__init__()
+        self.total_population = N
+        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.delta_prior = pyro.distributions.Uniform(max(0.9 * delta, 0.0), 1.1 * delta)
+        self.alpha_prior = pyro.distributions.Uniform(max(0.9 * alpha, 0.0), 1.1 * alpha)
+        self.pS_prior = pyro.distributions.Uniform(max(0.9 * pS, 0.0), 1.1 * pS)
+        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.hosp_prior = pyro.distributions.Uniform(max(0.9 * hosp, 0.0), 1.1 * hosp)
+        self.los_prior = pyro.distributions.Uniform(max(0.9 * los, 0.0), 1.1 * los)
+        self.dh_prior = pyro.distributions.Uniform(max(0.9 * dh, 0.0), 1.1 * dh)
+        self.dnh_prior = pyro.distributions.Uniform(max(0.9 * dnh, 0.0), 1.1 * dnh)
+        self.pseudocount = pseudocount
+
+
+    def create_var_order(self) -> dict[str, int]:
+        """create the variable order for the state vector"""
+        return {"susceptible_population": 0, "exposed_population": 1, "symptomatic_population": 2, 
+                "asymptomatic_population": 3, "recovered_population": 4, 
+                "hospitalized_population": 5, "deceased_population": 6}
+
+    @pyro.nn.pyro_method
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+        S, E, I, A, R, H, D = state
+        dSdt = -self.beta * S * (self.delta * I + A) / self.total_population
+        dEdt = self.beta * S * (self.delta * I + A) / self.total_population - (1/self.alpha) * E
+        dIdt = (self.pS/self.alpha) * E - self.gamma * I
+        dAdt = ((1 - self.pS)/self.alpha) * E - self.gamma * A
+        dRdt = self.gamma * (1 - self.hosp - self.dnh) * I + self.gamma * A + ((1 - self.dh)/self.los) * H
+        dHdt = self.gamma * self.hosp * I - (1/self.los) * H
+        dDdt = self.gamma * self.dnh * I + (self.dh/self.los) * H
+        return dSdt, dEdt, dIdt, dAdt, dRdt, dHdt, dDdt
+
+    @pyro.nn.pyro_method
+    def param_prior(self) -> None:
+        """define the prior distributions for the parameters"""
+        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
+        setattr(self, 'delta', pyro.sample('delta', self.delta_prior))
+        setattr(self, 'alpha', pyro.sample('alpha', self.alpha_prior))
+        setattr(self, 'pS', pyro.sample('pS', self.pS_prior))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+        setattr(self, 'hosp', pyro.sample('hosp', self.hosp_prior))
+        setattr(self, 'los', pyro.sample('los', self.los_prior))
+        setattr(self, 'dh', pyro.sample('dh', self.dh_prior))
+        setattr(self, 'dnh', pyro.sample('dnh', self.dnh_prior))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """define the observation model for the given variable
+        :param solution: solution of the ODE system
+        :param var_name: variable name
+        """
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
+
+    def create_start_state_symp(self, total_population):
+        """Create a start state with a single symptomatic individual."""
+        returned_state = {}
+        returned_state["exposed_population"] = 0
+        returned_state["symptomatic_population"] = 1
+        returned_state["asymptomatic_population"] = 0
+        returned_state["recovered_population"] = 0
+        returned_state["hospitalized_population"] = 0
+        returned_state["deceased_population"] = 0
+        returned_state["susceptible_population"] = total_population - sum(returned_state.values())
+    
+        assert(returned_state["susceptible_population"] > 0)
+        return {k:v/total_population for k, v in returned_state.items()}
+
+class SIRHD(PetriNetODESystem):
+    # Susceptible (S), Infectious (I), Recovered (R), Hospitalized (H), Deceased (D)
+    def __init__(
+            self,
+            N: int,
+            beta: float,
+            gamma: float,
+            hosp: float,
+            los: float,
+            dh: float,
+            dnh: float,
+            pseudocount: float = 1.0,
+            ) -> None:
+        """initialize parameters
+        :param N: total population
+        :param beta: infection rate
+        :param gamma: recovery rate
+        :param hosp: hospitalization rate of infectious individuals
+        :param los: average length (days) of hospital stay
+        :param dh: death rate of hospitalized individuals
+        :param dnh: death rate of infectious individuals (never hospitalized)
+        """
+        super().__init__()
+        self.total_population = N
+        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.hosp_prior = pyro.distributions.Uniform(max(0.9 * hosp, 0.0), 1.1 * hosp)
+        self.los_prior = pyro.distributions.Uniform(max(0.9 * los, 0.0), 1.1 * los)
+        self.dh_prior = pyro.distributions.Uniform(max(0.9 * dh, 0.0), 1.1 * dh)
+        self.dnh_prior = pyro.distributions.Uniform(max(0.9 * dnh, 0.0), 1.1 * dnh)
+        self.pseudocount = pseudocount
+
+
+    def create_var_order(self) -> dict[str, int]:
+        """create the variable order for the state vector"""
+        return {"susceptible_population": 0, "infectious_population": 1, "recovered_population": 2, 
+                "hospitalized_population": 3, "deceased_population": 4}
+
+    @pyro.nn.pyro_method
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+        S, I, R, H, D = state
+        dSdt = -self.beta * S * I / self.total_population
+        dIdt = self.beta * S * I / self.total_population - self.gamma * I
+        dRdt = self.gamma * (1 - self.hosp - self.dnh) * I + ((1 - self.dh)/self.los) * H
+        dHdt = self.gamma * self.hosp * I - (1/self.los) * H
+        dDdt = self.gamma * self.dnh * I + (self.dh/self.los) * H
+        return dSdt, dIdt, dRdt, dHdt, dDdt
+
+    @pyro.nn.pyro_method
+    def param_prior(self) -> None:
+        """define the prior distributions for the parameters"""
+        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+        setattr(self, 'hosp', pyro.sample('hosp', self.hosp_prior))
+        setattr(self, 'los', pyro.sample('los', self.los_prior))
+        setattr(self, 'dh', pyro.sample('dh', self.dh_prior))
+        setattr(self, 'dnh', pyro.sample('dnh', self.dnh_prior))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """define the observation model for the given variable
+        :param solution: solution of the ODE system
+        :param var_name: variable name
+        """
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
+
+    def create_start_state_inf(self, total_population):
+        """Create a start state with a single infectious individual."""
+        returned_state = {}
+        returned_state["infectious_population"] = 1
+        returned_state["recovered_population"] = 0
+        returned_state["hospitalized_population"] = 0
+        returned_state["deceased_population"] = 0
+        returned_state["susceptible_population"] = total_population - sum(returned_state.values())
+    
+        assert(returned_state["susceptible_population"] > 0)
+        return {k:v/total_population for k, v in returned_state.items()}
+
+class SEIARHDS(PetriNetODESystem):
+    """ Susceptible (S), Exposed(E), Symptomatic Infectious (I), Asymptomatic Infectious (A), Recovered (R), Hospitalized (H), Deceased (D)."""
+    def __init__(
+            self,
+            N: int,
+            beta: float,
+            delta: float,
+            tau: float,
+            alpha: float,
+            pS: float,
+            gamma: float,
+            hosp: float,
+            los: float,
+            dh: float,
+            dnh: float,
+            pseudocount: float = 1.0,
+            ) -> None:
+        """initialize parameters
+        :param N: total population
+        :param beta: transmission rate
+        :param delta: difference in infectiousness symptomatic/asymptomatic
+        :param tau: immunity period
+        :param alpha: latency period
+        :param pS: percent of exposures which become symptomatic
+        :param gamma: recovery rate
+        :param hosp: hospitalization rate of infectious individuals
+        :param los: average length (days) of hospital stay
+        :param dh: death rate of hospitalized individuals
+        :param dnh: death rate of infectious individuals (never hospitalized)
+        """
+        super().__init__()
+        self.total_population = N
+        self.beta_prior =  pyro.distributions.Uniform(max(0.9 * beta, 0.0), 1.1 * beta)
+        self.delta_prior = pyro.distributions.Uniform(max(0.9 * delta, 0.0), 1.1 * delta)
+        self.tau_prior = pyro.distributions.Uniform(max(0.9 * tau, 0.0), 1.1 * tau)
+        self.alpha_prior = pyro.distributions.Uniform(max(0.9 * alpha, 0.0), 1.1 * alpha)
+        self.pS_prior = pyro.distributions.Uniform(max(0.9 * pS, 0.0), 1.1 * pS)
+        self.gamma_prior = pyro.distributions.Uniform(max(0.9 * gamma, 0.0), 1.1 * gamma)
+        self.hosp_prior = pyro.distributions.Uniform(max(0.9 * hosp, 0.0), 1.1 * hosp)
+        self.los_prior = pyro.distributions.Uniform(max(0.9 * los, 0.0), 1.1 * los)
+        self.dh_prior = pyro.distributions.Uniform(max(0.9 * dh, 0.0), 1.1 * dh)
+        self.dnh_prior = pyro.distributions.Uniform(max(0.9 * dnh, 0.0), 1.1 * dnh)
+        self.pseudocount = pseudocount
+
+
+    def create_var_order(self) -> dict[str, int]:
+        """create the variable order for the state vector"""
+        return {"susceptible_population": 0, "exposed_population": 1, "symptomatic_population": 2, 
+                "asymptomatic_population": 3, "recovered_population": 4, 
+                "hospitalized_population": 5, "deceased_population": 6}
+
+    @pyro.nn.pyro_method
+    def deriv(self, t: Time, state: State) -> State:
+        """compute the state derivative at time t
+        :param t: time
+        :param state: state vector
+        :return: state derivative vector
+        """
+        assert torch.isclose(sum(state),self.total_population),f"The sum of state variables {state} is not scaled to the total population {self.total_population}."
+        S, E, I, A, R, H, D = state
+        dSdt = -self.beta * S * (self.delta * I + A) / self.total_population + (1/self.tau) * R
+        dEdt = self.beta * S * (self.delta * I + A) / self.total_population - (1/self.alpha) * E
+        dIdt = (self.pS/self.alpha) * E - self.gamma * I
+        dAdt = ((1 - self.pS)/self.alpha) * E - self.gamma * A
+        dRdt = self.gamma * (1 - self.hosp - self.dnh) * I + self.gamma * A + ((1 - self.dh)/self.los) * H - (1/self.tau) * R
+        dHdt = self.gamma * self.hosp * I - (1/self.los) * H
+        dDdt = self.gamma * self.dnh * I + (self.dh/self.los) * H
+        return dSdt, dEdt, dIdt, dAdt, dRdt, dHdt, dDdt
+
+    @pyro.nn.pyro_method
+    def param_prior(self) -> None:
+        """define the prior distributions for the parameters"""
+        setattr(self, 'beta', pyro.sample('beta', self.beta_prior))
+        setattr(self, 'delta', pyro.sample('delta', self.delta_prior))
+        setattr(self, 'tau', pyro.sample('tau', self.tau_prior))
+        setattr(self, 'alpha', pyro.sample('alpha', self.alpha_prior))
+        setattr(self, 'pS', pyro.sample('pS', self.pS_prior))
+        setattr(self, 'gamma', pyro.sample('gamma', self.gamma_prior))
+        setattr(self, 'hosp', pyro.sample('hosp', self.hosp_prior))
+        setattr(self, 'los', pyro.sample('los', self.los_prior))
+        setattr(self, 'dh', pyro.sample('dh', self.dh_prior))
+        setattr(self, 'dnh', pyro.sample('dnh', self.dnh_prior))
+
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        """define the observation model for the given variable
+        :param solution: solution of the ODE system
+        :param var_name: variable name
+        """
+        mean = solution[var_name]
+        pseudocount = self.pseudocount
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+
+    def static_parameter_intervention(self, parameter: str, value: torch.Tensor) -> None:
+        """set a static parameter intervention
+        :param parameter: parameter name
+        :param value: parameter value
+        """
+        setattr(self, parameter, value)
+
+    def create_start_state_symp(self, total_population):
+        """Create a start state with 1 symptomatic individual and the rest susceptible."""
+        returned_state = {}
+        returned_state["exposed_population"] = 0
+        returned_state["symptomatic_population"] = 1
+        returned_state["asymptomatic_population"] = 0
+        returned_state["recovered_population"] = 0
+        returned_state["hospitalized_population"] = 0
+        returned_state["deceased_population"] = 0
+        returned_state["susceptible_population"] = total_population - sum(returned_state.values())
+    
+        assert(returned_state["susceptible_population"] > 0)
+        return {k:v/total_population for k, v in returned_state.items()}
