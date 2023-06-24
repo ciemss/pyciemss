@@ -1,0 +1,364 @@
+{
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1",
+  "properties": {},
+  "model": {
+    "states": [
+      {
+        "id": "susceptible_population",
+        "name": "susceptible_population",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000514"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "symptomatic_population",
+        "name": "symptomatic_population",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000573"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "asymptomatic_population",
+        "name": "asymptomatic_population",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000569"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "exposed_population",
+        "name": "exposed_population",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000594"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "recovered_population",
+        "name": "recovered_population",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000592"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "hospitalized_population",
+        "name": "hospitalized_population",
+        "grounding": {
+          "identifiers": {
+            "ncit": "C25179"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "deceased_population",
+        "name": "deceased_population",
+        "grounding": {
+          "identifiers": {
+            "ncit": "C168970"
+          },
+          "modifiers": {}
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "id": "t1",
+        "input": [
+          "symptomatic_population",
+          "asymptomatic_population",
+          "susceptible_population"
+        ],
+        "output": [
+          "symptomatic_population",
+          "asymptomatic_population",
+          "exposed_population"
+        ],
+        "properties": {
+          "name": "t1"
+        }
+      },
+      {
+        "id": "t2",
+        "input": [
+          "exposed_population"
+        ],
+        "output": [
+          "symptomatic_population"
+        ],
+        "properties": {
+          "name": "t2"
+        }
+      },
+      {
+        "id": "t3",
+        "input": [
+          "exposed_population"
+        ],
+        "output": [
+          "asymptomatic_population"
+        ],
+        "properties": {
+          "name": "t3"
+        }
+      },
+      {
+        "id": "t4",
+        "input": [
+          "symptomatic_population"
+        ],
+        "output": [
+          "recovered_population"
+        ],
+        "properties": {
+          "name": "t4"
+        }
+      },
+      {
+        "id": "t5",
+        "input": [
+          "symptomatic_population"
+        ],
+        "output": [
+          "hospitalized_population"
+        ],
+        "properties": {
+          "name": "t5"
+        }
+      },
+      {
+        "id": "t6",
+        "input": [
+          "symptomatic_population"
+        ],
+        "output": [
+          "deceased_population"
+        ],
+        "properties": {
+          "name": "t6"
+        }
+      },
+      {
+        "id": "t7",
+        "input": [
+          "asymptomatic_population"
+        ],
+        "output": [
+          "recovered_population"
+        ],
+        "properties": {
+          "name": "t7"
+        }
+      },
+      {
+        "id": "t8",
+        "input": [
+          "hospitalized_population"
+        ],
+        "output": [
+          "recovered_population"
+        ],
+        "properties": {
+          "name": "t8"
+        }
+      },
+      {
+        "id": "t9",
+        "input": [
+          "hospitalized_population"
+        ],
+        "output": [
+          "deceased_population"
+        ],
+        "properties": {
+          "name": "t9"
+        }
+      },
+      {
+        "id": "t10",
+        "input": [
+          "recovered_population"
+        ],
+        "output": [
+          "susceptible_population"
+        ],
+        "properties": {
+          "name": "t10"
+        }
+      }
+    ]
+  },
+  "semantics": {
+    "ode": {
+      "rates": [
+        {
+          "target": "t1",
+          "expression": "beta*susceptible_population*(asymptomatic_population + delta*symptomatic_population)/total_population",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>beta</ci><ci>susceptible_population</ci><apply><plus/><ci>asymptomatic_population</ci><apply><times/><ci>delta</ci><ci>symptomatic_population</ci></apply></apply></apply><ci>total_population</ci></apply>"
+        },
+        {
+          "target": "t2",
+          "expression": "exposed_population*pS/alpha",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>exposed_population</ci><ci>pS</ci></apply><ci>alpha</ci></apply>"
+        },
+        {
+          "target": "t3",
+          "expression": "exposed_population*(1 - pS)/alpha",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>exposed_population</ci><apply><minus/><cn>1</cn><ci>pS</ci></apply></apply><ci>alpha</ci></apply>"
+        },
+        {
+          "target": "t4",
+          "expression": "gamma*symptomatic_population*(-dnh - hosp + 1)",
+          "expression_mathml": "<apply><times/><ci>gamma</ci><ci>symptomatic_population</ci><apply><plus/><apply><minus/><apply><minus/><ci>dnh</ci></apply><ci>hosp</ci></apply><cn>1</cn></apply></apply>"
+        },
+        {
+          "target": "t5",
+          "expression": "gamma*hosp*symptomatic_population",
+          "expression_mathml": "<apply><times/><ci>gamma</ci><ci>hosp</ci><ci>symptomatic_population</ci></apply>"
+        },
+        {
+          "target": "t6",
+          "expression": "dnh*gamma*symptomatic_population",
+          "expression_mathml": "<apply><times/><ci>dnh</ci><ci>gamma</ci><ci>symptomatic_population</ci></apply>"
+        },
+        {
+          "target": "t7",
+          "expression": "asymptomatic_population*gamma",
+          "expression_mathml": "<apply><times/><ci>asymptomatic_population</ci><ci>gamma</ci></apply>"
+        },
+        {
+          "target": "t8",
+          "expression": "hospitalized_population*(1 - dh)/los",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>hospitalized_population</ci><apply><minus/><cn>1</cn><ci>dh</ci></apply></apply><ci>los</ci></apply>"
+        },
+        {
+          "target": "t9",
+          "expression": "dh*hospitalized_population/los",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>dh</ci><ci>hospitalized_population</ci></apply><ci>los</ci></apply>"
+        },
+        {
+          "target": "t10",
+          "expression": "recovered_population/tau",
+          "expression_mathml": "<apply><divide/><ci>recovered_population</ci><ci>tau</ci></apply>"
+        }
+      ],
+      "initials": [
+        {
+          "target": "susceptible_population",
+          "expression": "99999.0000000000",
+          "expression_mathml": "<cn>99999.0</cn>"
+        },
+        {
+          "target": "symptomatic_population",
+          "expression": "1.00000000000000",
+          "expression_mathml": "<cn>1.0</cn>"
+        },
+        {
+          "target": "asymptomatic_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "exposed_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "recovered_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "hospitalized_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "deceased_population",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        }
+      ],
+      "parameters": [
+        {
+          "id": "beta",
+          "value": 0.55
+        },
+        {
+          "id": "delta",
+          "value": 1.5
+        },
+        {
+          "id": "total_population",
+          "value": 100000.0
+        },
+        {
+          "id": "alpha",
+          "value": 4.0
+        },
+        {
+          "id": "pS",
+          "value": 0.7
+        },
+        {
+          "id": "gamma",
+          "value": 0.2
+        },
+        {
+          "id": "hosp",
+          "value": 0.1
+        },
+        {
+          "id": "dnh",
+          "value": 0.001
+        },
+        {
+          "id": "los",
+          "value": 7.0
+        },
+        {
+          "id": "dh",
+          "value": 0.1
+        },
+        {
+          "id": "tau",
+          "value": 30.0
+        }
+      ],
+      "observables": [],
+      "time": {
+        "id": "t"
+      }
+    }
+  },
+  "metadata": {
+    "license": null,
+    "authors": [],
+    "references": [],
+    "time_scale": null,
+    "time_start": null,
+    "time_end": null,
+    "locations": [],
+    "pathogens": [],
+    "diseases": [],
+    "hosts": [],
+    "model_types": []
+  }
+}

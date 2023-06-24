@@ -1,9 +1,12 @@
+import mira
+import mira.modeling
+from mira.modeling.askenet.petri import AskeNetPetriNetModel
 import json
 import functools
 import collections
 import numbers
 from typing import TypedDict, Literal, TypeVar, Optional, Callable, List, Tuple, Dict, Union, NamedTuple
-
+import requests
 import torch
 import numpy
 import pyro
@@ -36,6 +39,7 @@ __all__ = ['seq_id_suffix',
 
 from pyciemss.interfaces import DynamicalSystem, intervene
 
+
 def convert_mira_template_to_askenet_json(url: str) -> dict:
     """Converts a url pointing to a MIRA template to an AskeNet JSON model."""
     res = requests.get(url)
@@ -45,9 +49,10 @@ def convert_mira_template_to_askenet_json(url: str) -> dict:
     askenet_model = AskeNetPetriNetModel(mira_model)
     return askenet_model.to_json()
 
-def reparameterize(model: DynamicalSystem, parameters: dict, t0: float=0.0, delta_t: float=1e-5) -> DynamicalSystem:
+
+def reparameterize(model: DynamicalSystem, parameters: dict, t0: float = 0.0, delta_t: float = 1e-5) -> DynamicalSystem:
     """Intervenes on an initialized model to set the parameters as specified in the dictionary."""
-    parameter_interventions = [ (t0 + (i+1)*delta_t, param, value) for i, (param, value) in enumerate(parameters.items())]
+    parameter_interventions = [(t0+(i+1)*delta_t, param, value) for i, (param, value) in enumerate(parameters.items())]
     return intervene(model, parameter_interventions)
 
 

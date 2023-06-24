@@ -61,7 +61,7 @@ def load_and_sample_petri_model(
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=add_uncertainty,
+        add_uncertainty=True,
         pseudocount=pseudocount,
     )
 
@@ -78,6 +78,8 @@ def load_and_sample_petri_model(
         num_samples,
         method=method,
     )
+    # Fix the parameters here with reparameterize.
+
 
     processed_samples = convert_to_output_format(samples)
 
@@ -163,7 +165,7 @@ def setup_petri_model(
     start_state: dict[str, float],
 ) -> PetriNetODESystem:
     """
-    Instatiate a model for a particular configuration of initial conditions
+    Instantiate a model for a particular configuration of initial conditions
     """
     # TODO: Figure out how to do this without copying the petri net.
     start_event = StartEvent(start_time, start_state)

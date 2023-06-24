@@ -330,9 +330,9 @@ scratch/
 *.egg-info
 venv/
 .env/
-
-
 # emacs
-
-*\#*
+.idea/
+*\#*\#
+.*
+.DS_Store
 *~
