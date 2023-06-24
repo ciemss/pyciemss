@@ -131,23 +131,23 @@ class TestPetrinetDerivatives(unittest.TestCase):
         """Test the ASKENET model representation against a manual model."""
         nsamples = 5
         timepoints = [1.0, 2.0, 3.0]
-        prior_samples = sample(self.ASKENET_model, timepoints, nsamples)
+        amr_trajectories = sample(self.ASKENET_model, timepoints, nsamples)
         for i in range(nsamples):
             hand_model = reparameterize(self.Hand_model, {
-                'beta': prior_samples['beta'][i],
-                'gamma': prior_samples['gamma'][i]
+                'beta': amr_trajectories['beta'][i],
+                'gamma': amr_trajectories['gamma'][i]
             })
-            trajectories = sample(hand_model, timepoints, 1)
-            for trajectory in prior_samples:
-                if '_sol' in trajectory:
+            hand_trajectories = sample(hand_model, timepoints, 1)
+            for state_variable in amr_trajectories:
+                if '_sol' in state_variable:
                     self.assertTrue(
                         torch.allclose(
-                            prior_samples[trajectory][i],
-                            trajectories[self.askenet2hand[trajectory]][0],
+                            amr_trajectories[state_variable][i],
+                            hand_trajectories[self.askenet2hand[state_variable]][0],
                             atol=1e-4
                         ),
-                        f"ASKENET {trajectory} trajectory {i}: {prior_samples[trajectory][i]}\n"
-                        f"Hand {self.askenet2hand[trajectory]} trajectory: {trajectories[self.askenet2hand[trajectory]][0]}"
+                        f"ASKENET {state_variable} trajectory {i}: {amr_trajectories[state_variable][i]}\n"
+                        f"Hand {self.askenet2hand[state_variable]} trajectory: {hand_trajectories[self.askenet2hand[state_variable]][0]}"
                     )
 
     def test_sidarthe(self):
