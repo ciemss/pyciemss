@@ -1,9 +1,13 @@
 import unittest
 import torch
 import mira
+
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
+import mira
+import requests
 from mira.examples.sir import sir_parameterized as sir # MIRA model
 from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
-from pyciemss.interfaces import DynamicalSystem
+from pyciemss.interfaces import DynamicalSystem, setup_model
 from pyciemss.utils import reparameterize
 from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
 from pyciemss.PetriNetODE.models import SIR_with_uncertainty, SEIARHD # Hand model
