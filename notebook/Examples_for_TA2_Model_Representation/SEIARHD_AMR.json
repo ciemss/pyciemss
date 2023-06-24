@@ -58,8 +58,6 @@
         }
       },
       {
-<<<<<<< HEAD
-=======
         "id": "deceased_population",
         "name": "deceased_population",
         "grounding": {
@@ -70,7 +68,6 @@
         }
       },
       {
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         "id": "hospitalized_population",
         "name": "hospitalized_population",
         "grounding": {
@@ -150,11 +147,7 @@
           "symptomatic_population"
         ],
         "output": [
-<<<<<<< HEAD
-          "hospitalized_population"
-=======
           "deceased_population"
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         ],
         "properties": {
           "name": "t5"
@@ -190,11 +183,7 @@
           "hospitalized_population"
         ],
         "output": [
-<<<<<<< HEAD
-          "recovered_population"
-=======
           "deceased_population"
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         ],
         "properties": {
           "name": "t8"
@@ -311,17 +300,8 @@
           "value": 0.55
         },
         {
-<<<<<<< HEAD
-          "id": "delta",
-          "value": 1.5
-        },
-        {
-          "id": "total_population",
-          "value": 100000.0
-=======
           "id": "beta",
           "value": 0.55
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         },
         {
           "id": "delta",
@@ -340,13 +320,8 @@
           "value": 0.1
         },
         {
-<<<<<<< HEAD
-          "id": "dnh",
-          "value": 0.001
-=======
           "id": "gamma",
           "value": 0.2
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         },
         {
           "id": "los",
