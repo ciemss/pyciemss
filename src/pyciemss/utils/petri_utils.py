@@ -1,6 +1,6 @@
 import mira
 import mira.modeling
-from mira.modeling.askenet.petri import AskeNetPetriNetModel
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
 import json
 import functools
 import collections
