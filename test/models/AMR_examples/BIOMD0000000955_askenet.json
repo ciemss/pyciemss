@@ -367,8 +367,8 @@
     },
     {
      "target": "t7",
-     "expression": "Infected*lambda",
-     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>lambda</ci></apply>"
+     "expression": "Infected*XXlambdaXX",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>XXlambdaXX</ci></apply>"
     },
     {
      "target": "t8",
@@ -526,7 +526,7 @@
      }
     },
     {
-     "id": "lambda",
+     "id": "XXlambdaXX",
      "value": 0.034,
      "distribution": {
       "type": "StandardUniform1",
