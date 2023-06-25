@@ -58,19 +58,6 @@
         }
       },
       {
-<<<<<<< HEAD
-=======
-        "id": "deceased_population",
-        "name": "deceased_population",
-        "grounding": {
-          "identifiers": {
-            "ncit": "C168970"
-          },
-          "modifiers": {}
-        }
-      },
-      {
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         "id": "hospitalized_population",
         "name": "hospitalized_population",
         "grounding": {
@@ -150,11 +137,7 @@
           "symptomatic_population"
         ],
         "output": [
-<<<<<<< HEAD
           "hospitalized_population"
-=======
-          "deceased_population"
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         ],
         "properties": {
           "name": "t5"
@@ -190,11 +173,7 @@
           "hospitalized_population"
         ],
         "output": [
-<<<<<<< HEAD
           "recovered_population"
-=======
-          "deceased_population"
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
         ],
         "properties": {
           "name": "t8"
@@ -290,11 +269,6 @@
           "expression_mathml": "<cn>0.0</cn>"
         },
         {
-          "target": "deceased_population",
-          "expression": "0.0",
-          "expression_mathml": "<cn>0.0</cn>"
-        },
-        {
           "target": "hospitalized_population",
           "expression": "0.0",
           "expression_mathml": "<cn>0.0</cn>"
@@ -311,50 +285,40 @@
           "value": 0.55
         },
         {
-<<<<<<< HEAD
           "id": "delta",
           "value": 1.5
         },
         {
           "id": "total_population",
           "value": 100000.0
-=======
-          "id": "beta",
-          "value": 0.55
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
-        },
-        {
-          "id": "delta",
-          "value": 1.5
-        },
-        {
-          "id": "pS",
-          "value": 0.7
         },
         {
           "id": "alpha",
           "value": 4.0
         },
         {
+          "id": "pS",
+          "value": 0.7
+        },
+        {
+          "id": "gamma",
+          "value": 0.2
+        },
+        {
           "id": "hosp",
           "value": 0.1
         },
         {
-<<<<<<< HEAD
           "id": "dnh",
           "value": 0.001
-=======
-          "id": "gamma",
-          "value": 0.2
->>>>>>> 01d1a613c9fc7f7d214a327557d1afc65e33c495
-        },
-        {
-          "id": "los",
-          "value": 7.0
         },
         {
           "id": "dh",
           "value": 0.1
+        },
+        {
+          "id": "los",
+          "value": 7.0
         }
       ],
       "observables": [],
