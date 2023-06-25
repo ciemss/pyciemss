@@ -92,10 +92,10 @@ class TestPetrinetDerivatives(unittest.TestCase):
 
     def setup_SIDARTHE(self):
         """Set up the MIRA and ASKENET SIDARTHE models."""
-        sidarthe_mira_url = 'https://raw.githubusercontent.com/ciemss/pyciemss/186-sidarthe-model-will-fail-on-new-mirapetrinetodesystem-deriv-function/test/models/april_ensemble_demo/BIOMD0000000955_template_model.json'
+        sidarthe_mira_url = 'test/models/april_ensemble_demo/BIOMD0000000955_template_model.json'
         sidarthe_mira_model = load_petri_model(sidarthe_mira_url)
 
-        sidarthe_askenet_url = 'https://raw.githubusercontent.com/ciemss/pyciemss/186-sidarthe-model-will-fail-on-new-mirapetrinetodesystem-deriv-function/test/models/AMR_examples/BIOMD0000000955_askenet.json'
+        sidarthe_askenet_url = 'test/models/AMR_examples/BIOMD0000000955_askenet.json'
         sidarthe_askenet_model = load_petri_model(sidarthe_askenet_url)
 
         initial_state = {param: sidarthe_mira_model.G.template_model.initials[param].value
@@ -159,7 +159,7 @@ class TestPetrinetDerivatives(unittest.TestCase):
             amr_model = reparameterize(self.sidarthe_askenet_model, {
                 param : mira_trajectories[param][i]
                 for param in mira_trajectories.keys()                 
-                if '_sol' not in param
+                if '_sol' not in param and param in self.sidarthe_askenet_model.G.parameters.keys()
                 }
             )
             amr_trajectories = sample(amr_model, timepoints, 1)
