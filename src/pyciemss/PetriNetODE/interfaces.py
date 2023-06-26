@@ -151,11 +151,11 @@ def load_petri_model(
     """
 
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path)
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_mira(petri_model_or_path)
+        return MiraPetriNetODESystem.from_askenet(petri_model_or_path)
 
 
 @setup_model.register

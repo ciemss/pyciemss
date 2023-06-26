@@ -58,16 +58,6 @@
         }
       },
       {
-        "id": "deceased_population",
-        "name": "deceased_population",
-        "grounding": {
-          "identifiers": {
-            "ncit": "C168970"
-          },
-          "modifiers": {}
-        }
-      },
-      {
         "id": "hospitalized_population",
         "name": "hospitalized_population",
         "grounding": {
@@ -147,7 +137,7 @@
           "symptomatic_population"
         ],
         "output": [
-          "deceased_population"
+          "hospitalized_population"
         ],
         "properties": {
           "name": "t5"
@@ -183,7 +173,7 @@
           "hospitalized_population"
         ],
         "output": [
-          "deceased_population"
+          "recovered_population"
         ],
         "properties": {
           "name": "t8"
@@ -279,11 +269,6 @@
           "expression_mathml": "<cn>0.0</cn>"
         },
         {
-          "target": "deceased_population",
-          "expression": "0.0",
-          "expression_mathml": "<cn>0.0</cn>"
-        },
-        {
           "target": "hospitalized_population",
           "expression": "0.0",
           "expression_mathml": "<cn>0.0</cn>"
@@ -300,36 +285,40 @@
           "value": 0.55
         },
         {
-          "id": "beta",
-          "value": 0.55
-        },
-        {
           "id": "delta",
           "value": 1.5
         },
         {
-          "id": "pS",
-          "value": 0.7
+          "id": "total_population",
+          "value": 100000.0
         },
         {
           "id": "alpha",
           "value": 4.0
         },
         {
-          "id": "hosp",
-          "value": 0.1
+          "id": "pS",
+          "value": 0.7
         },
         {
           "id": "gamma",
           "value": 0.2
         },
         {
-          "id": "los",
-          "value": 7.0
+          "id": "hosp",
+          "value": 0.1
+        },
+        {
+          "id": "dnh",
+          "value": 0.001
         },
         {
           "id": "dh",
           "value": 0.1
+        },
+        {
+          "id": "los",
+          "value": 7.0
         }
       ],
       "observables": [],

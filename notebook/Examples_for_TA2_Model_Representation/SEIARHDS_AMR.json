@@ -330,12 +330,12 @@
           "value": 0.001
         },
         {
-          "id": "los",
-          "value": 7.0
-        },
-        {
           "id": "dh",
           "value": 0.1
+        },
+        {
+          "id": "los",
+          "value": 7.0
         },
         {
           "id": "tau",
@@ -349,16 +349,18 @@
     }
   },
   "metadata": {
-    "license": null,
-    "authors": [],
-    "references": [],
-    "time_scale": null,
-    "time_start": null,
-    "time_end": null,
-    "locations": [],
-    "pathogens": [],
-    "diseases": [],
-    "hosts": [],
-    "model_types": []
+    "annotations": {
+      "license": null,
+      "authors": [],
+      "references": [],
+      "time_scale": null,
+      "time_start": null,
+      "time_end": null,
+      "locations": [],
+      "pathogens": [],
+      "diseases": [],
+      "hosts": [],
+      "model_types": []
+    }
   }
 }

@@ -1,9 +1,12 @@
+import mira
+import mira.modeling
+from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
 import json
 import functools
 import collections
 import numbers
 from typing import TypedDict, Literal, TypeVar, Optional, Callable, List, Tuple, Dict, Union, NamedTuple
-
+import requests
 import torch
 import numpy
 import pyro
@@ -37,15 +40,24 @@ __all__ = ['seq_id_suffix',
 from pyciemss.interfaces import DynamicalSystem, intervene
 
 
+def convert_mira_template_to_askenet_json(url: str) -> dict:
+    """Converts a url pointing to a MIRA template to an AskeNet JSON model."""
+    res = requests.get(url)
+    model_json = res.json()
+    model_template = mira.metamodel.TemplateModel.from_json(model_json)
+    mira_model = mira.modeling.Model(model_template)
+    askenet_model = AskeNetPetriNetModel(mira_model)
+    return askenet_model.to_json()
 
-def reparameterize(model: DynamicalSystem, parameters: dict, t0=0, delta_t=1e-5) -> DynamicalSystem:
+
+def reparameterize(model: DynamicalSystem, parameters: dict, t0: float = 0.0, delta_t: float = 1e-5) -> DynamicalSystem:
     """Intervenes on an initialized model to set the parameters as specified in the dictionary."""
     parameter_interventions = [(t0+(i+1)*delta_t, param, value) for i, (param, value) in enumerate(parameters.items())]
     return intervene(model, parameter_interventions)
 
 
 def seq_id_suffix(df):
-    """Utility that turns non-unique-names in to unique names.  (Suitable for a groupby/apply)
+    """Utility that turns non-unique-names in to unique names.  (Suitable for a groupby/apply).
     """
     seen = {}
     def maybe_extend(entry):

@@ -5,7 +5,7 @@ import operator
 import os
 import warnings
 from typing import Dict, List, Optional, Union, OrderedDict
-
+import requests
 import networkx
 import numpy
 import torch
@@ -17,7 +17,6 @@ import mira.modeling.petri
 import mira.metamodel
 import mira.sources
 import mira.sources.petri
-from mira.sources.askenet import model_from_url, model_from_json_file
 import mira.sources.askenet.petrinet as petrinet
 import mira.sources.askenet.regnet as regnet
 from pyciemss.utils.distributions import ScaledBeta
@@ -373,9 +372,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         if "templates" in model_json:
             return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
         elif 'petrinet' in model_json['schema']:
-            return petrinet.template_model_from_askenet_json(model_json)
+            return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json))
         elif 'regnet' in model_json['schema']:
-            return regnet.template_model_from_askenet_json(model_json)
+            return cls.from_askenet(regnet.template_model_from_askenet_json(model_json))
 
 
     
@@ -384,11 +383,14 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def _from_path(cls, model_json_path: str):
         """Return a model from an ASKEM Model Representation path (either url or local file)."""
         if "https://" in model_json_path:
-            return cls.from_askenet(model_from_url(model_json_path))
+            res = requests.get(model_json_path)
+            model_json = res.json()
         else:
             if not os.path.exists(model_json_path):
                 raise ValueError(f"Model file not found: {model_json_path}")
-            return cls.from_askenet(model_from_json_file(model_json_path))
+            with open(model_json_path) as fh:
+                model_json = json.load(fh)
+        return cls.from_askenet(model_json)
 
     def to_askenet_petrinet(self) -> dict:
         """Return an ASKEM Petrinet Model Representation json."""
@@ -413,9 +415,8 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             flux = getattr(self, get_name(transition.rate)) * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
-            n = len(transition.control)
             if len(transition.control) > 0:
-                flux = flux * functools.reduce(operator.mul, [states[k] for k in transition.control]) / population_size**n
+                flux = flux * functools.reduce(operator.add, [states[k] for k in transition.control]) / population_size**len(transition.control)
 
             for c in transition.consumed:
                 derivs[c] -= flux
