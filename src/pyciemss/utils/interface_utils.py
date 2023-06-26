@@ -4,10 +4,13 @@ import numpy as np
 import torch
 
 import csv
-from typing import Dict
+from typing import Dict, Optional
 
 
-def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
+def convert_to_output_format(
+    samples: Dict[str, torch.Tensor],
+    interventions: Optional[Dict[str, torch.Tensor]] = None,
+) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """

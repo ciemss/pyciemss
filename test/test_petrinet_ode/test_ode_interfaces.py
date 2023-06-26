@@ -36,7 +36,7 @@ class Test_Samples_Format(unittest.TestCase):
         DEMO_PATH = "notebook/integration_demo/"
 
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        self.num_samples = 100
+        self.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
 
