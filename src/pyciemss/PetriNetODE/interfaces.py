@@ -81,7 +81,7 @@ def load_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
-            
+
     Returns:
         samples: PetriSolution
             - The samples from the model as a pandas DataFrame.
@@ -128,7 +128,7 @@ def load_and_calibrate_and_sample_petri_model(
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
 ) -> pd.DataFrame:
-        """
+    """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
     Args:
@@ -165,7 +165,7 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
-        
+
     Returns:
         samples: PetriSolution
             - The samples from the model as a pandas DataFrame.
