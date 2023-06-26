@@ -33,38 +33,57 @@ class Test_Samples_Format(unittest.TestCase):
     # Setup for the tests
     def setUp(self):
         # Should be using AMR model instead
-        MIRA_PATH = "test/models/april_ensemble_demo/"
-        filename = "BIOMD0000000955_template_model.json"
-        filename = os.path.join(MIRA_PATH, filename)
+        DEMO_PATH = "notebook/integration_demo/"
+
+        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
         self.num_samples = 100
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
 
         self.samples = load_and_sample_petri_model(
-            filename, self.num_samples, timepoints=timepoints, add_uncertainty=True
+            ASKENET_PATH,
+            self.num_samples,
+            timepoints=timepoints,
+            add_uncertainty=True,
+        )
+
+        data_path = os.path.join(DEMO_PATH, "data.csv")
+
+        self.calibrated_samples = load_and_calibrate_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            self.num_samples,
+            timepoints=timepoints,
+            add_uncertainty=True,
+            verbose=True,
+            num_iterations=5,
         )
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        self.assertIsInstance(self.samples, pd.DataFrame)
+        for s in [self.samples, self.calibrated_samples]:
+            self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
         """Test that `samples` has the correct number of rows and columns"""
-        self.assertEqual(self.samples.shape[0], self.num_timepoints * self.num_samples)
-        self.assertGreaterEqual(self.samples.shape[1], 2)
+        for s in [self.samples, self.calibrated_samples]:
+            self.assertEqual(s.shape[0], self.num_timepoints * self.num_samples)
+            self.assertGreaterEqual(s.shape[1], 2)
 
     def test_samples_column_names(self):
         """Test that `samples` has required column names"""
-        self.assertEqual(list(self.samples.columns)[:2], ["timepoint_id", "sample_id"])
-        for col_name in self.samples.columns[2:]:
-            self.assertIn(col_name.split("_")[1], ("param", "sol"))
+        for s in [self.samples, self.calibrated_samples]:
+            self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
+            for col_name in s.columns[2:]:
+                self.assertIn(col_name.split("_")[1], ("param", "sol"))
 
     def test_samples_dtype(self):
         """Test that `samples` has the required data types"""
-        self.assertEqual(self.samples["timepoint_id"].dtype, np.int64)
-        self.assertEqual(self.samples["sample_id"].dtype, np.int64)
-        for col_name in self.samples.columns[2:]:
-            self.assertEqual(self.samples[col_name].dtype, np.float64)
+        for s in [self.samples, self.calibrated_samples]:
+            self.assertEqual(s["timepoint_id"].dtype, np.int64)
+            self.assertEqual(s["sample_id"].dtype, np.int64)
+            for col_name in s.columns[2:]:
+                self.assertEqual(s[col_name].dtype, np.float64)
 
 
 class TestODEInterfaces(unittest.TestCase):
