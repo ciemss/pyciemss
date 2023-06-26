@@ -51,7 +51,6 @@ def load_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     start_state: Optional[dict[str, float]] = None,
-    add_uncertainty: bool = True,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
@@ -70,8 +69,6 @@ def load_and_sample_petri_model(
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
-        add_uncertainty: bool
-            - Whether to add uncertainty to the model parameters. If False, the model is deterministic.
         pseudocount: float > 0.0
             - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
             - Larger values of pseudocount correspond to more certainty about the model parameters.
@@ -118,7 +115,6 @@ def load_and_calibrate_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     start_state: Optional[dict[str, float]] = None,
-    add_uncertainty: bool = True,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
@@ -144,8 +140,6 @@ def load_and_calibrate_and_sample_petri_model(
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
-        add_uncertainty: bool
-            - Whether to add uncertainty to the model parameters. If False, the model is deterministic.
         pseudocount: float > 0.0
             - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
             - Larger values of pseudocount correspond to more certainty about the model parameters.
@@ -174,7 +168,7 @@ def load_and_calibrate_and_sample_petri_model(
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=add_uncertainty,
+        add_uncertainty=True,
         pseudocount=pseudocount,
     )
 
