@@ -58,6 +58,33 @@ def load_and_sample_petri_model(
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
+
+    Args:
+        petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
+            - A path to a petri net file, or a petri net object.
+            - This path can be a URL or a local path to a mira model or AMR model.
+            - Alternatively, this can be a mira template model directly.
+        num_samples: int
+            - The number of samples to draw from the model.
+        timepoints: [Iterable[float]]
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        start_state: Optional[dict[str, float]]
+            - The initial state of the model. If None, the initial state is taken from the mira model.
+        add_uncertainty: bool
+            - Whether to add uncertainty to the model parameters. If False, the model is deterministic.
+        pseudocount: float > 0.0
+            - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
+            - Larger values of pseudocount correspond to more certainty about the model parameters.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` with the `timepoints`.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+        method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+
+    Returns:
+        samples: PetriSolution
+            - The samples from the model as a pandas DataFrame.
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
@@ -100,9 +127,48 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-) -> PetriSolution:
+) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
+
+    Args:
+        petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
+            - A path to a petri net file, or a petri net object.
+            - This path can be a URL or a local path to a mira model or AMR model.
+            - Alternatively, this can be a mira template model directly.
+        data_path: str
+            - The path to the data to calibrate the model to. See notebook/integration_demo/data.csv for an example of the format.
+        num_samples: int
+            - The number of samples to draw from the model.
+        timepoints: [Iterable[float]]
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        start_state: Optional[dict[str, float]]
+            - The initial state of the model. If None, the initial state is taken from the mira model.
+        add_uncertainty: bool
+            - Whether to add uncertainty to the model parameters. If False, the model is deterministic.
+        pseudocount: float > 0.0
+            - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
+            - Larger values of pseudocount correspond to more certainty about the model parameters.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` with the `timepoints`.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+        num_iterations: int > 0
+            - The number of iterations to run the calibration for.
+        lr: float > 0.0
+            - The learning rate to use for the calibration.
+        verbose: bool
+            - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
+        num_particles: int > 0
+            - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
+        autoguide: pyro.infer.autoguide.AutoGuide
+            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+
+    Returns:
+        samples: PetriSolution
+            - The samples from the model as a pandas DataFrame.
     """
     data = csv_to_list(data_path)
 
