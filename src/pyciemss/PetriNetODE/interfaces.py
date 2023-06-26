@@ -10,7 +10,7 @@ from pyciemss.PetriNetODE.base import (
 )
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
-from pyciemss.utils.output_processing_utils import convert_to_output_format
+from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 import time
 import numpy as np
@@ -80,7 +80,6 @@ def load_and_sample_petri_model(
     )
     # Fix the parameters here with reparameterize.
 
-
     processed_samples = convert_to_output_format(samples)
 
     return processed_samples
@@ -88,7 +87,7 @@ def load_and_sample_petri_model(
 
 def load_and_calibrate_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
-    data: Iterable[Tuple[float, dict[str, float]]],
+    data_path: str,
     num_samples: int,
     timepoints: Iterable[float],
     start_state: Optional[dict[str, float]] = None,
@@ -105,6 +104,8 @@ def load_and_calibrate_and_sample_petri_model(
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
     """
+    data = csv_to_list(data_path)
+
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=add_uncertainty,
