@@ -44,7 +44,6 @@ class Test_Samples_Format(unittest.TestCase):
             ASKENET_PATH,
             self.num_samples,
             timepoints=timepoints,
-            add_uncertainty=True,
         )
 
         data_path = os.path.join(DEMO_PATH, "data.csv")
@@ -54,7 +53,6 @@ class Test_Samples_Format(unittest.TestCase):
             data_path,
             self.num_samples,
             timepoints=timepoints,
-            add_uncertainty=True,
             verbose=True,
             num_iterations=5,
         )
