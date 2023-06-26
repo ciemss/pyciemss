@@ -287,3 +287,33 @@ def calibrate_vega(datasource, **kwargs):
         schema["data"][0]["format"] = kwargs
         
     return schema
+
+def triangle_contour_vega(datasource, **kwargs):
+    """Create a contour plot from the passed datasource.
+    
+    datasource -- 
+      * filename: File to load data from that will be loaded via vega's "url" facility
+                  
+                  Path should be relative to the running file-server, as they will be 
+                  resolved in that context. If in a notebook, it is relative to the notebook
+                  (not the root notebook server processes).
+      * dataframe: A dataframe ready for rendering.  The data will be inserted into the schema 
+                as a record-oriented dictionary.  
+
+    kwargs -- If passing filename, extra parameters to the vega's url facility
+
+    """
+    with open("contour.vg.json") as f:
+        schema = json.load(f)
+  
+    if isinstance(datasource, pd.DataFrame):
+        del schema["data"][0]["url"]
+        schema["data"][0]["values"] = datasource.to_dict(orient="records")
+    elif isinstance(datasource, str):
+        del schema["data"][0]["url"]
+        schema["data"][0]["values"] =datasource
+    else:
+        schema["data"][0]["url"] = datasource
+        schema["data"][0]["format"] = kwargs
+        
+    return schema
