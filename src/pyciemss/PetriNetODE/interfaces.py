@@ -70,7 +70,7 @@ def load_and_sample_petri_model(
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
+            - The pseudocount to use for adding uncertainty to the model parameters.
             - Larger values of pseudocount correspond to more certainty about the model parameters.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
@@ -141,7 +141,7 @@ def load_and_calibrate_and_sample_petri_model(
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters. This is only used if add_uncertainty is True.
+            - The pseudocount to use for adding uncertainty to the model parameters.
             - Larger values of pseudocount correspond to more certainty about the model parameters.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
