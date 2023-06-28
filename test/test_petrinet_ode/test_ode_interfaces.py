@@ -56,6 +56,16 @@ class Test_Samples_Format(unittest.TestCase):
             verbose=True,
             num_iterations=5,
         )
+        self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        self.intervened_samples = load_and_sample_petri_model(
+            ASKENET_PATH,
+            self.num_samples,
+            timepoints=timepoints,
+            interventions=self.interventions,
+        )
+
+
+    
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
@@ -83,7 +93,15 @@ class Test_Samples_Format(unittest.TestCase):
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
+    def test_samples_intervened_values(self):
+        """Test that intervened `samples` displays the correct parameter values."""
+        for time, param, value in self.interventions:
+            self.assertEqual(self.intervened_samples.loc[intervened_samples["timepoint_id"] > time) & (
+                self.intervened_samples[f"{param}_param"] == value), "value"].values[0], value)
+        
 
+
+        
 class TestODEInterfaces(unittest.TestCase):
     """Tests for the ODE interfaces."""
 

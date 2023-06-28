@@ -116,7 +116,7 @@ def load_and_sample_petri_model(
     )
     # Fix the parameters here with reparameterize.
 
-    processed_samples = convert_to_output_format(samples, interventions=interventions)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
@@ -221,7 +221,7 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, interventions=interventions)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
