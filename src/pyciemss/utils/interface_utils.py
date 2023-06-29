@@ -107,12 +107,12 @@ def interventions_and_sampled_params_to_interval(interventions: dict, sampled_pa
 
 
 def assign_interventions_to_timepoints(interventions: dict, timepoints: Iterable[float], sampled_params: dict) -> dict:
-    """Generate a len(timepoints)*len(samples) array of parameter values that captures each intervention
+    """Assign the value of each parameter to every timepoint, taking into account interventions.
 
     :param interventions: dict keyed by parameter name where each value is a tuple (intervention_time, value)
     :param timepoints: iterable of timepoints
     :param sampled_params: dict keyed by parameter name where each value is an array of sampled parameter values
-    :return: dict keyed by param where the values are sorted by timepoint and sample
+    :return: dict keyed by param where the values are sorted by sample then timepoint
     """
     # transform interventions and sampled parameters into intervals
     param_interval_dict = interventions_and_sampled_params_to_interval(interventions, sampled_params)
