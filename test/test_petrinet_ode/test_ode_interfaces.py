@@ -20,6 +20,7 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
+from pandas.testing import assert_frame_equal
 from pyciemss.PetriNetODE.interfaces import (
     load_and_sample_petri_model,
     load_and_calibrate_and_sample_petri_model,
@@ -93,13 +94,7 @@ class Test_Samples_Format(unittest.TestCase):
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
-    def test_samples_intervened_values(self):
-        """Test that intervened `samples` displays the correct parameter values."""
-        for time, param, value in self.interventions:
-            self.assertEqual(self.intervened_samples.loc[intervened_samples["timepoint_id"] > time) & (
-                self.intervened_samples[f"{param}_param"] == value), "value"].values[0], value)
         
-
 
         
 class TestODEInterfaces(unittest.TestCase):
@@ -117,7 +112,11 @@ class TestODEInterfaces(unittest.TestCase):
             "infected_population": 0.01,
             "immune_population": 0.0,
         }
+        self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        self.num_samples = 2
+        self.timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
 
+        
     def test_load_petri_from_file(self):
         """Test the load_petri function when called on a string."""
         model = load_petri_model(self.filename, add_uncertainty=True)
@@ -265,6 +264,27 @@ class TestODEInterfaces(unittest.TestCase):
         self.assertEqual(
             simulation["infected_population_sol"].shape[1], len(timepoints)
         )
+
+    def test_load_and_sample_petri_model(self):
+        """Test the load_and_sample_petri_model function with and without interventions."""
+        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        interventions=[(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
+        timepoints = [1.0, 1.1, 1.2, 1.3]
+        num_samples = 3
+        initial_state = {
+            "Susceptible": 0.99,
+            "Infected": 0.01,
+            "Recovered": 0.0,
+        }
+        expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
+        actual_intervened_samples = load_and_sample_petri_model(ASKENET_PATH, num_samples, timepoints, interventions = interventions, start_state=initial_state)
+        assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
+        
+                           
+
+
+
+
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''

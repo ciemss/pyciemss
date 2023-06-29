@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+import bisect
 import torch
 
 import csv
@@ -49,7 +49,7 @@ def convert_to_output_format(
     else:
         d = {
             **d,
-            **assign_parameters_to_timepoints(interventions, timepoints, pyciemss_results["parameters"])
+            **assign_interventions_to_timepoints(interventions, timepoints, pyciemss_results["parameters"])
         }
 
     # Solution (state variables)
@@ -77,46 +77,59 @@ def csv_to_list(filename):
             result.append((float(row[0]), {k: float(v) for k, v in data_dict.items()}))
     return result
 
-def intervention_to_interval(interventions:dict, initial_params: dict) -> dict:
-    """Convert intervention dict and initial_params dict to dict of intervals.
 
-    :param interventions: dict of interventions keyed by parameter name with values (start, value)
-    :param initial_values: dict of initial values keyed by parameter name with the unintervened parameter value
-    :return: dict keyed by param where the values lists of intervals and values sorted by start time.
+def interventions_and_sampled_params_to_interval(interventions: dict, sampled_params: dict) -> dict:
+    """Convert interventions and sampled parameters to dict of intervals.
+
+    :param interventions: dict keyed by parameter name where each value is a tuple (intervention_time, value)
+    :param sampled_params: dict keyed by param where each value is an array of sampled parameter values
+    :return: dict keyed by param where the values lists of intervals and values sorted by start time
     """
-    param_dict = {param: [dict(start=0, end=np.inf, expected_value=value)]
-                  for param, value in initial_params.items()}
-    for i, (start, param, value) in enumerate(sorted(interventions)):
-        param_dict[param][-1]['end'] = start
-        param_dict[param].append(dict(start=start, end=np.inf, expected_value=[value]*len(initial_values[param])))
+    # assign each sampled parameter to an infinite interval
+    param_dict = {param: [dict(start=-np.inf, end=np.inf, param_values=value)]
+                  for param, value in sampled_params.items()}
+    
+    # sort the interventions by start time
+    for start, param, intervention_value in sorted(interventions):
+        
+        # update the end time of the previous interval
+        param_dict[f"{param}_param"][-1]['end'] = start
+        
+        # add new interval and broadcast the intevention value to the size of the sampled parameters
+        param_dict[f"{param}_param"].append(
+            dict(start=start, end=np.inf, param_values=[intervention_value]*len(sampled_params[f"{param}_param"])))
+        
+    # sort intervals by start time
     return {
         k: sorted(v, key=lambda x: x['start'])
         for k, v in param_dict.items()
-    }     
+    }
 
-def assign_parameters_to_timepoints(interventions: dict, timepoints: Iterable[float], initial_values: dict) -> dict:
-    """Generate a len(timepoints)*len(samples) array of parameter values for each parameter in interventions.
 
-    :param interventions: dict of interventions keyed by parameter name with values (start, value)
+def assign_interventions_to_timepoints(interventions: dict, timepoints: Iterable[float], sampled_params: dict) -> dict:
+    """Generate a len(timepoints)*len(samples) array of parameter values that captures each intervention
+
+    :param interventions: dict keyed by parameter name where each value is a tuple (intervention_time, value)
     :param timepoints: iterable of timepoints
-    :param initial_values: dict of initial values keyed by parameter name with the unintervened parameter value
-    :return: dict keyed by param where the values are lists of (timepoint, value) pairs sorted by timepoint
+    :param sampled_params: dict keyed by parameter name where each value is an array of sampled parameter values
+    :return: dict keyed by param where the values are sorted by timepoint and sample
     """
-    # transform samples into intervals and parameter values
-    param_interval_dict = intervention_to_interval(interventions, initial_values)
+    # transform interventions and sampled parameters into intervals
+    param_interval_dict = interventions_and_sampled_params_to_interval(interventions, sampled_params)
     result = {}
     for param, interval_dict in param_interval_dict.items():
         intervals = [(d['start'], d['end']) for d in interval_dict]
-        values_sets = [d['expected_value'] for  d in interval_dict]
+        param_values = [d['param_values'] for d in interval_dict]
 
         # generate list of parameter values at each timepoint
         result[param] = []
-        for values in zip(*values_sets):
+        for values in zip(*param_values):
             for t in timepoints:
+                # find the interval that contains the timepoint
                 i = bisect.bisect(intervals, (t,)) - 1
                 if 0 <= i < len(intervals) and intervals[i][0] <= t < intervals[i][1]:
                     result[param].append(values[i])
                 else:
+                    # If the timepoint is not in an interval, assign None. This should never happen
                     result[param].append(None)
     return result
-

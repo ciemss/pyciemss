@@ -102,11 +102,11 @@ def load_and_sample_petri_model(
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
     if interventions is not None:
-        interventions = [
+        intervention_events = [
             StaticParameterInterventionEvent(timepoint, parameter, value)
             for timepoint, parameter, value in interventions
         ]
-        model.load_events(interventions)
+        model.load_events(intervention_events)
 
     samples = sample(
         model,
@@ -197,11 +197,11 @@ def load_and_calibrate_and_sample_petri_model(
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
     if interventions is not None:
-        interventions = [
+        intervention_events = [
             StaticParameterInterventionEvent(timepoint, parameter, value)
             for timepoint, parameter, value in interventions
         ]
-        model.load_events(interventions)
+        model.load_events(intervention_events)
 
     inferred_parameters = calibrate(
         model,
