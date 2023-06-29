@@ -280,7 +280,24 @@ class TestODEInterfaces(unittest.TestCase):
         actual_intervened_samples = load_and_sample_petri_model(ASKENET_PATH, num_samples, timepoints, interventions = interventions, start_state=initial_state)
         assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
         
-                           
+
+    def test_load_and_calibrate_and_sample_petri_model(self):
+        """Test the load_and_sample_petri_model function with and without interventions."""
+        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        interventions=[(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
+        timepoints = [1.0, 1.1, 1.2, 1.3]
+        num_samples = 3
+        initial_state = {
+            "Susceptible": 0.99,
+            "Infected": 0.01,
+            "Recovered": 0.0,
+        }
+        expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
+        data_path = 'test/test_petrinet_ode/data.csv'
+        actual_intervened_samples = load_and_calibrate_and_sample_petri_model(ASKENET_PATH, data_path, num_samples, timepoints, interventions = interventions, start_state=initial_state, num_iterations=2)
+        assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
+        
+
 
 
 
