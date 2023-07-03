@@ -127,12 +127,13 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
+    processed_samples = convert_to_output_format(samples)
 
-    return samples
-    # TODO: Discuss w/ TA4 how they'd like the output of ensembles
-    # processed_samples = convert_to_output_format(samples)
+    return processed_samples
 
-    # return processed_samples
+
+##############################################################################
+# Internal Interfaces Below - TA4 above
 
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.

@@ -202,6 +202,9 @@ def load_and_calibrate_and_sample_petri_model(
     return processed_samples
 
 
+##############################################################################
+# Internal Interfaces Below - TA4 above
+
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,

@@ -17,11 +17,21 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
     for name, sample in samples.items():
         if sample.ndim == 1:
             # Any 1D array is a sample from the distribution over parameters.
-            # Any 2D array is a sample from the distribution over states.
+            # Any 2D array is a sample from the distribution over states, unless it's a model weight.
             name = name + "_param"
             pyciemss_results["parameters"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
+        elif name == "model_weights":
+            n_models = sample.shape[1]
+            for i in range(n_models):
+                pyciemss_results["parameters"][f"model_weight_{i}"] = (
+                    sample[:, i]
+                    .data.detach()
+                    .cpu()
+                    .numpy()
+                    .astype(np.float64)
+                )
         else:
             pyciemss_results["states"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
