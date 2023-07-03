@@ -130,7 +130,7 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints)
 
     return processed_samples
 
@@ -267,7 +267,7 @@ def load_and_calibrate_and_sample_ensemble_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints)
 
     return processed_samples
     
