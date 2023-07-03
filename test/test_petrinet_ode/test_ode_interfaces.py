@@ -84,7 +84,7 @@ class Test_Samples_Format(unittest.TestCase):
         for s in [self.samples, self.calibrated_samples]:
             self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
             for col_name in s.columns[2:]:
-                self.assertIn(col_name.split("_")[1], ("param", "sol"))
+                self.assertIn(col_name.split("_")[-1], ("param", "sol"))
 
     def test_samples_dtype(self):
         """Test that `samples` has the required data types"""
