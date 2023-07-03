@@ -46,17 +46,28 @@ class ScaledBeta(TransformedDistribution):
         return self.base_dist.variance() * self._max ** 2
 
 
-def mira_uniform1_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Distribution:
+def mira_uniform_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Distribution:
     minimum = parameters["minimum"]
     maximum = parameters["maximum"]
     return pyro.distributions.Uniform(minimum, maximum)
+
+def mira_normal_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Distribution:
+    mean = parameters["mean"]
+    std = parameters["stdev"]
+    return pyro.distributions.Normal(mean, std)
+
+#TODO: Add lognormal, beta, gamma, etc.
 
 # Key - MIRA distribution type : str
 # Value - Callable for converting MIRA distribution to Pyro distribution : Callable[[Dict[str, float]], pyro.distributions.Distribution]
 # See https://github.com/indralab/mira/blob/main/mira/dkg/resources/probonto.json for MIRA distribution types
 _MIRA_TO_PYRO = {
-    "Uniform1": mira_uniform1_to_pyro,
-    "StandardUniform1": mira_uniform1_to_pyro # Appears to be the same spec as "Uniform1"
+    "Uniform1": mira_uniform_to_pyro,
+    "StandardUniform1": mira_uniform_to_pyro,
+    "StandardNormal1": mira_normal_to_pyro, 
+    "Normal1": mira_normal_to_pyro,
+    "Normal2": mira_normal_to_pyro,
+    "Normal3": mira_normal_to_pyro
 }
 
 def mira_distribution_to_pyro(mira_dist:mira.metamodel.template_model.Distribution) -> pyro.distributions.Distribution:
