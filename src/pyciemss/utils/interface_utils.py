@@ -25,7 +25,7 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
         elif name == "model_weights":
             n_models = sample.shape[1]
             for i in range(n_models):
-                pyciemss_results["parameters"][f"model_weight_{i}"] = (
+                pyciemss_results["parameters"][f"model_{i}_weight"] = (
                     sample[:, i]
                     .data.detach()
                     .cpu()

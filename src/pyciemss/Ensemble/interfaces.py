@@ -64,9 +64,12 @@ def load_and_sample_petri_ensemble(
             - This path can be a URL or a local path to a mira model or AMR model.
             - Alternatively, this can be a mira template model directly.
         weights: Iterable[float]
-            - TODO
+            - Weights representing prior belief about which models are more likely to be correct.
+            - By convention these weights should sum to 1.0.
         solution_mappings: Iterable[Callable]
-            - TODO
+            - A list of functions that map the output of the model to the output of the shared state space.
+            - Each element of the iterable is a function that takes in a model output and returns a dict of the form {variable_name: value}.
+            - The order of the functions should match the order of the models.
         num_samples: int
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
@@ -165,10 +168,15 @@ def load_and_calibrate_and_sample_ensemble_model(
             - Alternatively, this can be a mira template model directly.
         data_path: str
             - The path to the data to calibrate the model to. See notebook/integration_demo/data.csv for an example of the format.
+            - The data should be a csv with one column for "time" and remaining columns for each state variable.
+            - Each state variable must exactly align with the state variables in the shared ensemble representation. (See `solution_mappings` for more details.)
         weights: Iterable[float]
-            - TODO
+            - Weights representing prior belief about which models are more likely to be correct.
+            - By convention these weights should sum to 1.0.
         solution_mappings: Iterable[Callable]
-            - TODO
+            - A list of functions that map the output of the model to the output of the shared state space.
+            - Each element of the iterable is a function that takes in a model output and returns a dict of the form {variable_name: value}.
+            - The order of the functions should match the order of the models.
         num_samples: int
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
