@@ -51,6 +51,7 @@ def load_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     *,
+    interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
@@ -68,6 +69,8 @@ def load_and_sample_petri_model(
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        interventions: Optional[Iterable[Tuple[float, str, float]]]
+            - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
@@ -97,6 +100,14 @@ def load_and_sample_petri_model(
         }
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    if interventions is not None:
+        intervention_events = [
+            StaticParameterInterventionEvent(timepoint, parameter, value)
+            for timepoint, parameter, value in interventions
+        ]
+        model.load_events(intervention_events)
+
     samples = sample(
         model,
         timepoints,
@@ -105,7 +116,7 @@ def load_and_sample_petri_model(
     )
     # Fix the parameters here with reparameterize.
 
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
@@ -116,6 +127,7 @@ def load_and_calibrate_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     *,
+    interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
@@ -141,6 +153,8 @@ def load_and_calibrate_and_sample_petri_model(
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        interventions: Optional[Iterable[Tuple[float, str, float]]]
+            - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
@@ -182,6 +196,14 @@ def load_and_calibrate_and_sample_petri_model(
         }
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    if interventions is not None:
+        intervention_events = [
+            StaticParameterInterventionEvent(timepoint, parameter, value)
+            for timepoint, parameter, value in interventions
+        ]
+        model.load_events(intervention_events)
+
     inferred_parameters = calibrate(
         model,
         data,
@@ -200,7 +222,7 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
