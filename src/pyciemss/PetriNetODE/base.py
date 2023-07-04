@@ -1,15 +1,18 @@
 import collections
+from collections.abc import Callable
 import functools
 import json
 import operator
 import os
 import warnings
-from typing import Dict, List, Optional, Union, OrderedDict
+from typing import Dict, List, Optional, Union, OrderedDict, Tuple
 import requests
 import networkx
 import numpy
 import torch
 import pyro
+import sympy
+from sympytorch import SymPyModule
 
 import mira
 import mira.modeling
@@ -308,7 +311,41 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
+        setattr(self, "deriv", self.compile_deriv_function())
+        
+    def compile_deriv_function(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
+        """Compile the deriv function during initialization."""
 
+        # compute the symbolic derivatives
+        symbolic_derivs = {get_name(var): 0 for var in self.var_order.values()}
+        for t in self.G.transitions.values():
+            flux = self.extract_sympy(t.template.rate_law)
+            for c in t.consumed:
+                symbolic_derivs[get_name(c)] -= flux
+            for p in t.produced:
+                symbolic_derivs[get_name(p)] += flux
+
+        # convert to a function
+        numeric_derivs = SymPyModule(expressions=list(symbolic_derivs.values()))
+
+        def deriv(self, t: float, state: Tuple[torch.Tensor]) -> Tuple[torch.Tensor]:
+            """Deriv method created on the fly."""
+            # Get the current state
+            states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
+            # Get the parameters
+            parameters = {k: getattr(self, k) for k in self.G.parameters}
+            
+            # Evaluate the rate laws for each transition
+            return numeric_derivs(**states, **parameters)
+        return deriv
+
+    def extract_sympy(self, sympy_expr_str: mira.metamodel.templates.SympyExprStr) -> sympy.Expr:
+        """Convert the mira SympyExprStr to a sympy.Expr."""
+        return sympy.sympify(str(sympy_expr_str), 
+                             locals={str(x): x 
+                                     for x in sympy_expr_str.free_symbols})
+
+        
     def create_var_order(self) -> dict[str, int]:
         '''
         Returns the order of the variables in the state vector used in the `deriv` method.
@@ -425,6 +462,31 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
         return tuple(derivs[v] for v in self.var_order.values())
 
+
+    
+    def symbolic_deriv(self, t: Time, state: State) -> StateDeriv:
+        states = {k: state[i] for i, k in enumerate(self.var_order.values())}
+        derivs = {k: 0. for k in states}
+
+        population_size = sum(states.values())
+
+        for transition in self.G.transitions.values():
+            rate_law = transition.template.rate_law
+            
+            flux = getattr(self, get_name(transition.rate)) * functools.reduce(
+                operator.mul, [states[k] for k in transition.consumed], 1
+            )
+            if len(transition.control) > 0:
+                flux = flux * functools.reduce(operator.add, [states[k] for k in transition.control]) / population_size**len(transition.control)
+
+            for c in transition.consumed:
+                derivs[c] -= flux
+            for p in transition.produced:
+                derivs[p] += flux
+
+        return tuple(derivs[v] for v in self.var_order.values())
+
+    
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_info in self.G.parameters.values():
