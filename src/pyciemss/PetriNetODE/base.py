@@ -296,7 +296,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model):
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
         self.G = G
         super().__init__()
 
@@ -311,9 +311,10 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
-        setattr(self, "deriv", self.compile_deriv_function())
+        if compile_rate_law_p:
+            setattr(self, "deriv", self.compile_rate_law())
         
-    def compile_deriv_function(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
+    def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
 
         # compute the symbolic derivatives
@@ -328,24 +329,24 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         # convert to a function
         numeric_derivs = SymPyModule(expressions=list(symbolic_derivs.values()))
 
-        def deriv(self, t: float, state: Tuple[torch.Tensor]) -> Tuple[torch.Tensor]:
+        def deriv(t: float, state: Tuple[torch.Tensor]) -> Tuple[torch.Tensor]:
             """Deriv method created on the fly."""
             # Get the current state
             states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
             # Get the parameters
-            parameters = {k: getattr(self, k) for k in self.G.parameters}
+            parameters = {k: getattr (self, k) for k in self.G.parameters}
             
             # Evaluate the rate laws for each transition
-            return numeric_derivs(**states, **parameters)
+            deriv_tensor = numeric_derivs(**states, **parameters)
+            return tuple(deriv_tensor[i] for i in range(deriv_tensor.shape[0]))
         return deriv
-
+    
     def extract_sympy(self, sympy_expr_str: mira.metamodel.templates.SympyExprStr) -> sympy.Expr:
         """Convert the mira SympyExprStr to a sympy.Expr."""
         return sympy.sympify(str(sympy_expr_str), 
                              locals={str(x): x 
                                      for x in sympy_expr_str.free_symbols})
 
-        
     def create_var_order(self) -> dict[str, int]:
         '''
         Returns the order of the variables in the state vector used in the `deriv` method.
@@ -518,7 +519,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p=True):
 
         for param_info in G.parameters.values():
             param_value = param_info.value
@@ -531,7 +532,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
             elif isinstance(param_value, (int, float)):
                 param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
 
-        super().__init__(G)
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     def __repr__(self):
