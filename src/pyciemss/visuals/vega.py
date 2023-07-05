@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict, Any, Callable
+from typing import List, Dict, Any, Callable, Union
 from collections.abc import Iterable
 from numbers import Integral, Number
 
@@ -63,20 +63,23 @@ def trajectories(
     observations,
     tspan,
     *,
-    subset: (str | Callable | list) = all,
+    points: Union[None, Any] = None,
+    subset: Union[str, Callable, list] = all,
     qlow: float = 0.05,
     qhigh: float = 0.95,
-    limit: (None | Integral) = None,
-    relabel: (None | Dict[str, str]) = None,
+    limit: Union[None, Integral] = None,
+    relabel: Union[None, Dict[str, str]] = None,
 ) -> VegaSchema:
     """_summary_
 
     TODO: Interpolation method probably needs attention...
     TODO: Pass in a color mapping? (Use the keys for subsetting?)
+    TODO: Intervention marker line
 
     Args:
         observations (_type_): _description_
         tspan (_type_): _description_
+        datapoitns (_type_):
         subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
@@ -109,7 +112,6 @@ def trajectories(
         if k not in tracks
     }
 
-    schema = _trajectory_schema()
     if len(tracks) > 0:
         # TODO: Would it be cleaner to just duplicate these tracks? Then the min/max for dists might work
         tracks = (
@@ -117,12 +119,16 @@ def trajectories(
             .assign(time=tspan)
             .iloc[:limit]
             .melt(value_vars=tracks.keys(), id_vars="time")
-            .rename(columns={"variable": "trajectory", "value": "upper"})
-            .pipe(lambda df: df.assign(lower=df["upper"]))
+            .rename(columns={"variable": "trajectory"})
             .to_dict(orient="records")
         )
     else:
         tracks = []
+
+    if points is not None:
+        points = points.iloc[:limit].to_dict(orient="records")
+    else:
+        points = []
 
     if len(dists) > 0:
         distributions = [
@@ -138,15 +144,12 @@ def trajectories(
     else:
         distributions = []
 
-    all_data = [*chain(tracks, distributions)]
-
     schema = _trajectory_schema()
-    schema["data"] = replace_named_with(schema["data"], "table", ["values"], all_data)
-
-    if keep is not None:
-        schema["scales"] = replace_named_with(
-            schema["scales"], "color", ["domain"], [*observations.keys()]
-        )
+    schema["data"] = replace_named_with(
+        schema["data"], "distributions", ["values"], distributions
+    )
+    schema["data"] = replace_named_with(schema["data"], "tracks", ["values"], tracks)
+    schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
 
     return schema
 
@@ -223,7 +226,6 @@ def histogram_multi(
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]
 
-    # TODO: This index-based setting seems fragine beyond belief! Update to use 'replace_named_with'
     schema["data"] = replace_named_with(schema["data"], "binned", ["values"], desc)
 
     schema["data"] = replace_named_with(
@@ -276,7 +278,7 @@ def resize(schema: VegaSchema, *, w: int = None, h: int = None) -> VegaSchema:
     return schema
 
 
-def pad(schema: VegaSchema, qty: None | Number) -> VegaSchema:
+def pad(schema: VegaSchema, qty: Union[None, Number] = None) -> VegaSchema:
     """Add padding to a schema.
 
     Args:
