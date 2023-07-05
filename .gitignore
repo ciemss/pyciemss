@@ -2,6 +2,7 @@
 *__pycache__*
 *.vscode
 *.ipynb_checkpoints*
+*.mypy_cache*
 *.DS_Store
 *.egg-info
 venv/
