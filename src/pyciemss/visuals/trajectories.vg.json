@@ -47,8 +47,8 @@
   ],
 
   "axes": [
-    {"orient": "bottom", "scale": "xscale", "zindex": 1},
-    {"orient": "left", "scale": "yscale", "zindex": 1}
+    {"orient": "bottom", "scale": "xscale", "zindex": 100},
+    {"orient": "left", "scale": "yscale", "zindex": 100}
   ],
 
   "signals": [
@@ -119,6 +119,7 @@
     {"type": "symbol",
      "name": "_points",
      "from": {"data": "points"},
+     "zindex": 3,
      "encode": {
        "update": {
           "x": {"scale": "xscale", "field": "time"},
@@ -144,6 +145,7 @@
     },
     {"type": "group",
      "name": "_tracks",
+     "zindex": 2,
      "from": {
        "facet": {
           "name": "track_split",
@@ -183,6 +185,7 @@
     ]},
     {"type": "group",
      "name": "_distributions",
+     "zindex": 1,
      "from": {
       "facet": {
           "name": "trajectory_split",
