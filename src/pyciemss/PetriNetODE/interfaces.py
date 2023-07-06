@@ -139,7 +139,7 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-    compile_rate_law_p: bool = False
+    compile_rate_law_p: bool = True
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
