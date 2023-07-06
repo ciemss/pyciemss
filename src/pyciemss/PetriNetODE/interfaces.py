@@ -10,7 +10,7 @@ from pyciemss.PetriNetODE.base import (
 )
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
-from pyciemss.utils.output_processing_utils import convert_to_output_format
+from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 import time
 import numpy as np
@@ -50,18 +50,46 @@ def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
     timepoints: Iterable[float],
+    *,
+    interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
-    add_uncertainty: bool = True,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
+
+    Args:
+        petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
+            - A path to a petri net file, or a petri net object.
+            - This path can be a URL or a local path to a mira model or AMR model.
+            - Alternatively, this can be a mira template model directly.
+        num_samples: int
+            - The number of samples to draw from the model.
+        timepoints: [Iterable[float]]
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        interventions: Optional[Iterable[Tuple[float, str, float]]]
+            - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
+        start_state: Optional[dict[str, float]]
+            - The initial state of the model. If None, the initial state is taken from the mira model.
+        pseudocount: float > 0.0
+            - The pseudocount to use for adding uncertainty to the model parameters.
+            - Larger values of pseudocount correspond to more certainty about the model parameters.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` with the `timepoints`.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+        method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+
+    Returns:
+        samples: PetriSolution
+            - The samples from the model as a pandas DataFrame.
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=add_uncertainty,
+        add_uncertainty=True,
         pseudocount=pseudocount,
     )
 
@@ -72,25 +100,35 @@ def load_and_sample_petri_model(
         }
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    if interventions is not None:
+        intervention_events = [
+            StaticParameterInterventionEvent(timepoint, parameter, value)
+            for timepoint, parameter, value in interventions
+        ]
+        model.load_events(intervention_events)
+
     samples = sample(
         model,
         timepoints,
         num_samples,
         method=method,
     )
+    # Fix the parameters here with reparameterize.
 
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
 
 def load_and_calibrate_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
-    data: Iterable[Tuple[float, dict[str, float]]],
+    data_path: str,
     num_samples: int,
     timepoints: Iterable[float],
+    *,
+    interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
-    add_uncertainty: bool = True,
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
@@ -99,13 +137,55 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-) -> PetriSolution:
+) -> pd.DataFrame:
     """
-    Load a petri net from a file, compile it into a probabilistic program, and sample from it.
+    Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
+    and sample from the calibrated model.
+
+    Args:
+        petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
+            - A path to a petri net file, or a petri net object.
+            - This path can be a URL or a local path to a mira model or AMR model.
+            - Alternatively, this can be a mira template model directly.
+        data_path: str
+            - The path to the data to calibrate the model to. See notebook/integration_demo/data.csv for an example of the format.
+        num_samples: int
+            - The number of samples to draw from the model.
+        timepoints: [Iterable[float]]
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        interventions: Optional[Iterable[Tuple[float, str, float]]]
+            - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
+        start_state: Optional[dict[str, float]]
+            - The initial state of the model. If None, the initial state is taken from the mira model.
+        pseudocount: float > 0.0
+            - The pseudocount to use for adding uncertainty to the model parameters.
+            - Larger values of pseudocount correspond to more certainty about the model parameters.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` with the `timepoints`.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+        num_iterations: int > 0
+            - The number of iterations to run the calibration for.
+        lr: float > 0.0
+            - The learning rate to use for the calibration.
+        verbose: bool
+            - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
+        num_particles: int > 0
+            - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
+        autoguide: pyro.infer.autoguide.AutoGuide
+            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        method: str
+            - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+
+    Returns:
+        samples: pd.DataFrame
+            - A dataframe containing the samples from the calibrated model.
     """
+    data = csv_to_list(data_path)
+
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=add_uncertainty,
+        add_uncertainty=True,
         pseudocount=pseudocount,
     )
 
@@ -116,6 +196,14 @@ def load_and_calibrate_and_sample_petri_model(
         }
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    if interventions is not None:
+        intervention_events = [
+            StaticParameterInterventionEvent(timepoint, parameter, value)
+            for timepoint, parameter, value in interventions
+        ]
+        model.load_events(intervention_events)
+
     inferred_parameters = calibrate(
         model,
         data,
@@ -134,10 +222,13 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
     return processed_samples
 
+
+##############################################################################
+# Internal Interfaces Below - TA4 above
 
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
@@ -149,11 +240,11 @@ def load_petri_model(
     """
 
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_mira(petri_model_or_path)
+        model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path)
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_mira(petri_model_or_path)
+        return MiraPetriNetODESystem.from_askenet(petri_model_or_path)
 
 
 @setup_model.register
@@ -163,7 +254,7 @@ def setup_petri_model(
     start_state: dict[str, float],
 ) -> PetriNetODESystem:
     """
-    Instatiate a model for a particular configuration of initial conditions
+    Instantiate a model for a particular configuration of initial conditions
     """
     # TODO: Figure out how to do this without copying the petri net.
     start_event = StartEvent(start_time, start_state)

@@ -1,0 +1,288 @@
+{
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1",
+  "properties": {},
+  "model": {
+    "states": [
+      {
+        "id": "S",
+        "name": "S",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000514"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "I",
+        "name": "I",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000512"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "A",
+        "name": "A",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000513"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "E",
+        "name": "E",
+        "grounding": {
+          "identifiers": {
+            "genepio": "0001538"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "R",
+        "name": "R",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000592"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "D",
+        "name": "D",
+        "grounding": {
+          "identifiers": {
+            "ncit": "C28554"
+          },
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "H",
+        "name": "H",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000591"
+          },
+          "modifiers": {}
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "id": "t1",
+        "input": [
+          "I",
+          "A",
+          "S"
+        ],
+        "output": [
+          "I",
+          "A",
+          "E"
+        ],
+        "properties": {
+          "name": "t1"
+        }
+      },
+      {
+        "id": "t2",
+        "input": [
+          "E"
+        ],
+        "output": [
+          "I"
+        ],
+        "properties": {
+          "name": "t2"
+        }
+      },
+      {
+        "id": "t3",
+        "input": [
+          "E"
+        ],
+        "output": [
+          "A"
+        ],
+        "properties": {
+          "name": "t3"
+        }
+      },
+      {
+        "id": "t4",
+        "input": [
+          "I"
+        ],
+        "output": [
+          "R"
+        ],
+        "properties": {
+          "name": "t4"
+        }
+      },
+      {
+        "id": "t5",
+        "input": [
+          "I"
+        ],
+        "output": [
+          "D"
+        ],
+        "properties": {
+          "name": "t5"
+        }
+      },
+      {
+        "id": "t6",
+        "input": [
+          "A"
+        ],
+        "output": [
+          "R"
+        ],
+        "properties": {
+          "name": "t6"
+        }
+      },
+      {
+        "id": "t7",
+        "input": [
+          "H"
+        ],
+        "output": [
+          "R"
+        ],
+        "properties": {
+          "name": "t7"
+        }
+      },
+      {
+        "id": "t8",
+        "input": [
+          "H"
+        ],
+        "output": [
+          "D"
+        ],
+        "properties": {
+          "name": "t8"
+        }
+      }
+    ]
+  },
+  "semantics": {
+    "ode": {
+      "rates": [
+        {
+          "target": "t1",
+          "expression": "S*beta*(A + I*delta)/N",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>S</ci><ci>beta</ci><apply><plus/><ci>A</ci><apply><times/><ci>I</ci><ci>delta</ci></apply></apply></apply><ci>N</ci></apply>"
+        },
+        {
+          "target": "t2",
+          "expression": "E*ps/alpha",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>E</ci><ci>ps</ci></apply><ci>alpha</ci></apply>"
+        },
+        {
+          "target": "t3",
+          "expression": "E*(1 - ps)/alpha",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>E</ci><apply><minus/><cn>1</cn><ci>ps</ci></apply></apply><ci>alpha</ci></apply>"
+        },
+        {
+          "target": "t4",
+          "expression": "I*gamma*(-dnh - hosp + 1)",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci><apply><plus/><apply><minus/><apply><minus/><ci>dnh</ci></apply><ci>hosp</ci></apply><cn>1</cn></apply></apply>"
+        },
+        {
+          "target": "t5",
+          "expression": "I*dnh*gamma",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>dnh</ci><ci>gamma</ci></apply>"
+        },
+        {
+          "target": "t6",
+          "expression": "A*gamma",
+          "expression_mathml": "<apply><times/><ci>A</ci><ci>gamma</ci></apply>"
+        },
+        {
+          "target": "t7",
+          "expression": "H*(1 - dh)/los",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><apply><minus/><cn>1</cn><ci>dh</ci></apply></apply><ci>los</ci></apply>"
+        },
+        {
+          "target": "t8",
+          "expression": "H*dh/los",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><ci>dh</ci></apply><ci>los</ci></apply>"
+        }
+      ],
+      "initials": [],
+      "parameters": [
+        {
+          "id": "delta",
+          "value": 1.5
+        },
+        {
+          "id": "beta",
+          "value": 0.55
+        },
+        {
+          "id": "ps",
+          "value": 0.7
+        },
+        {
+          "id": "alpha",
+          "value": 4.0
+        },
+        {
+          "id": "dnh",
+          "value": 0.001
+        },
+        {
+          "id": "gamma",
+          "value": 0.2
+        },
+        {
+          "id": "hosp",
+          "value": 0.1
+        },
+        {
+          "id": "dh",
+          "value": 0.1
+        },
+        {
+          "id": "los",
+          "value": 7.0
+        }
+      ],
+      "observables": [],
+      "time": {
+        "id": "t"
+      }
+    }
+  },
+  "metadata": {
+    "annotations": {
+      "license": null,
+      "authors": [],
+      "references": [],
+      "time_scale": null,
+      "time_start": null,
+      "time_end": null,
+      "locations": [],
+      "pathogens": [],
+      "diseases": [],
+      "hosts": [],
+      "model_types": []
+    }
+  }
+
