@@ -5,7 +5,6 @@ import mira
 from pyciemss.PetriNetODE.interfaces import setup_petri_model, sample, load_petri_model
 import torch
 from mira.metamodel import Concept, ControlledConversion, GroupedControlledConversion, Initial, NaturalConversion, Parameter, Template, TemplateModel
-from mira.modeling.viz import GraphicalModel
 from mira.modeling import Model
 from mira.modeling.askenet.petrinet import AskeNetPetriNetModel
 from collections.abc import Callable
