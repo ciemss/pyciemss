@@ -54,6 +54,7 @@ def mira_uniform_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Dist
 def mira_normal_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Distribution:
     if "mean" in parameters.keys():
         mean = parameters["mean"]
+        
     if "stdev" in parameters.keys():
         std = parameters["stdev"]
     elif "variance" in parameters.keys():
