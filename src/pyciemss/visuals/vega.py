@@ -12,7 +12,7 @@ import pkgutil
 import json
 import re
 
-from itertools import tee, filterfalse, chain
+from itertools import tee, filterfalse
 
 VegaSchema = Dict[str, Any]
 
@@ -50,73 +50,140 @@ def tensor_load(path: os.PathLike) -> Dict[Any, Any]:
 
 
 # Trajectory Visualizations ------------------
+def temporalize_datapoints(
+    data: Union[list, Dict[str, Any]], timepoints: list, *, label=None
+):
+    """Assign timepoints to data. Will filter the observations
+    to only those shape-compatible with the timepoints.
+    The returned data is formatted for the 'observations' or 'points'
+    arguments of the 'trajectories' plot.
+
+    Args:
+        data (Union[list, Dict[str, Any]]): Observations dictionary per the output
+        of pyciemms sampling functions.
+        timepoints (list): List of timepoints to associate with observations.
+        label: If observations is a list, this is the label for the dataset.
 
 
-def _quantiles(values, qlow, qhigh):
-    """Compute quantiles from torch tensors along the 0 dimension"""
-    low = torch.quantile(values, qlow, dim=0).detach().numpy()
-    high = torch.quantile(values, qhigh, dim=0).detach().numpy()
-    return {"lower": low, "upper": high}
+    Returns -- Dataframe with:
+       -  1st level index is the datsaet label
+       -  2nd level index is a dataset sequence number
+       -  Columns are timepoints
+       -  Cell values are the data value
+    """
+
+    def _nice_type(values):
+        if isinstance(values, torch.Tensor):
+            values = values.numpy()
+        return values
+
+    if isinstance(timepoints, torch.Tensor):
+        timepoints = timepoints.numpy()
+
+    if isinstance(data, Union[list, torch.Tensor]):
+        data = {label: np.array([v for v in data]).reshape((1, len(data)))}
+
+    compatible = {k: v for k, v in data.items() if v.shape[-1] == len(timepoints)}
+
+    dfs = {
+        k: pd.DataFrame(data=_nice_type(v), columns=timepoints)
+        for k, v in compatible.items()
+    }
+
+    df = pd.concat(dfs, names=["dataset", "instance"])
+    df.columns.name = "time"
+    return df
 
 
 def trajectories(
     observations,
-    tspan,
     *,
     points: Union[None, Any] = None,
     subset: Union[str, Callable, list] = all,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: Union[None, Integral] = None,
+    colors: Dict[str, Any] = None,
     relabel: Union[None, Dict[str, str]] = None,
 ) -> VegaSchema:
     """_summary_
 
-    TODO: Interpolation method probably needs attention...
-    TODO: Pass in a color mapping? (Use the keys for subsetting?)
     TODO: Intervention marker line
 
     Args:
         observations (_type_): _description_
-        tspan (_type_): _description_
-        datapoitns (_type_):
+        points (_type_):
         subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
            - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
            - Otherwise, assumed tob e a list-like of keys to keep
            If subset is specified, the color scale ordering follows the subset order.
-        relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
-            after key subsetting.
+        colors Dict[str, Any]: Color mapping from names to colors.
+           Keys are pre-relabel names of data subsets (pre-relabel is used for simplicity of
+           generating mappings from source-data).
+           Mapping to 'None' or not including a key will drop the sequence (a fitler done
+           in addition to the 'subset').
+        relabel (None, Dict[str, str]): Relabel elements for rendering.
+           If ommitted, relabling is the identity function.
         limit --
     """
+    dataset_names = observations.index.get_level_values(0).unique()
+
     if subset == all:
-        keep = observations.keys()
+        keep = dataset_names.keys()
     elif isinstance(subset, str):
-        keep = [k for k in observations.keys() if re.match(subset, k)]
+        keep = [k for k in dataset_names if re.match(subset, k)]
     elif callable(subset):
-        keep = [k for k, v in observations.items() if subset(k, v)]
+        keep = [k for k, v in dataset_names if subset(k, v)]
     else:
         keep = subset
 
-    observations = {k: v for k, v in observations.items() if k in keep}
+    observations = observations.loc[keep]
+
+    if colors is not None:
+        remaining_names = observations.index.get_level_values(0).unique()
+        keep = [k for k in remaining_names if colors.get(k, None)]
+        observations = observations.loc[keep]
 
     if relabel:
-        observations = {relabel.get(k, k): v for k, v in observations.items()}
+        rekeyed = [relabel.get(k, k) for k in observations.index.get_level_values(0)]
+        observations = (
+            observations.reset_index()
+            .assign(dataset=rekeyed)
+            .set_index(["dataset", "instance"])
+        )
 
-    tracks = {k: v for k, v in observations.items() if len(v.shape) == 1}
+    tracks = observations.groupby(level=0).apply(
+        lambda df: df if len(df) == 1 else None
+    )
+    return tracks
 
-    dists = {
-        k: _quantiles(v, qlow, qhigh)
-        for k, v in observations.items()
-        if k not in tracks
-    }
+    track_ids = set(tracks.index.get_level_values(0).unique())
+    not_track_ids = set(observations.index.get_level_values(0)).difference(track_ids)
+
+    # compute quantiles
+    not_tracks = observations.loc[not_track_ids]
+    lows = not_tracks.groupby(level=0).apply(lambda df: df.quantile(q=qlow))
+    highs = not_tracks.groupby(level=0).apply(lambda df: df.quantile(q=qhigh))
+    dists = pd.concat({"lower": lows, "upper": highs})
+    dists.index = dists.index.rename(("bound", "trajectory"))
+    dists = dists[dists.columns[:limit]]
+    dists = (
+        dists.reset_index()
+        .melt(
+            value_vars=dists.columns,
+            id_vars=["trajectory", "bound"],
+        )
+        .pivot(columns="bound", index=["trajectory", "time"])
+        .droplevel(0, axis="columns")
+        .reset_index()
+        .to_dict(orient="records")
+    )
 
     if len(tracks) > 0:
-        # TODO: Would it be cleaner to just duplicate these tracks? Then the min/max for dists might work
         tracks = (
             pd.DataFrame(tracks)
-            .assign(time=tspan)
             .iloc[:limit]
             .melt(value_vars=tracks.keys(), id_vars="time")
             .rename(columns={"variable": "trajectory"})
@@ -126,30 +193,30 @@ def trajectories(
         tracks = []
 
     if points is not None:
-        points = points.iloc[:limit].to_dict(orient="records")
+        points = (
+            points.reset_index(level=0)
+            .melt(id_vars=["dataset"])
+            .iloc[:limit]
+            .to_dict(orient="records")
+        )
     else:
         points = []
 
-    if len(dists) > 0:
-        distributions = [
-            pd.DataFrame.from_dict(dists[k]).assign(trajectory=k, time=tspan)
-            for k in dists.keys()
-        ]
-
-        distributions = [
-            *chain.from_iterable(
-                d.iloc[:limit].to_dict(orient="records") for d in distributions
-            )
-        ]
-    else:
-        distributions = []
-
     schema = _trajectory_schema()
     schema["data"] = replace_named_with(
-        schema["data"], "distributions", ["values"], distributions
+        schema["data"], "distributions", ["values"], dists
     )
     schema["data"] = replace_named_with(schema["data"], "tracks", ["values"], tracks)
     schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
+
+    if colors is not None:
+        colors = {relabel.get(k, k): v for k, v in colors.items()}
+        schema["scales"] = replace_named_with(
+            schema["scales"], "color", ["domain"], [*colors.keys()]
+        )
+        schema["scales"] = replace_named_with(
+            schema["scales"], "color", ["range"], [*colors.values]
+        )
 
     return schema
 
