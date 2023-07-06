@@ -19,7 +19,7 @@ import mira.sources
 import mira.sources.petri
 import mira.sources.askenet.petrinet as petrinet
 import mira.sources.askenet.regnet as regnet
-from pyciemss.utils.distributions import ScaledBeta
+from pyciemss.utils.distributions import ScaledBeta, mira_distribution_to_pyro
 from mira.metamodel.ops import aggregate_parameters
 
 import bisect
@@ -308,6 +308,28 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
+        
+        # Set up the parameters
+        for param_info in G.parameters.values():
+
+            param_distribution = param_info.distribution
+
+            # TODO: We still need to distinguish between fixed deterministic, trainable deterministic, and uncertain parameters.
+
+            if param_distribution is not None:
+                param_info.value = mira_distribution_to_pyro(param_distribution)
+            else:
+                param_value = param_info.value
+                if param_value is None:
+                    warnings_string = f"Parameter {get_name(param_info)} has value None and will be set to Uniform(0, 1)"
+                    warnings.warn(warnings_string)
+                    param_info.value = pyro.distributions.Uniform(0.0, 1.0)
+                elif param_value <= 0:
+                    warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                    warnings.warn(warnings_string)
+                    param_info.value = pyro.distributions.Uniform(0.0, 0.1)
+                elif isinstance(param_value, (int, float)):
+                    param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
 
     def create_var_order(self) -> dict[str, int]:
         '''
@@ -317,9 +339,6 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         return collections.OrderedDict(
             (get_name(var), var) for var in sorted(self.G.variables.values(), key=get_name)
         )
-
-
-
     
     @functools.singledispatchmethod
     @classmethod
@@ -392,13 +411,15 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 model_json = json.load(fh)
         return cls.from_askenet(model_json)
 
-    def to_askenet_petrinet(self) -> dict:
-        """Return an ASKEM Petrinet Model Representation json."""
-        return AskeNetPetriNetModel(self.G).to_json()
+    # Note: This code below referred to a class that doesn't exist (or at least isn't imported).
 
-    def to_askenet_regnet(self) -> dict:
-        """Return an ASKEM Regnet Model Representation json."""
-        return AskeNetRegNetModel(self.G).to_json()
+    # def to_askenet_petrinet(self) -> dict:
+    #     """Return an ASKEM Petrinet Model Representation json."""
+    #     return AskeNetPetriNetModel(self.G).to_json()
+
+    # def to_askenet_regnet(self) -> dict:
+    #     """Return an ASKEM Regnet Model Representation json."""
+    #     return AskeNetRegNetModel(self.G).to_json()
     
     def to_networkx(self) -> networkx.MultiDiGraph:
         from pyciemss.utils.petri_utils import load
@@ -431,12 +452,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             param_name = get_name(param_info)
 
             param_value = param_info.value
-            if param_value is None:  # TODO remove this placeholder when MIRA is updated
-                param_value = torch.nn.Parameter(torch.tensor(0.1))
             if isinstance(param_value, torch.nn.Parameter):
                 setattr(self, param_name, pyro.param(param_name, param_value))
             elif isinstance(param_value, pyro.distributions.Distribution):
-                # This used to be a pyro.nn.PyroSample, but that sampled repeatedly on each call to getattr.
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
                 self.register_buffer(param_name, torch.as_tensor(param_value))
@@ -451,24 +469,16 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def static_parameter_intervention(self, parameter: str, value: torch.Tensor):
         setattr(self, get_name(self.G.parameters[parameter]), value)
 
+    def __repr__(self):
+        par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
+        return f"{self.__class__.__name__}(\n\t{par_string})"
+
 class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
     def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
-
-        for param_info in G.parameters.values():
-            param_value = param_info.value
-            if param_value is None:
-                param_info.value = pyro.distributions.Uniform(0.0, 1.0)
-            elif param_value <= 0:
-                warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
-                warnings.warn(warnings_string)
-                param_info.value = pyro.distributions.Uniform(0.0, 0.1)
-            elif isinstance(param_value, (int, float)):
-                param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
-
         super().__init__(G)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
