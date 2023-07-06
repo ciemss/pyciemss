@@ -265,12 +265,12 @@ def load_and_optimize_and_sample_petri_model(
             - Quantity of interest to optimize over.
         risk_bound: float
             - Bound on the risk constraint.
-        objfun: callable = lambda x: np.abs(x)
-            - Objective function as a callable function definition.
-        initial_guess: Iterable[float] = 0.5
+        objfun: callable
+            - Objective function as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
+        initial_guess: Iterable[float]
             - Initial guess for the optimizer
-        bounds: Iterable[float] = [[0.0], [1.0]]
-            - 
+        bounds: Iterable[float]
+            - Lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
