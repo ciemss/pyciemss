@@ -11,12 +11,15 @@ import os
 import sys
 from multiprocessing import Pool
 import networkx as nx
-import model 
-from model import isolate_node,remove_layer,include_layer,change_layer,scale_layer
+# import model 
+# from model import isolate_node,remove_layer,include_layer,change_layer,scale_layer
+import pyciemss.utils.complexvid_scabini.model
+from pyciemss.utils.complexvid_scabini.model import isolate_node,remove_layer,include_layer,change_layer,scale_layer
+
 import numpy as np
 import random
 from collections import Counter
-from comunities import *
+from pyciemss.utils.complexvid_scabini.comunities import *
 import matplotlib.pyplot as plt
 
     
