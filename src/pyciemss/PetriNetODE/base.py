@@ -299,7 +299,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
         self.G = G
         super().__init__()
-
+        self.compile_rate_law_p = compile_rate_law_p
+        if self.compile_rate_law_p:
+            self.compiled_rate_law = self.compile_rate_law()
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
             for var in self.var_order.values():
                 self.register_buffer(
@@ -311,9 +313,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 getattr(self, f"default_initial_state_{get_name(var)}", None)
                 for var in self.var_order.values()
             )
-        if compile_rate_law_p:
-            setattr(self, "deriv", self.compile_rate_law())
-        
+    
     def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
 
@@ -327,25 +327,12 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 symbolic_derivs[get_name(p)] += flux
 
         # convert to a function
-        numeric_derivs = SymPyModule(expressions=list(symbolic_derivs.values()))
-
-        def deriv(t: float, state: Tuple[torch.Tensor]) -> Tuple[torch.Tensor]:
-            """Deriv method created on the fly."""
-            # Get the current state
-            states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
-            # Get the parameters
-            parameters = {k: getattr (self, k) for k in self.G.parameters}
-            
-            # Evaluate the rate laws for each transition
-            deriv_tensor = numeric_derivs(**states, **parameters)
-            return tuple(deriv_tensor[i] for i in range(deriv_tensor.shape[0]))
-        return deriv
-    
+        numeric_derivs = SymPyModule(expressions=[symbolic_derivs[get_name(k)] for k in self.var_order.values()])
+        return numeric_derivs
+        
     def extract_sympy(self, sympy_expr_str: mira.metamodel.templates.SympyExprStr) -> sympy.Expr:
         """Convert the mira SympyExprStr to a sympy.Expr."""
-        return sympy.sympify(str(sympy_expr_str), 
-                             locals={str(x): x 
-                                     for x in sympy_expr_str.free_symbols})
+        return sympy_expr_str.args[0]
 
     def create_var_order(self) -> dict[str, int]:
         '''
@@ -444,28 +431,21 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     @pyro.nn.pyro_method
     def deriv(self, t: Time, state: State) -> StateDeriv:
-        states = {k: state[i] for i, k in enumerate(self.var_order.values())}
-        derivs = {k: 0. for k in states}
-
-        population_size = sum(states.values())
-
-        for transition in self.G.transitions.values():
-            flux = getattr(self, get_name(transition.rate)) * functools.reduce(
-                operator.mul, [states[k] for k in transition.consumed], 1
-            )
-            if len(transition.control) > 0:
-                flux = flux * functools.reduce(operator.add, [states[k] for k in transition.control]) / population_size**len(transition.control)
-
-            for c in transition.consumed:
-                derivs[c] -= flux
-            for p in transition.produced:
-                derivs[p] += flux
-
-        return tuple(derivs[v] for v in self.var_order.values())
+        if self.compile_rate_law_p:
+            # Get the current state
+            states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
+            # Get the parameters
+            parameters = {k: getattr (self, k) for k in self.G.parameters}
+            
+            # Evaluate the rate laws for each transition
+            deriv_tensor = self.compiled_rate_law(**states, **parameters)
+            return tuple(deriv_tensor[i] for i in range(deriv_tensor.shape[0]))
+        else:
+            return self.mass_action_deriv(t, state)
 
 
     
-    def symbolic_deriv(self, t: Time, state: State) -> StateDeriv:
+    def mass_action_deriv(self, t: Time, state: State) -> StateDeriv:
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 

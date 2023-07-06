@@ -14,6 +14,7 @@ from .petri_utils import (seq_id_suffix,
            deterministic,
            petri_to_ode,
            order_state,
+           reparameterize,
            unorder_state,
            duplicate_petri_net,
            intervene_petri_net)
