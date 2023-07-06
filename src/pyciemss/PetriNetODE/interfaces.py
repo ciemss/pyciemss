@@ -234,7 +234,7 @@ def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,
     pseudocount=1.0,
-    compile_rate_law_p=False,
+    compile_rate_law_p=False
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
