@@ -8,7 +8,8 @@ Created on Fri Mar 27 21:12:38 2020
 import networkx as nx
 # import model as md
 import numpy as np
-from comunities import *
+#from comunities import *
+from pyciemss.utils.complexvid_scabini.comunities import *
 from random import choices
 
 def createGraph(parameters):
