@@ -1,18 +1,13 @@
-import os
 from typing import List, Dict, Any, Callable, Union
-from collections.abc import Iterable
 from numbers import Integral, Number
 
 from copy import deepcopy
 import IPython.display
 import pandas as pd
 import numpy as np
-import torch
 import pkgutil
 import json
 import re
-
-from itertools import tee, filterfalse, chain
 
 VegaSchema = Dict[str, Any]
 
@@ -25,43 +20,9 @@ def _trajectory_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "trajectories.vg.json"))
 
 
-# General Utilities ---------------
-def partition(
-    pred: Callable[[Any], bool], iterable: Iterable[Any]
-) -> tuple[List[Any], List[Any]]:
-    t1, t2 = tee(iterable)
-    return filterfalse(pred, t1), filter(pred, t2)
-
-
-def tensor_dump(tensors: Any, path: os.PathLike) -> None:
-    reformatted = {k: v.detach().numpy().tolist() for k, v in tensors.items()}
-
-    with open(path, "w") as f:
-        json.dump(reformatted, f)
-
-
-def tensor_load(path: os.PathLike) -> Dict[Any, Any]:
-    with open(path) as f:
-        data = json.load(f)
-
-    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
-
-    return data
-
-
 # Trajectory Visualizations ------------------
-
-
-def _quantiles(values, qlow, qhigh):
-    """Compute quantiles from torch tensors along the 0 dimension"""
-    low = torch.quantile(values, qlow, dim=0).detach().numpy()
-    high = torch.quantile(values, qhigh, dim=0).detach().numpy()
-    return {"lower": low, "upper": high}
-
-
 def trajectories(
     observations,
-    tspan,
     *,
     points: Union[None, Any] = None,
     subset: Union[str, Callable, list] = all,
@@ -77,13 +38,12 @@ def trajectories(
     TODO: Intervention marker line
 
     Args:
-        observations (_type_): _description_
-        tspan (_type_): _description_
-        datapoitns (_type_):
+        observations (_type_): Dataframe formatted per pyciemss.utils.interface_utils.convert_to_output_format
+           These will be plotted as either spans (multiples sample_ids present) or lines (only one sample_id).
+        points (_type_): Example points to plot (joined by lines)
         subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
-           - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
            - Otherwise, assumed tob e a list-like of keys to keep
            If subset is specified, the color scale ordering follows the subset order.
         colors: Use the specified colors as a pre-relable keyed dictionary to vega-valid color.
@@ -95,68 +55,53 @@ def trajectories(
     if relabel is None:
         relabel = dict()
 
+    observations = observations.set_index(["timepoint_id", "sample_id"])
+
     if subset == all:
-        keep = observations.keys()
+        keep = observations.columns
     elif isinstance(subset, str):
-        keep = [k for k in observations.keys() if re.match(subset, k)]
-    elif callable(subset):
-        keep = [k for k, v in observations.items() if subset(k, v)]
+        keep = [k for k in observations.columns if re.match(subset, k)]
     else:
         keep = subset
 
     if colors:
         keep = [k for k in keep if colors.get(k, None) is not None]
 
-    observations = {k: v for k, v in observations.items() if k in keep}
+    observations = observations[keep].rename(columns=relabel)
 
-    if relabel:
-        observations = {relabel.get(k, k): v for k, v in observations.items()}
+    def _quantiles(g):
+        return pd.Series(
+            {
+                "lower": g.quantile(q=qlow).values[0],
+                "upper": g.quantile(q=qhigh).values[0],
+            }
+        )
 
-    tracks = {k: v for k, v in observations.items() if len(v.shape) == 1}
+    distributions = (
+        observations.melt(ignore_index=False, var_name="trajectory")
+        .set_index("trajectory", append=True)
+        .groupby(level=["trajectory", "timepoint_id"])
+        .apply(_quantiles)
+        .reset_index()
+        .iloc[:limit]
+        .to_dict(orient="records")
+    )
 
-    dists = {
-        k: _quantiles(v, qlow, qhigh)
-        for k, v in observations.items()
-        if k not in tracks
-    }
-
-    if len(tracks) > 0:
-        # TODO: Would it be cleaner to just duplicate these tracks? Then the min/max for dists might work
-        tracks = (
-            pd.DataFrame(tracks)
-            .assign(time=tspan)
-            .iloc[:limit]
-            .melt(value_vars=tracks.keys(), id_vars="time")
-            .rename(columns={"variable": "trajectory"})
+    if points is not None:
+        points = (
+            points.set_index(["timepoint_id", "sample_id"])
+            .melt(ignore_index=False, var_name="trajectory")
+            .reset_index()
             .to_dict(orient="records")
         )
     else:
-        tracks = []
-
-    if points is not None:
-        points = points.iloc[:limit].to_dict(orient="records")
-    else:
         points = []
-
-    if len(dists) > 0:
-        distributions = [
-            pd.DataFrame.from_dict(dists[k]).assign(trajectory=k, time=tspan)
-            for k in dists.keys()
-        ]
-
-        distributions = [
-            *chain.from_iterable(
-                d.iloc[:limit].to_dict(orient="records") for d in distributions
-            )
-        ]
-    else:
-        distributions = []
 
     schema = _trajectory_schema()
     schema["data"] = replace_named_with(
         schema["data"], "distributions", ["values"], distributions
     )
-    schema["data"] = replace_named_with(schema["data"], "tracks", ["values"], tracks)
+
     schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
 
     if colors is not None:
