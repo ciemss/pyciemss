@@ -13,7 +13,7 @@ import json
 import re
 import os
 
-from itertools import tee, filterfalse
+from itertools import tee, filterfalse, compress
 
 VegaSchema = Dict[str, Any]
 
@@ -62,6 +62,7 @@ def trajectories(
     colors: Union[None, dict] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
+    join_points: bool = True,
     limit: Union[None, Integral] = None,
 ) -> VegaSchema:
     """_summary_
@@ -86,6 +87,7 @@ def trajectories(
            Mapping to None or not includding a mapping will drop that sequence
         qlow (float): Lower percentile to use in obsersvation distributions
         qhigh (float): Higher percentile to use in obsersvation distributions
+        join_points (bool): Should the plot of the points have a line joining through?
         limit (None, Integral) -- Only include up to limit number of records (mostly for debugging)
     """
     if relabel is None:
@@ -177,20 +179,23 @@ def trajectories(
             schema["scales"], "color", ["range"], [*colors.values()]
         )
 
+    if not join_points:
+        marks = find_keyed(schema["marks"], "name", "_points")["marks"]
+        simplified_marks = delete_named(marks, "_points_line")
+        schema["marks"] = replace_named_with(
+            schema["marks"], "_points", ["marks"], simplified_marks
+        )
+        schema
+
     return schema
 
 
 # Things to check:
-# _trajectories(prior_samples, tspan) == [*prior_samples.keys()]
-# _trajectories(prior_samples, tspan, obs_keys = all) == [*prior_samples.keys()]
-# _trajectories(prior_samples, tspan, obs_keys = ".*_sol") == ['Rabbits_sol', 'Wolves_sol']
+# trajectories(prior_samples, tspan) == [*prior_samples.keys()]
+# trajectories(prior_samples, tspan, obs_keys = all) == [*prior_samples.keys()]
+# trajectories(prior_samples, tspan, obs_keys = ".*_sol") == ['Rabbits_sol', 'Wolves_sol']
+# trajectories with and without join_points
 # combinations of calls (colors, colors+relable, colors+subset, relable+subset, relabel+colors+subset, etc)
-
-# Called like:
-# plot = vega.trajectories(prior_samples, tspan, obs_keys=".*_sol")
-# with open("trajectories.json", "w") as f:
-#     json.dump(plot, f, indent=3)
-# vega.ipy_display(plot)
 
 
 # Histogram visualizations ------------------
@@ -325,7 +330,39 @@ def pad(schema: VegaSchema, qty: Union[None, Number] = None) -> VegaSchema:
     return schema
 
 
-def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> List:
+def find_keyed(ls: list[dict], key: str, value: Any):
+    """In the list of dicts, finds a think where key=value"""
+    for e in ls:
+        try:
+            if e[key] == value:
+                return e
+        except Exception:
+            pass
+
+    raise ValueError(f"Attempted to find, but {key}={value} not found.")
+
+
+def delete_named(ls: list, name: str) -> List:
+    "REMOVE the first thing in ls where 'name'==name"
+
+    def _maybe_keep(e, found):
+        if found[0]:
+            return True
+
+        if e.get("name", None) == name:
+            found[0] = True
+            return False
+        return True
+
+    found = [False]
+    filter = [_maybe_keep(e, found) for e in ls]
+    if not found[0]:
+        raise ValueError(f"Attempted to remove, but {name=} not found.")
+
+    return [*compress(ls, filter)]
+
+
+def replace_named_with(ls: list, name: str, path: List[Any], new_value: Any) -> List:
     """Rebuilds the element with the given 'name' entry.
 
     An element is "named" if it has a key named "name".
@@ -345,9 +382,13 @@ def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> 
         if "name" in e and e["name"] == name:
             e = deepcopy(e)
             part = e
-            for step in path[:-1]:
-                part = part[step]
-            part[path[-1]] = new_value
+            if path:
+                for step in path[:-1]:
+                    part = part[step]
+                part[path[-1]] = new_value
+            else:
+                e = new_value
+
             done_replacing[0] = True
 
         return e

@@ -120,6 +120,7 @@
     {
       "type": "group",
       "zindex": 3,
+      "name": "_points",
       "from": {
         "facet": {
           "name": "points_split",
@@ -129,7 +130,7 @@
       },
       "marks": [
         {"type": "symbol",
-        "name": "_points",
+        "name": "_points_symbol",
         "from": {"data": "points"},
         "zindex": 3,
         "encode": {
@@ -183,6 +184,7 @@
     {
       "type": "group",
       "zindex": 2,
+      "name": "_traces",
       "from": {
         "facet": {
           "name": "traces_split",
@@ -193,7 +195,7 @@
       "marks": [
         {
           "type": "line",
-          "name": "_traces",
+          "name": "_traces_lines",
           "from": {"data": "traces_split"},
           "encode": {
               "update": {
