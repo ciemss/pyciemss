@@ -227,6 +227,123 @@ def load_and_calibrate_and_sample_petri_model(
     return processed_samples
 
 
+def load_and_optimize_and_sample_petri_model(
+    petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
+    num_samples: int,
+    timepoints: Iterable[float],
+    interventions: Iterable[Tuple[float, str]],
+    qoi: callable,
+    risk_bound: float,
+    objfun: callable = lambda x: np.abs(x),
+    initial_guess: Iterable[float] = 0.5,
+    bounds: Iterable[float] = [[0.0], [1.0]],
+    *,
+    start_state: Optional[dict[str, float]] = None,
+    pseudocount: float = 1.0,
+    start_time: float = -1e-10,
+    method="dopri5",
+    verbose: bool = False,
+    n_samples_ouu: int = int(1e2),
+    maxiter: int = 2,
+    maxfeval: int = 25,
+) -> pd.DataFrame:
+    """
+    Load a petri net from a file, compile it into a probabilistic program, and sample from it.
+
+    Args:
+        petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
+            - A path to a petri net file, or a petri net object.
+            - This path can be a URL or a local path to a mira model or AMR model.
+            - Alternatively, this can be a mira template model directly.
+        num_samples: int
+            - The number of samples to draw from the model.
+        timepoints: [Iterable[float]]
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        interventions: Iterable[Tuple[float, str]]
+            - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name).
+        qoi: callable
+            - Quantity of interest to optimize over.
+        risk_bound: float
+            - Bound on the risk constraint.
+        objfun: callable = lambda x: np.abs(x)
+            - Objective function as a callable function definition.
+        initial_guess: Iterable[float] = 0.5
+            - Initial guess for the optimizer
+        bounds: Iterable[float] = [[0.0], [1.0]]
+            - 
+        start_state: Optional[dict[str, float]]
+            - The initial state of the model. If None, the initial state is taken from the mira model.
+        pseudocount: float > 0.0
+            - The pseudocount to use for adding uncertainty to the model parameters.
+            - Larger values of pseudocount correspond to more certainty about the model parameters.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` with the `timepoints`.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+        method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        verbose: bool
+            - Whether to print out the optimization under uncertainty progress.
+
+    Returns:
+        samples: PetriSolution
+            - The samples from the model using the optimal policy under uncertainty as a pandas DataFrame.
+    """
+    model = load_petri_model(
+        petri_model_or_path=petri_model_or_path,
+        add_uncertainty=True,
+        pseudocount=pseudocount,
+    )
+
+    # If the user doesn't override the start state, use the initial values from the model.
+    if start_state is None:
+        start_state = {
+            get_name(v): v.data["initial_value"] for v in model.G.variables.values()
+        }
+
+    model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    ouu_policy = optimize(
+        model,
+        timepoints=timepoints,
+        interventions=interventions,
+        qoi=qoi,
+        risk_bound=risk_bound,
+        objfun=objfun,
+        initial_guess=initial_guess,
+        bounds=bounds,
+        n_samples_ouu=n_samples_ouu,
+        maxiter=maxiter,
+        maxfeval=maxfeval,
+        verbose=verbose,
+        postprocess=False,
+        )
+    
+    # intervention_events = [
+    #     StaticParameterInterventionEvent(timepoint, parameter, value)
+    #     for timepoint, parameter, value in interventions
+    # ]
+    x = np.atleast_1d(ouu_policy["policy"])
+    intervention_events = []
+    count=0
+    for k in interventions:
+            intervention_events.append(StaticParameterInterventionEvent(k[0], k[1], x[count]))
+            count=count+1
+    model.load_events(intervention_events)
+
+    samples = sample(
+        model,
+        timepoints,
+        num_samples,
+        method=method,
+    )
+    # Fix the parameters here with reparameterize.
+
+
+    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
+
+    return processed_samples
+
 ##############################################################################
 # Internal Interfaces Below - TA4 above
 
@@ -376,6 +493,8 @@ def optimize_petri(
     maxfeval: int = 25,
     method="dopri5",
     roundup_decimal: int = 4,
+    verbose: bool = False,
+    postprocess: bool = True,
 ) -> dict:
     """
     Optimization under uncertainty with risk-based constraints over ODE models.
@@ -406,7 +525,8 @@ def optimize_petri(
     end_time = time.time()
     forward_time = end_time - start_time
     time_per_eval = forward_time / 1.0
-    print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
+    if verbose:
+        print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
     # Assign the required number of MC samples for each OUU iteration
     control_model = copy.deepcopy(petri)
@@ -428,12 +548,13 @@ def optimize_petri(
         {"type": "ineq", "fun": lambda x: x - u_min},
         {"type": "ineq", "fun": lambda x: u_max - x},
     )
-    print(
-        "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
-    )
-    print(
-        f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
-    )
+    if verbose:
+        print(
+            "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+        )
+        print(
+            f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
+        )
     start_time = time.time()
     opt_results = solveOUU(
         x0=initial_guess,
@@ -449,37 +570,48 @@ def optimize_petri(
         return ceil(num * 10**dec) / (10**dec)
 
     opt_results.x = round_up(opt_results.x)
-    print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
-    print(f"Optimal policy:\t{opt_results.x}")
+    if verbose:
+        print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
+        print(f"Optimal policy:\t{opt_results.x}")
 
     # Check for some interventions that lead to no feasible solutions
     if opt_results.x < 0:
-        print("No solution found")
+        if verbose:
+            print("No solution found")
 
     # Post-process OUU results
-    print("Post-processing optimal policy...")
-    tspan_plot = [float(x) for x in list(range(1, int(timepoints[-1])))]
-    control_model = copy.deepcopy(petri)
-    RISK = computeRisk(
-        model=control_model,
-        interventions=interventions,
-        qoi=qoi,
-        tspan=tspan_plot,
-        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-        num_samples=int(5e2),
-        guide=inferred_parameters,
-        method=method,
-    )
-    sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
-    qois_sq = RISK.qoi(sq_optimal_prediction)
-    sq_est = round_up(RISK.risk_measure(qois_sq))
-    ouu_results = {
-        "policy": opt_results.x,
-        "risk": [sq_est],
-        "samples": sq_optimal_prediction,
-        "qoi": qois_sq,
-        "tspan": RISK.tspan,
-        "OptResults": opt_results,
-    }
-    print("Estimated risk at optimal policy", ouu_results["risk"])
+    if postprocess:
+        if verbose:
+            print("Post-processing optimal policy...")
+        #TODO: check best way to set tspan for plotting
+        tspan_plot = [float(x) for x in list(range(1, int(timepoints[-1])))]
+        control_model = copy.deepcopy(petri)
+        RISK = computeRisk(
+            model=control_model,
+            interventions=interventions,
+            qoi=qoi,
+            tspan=tspan_plot,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=int(5e2),
+            guide=inferred_parameters,
+            method=method,
+        )
+        sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
+        qois_sq = RISK.qoi(sq_optimal_prediction)
+        sq_est = round_up(RISK.risk_measure(qois_sq))
+        ouu_results = {
+            "policy": opt_results.x,
+            "risk": [sq_est],
+            "samples": sq_optimal_prediction,
+            "qoi": qois_sq,
+            "tspan": RISK.tspan,
+            "OptResults": opt_results,
+        }
+        if verbose:
+            print("Estimated risk at optimal policy", ouu_results["risk"])
+    else:
+        ouu_results = {
+            "policy": opt_results.x,
+            "OptResults": opt_results,
+        }
     return ouu_results

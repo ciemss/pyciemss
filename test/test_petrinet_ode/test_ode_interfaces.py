@@ -307,7 +307,7 @@ class TestODEInterfaces(unittest.TestCase):
     #     '''Test the optimize function.'''
     #     model = load_petri_model(self.filename)
     #     model = setup_model(model, self.initial_time, self.initial_state)
-    #     INTERVENTION= {"intervention1": [0.2, "beta"]}
+    #     INTERVENTION= [(0.2, "beta")]
     #     QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"], ndays=3)
     #     timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
     #     ouu_policy = optimize(model,
