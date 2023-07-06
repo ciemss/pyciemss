@@ -68,12 +68,12 @@ def trajectories(
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: Union[None, Integral] = None,
+    colors: Union[None, dict] = None,
     relabel: Union[None, Dict[str, str]] = None,
 ) -> VegaSchema:
     """_summary_
 
     TODO: Interpolation method probably needs attention...
-    TODO: Pass in a color mapping? (Use the keys for subsetting?)
     TODO: Intervention marker line
 
     Args:
@@ -86,10 +86,15 @@ def trajectories(
            - If a callable is present, it is called as f(key, value) and the key is kept for truthy values
            - Otherwise, assumed tob e a list-like of keys to keep
            If subset is specified, the color scale ordering follows the subset order.
+        colors: Use the specified colors as a pre-relable keyed dictionary to vega-valid color.
+           Mapping to None will drop that sequence (can be used in addition to or instead of subset)
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after key subsetting.
         limit --
     """
+    if relabel is None:
+        relabel = dict()
+
     if subset == all:
         keep = observations.keys()
     elif isinstance(subset, str):
@@ -98,6 +103,9 @@ def trajectories(
         keep = [k for k, v in observations.items() if subset(k, v)]
     else:
         keep = subset
+
+    if colors:
+        keep = [k for k in keep if colors.get(k, None) is not None]
 
     observations = {k: v for k, v in observations.items() if k in keep}
 
@@ -151,6 +159,15 @@ def trajectories(
     schema["data"] = replace_named_with(schema["data"], "tracks", ["values"], tracks)
     schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
 
+    if colors is not None:
+        colors = {relabel.get(k, k): v for k, v in colors.items()}
+        schema["scales"] = replace_named_with(
+            schema["scales"], "color", ["domain"], [*colors.keys()]
+        )
+        schema["scales"] = replace_named_with(
+            schema["scales"], "color", ["range"], [*colors.values()]
+        )
+
     return schema
 
 
@@ -158,6 +175,7 @@ def trajectories(
 # _trajectories(prior_samples, tspan) == [*prior_samples.keys()]
 # _trajectories(prior_samples, tspan, obs_keys = all) == [*prior_samples.keys()]
 # _trajectories(prior_samples, tspan, obs_keys = ".*_sol") == ['Rabbits_sol', 'Wolves_sol']
+# combinations of calls (colors, colors+relable, colors+subset, relable+subset, relabel+colors+subset, etc)
 
 # Called like:
 # plot = vega.trajectories(prior_samples, tspan, obs_keys=".*_sol")
