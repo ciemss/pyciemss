@@ -13,7 +13,8 @@
         "fields": [
           {"data": "distributions", "field": "timepoint_id"},
           {"data": "traces", "field": "timepoint_id"},
-          {"data": "points", "field": "timepoint_id"}
+          {"data": "points", "field": "timepoint_id"},
+          {"data": "markers", "field": "timepoint_id"}
          ]
       }
     },
@@ -255,6 +256,22 @@
         }
       }
      ]
+    },
+    {
+      "name": "_markers",
+      "type": "rule",
+      "clip": true,
+      "from": {"data": "markers"},
+      "encode": {
+        "enter": {"stroke": {"value": "gray"}},
+        "update": {
+          "x": {"scale": "xscale", "field": "timepoint_id"},
+          "y2": {"value": 0},
+          "y": {"signal": "height"},
+          "tooltip": {"field": "label"},
+          "opacity": {"value": 1}
+        }
+      }
     }
   ],
 
@@ -288,6 +305,11 @@
                  {"timepoint_id": 10, "value": 40, "trajectory": "d"},
                  {"timepoint_id": 5, "value": 10, "trajectory": "e"},
                  {"timepoint_id": 6, "value": 15, "trajectory": "e"}]
+    },
+    {
+      "name": "markers",
+      "values": [{"timepoint_id": 3, "label": "Low marker"},
+                 {"timepoint_id": 7, "label": "High marker"}]
     },
     {
       "name": "selected",

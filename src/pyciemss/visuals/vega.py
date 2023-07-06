@@ -57,16 +57,15 @@ def trajectories(
     traces: Union[None, pd.DataFrame] = None,
     points: Union[None, pd.DataFrame] = None,
     subset: Union[str, list] = all,
+    markers: Union[None, dict[str, Number]] = None,
+    relabel: Union[None, Dict[str, str]] = None,
+    colors: Union[None, dict] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: Union[None, Integral] = None,
-    relabel: Union[None, Dict[str, str]] = None,
-    colors: Union[None, dict] = None,
 ) -> VegaSchema:
     """_summary_
 
-    TODO: Interpolation method probably needs attention...
-    TODO: Intervention marker line
     TODO: Handle the 'No distributions' case
 
     Args:
@@ -75,6 +74,7 @@ def trajectories(
            These will be plotted as spans based on the qlow/qhigh parameters
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
+        markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
         subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
@@ -86,7 +86,7 @@ def trajectories(
            Mapping to None or not includding a mapping will drop that sequence
         qlow (float): Lower percentile to use in obsersvation distributions
         qhigh (float): Higher percentile to use in obsersvation distributions
-        limit -- Only include up to limit number of records (mostly for debugging)
+        limit (None, Integral) -- Only include up to limit number of records (mostly for debugging)
     """
     if relabel is None:
         relabel = dict()
@@ -153,6 +153,11 @@ def trajectories(
     else:
         points = []
 
+    if markers is not None:
+        markers = [{"timepoint_id": v, "label": k} for k, v in markers.items()]
+    else:
+        markers = []
+
     schema = _trajectory_schema()
     schema["data"] = replace_named_with(
         schema["data"], "distributions", ["values"], distributions
@@ -160,6 +165,7 @@ def trajectories(
 
     schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
     schema["data"] = replace_named_with(schema["data"], "traces", ["values"], traces)
+    schema["data"] = replace_named_with(schema["data"], "markers", ["values"], markers)
 
     if colors is not None:
         colors = {k: v for k, v in colors.items() if k in all_trajectories}
