@@ -56,6 +56,7 @@ def load_and_sample_petri_model(
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    compile_rate_law_p: bool = False
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -91,6 +92,7 @@ def load_and_sample_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
         pseudocount=pseudocount,
+        compile_rate_law_p=compile_rate_law_p
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
