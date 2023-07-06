@@ -5,6 +5,7 @@ import pyro
 # TODO: generalize to other models also
 from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
+from typing import Iterable, Optional, Tuple, Union
 
 class RandomDisplacementBounds():
     '''

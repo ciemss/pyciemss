@@ -10,6 +10,7 @@ from pyciemss.PetriNetODE.base import (
 )
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
+import pyciemss.risk.qoi
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 import time
@@ -114,7 +115,6 @@ def load_and_sample_petri_model(
         num_samples,
         method=method,
     )
-    # Fix the parameters here with reparameterize.
 
     processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
@@ -232,7 +232,7 @@ def load_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: callable,
+    qoi: Iterable[Tuple[str,str,float]],
     risk_bound: float,
     objfun: callable = lambda x: np.abs(x),
     initial_guess: Iterable[float] = 0.5,
@@ -261,8 +261,8 @@ def load_and_optimize_and_sample_petri_model(
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
         interventions: Iterable[Tuple[float, str]]
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name).
-        qoi: callable
-            - Quantity of interest to optimize over.
+        qoi: Iterable[Tuple[str,str,float]]
+            - Quantity of interest to optimize over. Function that takes intervention
         risk_bound: float
             - Bound on the risk constraint.
         objfun: callable
@@ -303,11 +303,12 @@ def load_and_optimize_and_sample_petri_model(
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
+    qoi_fn = lambda y: scenario2dec_nday_average(y, contexts=[qoi[1]], ndays=qoi[1])
     ouu_policy = optimize(
         model,
         timepoints=timepoints,
         interventions=interventions,
-        qoi=qoi,
+        qoi=qoi_fn,
         risk_bound=risk_bound,
         objfun=objfun,
         initial_guess=initial_guess,
@@ -319,16 +320,11 @@ def load_and_optimize_and_sample_petri_model(
         postprocess=False,
         )
     
-    # intervention_events = [
-    #     StaticParameterInterventionEvent(timepoint, parameter, value)
-    #     for timepoint, parameter, value in interventions
-    # ]
-    x = np.atleast_1d(ouu_policy["policy"])
+    x = list(np.atleast_1d(ouu_policy["policy"]))
     intervention_events = []
-    count=0
-    for k in interventions:
-            intervention_events.append(StaticParameterInterventionEvent(k[0], k[1], x[count]))
-            count=count+1
+    for intervention, value in zip(interventions, x):
+        intervention_events.append(StaticParameterInterventionEvent(intervention[0], intervention[1], value))
+
     model.load_events(intervention_events)
 
     samples = sample(
@@ -337,12 +333,10 @@ def load_and_optimize_and_sample_petri_model(
         num_samples,
         method=method,
     )
-    # Fix the parameters here with reparameterize.
-
 
     processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
 
-    return processed_samples
+    return processed_samples, ouu_policy["policy"]
 
 ##############################################################################
 # Internal Interfaces Below - TA4 above
