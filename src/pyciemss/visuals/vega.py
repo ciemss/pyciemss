@@ -1,13 +1,19 @@
 from typing import List, Dict, Any, Callable, Union
+from collections.abc import Iterable
+
 from numbers import Integral, Number
 
 from copy import deepcopy
 import IPython.display
 import pandas as pd
 import numpy as np
+import torch
 import pkgutil
 import json
 import re
+import os
+
+from itertools import tee, filterfalse
 
 VegaSchema = Dict[str, Any]
 
@@ -20,6 +26,30 @@ def _trajectory_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "trajectories.vg.json"))
 
 
+# General Utilities ---------------
+def partition(
+    pred: Callable[[Any], bool], iterable: Iterable[Any]
+) -> tuple[List[Any], List[Any]]:
+    t1, t2 = tee(iterable)
+    return filterfalse(pred, t1), filter(pred, t2)
+
+
+def tensor_dump(tensors: Any, path: os.PathLike) -> None:
+    reformatted = {k: v.detach().numpy().tolist() for k, v in tensors.items()}
+
+    with open(path, "w") as f:
+        json.dump(reformatted, f)
+
+
+def tensor_load(path: os.PathLike) -> Dict[Any, Any]:
+    with open(path) as f:
+        data = json.load(f)
+
+    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
+
+    return data
+
+
 # Trajectory Visualizations ------------------
 def trajectories(
     distributions: Union[None, pd.DataFrame] = None,
@@ -30,28 +60,33 @@ def trajectories(
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: Union[None, Integral] = None,
-    colors: Union[None, dict] = None,
     relabel: Union[None, Dict[str, str]] = None,
+    colors: Union[None, dict] = None,
 ) -> VegaSchema:
     """_summary_
 
     TODO: Interpolation method probably needs attention...
     TODO: Intervention marker line
+    TODO: Handle the 'No distributions' case
 
     Args:
-        observations (_type_): Dataframe formatted per pyciemss.utils.interface_utils.convert_to_output_format
-           These will be plotted as either spans (multiples sample_ids present) or lines (only one sample_id).
-        points (_type_): Example points to plot (joined by lines)
+        observations (None, pd.DataFrame): Dataframe formatted per
+        pyciemss.utils.interface_utils.convert_to_output_format
+           These will be plotted as spans based on the qlow/qhigh parameters
+        traces (None, pd.DataFrame): Example trajectories to plot.
+        points (None, pd.DataFrame): Example points to plot (joined by lines)
         subset (any, optional): Subset the 'observations' based on keys/values.
            - Default is the 'all' function, and it keeps all keys
            - If a string is present, it is treated as a regex and matched against the key
            - Otherwise, assumed tob e a list-like of keys to keep
            If subset is specified, the color scale ordering follows the subset order.
-        colors: Use the specified colors as a pre-relable keyed dictionary to vega-valid color.
-           Mapping to None will drop that sequence (can be used in addition to or instead of subset)
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after key subsetting.
-        limit --
+        colors: Use the specified colors as a post-relable keyed dictionary to vega-valid color.
+           Mapping to None or not includding a mapping will drop that sequence
+        qlow (float): Lower percentile to use in obsersvation distributions
+        qhigh (float): Higher percentile to use in obsersvation distributions
+        limit -- Only include up to limit number of records (mostly for debugging)
     """
     if relabel is None:
         relabel = dict()
@@ -65,10 +100,18 @@ def trajectories(
     else:
         keep = subset
 
-    if colors:
-        keep = [k for k in keep if colors.get(k, None) is not None]
-
     distributions = distributions.filter(items=keep).rename(columns=relabel)
+
+    if colors:
+        keep = [k for k in distributions.columns if colors.get(k, None) is not None]
+        distributions = distributions.filter(items=keep)
+
+    point_trajectories = points.columns.tolist() if points is not None else []
+    trace_trajectories = traces.columns.tolist() if traces is not None else []
+    distributions_traj = (
+        distributions.columns.tolist() if distributions is not None else []
+    )
+    all_trajectories = distributions_traj + trace_trajectories + point_trajectories
 
     def _quantiles(g):
         return pd.Series(
@@ -119,7 +162,8 @@ def trajectories(
     schema["data"] = replace_named_with(schema["data"], "traces", ["values"], traces)
 
     if colors is not None:
-        colors = {relabel.get(k, k): v for k, v in colors.items()}
+        colors = {k: v for k, v in colors.items() if k in all_trajectories}
+
         schema["scales"] = replace_named_with(
             schema["scales"], "color", ["domain"], [*colors.keys()]
         )
