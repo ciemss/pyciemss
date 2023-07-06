@@ -1,3 +1,4 @@
+import pandas as pd
 import unittest
 import sympy
 from sympytorch import SymPyModule
@@ -158,9 +159,9 @@ class TestRateLaw(unittest.TestCase):
     def test_askem_model_representation(self):
         """Test that the rate law can be compiled correctly."""
         url='https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json'
-        sir = load_and_sample_petri_model(url, num_samples=self.nsamples,
+        samples = load_and_sample_petri_model(url, num_samples=self.nsamples,
                                   timepoints=self.timepoints,
                                   compile_rate_law_p=True)
-        self.assertTrue(isinstance(sir, ScaledBetaNoisePetriNetODESystem))
+        self.assertTrue(isinstance(samples, pd.DataFrame))
 if __name__ == "__main__":
     unittest.main()

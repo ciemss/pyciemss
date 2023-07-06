@@ -32,20 +32,20 @@ class Test_Samples_Format(unittest.TestCase):
 
         def solution_mapping2(model2_solution: dict) -> dict:
             mapped_solution = {}
-            mapped_solution["Susceptible"] = (
+            mapped_solution["S"] = (
                 model2_solution["Susceptible"]
                 + model2_solution["Recognized"]
                 + model2_solution["Threatened"]
             )
 
-            mapped_solution["Infected"] = (
+            mapped_solution["I"] = (
                 model2_solution["Infected"]
                 + model2_solution["Ailing"]
                 + model2_solution["Diagnosed"]
             )
 
             # Model 1 doesn't include dead people, and implicitly assumes that everyone who is infected will recover.
-            mapped_solution["Recovered"] = (
+            mapped_solution["R"] = (
                 model2_solution["Healed"] + model2_solution["Extinct"]
             )
 

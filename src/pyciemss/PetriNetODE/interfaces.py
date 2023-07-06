@@ -139,6 +139,7 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    compile_rate_law_p: bool = False
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -188,6 +189,7 @@ def load_and_calibrate_and_sample_petri_model(
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
+        compile_rate_law_p=compile_rate_law_p,
         pseudocount=pseudocount,
     )
 
@@ -236,7 +238,7 @@ def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,
     pseudocount=1.0,
-    compile_rate_law_p=False
+    compile_rate_law_p: bool = False
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
@@ -247,7 +249,7 @@ def load_petri_model(
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_askenet(petri_model_or_path)
+        return MiraPetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
 
 
 @setup_model.register
