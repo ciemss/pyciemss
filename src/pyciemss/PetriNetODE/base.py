@@ -528,7 +528,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = True):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False):
         super().__init__(G, compile_rate_law_p=compile_rate_law_p)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
