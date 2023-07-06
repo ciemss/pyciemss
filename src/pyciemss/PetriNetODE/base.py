@@ -438,7 +438,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             parameters = {k: getattr (self, k) for k in self.G.parameters}
             
             # Evaluate the rate laws for each transition
-            deriv_tensor = self.compiled_rate_law(**states, **parameters)
+            deriv_tensor = self.compiled_rate_law(**states, **parameters, **dict(t=t))
             return tuple(deriv_tensor[i] for i in range(deriv_tensor.shape[0]))
         else:
             return self.mass_action_deriv(t, state)
