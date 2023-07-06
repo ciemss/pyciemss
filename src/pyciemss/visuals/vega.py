@@ -22,10 +22,11 @@ def _trajectory_schema() -> VegaSchema:
 
 # Trajectory Visualizations ------------------
 def trajectories(
-    observations,
+    distributions: Union[None, pd.DataFrame] = None,
     *,
-    points: Union[None, Any] = None,
-    subset: Union[str, Callable, list] = all,
+    traces: Union[None, pd.DataFrame] = None,
+    points: Union[None, pd.DataFrame] = None,
+    subset: Union[str, list] = all,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     limit: Union[None, Integral] = None,
@@ -55,19 +56,19 @@ def trajectories(
     if relabel is None:
         relabel = dict()
 
-    observations = observations.set_index(["timepoint_id", "sample_id"])
+    distributions = distributions.set_index(["timepoint_id", "sample_id"])
 
     if subset == all:
-        keep = observations.columns
+        keep = distributions.columns
     elif isinstance(subset, str):
-        keep = [k for k in observations.columns if re.match(subset, k)]
+        keep = [k for k in distributions.columns if re.match(subset, k)]
     else:
         keep = subset
 
     if colors:
         keep = [k for k in keep if colors.get(k, None) is not None]
 
-    observations = observations[keep].rename(columns=relabel)
+    distributions = distributions.filter(items=keep).rename(columns=relabel)
 
     def _quantiles(g):
         return pd.Series(
@@ -77,15 +78,27 @@ def trajectories(
             }
         )
 
-    distributions = (
-        observations.melt(ignore_index=False, var_name="trajectory")
-        .set_index("trajectory", append=True)
-        .groupby(level=["trajectory", "timepoint_id"])
-        .apply(_quantiles)
-        .reset_index()
-        .iloc[:limit]
-        .to_dict(orient="records")
-    )
+    if distributions is not None:
+        distributions = (
+            distributions.melt(ignore_index=False, var_name="trajectory")
+            .set_index("trajectory", append=True)
+            .groupby(level=["trajectory", "timepoint_id"])
+            .apply(_quantiles)
+            .reset_index()
+            .iloc[:limit]
+            .to_dict(orient="records")
+        )
+    else:
+        distributions = []
+
+    if traces is not None:
+        traces = (
+            traces.melt(ignore_index=False, var_name="trajectory")
+            .reset_index()
+            .to_dict(orient="records")
+        )
+    else:
+        traces = []
 
     if points is not None:
         points = (
@@ -103,6 +116,7 @@ def trajectories(
     )
 
     schema["data"] = replace_named_with(schema["data"], "points", ["values"], points)
+    schema["data"] = replace_named_with(schema["data"], "traces", ["values"], traces)
 
     if colors is not None:
         colors = {relabel.get(k, k): v for k, v in colors.items()}
@@ -183,8 +197,8 @@ def histogram_multi(
     data = {k: as_value_list(k, subset) for k, subset in data.items()}
 
     joint = pd.concat(data)
-    bins_count = sturges_bin(joint)
-    counts, edges = np.histogram(joint, bins=bins_count)
+    bins_count = bin_rule(joint)
+    _, edges = np.histogram(joint, bins=bins_count)
 
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]

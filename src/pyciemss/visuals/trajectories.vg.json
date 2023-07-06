@@ -12,6 +12,7 @@
       "domain": {
         "fields": [
           {"data": "distributions", "field": "timepoint_id"},
+          {"data": "traces", "field": "timepoint_id"},
           {"data": "points", "field": "timepoint_id"}
          ]
       }
@@ -26,6 +27,7 @@
         "fields": [
           {"data": "distributions", "field": "lower"},               
           {"data": "distributions", "field": "upper"},
+          {"data": "traces", "field": "value"},
           {"data": "points", "field": "value"}
          ]
       }
@@ -37,6 +39,7 @@
       "domain": {
         "fields": [
           {"data": "distributions", "field": "trajectory"},
+          {"data": "traces", "field": "trajectory"},
           {"data": "points", "field": "trajectory"}
          ]
       }
@@ -176,6 +179,41 @@
         }
       ]
     },
+    {
+      "type": "group",
+      "zindex": 2,
+      "from": {
+        "facet": {
+          "name": "traces_split",
+          "data": "traces",
+          "groupby": "trajectory"
+        }
+      },
+      "marks": [
+        {
+          "type": "line",
+          "name": "_traces",
+          "from": {"data": "traces_split"},
+          "encode": {
+              "update": {
+                "x": {"scale": "xscale", "field": "timepoint_id"},
+                "y": {"scale": "yscale", "field": "value"},
+                "strokeWidth": {"value": 2},
+                "stroke": {"scale": "color", "field": "trajectory"},
+                "interpolate": {"value": "linear"},
+                "strokeOpacity": [
+                  {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+                    "value": 0.75},
+                  {"value": 0.15}
+                ]
+              },
+              "hover": {
+                "fillOpacity": {"value": 0.9}
+              }  
+          }
+        }
+      ]
+    },    
     {"type": "group",
      "name": "_distributions",
      "zindex": 1,
@@ -239,6 +277,11 @@
         {"timepoint_id": 6, "upper": 30, "lower": 40, "trajectory": "b"}
       ]
     },
+    {
+      "name": "traces",
+      "values": [{"timepoint_id": 6, "value": 30, "trajectory": "c"},
+                 {"timepoint_id": 6, "value": 30, "trajectory": "d"}]
+    },    
     {
       "name": "points",
       "values": [{"timepoint_id": 6, "value": 30, "trajectory": "d"},
