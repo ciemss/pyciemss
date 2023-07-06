@@ -348,64 +348,64 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     
     @functools.singledispatchmethod
     @classmethod
-    def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
-        return cls.from_askenet(model)
+    def from_mira(cls, model: mira.modeling.Model, **kwargs) -> "MiraPetriNetODESystem":
+        return cls.from_askenet(model, **kwargs)
 
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
-    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
-        return cls.from_askenet(model_template)
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel, **kwargs):
+        return cls.from_askenet(model_template, **kwargs)
 
     @from_mira.register(dict)
     @classmethod
-    def _from_json(cls, model_json: dict):
-        return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json))
+    def _from_json(cls, model_json: dict, **kwargs):
+        return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
 
     @from_mira.register(str)
     @classmethod
-    def _from_json_file(cls, model_json_path: str):
+    def _from_json_file(cls, model_json_path: str, **kwargs):
         if not os.path.exists(model_json_path):
             raise ValueError(f"Model file not found: {model_json_path}")
         with open(model_json_path, "r") as f:
-            return cls.from_mira(json.load(f))
+            return cls.from_mira(json.load(f), **kwargs)
 
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
+    def from_askenet(cls, model: mira.modeling.Model, **kwargs) -> "MiraPetriNetODESystem":
         """Return a model from a MIRA model."""
-        return cls(model)
+        return cls(model, **kwargs)
 
 
     @from_askenet.register(mira.metamodel.TemplateModel)
     @classmethod
-    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel, **kwargs):
         """Return a model from a MIRA model template."""
-        model = cls.from_askenet(mira.modeling.Model(model_template))
+        model = cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
 
         # Check if all parameter names are strings
         if all(isinstance(param.key, str) for param in model.G.parameters.values()):
             return model
         else:
             new_template = aggregate_parameters(model_template)
-            return cls.from_askenet(mira.modeling.Model(new_template))
+            return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
 
 
     @from_askenet.register(dict)
     @classmethod
-    def _from_json(cls, model_json: dict):
+    def _from_json(cls, model_json: dict, **kwargs):
         """Return a model from an ASKEM Model Representation json."""
         if "templates" in model_json:
-            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
+            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
         elif 'petrinet' in model_json['schema']:
-            return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json))
+            return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json), **kwargs)
         elif 'regnet' in model_json['schema']:
-            return cls.from_askenet(regnet.template_model_from_askenet_json(model_json))
+            return cls.from_askenet(regnet.template_model_from_askenet_json(model_json), **kwargs)
 
 
     
     @from_askenet.register(str)
     @classmethod
-    def _from_path(cls, model_json_path: str):
+    def _from_path(cls, model_json_path: str, **kwargs):
         """Return a model from an ASKEM Model Representation path (either url or local file)."""
         if "https://" in model_json_path:
             res = requests.get(model_json_path)
@@ -415,7 +415,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 raise ValueError(f"Model file not found: {model_json_path}")
             with open(model_json_path) as fh:
                 model_json = json.load(fh)
-        return cls.from_askenet(model_json)
+        return cls.from_askenet(model_json, **kwargs)
 
     def to_askenet_petrinet(self) -> dict:
         """Return an ASKEM Petrinet Model Representation json."""
