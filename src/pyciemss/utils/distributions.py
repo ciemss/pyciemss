@@ -52,8 +52,17 @@ def mira_uniform_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Dist
     return pyro.distributions.Uniform(minimum, maximum)
 
 def mira_normal_to_pyro(parameters:Dict[str, float]) -> pyro.distributions.Distribution:
-    mean = parameters["mean"]
-    std = parameters["stdev"]
+    if "mean" in parameters.keys():
+        mean = parameters["mean"]
+    if "stdev" in parameters.keys():
+        std = parameters["stdev"]
+    elif "variance" in parameters.keys():
+        std = parameters["variance"] ** 0.5
+    elif "precision" in parameters.keys():
+        std = parameters["precision"] ** -0.5
+    
+    #  Pyro distributions are thing wrappers around torch distributions.
+    #  See https://pytorch.org/docs/stable/generated/torch.normal.html
     return pyro.distributions.Normal(mean, std)
 
 #TODO: Add lognormal, beta, gamma, etc.
