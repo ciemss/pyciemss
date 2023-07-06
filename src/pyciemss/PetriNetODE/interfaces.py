@@ -261,7 +261,7 @@ def load_and_optimize_and_sample_petri_model(
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
         interventions: Iterable[Tuple[float, str]]
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name).
-        qoi: Iterable[Tuple[str,str,float]]
+        qoi: Tuple[str,str,float]
             - Quantity of interest to optimize over. Function that takes intervention
         risk_bound: float
             - Bound on the risk constraint.
@@ -303,7 +303,7 @@ def load_and_optimize_and_sample_petri_model(
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
-    qoi_fn = lambda y: scenario2dec_nday_average(y, contexts=[qoi[1]], ndays=qoi[1])
+    qoi_fn = lambda y: getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])
     ouu_policy = optimize(
         model,
         timepoints=timepoints,
