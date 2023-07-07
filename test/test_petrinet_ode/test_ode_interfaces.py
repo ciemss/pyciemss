@@ -65,9 +65,6 @@ class Test_Samples_Format(unittest.TestCase):
             interventions=self.interventions,
         )
 
-
-    
-
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
         for s in [self.samples, self.calibrated_samples]:

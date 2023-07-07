@@ -402,18 +402,18 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         model = cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
 
         # Check if all parameter names are strings
-        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
-            return model
-        else:
-            new_template = aggregate_parameters(model_template)
-            return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
+        # if all(isinstance(param.key, str) for param in model.G.parameters.values()):
+        #     return model
+        # else:
+        #     new_template = aggregate_parameters(model_template)
+        #     return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
 
         # Check if we wish to aggregate parameters (default is no)
-        #if 'aggregate_parameters_p' in kwargs and kwargs['aggregate_parameters_p']:
-        #    new_template = aggregate_parameters(model_template)
-        #    return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
-        #else:
-        #    return cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
+        if 'aggregate_parameters_p' in kwargs and kwargs['aggregate_parameters_p']:
+            new_template = aggregate_parameters(model_template)
+            return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
+        else:
+            return cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
             
 
     @from_askenet.register(dict)
