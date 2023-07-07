@@ -68,6 +68,7 @@ def trajectories(
     """_summary_
 
     TODO: Handle the 'No distributions' case
+    TODO: Make distributions more flexible with timepoint and sample id (on- or off-index)
 
     Args:
         observations (None, pd.DataFrame): Dataframe formatted per
@@ -137,6 +138,10 @@ def trajectories(
         distributions = []
 
     if traces is not None:
+        if "timepoint_id" in traces.columns:
+            traces = traces.set_index("timepoint_id")
+        traces.index = traces.index.rename("timepoint_id")
+
         traces = (
             traces.melt(ignore_index=False, var_name="trajectory")
             .reset_index()
