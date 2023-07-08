@@ -11,10 +11,10 @@
       "zero": false,
       "domain": {
         "fields": [
-          {"data": "distributions", "field": "timepoint_id"},
-          {"data": "traces", "field": "timepoint_id"},
-          {"data": "points", "field": "timepoint_id"},
-          {"data": "markers", "field": "timepoint_id"}
+          {"data": "distributions", "field": "timepoint"},
+          {"data": "traces", "field": "timepoint"},
+          {"data": "points", "field": "timepoint"},
+          {"data": "markers", "field": "timepoint"}
          ]
       }
     },
@@ -48,8 +48,18 @@
   ],
 
   "axes": [
-    {"orient": "bottom", "scale": "xscale", "zindex": 100},
-    {"orient": "left", "scale": "yscale", "zindex": 100}
+    {
+      "name": "x_axis",
+      "orient": "bottom",
+      "scale": "xscale", 
+      "zindex": 100
+    },
+    {
+      "name": "y_axis",
+      "orient": "left", 
+      "scale": "yscale", 
+      "zindex": 100
+    }
   ],
 
   "signals": [
@@ -87,6 +97,7 @@
 
   "legends": [
     {
+      "name": "color_legend",
       "stroke": "color",
       "encode": {
         "symbols": {
@@ -135,8 +146,9 @@
         "zindex": 3,
         "encode": {
           "update": {
-              "x": {"scale": "xscale", "field": "timepoint_id"},
+              "x": {"scale": "xscale", "field": "timepoint"},
               "y": {"scale": "yscale", "field": "value"},
+              "size": {"value": 10},
               "strokeWidth": {"value": 2},
               "fill": {"scale": "color", "field": "trajectory"},
               "stroke": {"scale": "color", "field": "trajectory"},
@@ -149,7 +161,8 @@
                 {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
                 "value": 0.75},
                 {"value": 0.15}
-              ]
+              ],
+              "tooltip": {"field": "value"}
           },
           "hover": {
             "fillOpacity": {"value": 0.9}
@@ -163,7 +176,7 @@
           "zindex": 3,
           "encode": {
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint_id"},
+              "x": {"scale": "xscale", "field": "timepoint"},
               "y": {"scale": "yscale", "field": "value"},
               "strokeWidth": {"value": 2},
               "stroke": {"scale": "color", "field": "trajectory"},
@@ -199,7 +212,7 @@
           "from": {"data": "traces_split"},
           "encode": {
               "update": {
-                "x": {"scale": "xscale", "field": "timepoint_id"},
+                "x": {"scale": "xscale", "field": "timepoint"},
                 "y": {"scale": "yscale", "field": "value"},
                 "strokeWidth": {"value": 2},
                 "stroke": {"scale": "color", "field": "trajectory"},
@@ -233,7 +246,7 @@
         "from": {"data": "trajectory_split"},
         "encode": {
           "update": {
-            "x": {"scale": "xscale", "field": "timepoint_id"},
+            "x": {"scale": "xscale", "field": "timepoint"},
             "y": {"scale": "yscale", "field": "upper"},
             "y2": {"scale": "yscale", "field": "lower"},
             "interpolate": {"value": "linear"},
@@ -270,7 +283,7 @@
           "encode": {
             "enter": {"stroke": {"value": "lightgray"}},
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint_id"},
+              "x": {"scale": "xscale", "field": "timepoint"},
               "y2": {"value": 0},
               "y": {"signal": "height"},
               "opacity": {"value": 1}
@@ -305,37 +318,38 @@
     {
       "name": "distributions",
       "values": [
-        {"timepoint_id": 1, "upper": 10, "lower": 10, "trajectory": "a"}, 
-        {"timepoint_id": 2, "upper": 20, "lower": 25, "trajectory": "a"},
-        {"timepoint_id": 3, "upper": 30, "lower": 40, "trajectory": "a"},
-        {"timepoint_id": 4, "upper": 20, "lower": 50, "trajectory": "a"},
-        {"timepoint_id": 5, "upper": 10, "lower": 20, "trajectory": "a"}, 
-        {"timepoint_id": 6, "upper": 0, "lower": 10, "trajectory": "a"},
+        {"timepoint": 1, "upper": 10, "lower": 10, "trajectory": "a"}, 
+        {"timepoint": 2, "upper": 20, "lower": 25, "trajectory": "a"},
+        {"timepoint": 3, "upper": 30, "lower": 40, "trajectory": "a"},
+        {"timepoint": 4, "upper": 20, "lower": 50, "trajectory": "a"},
+        {"timepoint": 5, "upper": 10, "lower": 20, "trajectory": "a"}, 
+        {"timepoint": 6, "upper": 0, "lower": 10, "trajectory": "a"},
 
-        {"timepoint_id": 1, "upper": -30, "lower": -20, "trajectory": "b"}, 
-        {"timepoint_id": 2, "upper": -40, "lower": -10, "trajectory": "b"},
-        {"timepoint_id": 3, "upper": -20, "lower": 0, "trajectory": "b"},
-        {"timepoint_id": 4, "upper": 0, "lower": 10, "trajectory": "b"},
-        {"timepoint_id": 5, "upper": 10, "lower": 20, "trajectory": "b"}, 
-        {"timepoint_id": 6, "upper": 30, "lower": 40, "trajectory": "b"}
+        {"timepoint": 1, "upper": -30, "lower": -20, "trajectory": "b"}, 
+        {"timepoint": 2, "upper": -40, "lower": -10, "trajectory": "b"},
+        {"timepoint": 3, "upper": -20, "lower": 0, "trajectory": "b"},
+        {"timepoint": 4, "upper": 0, "lower": 10, "trajectory": "b"},
+        {"timepoint": 5, "upper": 10, "lower": 20, "trajectory": "b"}, 
+        {"timepoint": 6, "upper": 30, "lower": 40, "trajectory": "b"}
       ]
     },
     {
       "name": "traces",
-      "values": [{"timepoint_id": 6, "value": 30, "trajectory": "c"},
-                 {"timepoint_id": 6, "value": 30, "trajectory": "d"}]
+      "values": [{"timepoint": 6, "value": 30, "trajectory": "c"},
+                 {"timepoint": 6, "value": 30, "trajectory": "d"}],
+      "transform": [{"type": "filter", "expr": "isValid(datum.value)"}]
     },    
     {
       "name": "points",
-      "values": [{"timepoint_id": 6, "value": 30, "trajectory": "d"},
-                 {"timepoint_id": 10, "value": 40, "trajectory": "d"},
-                 {"timepoint_id": 5, "value": 10, "trajectory": "e"},
-                 {"timepoint_id": 6, "value": 15, "trajectory": "e"}]
+      "values": [{"timepoint": 6, "value": 30, "trajectory": "d"},
+                 {"timepoint": 10, "value": 40, "trajectory": "d"},
+                 {"timepoint": 5, "value": 10, "trajectory": "e"},
+                 {"timepoint": 6, "value": 15, "trajectory": "e"}]
     },
     {
       "name": "markers",
-      "values": [{"timepoint_id": 3, "label": "Low marker"},
-                 {"timepoint_id": 7, "label": "High marker"}]
+      "values": [{"timepoint": 3, "label": "Low marker"},
+                 {"timepoint": 7, "label": "High marker"}]
     },
     {
       "name": "selected",
