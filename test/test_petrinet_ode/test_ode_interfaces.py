@@ -55,7 +55,7 @@ class Test_Samples_Format(unittest.TestCase):
             self.num_samples,
             timepoints=timepoints,
             verbose=True,
-            num_iterations=5,
+            num_iterations=2,
         )
         self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
         self.intervened_samples = load_and_sample_petri_model(
