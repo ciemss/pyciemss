@@ -76,7 +76,7 @@ def convert_to_output_format(
     result = pd.DataFrame(d)
     if time_unit is not None:
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v].item())
-        result = result.assign(**{"timepoint_{time_unit}": all_timepoints})
+        result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
 
     return result
 
