@@ -1,3 +1,3 @@
-Timestep,Susceptible,Infected
+Timestep,S,I
 1.1,0.9,0.1
 2.2,0.8
