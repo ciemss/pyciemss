@@ -1,15 +1,18 @@
 import collections
+from collections.abc import Callable
 import functools
 import json
 import operator
 import os
 import warnings
-from typing import Dict, List, Optional, Union, OrderedDict
+from typing import Dict, List, Optional, Union, OrderedDict, Tuple
 import requests
 import networkx
 import numpy
 import torch
 import pyro
+import sympy
+from sympytorch import SymPyModule
 
 import mira
 import mira.modeling
@@ -293,10 +296,12 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model):
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
         self.G = G
         super().__init__()
-
+        self.compile_rate_law_p = compile_rate_law_p
+        if self.compile_rate_law_p:
+            self.compiled_rate_law = self.compile_rate_law()
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
             for var in self.var_order.values():
                 self.register_buffer(
@@ -331,6 +336,26 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 elif isinstance(param_value, (int, float)):
                     param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
 
+    def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
+        """Compile the deriv function during initialization."""
+
+        # compute the symbolic derivatives
+        symbolic_derivs = {get_name(var): 0 for var in self.var_order.values()}
+        for t in self.G.transitions.values():
+            flux = self.extract_sympy(t.template.rate_law)
+            for c in t.consumed:
+                symbolic_derivs[get_name(c)] -= flux
+            for p in t.produced:
+                symbolic_derivs[get_name(p)] += flux
+
+        # convert to a function
+        numeric_derivs = SymPyModule(expressions=[symbolic_derivs[get_name(k)] for k in self.var_order.values()])
+        return numeric_derivs
+        
+    def extract_sympy(self, sympy_expr_str: mira.metamodel.templates.SympyExprStr) -> sympy.Expr:
+        """Convert the mira SympyExprStr to a sympy.Expr."""
+        return sympy_expr_str.args[0]
+
     def create_var_order(self) -> dict[str, int]:
         '''
         Returns the order of the variables in the state vector used in the `deriv` method.
@@ -342,64 +367,71 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     
     @functools.singledispatchmethod
     @classmethod
-    def from_mira(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
-        return cls.from_askenet(model)
+    def from_mira(cls, model: mira.modeling.Model, **kwargs) -> "MiraPetriNetODESystem":
+        return cls.from_askenet(model, **kwargs)
 
     @from_mira.register(mira.metamodel.TemplateModel)
     @classmethod
-    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
-        return cls.from_askenet(model_template)
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel, **kwargs):
+        return cls.from_askenet(model_template, **kwargs)
 
     @from_mira.register(dict)
     @classmethod
-    def _from_json(cls, model_json: dict):
-        return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json))
+    def _from_json(cls, model_json: dict, **kwargs):
+        return cls.from_mira(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
 
     @from_mira.register(str)
     @classmethod
-    def _from_json_file(cls, model_json_path: str):
+    def _from_json_file(cls, model_json_path: str, **kwargs):
         if not os.path.exists(model_json_path):
             raise ValueError(f"Model file not found: {model_json_path}")
         with open(model_json_path, "r") as f:
-            return cls.from_mira(json.load(f))
+            return cls.from_mira(json.load(f), **kwargs)
 
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, model: mira.modeling.Model) -> "MiraPetriNetODESystem":
+    def from_askenet(cls, model: mira.modeling.Model, **kwargs) -> "MiraPetriNetODESystem":
         """Return a model from a MIRA model."""
-        return cls(model)
+        return cls(model, **kwargs)
 
 
     @from_askenet.register(mira.metamodel.TemplateModel)
     @classmethod
-    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel):
+    def _from_template_model(cls, model_template: mira.metamodel.TemplateModel, **kwargs):
         """Return a model from a MIRA model template."""
-        model = cls.from_askenet(mira.modeling.Model(model_template))
+        model = cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
 
         # Check if all parameter names are strings
-        if all(isinstance(param.key, str) for param in model.G.parameters.values()):
-            return model
-        else:
-            new_template = aggregate_parameters(model_template)
-            return cls.from_askenet(mira.modeling.Model(new_template))
+        # if all(isinstance(param.key, str) for param in model.G.parameters.values()):
+        #     return model
+        # else:
+        #     new_template = aggregate_parameters(model_template)
+        #     return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
 
+        # Check if we wish to aggregate parameters (default is no)
+        if 'aggregate_parameters_p' in kwargs and kwargs['aggregate_parameters_p']:
+            new_template = aggregate_parameters(model_template)
+            return cls.from_askenet(mira.modeling.Model(new_template), **kwargs)
+        else:
+            return cls.from_askenet(mira.modeling.Model(model_template), **kwargs)
+            
 
     @from_askenet.register(dict)
     @classmethod
-    def _from_json(cls, model_json: dict):
+    def _from_json(cls, model_json: dict, **kwargs):
         """Return a model from an ASKEM Model Representation json."""
         if "templates" in model_json:
-            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
+            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
         elif 'petrinet' in model_json['schema']:
-            return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json))
+            return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json), **kwargs)
         elif 'regnet' in model_json['schema']:
-            return cls.from_askenet(regnet.template_model_from_askenet_json(model_json))
+            return cls.from_askenet(regnet.template_model_from_askenet_json(model_json), **kwargs)
 
 
     
     @from_askenet.register(str)
     @classmethod
-    def _from_path(cls, model_json_path: str):
+    def _from_path(cls, model_json_path: str, **kwargs):
         """Return a model from an ASKEM Model Representation path (either url or local file)."""
         if "https://" in model_json_path:
             res = requests.get(model_json_path)
@@ -409,7 +441,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 raise ValueError(f"Model file not found: {model_json_path}")
             with open(model_json_path) as fh:
                 model_json = json.load(fh)
-        return cls.from_askenet(model_json)
+        return cls.from_askenet(model_json, **kwargs)
 
     # Note: This code below referred to a class that doesn't exist (or at least isn't imported).
 
@@ -427,12 +459,29 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
     @pyro.nn.pyro_method
     def deriv(self, t: Time, state: State) -> StateDeriv:
+        if self.compile_rate_law_p:
+            # Get the current state
+            states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
+            # Get the parameters
+            parameters = {k: getattr (self, k) for k in self.G.parameters}
+            
+            # Evaluate the rate laws for each transition
+            deriv_tensor = self.compiled_rate_law(**states, **parameters, **dict(t=t))
+            return tuple(deriv_tensor[i] for i in range(deriv_tensor.shape[0]))
+        else:
+            return self.mass_action_deriv(t, state)
+
+
+    
+    def mass_action_deriv(self, t: Time, state: State) -> StateDeriv:
         states = {k: state[i] for i, k in enumerate(self.var_order.values())}
         derivs = {k: 0. for k in states}
 
         population_size = sum(states.values())
 
         for transition in self.G.transitions.values():
+            rate_law = transition.template.rate_law
+            
             flux = getattr(self, get_name(transition.rate)) * functools.reduce(
                 operator.mul, [states[k] for k in transition.consumed], 1
             )
@@ -446,6 +495,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
         return tuple(derivs[v] for v in self.var_order.values())
 
+    
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_info in self.G.parameters.values():
@@ -478,8 +528,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1):
-        super().__init__(G)
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     def __repr__(self):
@@ -489,6 +539,6 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
-        mean = solution[var_name]
+        mean = torch.maximum(solution[var_name], torch.tensor(1e-9))
         pseudocount = self.pseudocount
         pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
