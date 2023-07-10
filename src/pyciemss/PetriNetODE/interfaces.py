@@ -440,7 +440,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         lr: float > 0.0
             - The learning rate to use for the calibration.
         verbose: bool
-            - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
+            - Whether to print out the calibration progress and the optimization under uncertainty progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
         num_particles: int > 0
             - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
         autoguide: pyro.infer.autoguide.AutoGuide
@@ -448,8 +448,6 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
-        verbose: bool
-            - Whether to print out the optimization under uncertainty progress.
         n_samples_ouu: int
             - The number of samples to draw from the model for each optimization iteration.
         maxiter: int >= 0
