@@ -463,7 +463,8 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             # Get the current state
             states = {v: state[i] for i, v in enumerate(self.var_order.keys())}
             # Get the parameters
-            parameters = {k: getattr (self, k) for k in self.G.parameters}
+            parameters = {get_name(k): getattr (self, get_name(k)) for k in self.G.parameters
+                          if type(k) is str}
             
             # Evaluate the rate laws for each transition
             deriv_tensor = self.compiled_rate_law(**states, **parameters, **dict(t=t))
@@ -499,17 +500,17 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     @pyro.nn.pyro_method
     def param_prior(self):
         for param_info in self.G.parameters.values():
-            param_name = get_name(param_info)
-
-            param_value = param_info.value
-            if isinstance(param_value, torch.nn.Parameter):
-                setattr(self, param_name, pyro.param(param_name, param_value))
-            elif isinstance(param_value, pyro.distributions.Distribution):
-                setattr(self, param_name, pyro.sample(param_name, param_value))
-            elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
-            else:
-                raise TypeError(f"Unknown parameter type: {type(param_value)}")
+            if param_info.placeholder == False:
+                param_name = get_name(param_info)
+                param_value = param_info.value
+                if isinstance(param_value, torch.nn.Parameter):
+                    setattr(self, param_name, pyro.param(param_name, param_value))
+                elif isinstance(param_value, pyro.distributions.Distribution):
+                    setattr(self, param_name, pyro.sample(param_name, param_value))
+                elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
+                    self.register_buffer(param_name, torch.as_tensor(param_value))
+                else:
+                    raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
