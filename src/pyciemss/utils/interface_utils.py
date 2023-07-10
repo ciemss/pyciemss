@@ -12,13 +12,12 @@ def convert_to_output_format(
     timepoints: Iterable[float],
     interventions: Optional[Dict[str, torch.Tensor]] = None,
     *,
-    nice: bool = False,
+    time_unit=None,
 ) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
 
-    nice -- If set to True, will (1) keep the literal time as 'timepoint'
-        and put 'tiempoint_id', 'sample_id' and 'timepoint' on the index
+    time_unit -- If specified, will include values from `timepoints` as column named `timepoint_<time_unit>`.
     """
 
     pyciemss_results = {"parameters": {}, "states": {}}
@@ -75,11 +74,9 @@ def convert_to_output_format(
     }
 
     result = pd.DataFrame(d)
-    if nice:
+    if time_unit is not None:
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v].item())
-        result = result.assign(timepoint=all_timepoints).set_index(
-            ["sample_id", "timepoint_id", "timepoint"]
-        )
+        result = result.assign(**{"timepoint_{time_unit}": all_timepoints})
 
     return result
 
