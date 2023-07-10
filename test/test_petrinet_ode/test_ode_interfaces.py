@@ -294,8 +294,12 @@ class TestODEInterfaces(unittest.TestCase):
         assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
         
         SCENARIO_1a_H2 = 'test/models/AMR_examples/scenario1_a.json'
-        petri_model_with_placeholders = load_and_sample_petri_model(SCENARIO_1a_H2, num_samples, timepoints)
+        scenario1a_output = load_and_sample_petri_model(SCENARIO_1a_H2, num_samples, timepoints)
+        self.assertTrue(isinstance(scenario1a_output, pd.DataFrame))
 
+        # SIDARTHE = 'test/models/AMR_examples/BIOMD0000000955_askenet.json'
+        # sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
+        # self.assertTrue(isinstance(sidarthe_output, pd.DataFrame))
 
 
 
