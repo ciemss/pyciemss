@@ -34,6 +34,10 @@ def _barycenter_triangle_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "barycenter_triangle.vg.json"))
 
 
+def _calibrate_schema() -> VegaSchema:
+    return json.loads(pkgutil.get_data(__name__, "calibrate_chart.vg.json"))
+
+
 # General Utilities ---------------
 def partition(
     pred: Callable[[Any], bool], iterable: Iterable[Any]
