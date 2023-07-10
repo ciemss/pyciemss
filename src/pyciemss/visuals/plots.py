@@ -458,6 +458,31 @@ def triangle_weights(samples, concentration=20, subdiv=7):
     return json_dict
 
 
+def calibration(datasource: pd.DataFrame):
+    """Create a contour plot from the passed datasource.
+
+    datasource --  A dataframe ready for rendering.  Should include:
+       - time (int)
+       - column_names (str)
+       - calibration (bool)
+       - y  --- Will be shown as a line
+       - y1 --- Upper range of values
+       - y0 --- Lower range of values
+    """
+    schema = _calibrate_schema()
+
+    data = find_keyed(schema["data"], "name", "table")
+    del data["url"]
+    data["values"] = datasource.to_dict(orient="records")
+
+    options = sorted(datasource["column_names"].unique().tolist())
+    var_filter = find_keyed(schema["signals"], "name", "Variable")
+    var_filter["bind"]["options"] = options
+    var_filter["value"] = options[0]
+
+    return schema
+
+
 def triangle_contour(data, *, title=None, contour=True):
     """Create a contour plot from the passed datasource.
 

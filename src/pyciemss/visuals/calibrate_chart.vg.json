@@ -1,157 +1,145 @@
 {
-    "$schema": "https://vega.github.io/schema/vega/v5.json",
-       "description": "A basic line chart example.",
-       "width": 500,
-       "height": 200,
-       "padding": 5,
-     
-       "signals": [
-   
-         {
-           "name": "Type",
-           "value": "Ailing_sol",
-           "bind": {
-             "input": "select",
-             "options":  
-             ["Ailing_sol",
-              "Diagnosed_sol",
-              "Extinct_sol",
-              "Healed_sol",
-              "Infected_sol",
-              "Recognized_sol",
-              "Susceptible_sol",
-              "Threatened_sol"]
-           }
-         }
-       ],
-     
-       
-     "data": [{
-       
-         "name": "table",
-         
-      "url": "calibrate.json",
-   "transform": [
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Line chart with distributiosn.",
+  "width": 500,
+  "height": 200,
+  "signals": [
     {
-      "type": "filter",
-      "expr": "( datum.column_names === Type) "
-
+      "name": "Variable",
+      "value": "Ailing_sol",
+      "bind": {
+        "input": "select",
+        "options":  
+        ["Ailing_sol",
+        "Diagnosed_sol",
+        "Extinct_sol",
+        "Healed_sol",
+        "Infected_sol",
+        "Recognized_sol",
+        "Susceptible_sol",
+        "Threatened_sol"]
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "time",
+      "range": "width",
+      "domain": {"data": "table", "field": "time"}
     },
-    {"type":"formula", "as": "opac", "expr": "(datum.calibration ? .3 : .3)"}
-  ] 
-}
-     ],
-     
-       "scales": [
-         {
-           "name": "time",
-           "range": "width",
-           "domain": {"data": "table", "field": "time"}
-         },
-         {
-           "name": "y1",
-           "type": "linear",
-           "range": "height",
-           "nice": true,
-           "zero": true, 
-           "domain": {"data": "table", "field": "y1"}
-         },
-         {
-           "name": "color",
-           "type": "ordinal",
-           "domain": {"data": "table", "field": "calibration"},
-           "range": {"scheme": "category10"}
-         }
-       ],
-     
-       "axes": [
-         {"orient": "bottom", "scale": "time", "tickCount": 30, 
-         "title": "Time since start of pandemic (days)"},
-         {"orient": "left", "scale": "y1", "format": "%",
-         "grid": true, "domain": false,
-         "title": "Cases (Prop. of Population)"}
-         
-       ],
-       "legends": [
-        {
-          "fill": "color",
-          "title": "Calibrate",
+    {
+      "name": "y1",
+      "type": "linear",
+      "range": "height",
+      "nice": true,
+      "zero": true, 
+      "domain": {"data": "table", "field": "y1"}
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "table", "field": "calibration"},
+      "range": {"scheme": "category10"}
+    }
+  ],
+  "axes": [
+    {
+    "orient": "bottom", 
+    "scale": "time",
+    "title": "Time since start of pandemic (days)"},
+    {
+    "orient": "left", 
+    "scale": "y1", 
+    "format": "%",
+    "grid": true, 
+    "domain": false,
+    "title": "Cases (Prop. of Population)"
+  }
+  ],
+    "legends": [
+    {
+      "fill": "color",
+      "title": "Calibrate",
+      "encode": {
+        "title": {
+          "update": {
+            "fontSize": {"value": 14}
+          }
+        },
+        "labels": {
+          "interactive": true,
+          "update": {
+            "fontSize": {"value": 12},
+            "fill": {"value": "black"}
+          },
+          "hover": {
+            "fill": {"value": "firebrick"}
+          }
+        },
+        "symbols": {
+          "update": {
+            "stroke": {"value": "transparent"}
+          }
+        },
+        "legend": {
+          "update": {
+            "stroke": {"value": "#ccc"},
+            "strokeWidth": {"value": 1.5}
+          }
+        }
+      }
+    }
+  ],
+  "marks": [
+      {
+        "type": "group",
+        "from": {
+          "facet": {
+            "name": "series",
+            "data": "table",
+            "groupby": ["calibration", "column_names"]
+          }
+        },
+        "marks": [
+          {
+            "type": "area",
+            "from": {"data": "series"},
+            "encode": {
+              "enter": {
+                "x": {"scale": "time", "field": "time"},
+                "y": {"scale": "y1", "field": "y1"},
+                "y2": {"scale": "y1", "field": "y0"},
+                "fill": {"scale": "color", "field": "calibration"},
+                "fillOpacity": {"field": "opac"}
+              }
+            }
+          },
+          {
+          "type": "line",
+          "from": {"data": "series"},
           "encode": {
-            "title": {
-              "update": {
-                "fontSize": {"value": 14}
-              }
-            },
-            "labels": {
-              "interactive": true,
-              "update": {
-                "fontSize": {"value": 12},
-                "fill": {"value": "black"}
-              },
-              "hover": {
-                "fill": {"value": "firebrick"}
-              }
-            },
-            "symbols": {
-              "update": {
-                "stroke": {"value": "transparent"}
-              }
-            },
-            "legend": {
-              "update": {
-                "stroke": {"value": "#ccc"},
-                "strokeWidth": {"value": 1.5}
-              }
+            "enter": {
+              "x": {"scale": "time", "field": "time"},
+              "y": {"scale": "y1", "field": "y"},
+              "strokeWidth": {"value": 1},
+              "stroke": {"scale": "color", "field": "calibration"}
             }
           }
         }
-      ],
-     
-       "marks": [
-         {
-           "type": "group",
-           "from": {
-             "facet": {
-               "name": "series",
-               "data": "table",
-               "groupby": ["calibration", "column_names"]
-             }
-           },
-           
-           
-   
-           "marks": [
-             {
-               "type": "area",
-               "from": {"data": "series"},
-               "encode": {
-                 "enter": {
-                   "x": {"scale": "time", "field": "time"},
-                   "y": {"scale": "y1", "field": "y1"},
-                   "y2": {"scale": "y1", "field": "y0"},
-                   "fill": {"scale": "color", "field": "calibration"},
-                   "fillOpacity": {"field": "opac"}
-                 }
-               }
-             }
-             ,
-
-             {
-              "type": "line",
-              "from": {"data": "series"},
-              "encode": {
-                "enter": {
-                  "x": {"scale": "time", "field": "time"},
-                  "y": {"scale": "y1", "field": "y"},
-                  "strokeWidth": {"value": 1},
-                  "stroke": {"scale": "color", "field": "calibration"}
-                }
-              }
-            }
-   
-           ]
-         }
-       ]
-     
-   }
-   
+        ]
+      }
+  ],
+  "data": [
+    {
+      "name": "table",
+      "url": "calibrate.json",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "(datum.column_names === Variable) "
+        },
+        {"type":"formula", "as": "opac", "expr": "(datum.calibration ? .3 : .3)"}
+      ] 
+    }
+  ]
+}
