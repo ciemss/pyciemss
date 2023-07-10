@@ -67,13 +67,13 @@ class TestPetrinetDerivatives(unittest.TestCase):
         mira_model = model_from_url('https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir.json')
         self.sir_askenet = load_petri_model(mira_model)
         # Initialize
-        self.askenet2hand = dict(Susceptible_sol='susceptible_population_sol',
-                            Infected_sol='infected_population_sol',
-                            Recovered_sol='immune_population_sol')
+        self.askenet2hand = dict(S_sol='susceptible_population_sol',
+                            I_sol='infected_population_sol',
+                            R_sol='immune_population_sol')
         
-        self.hand2askenet = dict(susceptible_population='Susceptible',
-                            infected_population='Infected',
-                            immune_population='Recovered')
+        self.hand2askenet = dict(susceptible_population='S',
+                            infected_population='I',
+                            immune_population='R')
         
         initial_state = {self.hand2askenet[k]: v for k, v in self.initial_state.items()}
 

@@ -157,9 +157,5 @@ def assign_interventions_to_timepoints(
             for t in timepoints:
                 # find the interval that contains the timepoint
                 i = bisect.bisect(intervals, (t,)) - 1
-                if 0 <= i < len(intervals) and intervals[i][0] <= t < intervals[i][1]:
-                    result[param].append(values[i])
-                else:
-                    # If the timepoint is not in an interval, assign None. This should never happen
-                    result[param].append(None)
+                result[param].append(values[i])
     return result
