@@ -65,9 +65,6 @@ class Test_Samples_Format(unittest.TestCase):
             interventions=self.interventions,
         )
 
-
-    
-
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
         for s in [self.samples, self.calibrated_samples]:
@@ -272,9 +269,9 @@ class TestODEInterfaces(unittest.TestCase):
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
-            "Susceptible": 0.99,
-            "Infected": 0.01,
-            "Recovered": 0.0,
+            "S": 0.99,
+            "I": 0.01,
+            "R": 0.0,
         }
         expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
         actual_intervened_samples = load_and_sample_petri_model(ASKENET_PATH, num_samples, timepoints, interventions = interventions, start_state=initial_state)
@@ -288,9 +285,9 @@ class TestODEInterfaces(unittest.TestCase):
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
-            "Susceptible": 0.99,
-            "Infected": 0.01,
-            "Recovered": 0.0,
+            "S": 0.99,
+            "I": 0.01,
+            "R": 0.0,
         }
         expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
         data_path = 'test/test_petrinet_ode/data.csv'
