@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Callable, Literal, Union
+from typing import List, Dict, Any, Callable, Literal, Union, Optional
 from collections.abc import Iterable
 
 from numbers import Integral, Number
@@ -63,7 +63,7 @@ def tensor_load(path: os.PathLike) -> Dict[Any, Any]:
 
 
 def clean_nans(
-    entries: list[dict], *, parent: bool = True, replace: Any = None
+    entries: list[dict], *, parent: bool = True, replace: Optional[Any] = None
 ) -> list[dict]:
     """Clean list of entries for json serailizazation. ONLY LOOKS ONE LEVEL DOWN.
     Args:
@@ -144,19 +144,20 @@ def nice_df(df):
 
 
 def trajectories(
-    distributions: Union[None, pd.DataFrame] = None,
+    distributions: pd.DataFrame,
     *,
-    traces: Union[None, pd.DataFrame] = None,
-    points: Union[None, pd.DataFrame] = None,
+    traces: Optional[pd.DataFrame] = None,
+    points: Optional[pd.DataFrame] = None,
     subset: Union[str, list] = all,
-    markers: Union[None, dict[str, Number]] = None,
-    relabel: Union[None, Dict[str, str]] = None,
-    colors: Union[None, dict] = None,
+    markers: Optional[dict[str, Number]] = None,
+    relabel: Optional[Dict[str, str]] = None,
+    colors: Optional[dict] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     join_points: bool = True,
     logy: bool = False,
-    limit: Union[None, Integral] = None,
+    limit: Optional[Integral] = None,
+    title: Optional[str] = None,
 ) -> VegaSchema:
     """_summary_
 
@@ -291,6 +292,9 @@ def trajectories(
 
     if logy:
         schema = rescale(schema, "yscale", "log")
+
+    if title:
+        schema = add_title(schema, title)
 
     return schema
 
@@ -593,7 +597,7 @@ def rescale(
     return schema
 
 
-def title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
+def add_title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
     schema = deepcopy(schema)
     if target is None:
         schema["title"] = title
@@ -607,7 +611,7 @@ def title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
     return schema
 
 
-def pad(schema: VegaSchema, qty: Union[None, Number] = None) -> VegaSchema:
+def pad(schema: VegaSchema, qty: Optional[Number] = None) -> VegaSchema:
     """Add padding to a schema.
 
     Args:
@@ -660,7 +664,7 @@ def delete_named(ls: list, name: str) -> List:
     return [*compress(ls, filter)]
 
 
-def orient_legend(schema: VegaSchema, name: str, location: Union[None, str]):
+def orient_legend(schema: VegaSchema, name: str, location: Optional[str]):
     schema = deepcopy(schema)
     legend = find_keyed(schema["legends"], "name", name)
 
