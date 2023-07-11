@@ -25,7 +25,7 @@ from pyciemss.PetriNetODE.interfaces import (
     load_and_sample_petri_model,
     load_and_calibrate_and_sample_petri_model,
 )
-
+from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
 
 class Test_Samples_Format(unittest.TestCase):
 
@@ -99,7 +99,7 @@ class TestODEInterfaces(unittest.TestCase):
     # Setup for the tests
     def setUp(self):
         MIRA_PATH = "test/models/evaluation_examples/scenario_1/"
-
+        AMR_URL_TEMPLATE= "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/{biomodel_id}/model_askenet.json"
         filename = "scenario1_sir_mira.json"
         self.filename = os.path.join(MIRA_PATH, filename)
         self.initial_time = 0.0
@@ -111,8 +111,21 @@ class TestODEInterfaces(unittest.TestCase):
         self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
         self.num_samples = 2
         self.timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
+        biomodels = """BIOMD0000000249	BIOMD0000000716	BIOMD0000000949	BIOMD0000000956	BIOMD0000000960	BIOMD0000000964	BIOMD0000000971	BIOMD0000000976	BIOMD0000000979	BIOMD0000000982	BIOMD0000000988	MODEL1008060000	MODEL1805230001	MODEL2111170001 BIOMD0000000294	BIOMD0000000717	BIOMD0000000950	BIOMD0000000957	BIOMD0000000962	BIOMD0000000969	BIOMD0000000972	BIOMD0000000977	BIOMD0000000980	BIOMD0000000983	BIOMD0000000991	MODEL1008060002	MODEL1808280006
+BIOMD0000000715	BIOMD0000000726	BIOMD0000000955	BIOMD0000000958	BIOMD0000000963	BIOMD0000000970	BIOMD0000000974	BIOMD0000000978	BIOMD0000000981	BIOMD0000000984	BIOMD0000001045	MODEL1805220001	MODEL1808280011""".split()
+        self.biomodels_tests = {biomodel_id: dict(source=AMR_URL_TEMPLATE.format(biomodel_id=biomodel_id))
+                                for biomodel_id in biomodels}
 
-        
+    def test_load_biomodels(self):
+        """Test how if all biomodels can be loaded in the AMR format."""
+        for biomodel_id, biomodel in self.biomodels_tests.items():
+            try:
+                model = load_petri_model(biomodel["source"], compile_rate_law_p=True)
+            except Exception as e:
+                print(biomodel, e)
+            self.assertIsNotNone(model)
+            self.assertIsInstance(model, ScaledBetaNoisePetriNetODESystem)
+                    
     def test_load_petri_from_file(self):
         """Test the load_petri function when called on a string."""
         model = load_petri_model(self.filename, add_uncertainty=True)
