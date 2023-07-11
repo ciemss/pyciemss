@@ -250,7 +250,7 @@ def load_and_optimize_and_sample_petri_model(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, dict]:
     """
     Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty, 
     sample for the optimal intervention, and estinate risk.
@@ -300,8 +300,15 @@ def load_and_optimize_and_sample_petri_model(
             - The maximum number of function evaluations for each start of the local optimizer.
 
     Returns:
-        samples: PetriSolution
-            - The samples from the model using the optimal policy under uncertainty as a pandas DataFrame.
+        samples: pd.DataFrame
+            - The samples from the model using the optimal policy under uncertainty returned as a pandas DataFrame.
+        optimal_policy: dict
+            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                * policy: Optimal intervention
+                * OptResults: Optimization results as scipy optimization object
+                * risk: Estimated alpha-superquantile risk with alpha=0.95
+                * samples: Samples from the model at the optimal intervention
+                * qoi: Samples of quantity of interest
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
@@ -397,7 +404,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25
-) -> pd.DataFrame:    
+) -> Tuple[pd.DataFrame, dict]:    
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty, 
     sample for the optimal policy, and estinate risk for the optimal policy.
@@ -458,8 +465,15 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
 
     Returns:
-        samples: PetriSolution
-            - The samples from the model using the optimal policy under uncertainty as a pandas DataFrame.
+        samples: pd.DataFrame
+            - The samples from the model using the optimal policy under uncertainty after calibrating on given data returned as a pandas DataFrame.
+        optimal_policy: dict
+            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                * policy: Optimal intervention
+                * OptResults: Optimization results as scipy optimization object
+                * risk: Estimated alpha-superquantile risk with alpha=0.95
+                * samples: Samples from the model at the optimal intervention
+                * qoi: Samples of quantity of interest
     """
     data = csv_to_list(data_path)
 
