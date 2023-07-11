@@ -118,12 +118,6 @@ def clean_nans(
 def nice_df(df):
     """Standardizes dataframe setup, imputing columns if possible and setting index."""
 
-    if "timepoint_id" not in df.columns and "timepoint" not in df.columns:
-        try:
-            df.index = df.index.rename("timepoint")
-        except Exception:
-            pass
-
     if df.index.name is not None or df.index.names != [None]:
         df = df.reset_index()
 
@@ -133,8 +127,17 @@ def nice_df(df):
     if "timepoint_id" not in df.columns:
         df = df.assign(timepoint_id=range(len(df)))
 
-    if "timepoint" not in df.columns:
+    timepoint_cols = [
+        c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"
+    ]
+    if len(timepoint_cols) == 0:
         df = df.assign(timepoint=df.timepoint_id)
+    elif len(timepoint_cols) > 1:
+        raise ValueError(
+            f"Cannot work with multiple timepoint formats. Found {timepoint_cols}"
+        )
+    else:
+        df = df.assign(timepoint=df[timepoint_cols[0]]).drop(columns=timepoint_cols)
 
     df = df.drop(columns=["timepoint_id"]).set_index(["timepoint", "sample_id"])
     return df
