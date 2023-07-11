@@ -11,6 +11,7 @@ from pyciemss.PetriNetODE.base import (
 from pyciemss.risk.ouu import computeRisk, solveOUU
 from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
+from pyciemss.visuals import plots
 
 import time
 import numpy as np
@@ -56,7 +57,9 @@ def load_and_sample_petri_model(
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
-    compile_rate_law_p: bool = True
+    compile_rate_law_p: bool = True,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -83,7 +86,11 @@ def load_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
-
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - If True or a dict, will return a dict {data: <samples>, visual: <visual>}.
+            - If a dict will be treated as a True AND those will be passed to the plot as **kwargs
     Returns:
         samples: PetriSolution
             - The samples from the model as a pandas DataFrame.
@@ -92,7 +99,7 @@ def load_and_sample_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
         pseudocount=pseudocount,
-        compile_rate_law_p=compile_rate_law_p
+        compile_rate_law_p=compile_rate_law_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -118,9 +125,16 @@ def load_and_sample_petri_model(
     )
     # Fix the parameters here with reparameterize.
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit
+    )
 
-    return processed_samples
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
 
 
 def load_and_calibrate_and_sample_petri_model(
@@ -139,7 +153,9 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-    compile_rate_law_p: bool = True
+    compile_rate_law_p: bool = True,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -179,6 +195,9 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        visual_options: None, bool, dict[str, any]
+            - If True or a dict, will return a dict {data: <samples>, visual: <visual>}.
+            - If a dict will be treated as a True AND those will be passed to the plot as **kwargs
 
     Returns:
         samples: pd.DataFrame
@@ -226,30 +245,42 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions
+    )
 
-    return processed_samples
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
 
 
 ##############################################################################
 # Internal Interfaces Below - TA4 above
 
+
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,
     pseudocount=1.0,
-    compile_rate_law_p: bool = False
+    compile_rate_law_p: bool = False,
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
 
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
+        model = ScaledBetaNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+        )
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
+        return MiraPetriNetODESystem.from_askenet(
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+        )
 
 
 @setup_model.register
