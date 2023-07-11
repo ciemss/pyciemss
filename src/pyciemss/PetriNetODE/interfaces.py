@@ -249,7 +249,7 @@ def load_and_optimize_and_sample_petri_model(
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
-    maxfeval: int = 25,
+    maxfeval: int = 25
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty, 
@@ -332,7 +332,7 @@ def load_and_optimize_and_sample_petri_model(
         maxfeval=maxfeval,
         method=method,
         verbose=verbose,
-        postprocess=False,
+        postprocess=False
         )
     
     # Post-process OUU results    
@@ -396,7 +396,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
-    maxfeval: int = 25,
+    maxfeval: int = 25
 ) -> pd.DataFrame:    
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty, 
