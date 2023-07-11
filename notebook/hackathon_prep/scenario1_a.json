@@ -195,16 +195,16 @@
      "id": "beta_c",
      "value": 0.4,
      "units": {
-      "expression": "1/(day*person)",
-      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
      }
     },
     {
      "id": "beta_s",
      "value": 1.0,
      "units": {
-      "expression": "1/(day*person)",
-      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
      }
     },
     {
