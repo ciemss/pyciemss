@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Callable
 from numbers import Number
 
-from . import vega
+from . import plots
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
@@ -18,6 +18,7 @@ class Result:
     a visual representation of the evidence. May also include additional
     information computed for that individual check.
     """
+
     status: bool
     checks: Dict[str, Any]
     schema: Dict
@@ -26,17 +27,15 @@ class Result:
         always_display = ["status", "checks", "schema"]
         schema = "<missing>" if self.schema is None else "<present>"
 
-        additional = [f for f in dir(self)
-                      if not f.startswith("_") and f not in always_display]
-        extras = (f"; Additional Fields: {additional}"
-                  if len(additional) > 0 else "")
+        additional = [
+            f for f in dir(self) if not f.startswith("_") and f not in always_display
+        ]
+        extras = f"; Additional Fields: {additional}" if len(additional) > 0 else ""
         return f"Result(status:{self.status}, checks:{self.checks}, schema:{schema}{extras})"
 
 
 def contains(
-    ref_lower: Number,
-    ref_upper: Number,
-    pct: float = None
+    ref_lower: Number, ref_upper: Number, pct: float = None
 ) -> Callable[[pd.DataFrame], bool]:
     """Check-generator function. Returns a function that performs a test.
 
@@ -116,7 +115,7 @@ def check_distribution_range(
     upper -- Upper bound to compare to the distribution
 
     label -- Label to put on resulting plot
-    tests -- Tests to make against the distribution 
+    tests -- Tests to make against the distribution
              (Typed as dict of label/value, but can be list of callables instead)
     combiner -- Combines the results of the test
     """
@@ -124,7 +123,7 @@ def check_distribution_range(
         tests = dict(enumerate(tests))
 
     combined_args = {**{label: distribution}, **kwargs}
-    schema, bins = vega.histogram_multi(
+    schema, bins = plots.histogram_multi(
         xrefs=[lower, upper], return_bins=True, **combined_args
     )
 
@@ -163,30 +162,24 @@ def compare_distributions(
     if isinstance(tests, list):
         tests = dict(enumerate(tests))
 
-    schema, bins = vega.histogram_multi(
+    schema, bins = plots.histogram_multi(
         Subject=subject, Reference=reference, return_bins=True, **kwargs
     )
 
     groups = dict([*bins.groupby("label")])
     subject_dist = (
-        groups["Subject"]
-        .rename(columns={"count": "subject"})
-        .drop(columns=["label"])
+        groups["Subject"].rename(columns={"count": "subject"}).drop(columns=["label"])
     )
     reference_dist = (
-        groups["Reference"]
-        .rename(columns={"count": "ref"})
-        .drop(columns=["label"])
+        groups["Reference"].rename(columns={"count": "ref"}).drop(columns=["label"])
     )
 
-    aligned = (
-        subject_dist
-        .join(reference_dist, how="outer")
-        .fillna(0)
-    )
+    aligned = subject_dist.join(reference_dist, how="outer").fillna(0)
 
-    checks = {label: test(aligned["subject"].values, aligned["ref"].values)
-              for label, test in tests.items()}
+    checks = {
+        label: test(aligned["subject"].values, aligned["ref"].values)
+        for label, test in tests.items()
+    }
     status = combiner([*checks.values()])
 
     if not status:
