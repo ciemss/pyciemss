@@ -89,11 +89,14 @@ def load_and_sample_petri_model(
         time_unit: str
             - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
-            - If True or a dict, will return a dict {data: <samples>, visual: <visual>}.
-            - If a dict will be treated as a True AND those will be passed to the plot as **kwargs
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
+
     Returns:
-        samples: PetriSolution
-            - The samples from the model as a pandas DataFrame.
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
@@ -195,13 +198,17 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        time_unit: str
+            - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
-            - If True or a dict, will return a dict {data: <samples>, visual: <visual>}.
-            - If a dict will be treated as a True AND those will be passed to the plot as **kwargs
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples: pd.DataFrame
-            - A dataframe containing the samples from the calibrated model.
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
@@ -246,7 +253,7 @@ def load_and_calibrate_and_sample_petri_model(
     )
 
     processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions
+        samples, timepoints, interventions=interventions, time_unit=time_unit
     )
 
     if visual_options:
