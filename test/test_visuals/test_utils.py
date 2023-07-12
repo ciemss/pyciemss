@@ -10,9 +10,11 @@ _data_root = Path(__file__).parent.parent / "data"
 
 class TestUtils(unittest.TestCase):
     def setUp(self):
-        tspan = get_tspan(1, 50, 500)
+        tspan = get_tspan(1, 50, 500).detach().numpy()
         self.dists = convert_to_output_format(
-            plots.tensor_load(_data_root / "prior_samples.json"), tspan, nice=True
+            plots.tensor_load(_data_root / "prior_samples.json"),
+            tspan,
+            time_unit="notional",
         )
 
     def test_resize(self):
@@ -59,9 +61,9 @@ class TestUtils(unittest.TestCase):
 
     def test_title(self):
         schema1 = plots.trajectories(self.dists)
-        schema2 = plots.title(schema1, "Main Title")
-        schema3 = plots.title(schema1, "XTitle", target="x")
-        schema4 = plots.title(schema1, "YTitle", target="y")
+        schema2 = plots.set_title(schema1, "Main Title")
+        schema3 = plots.set_title(schema1, "XTitle", target="x")
+        schema4 = plots.set_title(schema1, "YTitle", target="y")
 
         self.assertFalse(schema1 == schema2, "Expected copy did not occur")
 

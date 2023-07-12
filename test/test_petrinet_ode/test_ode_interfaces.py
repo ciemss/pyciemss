@@ -278,9 +278,10 @@ class TestODEInterfaces(unittest.TestCase):
             interventions=interventions,
             start_state=initial_state,
         )
+
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples.drop(columns="timepoint_(unknown)"),
+            actual_intervened_samples,
             check_exact=False,
             atol=1e-5,
         )
@@ -309,9 +310,10 @@ class TestODEInterfaces(unittest.TestCase):
             start_state=initial_state,
             num_iterations=2,
         )
+
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples.drop(columns="timepoint_(unknown)"),
+            actual_intervened_samples,
             check_exact=False,
             atol=1e-5,
         )

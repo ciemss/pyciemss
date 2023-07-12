@@ -294,7 +294,7 @@ def trajectories(
         schema = rescale(schema, "yscale", "log")
 
     if title:
-        schema = add_title(schema, title)
+        schema = set_title(schema, title)
 
     return schema
 
@@ -516,7 +516,7 @@ def triangle_contour(data, *, title=None, contour=True):
     )
 
     if title:
-        schema["title"] = title
+        schema = set_title(schema, title)
 
     if not contour:
         contours = find_keyed(schema["marks"], "name", "_contours")
@@ -597,7 +597,7 @@ def rescale(
     return schema
 
 
-def add_title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
+def set_title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
     schema = deepcopy(schema)
     if target is None:
         schema["title"] = title
@@ -630,6 +630,11 @@ def pad(schema: VegaSchema, qty: Optional[Number] = None) -> VegaSchema:
         schema["padding"] = qty
 
     return schema
+
+
+def find_named(ls: list[dict], name: str, *, key="name"):
+    """Find the thing in the list with dict key 'name' equal to the passed string"""
+    return find_keyed(ls, key, name)
 
 
 def find_keyed(ls: list[dict], key: str, value: Any):
