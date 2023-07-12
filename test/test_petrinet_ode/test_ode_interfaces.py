@@ -106,25 +106,25 @@ class Test_Samples_Format(unittest.TestCase):
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        for s in [self.samples, self.calibrated_samples, self.ouu_samples, self.ouu_cal_samples]:
+        for s in [self.samples, self.calibrated_samples, self.intervened_samples, self.ouu_samples, self.ouu_cal_samples]:
             self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
         """Test that `samples` has the correct number of rows and columns"""
-        for s in [self.samples, self.calibrated_samples, self.ouu_samples, self.ouu_cal_samples]:
+        for s in [self.samples, self.calibrated_samples, self.intervened_samples, self.ouu_samples, self.ouu_cal_samples]:
             self.assertEqual(s.shape[0], self.num_timepoints * self.num_samples)
             self.assertGreaterEqual(s.shape[1], 2)
 
     def test_samples_column_names(self):
         """Test that `samples` has required column names"""
-        for s in [self.samples, self.calibrated_samples, self.ouu_samples, self.ouu_cal_samples]:
+        for s in [self.samples, self.calibrated_samples, self.intervened_samples, self.ouu_samples, self.ouu_cal_samples]:
             self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
             for col_name in s.columns[2:]:
                 self.assertIn(col_name.split("_")[-1], ("param", "sol"))
 
     def test_samples_dtype(self):
         """Test that `samples` has the required data types"""
-        for s in [self.samples, self.calibrated_samples, self.ouu_samples, self.ouu_cal_samples]:
+        for s in [self.samples, self.calibrated_samples, self.intervened_samples, self.ouu_samples, self.ouu_cal_samples]:
             self.assertEqual(s["timepoint_id"].dtype, np.int64)
             self.assertEqual(s["sample_id"].dtype, np.int64)
             for col_name in s.columns[2:]:
