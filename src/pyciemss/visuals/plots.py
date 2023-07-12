@@ -30,6 +30,7 @@ def _trajectory_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "trajectories.vg.json"))
 
 
+
 def _barycenter_triangle_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "barycenter_triangle.vg.json"))
 
@@ -138,8 +139,10 @@ def nice_df(df):
         )
     else:
         df = df.assign(timepoint=df[timepoint_cols[0]]).drop(columns=timepoint_cols)
-
+    # convert tensors 
+    df["timepoint"] = [x.item() for x in df["timepoint"]]
     df = df.drop(columns=["timepoint_id"]).set_index(["timepoint", "sample_id"])
+    
     return df
 
 
@@ -150,10 +153,12 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     subset: Union[str, list] = all,
     markers: Optional[dict[str, Number]] = None,
+    examplary_line: Optional[pd.DataFrame]  = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[dict] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
+    example_traj_agg: Optional[str] = "sum",
     join_points: bool = True,
     logy: bool = False,
     limit: Optional[Integral] = None,
@@ -192,6 +197,8 @@ def trajectories(
         traces = nice_df(traces)
     if points is not None:
         points = nice_df(points)
+    if examplary_line is not None:
+       examplary_line = nice_df(examplary_line)
 
     if subset == all:
         keep = distributions.columns
@@ -201,6 +208,8 @@ def trajectories(
         keep = subset
 
     distributions = distributions.filter(items=keep).rename(columns=relabel)
+    if examplary_line is not None:
+        examplary_line = examplary_line.filter(items=keep).rename(columns=relabel)
 
     if colors:
         keep = [k for k in distributions.columns if colors.get(k, None) is not None]
@@ -208,10 +217,11 @@ def trajectories(
 
     point_trajectories = points.columns.tolist() if points is not None else []
     trace_trajectories = traces.columns.tolist() if traces is not None else []
+    examplary_line_trajectories =  examplary_line.columns.tolist() if  examplary_line  is not None else []
     distributions_traj = (
         distributions.columns.tolist() if distributions is not None else []
     )
-    all_trajectories = distributions_traj + trace_trajectories + point_trajectories
+    all_trajectories = distributions_traj + trace_trajectories + point_trajectories +  examplary_line_trajectories 
 
     def _quantiles(g):
         return pd.Series(
@@ -220,7 +230,9 @@ def trajectories(
                 "upper": g.quantile(q=qhigh).values[0],
             }
         )
+    
 
+     #   trajectory  timepoint     lower     upper
     if distributions is not None:
         distributions = (
             distributions.melt(ignore_index=False, var_name="trajectory")
@@ -234,6 +246,39 @@ def trajectories(
     else:
         distributions = []
 
+   
+    #timepoint sample_id trajectory     value
+    if examplary_line is not None:
+        # get average line
+        examplary_line_df = (
+            examplary_line.melt(ignore_index=False, var_name="trajectory")
+            .set_index("trajectory", append=True)
+            .groupby(level=["trajectory", "timepoint"]).mean()
+            .reset_index()
+            .iloc[:limit]
+        )
+
+        
+        melt_examplary = examplary_line.melt(ignore_index=False, var_name="trajectory").reset_index()
+        #add value of average line to original df
+        merged_examplary = pd.merge(melt_examplary, examplary_line_df, on =["trajectory", "timepoint"]).rename(columns = {'value_x': 'value', 'value_y': 'medium_value'})
+        # get distance from average line for each sample/timepoint/trajectory
+        merged_examplary["distance_medium"] = abs(merged_examplary['medium_value'] -  merged_examplary['value'])
+        # get sum of distance from medium for all timepoints in sample/trajectory
+        group_examplary = merged_examplary.set_index(["trajectory", 'timepoint', 'sample_id'], append=True).groupby(level=["trajectory", 'sample_id'])
+        if example_traj_agg == "sum":
+            sum_examplary = group_examplary.sum().reset_index()
+        elif example_traj_agg == "var":
+            sum_examplary = group_examplary.var().reset_index()
+        # get only the min sum from mean line bakc
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_medium.idxmin()][['sample_id', 'trajectory']]
+        # only keep sample id's from trajectory with all lines
+        only_examplary_line = pd.merge(melt_examplary , best_sample_id , on =['sample_id', 'trajectory'], how= "right")
+        examplary_line =   only_examplary_line.to_dict(orient="records")
+
+    else:
+        examplary_line = []
+
     if traces is not None:
         traces = (
             traces.melt(ignore_index=False, var_name="trajectory")
@@ -243,6 +288,7 @@ def trajectories(
     else:
         traces = []
 
+    # timepoint sample_id trajectory     value
     if points is not None:
         points = (
             points.melt(ignore_index=False, var_name="trajectory")
@@ -270,6 +316,9 @@ def trajectories(
     )
     schema["data"] = replace_named_with(
         schema["data"], "markers", ["values"], clean_nans(markers)
+    )
+    schema["data"] = replace_named_with(
+        schema["data"], "examplary_line", ["values"], clean_nans(examplary_line)
     )
 
     if colors is not None:
