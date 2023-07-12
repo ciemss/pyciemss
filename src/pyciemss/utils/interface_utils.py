@@ -91,7 +91,7 @@ def convert_to_output_format(
             q = {
                 **q,
                 **{
-                    k: q_vals
+                    k: np.squeeze(q_vals.reshape((num_timepoints * num_ensemble_quantiles, 1)))
                 },
             }
         return pd.DataFrame(d), pd.DataFrame(q)
