@@ -1,0 +1,194 @@
+{
+    "templates": [
+        {
+            "rate_law": "Human_Capital_XXlambdaXX",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Human_rho*Recovered",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Human_XXlambdaXX*Susceptible",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*Human_v_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Human_gamma*Infected",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Human_delta*Infected",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Vector_psi*(Exposed + Infected + Susceptible)",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*Vector_XXlambdaXX",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*(Vector_u1 + Vector_u2*(Exposed + Infected + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*Vector_v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*(Vector_u1 + Vector_u2*(Exposed + Infected + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*(Vector_u1 + Vector_u2*(Exposed + Infected + Susceptible))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

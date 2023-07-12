@@ -1,0 +1,371 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected*Susceptible*epsilon_s*rho_s*(1.0 - beta_s)/(Asymptomatic + Infected + Infected_quarantined + Recovered + Susceptible + Susceptible_quarantined)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Susceptible_quarantined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Susceptible_quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*xi_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_quarantined*m_s",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible_quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_quarantined*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible_quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*Susceptible*beta_s*epsilon_s*(1.0 - rho_s)/(Asymptomatic + Infected + Infected_quarantined + Recovered + Susceptible + Susceptible_quarantined)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Susceptible_quarantined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*Susceptible*beta_s*epsilon_s*rho_s/(Asymptomatic + Infected + Infected_quarantined + Recovered + Susceptible + Susceptible_quarantined)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Susceptible_quarantined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_quarantined",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Asymptomatic*gamma_a",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Asymptomatic*xi_a",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Asymptomatic*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*gamma_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_quarantined",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_quarantined*xi_q",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_quarantined",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_quarantined*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected_quarantined",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*delta",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

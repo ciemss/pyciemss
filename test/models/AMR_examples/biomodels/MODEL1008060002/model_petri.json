@@ -1,0 +1,202 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Removed",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Zombie",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Quarantined",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "delta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "ControlledConversion",
+            "parameter_name": "beta",
+            "parameter_value": "0.0095",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "rho",
+            "parameter_value": "0.05",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "zeta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "ControlledConversion",
+            "parameter_name": "alpha",
+            "parameter_value": "0.005",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 4,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 3,
+            "it": 4
+        },
+        {
+            "is": 4,
+            "it": 5
+        },
+        {
+            "is": 5,
+            "it": 6
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 3,
+            "it": 8
+        },
+        {
+            "is": 2,
+            "it": 9
+        },
+        {
+            "is": 1,
+            "it": 10
+        },
+        {
+            "is": 4,
+            "it": 10
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 5,
+            "ot": 4
+        },
+        {
+            "os": 5,
+            "ot": 5
+        },
+        {
+            "os": 2,
+            "ot": 6
+        },
+        {
+            "os": 2,
+            "ot": 7
+        },
+        {
+            "os": 4,
+            "ot": 8
+        },
+        {
+            "os": 4,
+            "ot": 9
+        },
+        {
+            "os": 1,
+            "ot": 10
+        },
+        {
+            "os": 2,
+            "ot": 10
+        }
+    ]
+}

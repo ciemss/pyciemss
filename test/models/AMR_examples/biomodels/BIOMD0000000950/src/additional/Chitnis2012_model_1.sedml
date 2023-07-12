@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.27 (Build 217) on 2020-05-13 18:21 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0.1" outputEndTime="3650" numberOfPoints="36499">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Total_Infected_Cattle_1_task1" name="Values[Total_Infected_Cattle]">
+      <listOfVariables>
+        <variable id="p1_Total_Infected_Cattle_task1" name="Total_Infected_Cattle" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Total_Infected_Cattle&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Total_Infected_Cattle_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="A_h_2_task1" name="[A_h]">
+      <listOfVariables>
+        <variable id="p1_A_h_task1" name="A_h" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;A_h&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_A_h_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="I_h_3_task1" name="[I_h]">
+      <listOfVariables>
+        <variable id="p1_I_h_task1" name="I_h" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;I_h&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_I_h_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="E_v_1_task1" name="[E_v]">
+      <listOfVariables>
+        <variable id="p2_E_v_task1" name="E_v" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;E_v&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_E_v_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="I_v_2_task1" name="[I_v]">
+      <listOfVariables>
+        <variable id="p2_I_v_task1" name="I_v" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;I_v&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_I_v_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="N_h_1_task1" name="Values[N_h]">
+      <listOfVariables>
+        <variable id="p3_N_h_task1" name="N_h" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;N_h&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_N_h_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="R_h_2_task1" name="[R_h]">
+      <listOfVariables>
+        <variable id="p3_R_h_task1" name="R_h" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;R_h&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_R_h_task1 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="Figure 3,4,6 a">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="Values[Total_Infected_Cattle]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Total_Infected_Cattle_1_task1"/>
+        <curve id="p1_curve_2_task1" name="[A_h]" logX="false" logY="false" xDataReference="time_task1" yDataReference="A_h_2_task1"/>
+        <curve id="p1_curve_3_task1" name="[I_h]" logX="false" logY="false" xDataReference="time_task1" yDataReference="I_h_3_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task1" name="Figure 3,4,6 b">
+      <listOfCurves>
+        <curve id="p2_curve_1_task1" name="[E_v]" logX="false" logY="false" xDataReference="time_task1" yDataReference="E_v_1_task1"/>
+        <curve id="p2_curve_2_task1" name="[I_v]" logX="false" logY="false" xDataReference="time_task1" yDataReference="I_v_2_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_3_task1" name="figure 5">
+      <listOfCurves>
+        <curve id="p3_curve_1_task1" name="Values[N_h]" logX="false" logY="false" xDataReference="time_task1" yDataReference="N_h_1_task1"/>
+        <curve id="p3_curve_2_task1" name="[R_h]" logX="false" logY="false" xDataReference="time_task1" yDataReference="R_h_2_task1"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 228) on 2020-12-25 02:40 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="53" numberOfPoints="40">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="I_total_1_task1" name="Values[I_total]">
+      <listOfVariables>
+        <variable id="p1_I_total_task1" name="I_total" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;I_total&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_I_total_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_2_task1" name="[Infected]">
+      <listOfVariables>
+        <variable id="p1_Infected_task1" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Removed_3_task1" name="[Removed]">
+      <listOfVariables>
+        <variable id="p1_Removed_task1" name="Removed" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Removed&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Removed_task1 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="plot">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="Values[I_total]" logX="false" logY="false" xDataReference="time_task1" yDataReference="I_total_1_task1"/>
+        <curve id="p1_curve_2_task1" name="[Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_2_task1"/>
+        <curve id="p1_curve_3_task1" name="[Removed]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Removed_3_task1"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

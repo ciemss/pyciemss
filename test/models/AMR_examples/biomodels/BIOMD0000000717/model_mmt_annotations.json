@@ -1,0 +1,26 @@
+{
+    "annotations": {
+        "name": "Lee2018 - Avian human half-saturated incidence (HSI) model",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:8782",
+            "ncbitaxon:329376"
+        ],
+        "diseases": [
+            "efo:0005222"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

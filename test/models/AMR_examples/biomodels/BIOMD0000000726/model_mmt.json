@@ -1,0 +1,650 @@
+{
+    "templates": [
+        {
+            "rate_law": "A",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R_d*XXlambdaXX",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "R_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_d"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "outcome": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_d*sigma*(1.0 - gamma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_d*S_d*beta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S_d*m",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_d*gamma*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_d*m",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_d*m",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S_d*k",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_d"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_d*k",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "R_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_d"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_d*mu",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R_d*m",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "R_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_d"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "B",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R_h*XXlambdaXX_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "R_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_h"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "outcome": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_h*sigma_h*(1.0 - gamma_h)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S_h*m_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_d*S_h*beta_dh",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_h*gamma_h*sigma_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "I_h",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_h*m_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E_h*k_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "outcome": {
+                "name": "R_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_h"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_h*m_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_h",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_h*mu_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_h",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R_h*m_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "R_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_h"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "A": {
+            "name": "A",
+            "identifiers": {},
+            "context": {},
+            "value": 3000000.0
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "m": {
+            "name": "m",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.58e-07
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "B": {
+            "name": "B",
+            "identifiers": {},
+            "context": {},
+            "value": 15400000.0
+        },
+        "lambda_h": {
+            "name": "lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "gamma_h": {
+            "name": "gamma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "sigma_h": {
+            "name": "sigma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "m_h": {
+            "name": "m_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.003
+        },
+        "beta_dh": {
+            "name": "beta_dh",
+            "identifiers": {},
+            "context": {},
+            "value": 2.29e-12
+        },
+        "k_h": {
+            "name": "k_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.54
+        },
+        "mu_h": {
+            "name": "mu_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.34
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Human_Population": {
+            "name": "Human_Population",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible dogs (S_d)": {
+            "concept": {
+                "name": "S_d",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_d"
+                },
+                "context": {}
+            },
+            "value": 35000000.0
+        },
+        "Exposed dogs (E_d)": {
+            "concept": {
+                "name": "E_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_d"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "value": 200000.0
+        },
+        "Infectious dogs (I_d)": {
+            "concept": {
+                "name": "I_d",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_d"
+                },
+                "context": {}
+            },
+            "value": 100000.0
+        },
+        "Recovered dogs (R_d)": {
+            "concept": {
+                "name": "R_d",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_d"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "value": 200000.0
+        },
+        "Susceptible humans (S_h)": {
+            "concept": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000726:S_h"
+                },
+                "context": {}
+            },
+            "value": 1290000000.0
+        },
+        "Exposed humans (E_h)": {
+            "concept": {
+                "name": "E_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:E_h"
+                },
+                "context": {
+                    "property": "efo:0000487"
+                }
+            },
+            "value": 250.0
+        },
+        "Infectious humans (I_h)": {
+            "concept": {
+                "name": "I_h",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000726:I_h"
+                },
+                "context": {}
+            },
+            "value": 89.0
+        },
+        "Recovered humans (R_h)": {
+            "concept": {
+                "name": "R_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000726:R_h"
+                },
+                "context": {
+                    "property": "ncit:C49498"
+                }
+            },
+            "value": 200000.0
+        }
+    },
+    "annotations": {
+        "name": "Ruan2017 - Transmission dynamics and control of rabies in China",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:11292",
+            "ncbitaxon:9615"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

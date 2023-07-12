@@ -1,0 +1,46 @@
+{
+    "parameters": {
+        "beta_o": {
+            "name": "beta_o",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 10.0
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.097561
+        },
+        "omega": {
+            "name": "omega",
+            "identifiers": {},
+            "context": {},
+            "value": 0.142857
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Wuhan": {
+            "name": "Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Total_population": {
+            "name": "Total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 10000000.0
+        }
+    }
+}

@@ -1,0 +1,138 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected*Susceptible*beta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000001045:Susceptible"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*k",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000592",
+                    "biomodels.species": "BIOMD0000001045:Recovered"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33
+        },
+        "New_York_1968_69": {
+            "name": "New_York_1968_69",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Infected": {
+            "concept": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "value": 1.27e-06
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000592",
+                    "biomodels.species": "BIOMD0000001045:Recovered"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000001045:Susceptible"
+                },
+                "context": {}
+            },
+            "value": 0.999999999999998
+        }
+    },
+    "annotations": {
+        "name": "Smith&Moore2004 - The SIR model for the spread of HongKong Flu",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:506350"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

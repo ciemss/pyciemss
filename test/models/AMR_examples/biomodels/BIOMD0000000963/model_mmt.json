@@ -1,0 +1,151 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected*Susceptible*beta/(Recovered*alpha + 1.0)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                }
+            ],
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*k1",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Epidemic_size": {
+            "name": "Epidemic_size",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Uninfected": {
+            "name": "Uninfected",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Country": {
+            "name": "Country",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "value": 0.999
+        },
+        "Infected": {
+            "concept": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "value": 0.001
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        }
+    },
+    "annotations": {
+        "name": "Weitz2020 - SIR model of COVID-19 transmission with shielding",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:32382154"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

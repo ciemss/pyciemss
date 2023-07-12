@@ -1,0 +1,485 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 1336210000.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 501.23
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.22839
+        },
+        {
+            "sname": "Asymptomatic",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C3833')]",
+            "mira_initial_value": 991.29
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 240.76
+        },
+        {
+            "sname": "Susceptible_isolated",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Quarantined",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Hospitalised",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('hospitalization', 'ncit:C25179')]",
+            "mira_initial_value": 2.0
+        },
+        {
+            "sname": "Deceased",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "mu",
+            "parameter_value": "0.07142857",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_5",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "q2",
+            "parameter_value": "0.47218",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "d",
+            "parameter_value": "0.00055888",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_I",
+            "parameter_value": "0.15796",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_10",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_A",
+            "parameter_value": "0.55671",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta",
+            "parameter_value": "17.379",
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "d",
+            "parameter_value": "0.00055888",
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_H",
+            "parameter_value": "0.035352",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 3,
+            "it": 1
+        },
+        {
+            "is": 4,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 1
+        },
+        {
+            "is": 5,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 3,
+            "it": 2
+        },
+        {
+            "is": 7,
+            "it": 2
+        },
+        {
+            "is": 4,
+            "it": 2
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 5,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 6,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 7,
+            "it": 6
+        },
+        {
+            "is": 4,
+            "it": 6
+        },
+        {
+            "is": 5,
+            "it": 6
+        },
+        {
+            "is": 1,
+            "it": 6
+        },
+        {
+            "is": 2,
+            "it": 6
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 3,
+            "it": 8
+        },
+        {
+            "is": 3,
+            "it": 9
+        },
+        {
+            "is": 3,
+            "it": 10
+        },
+        {
+            "is": 7,
+            "it": 10
+        },
+        {
+            "is": 4,
+            "it": 10
+        },
+        {
+            "is": 2,
+            "it": 10
+        },
+        {
+            "is": 5,
+            "it": 10
+        },
+        {
+            "is": 1,
+            "it": 10
+        },
+        {
+            "is": 3,
+            "it": 10
+        },
+        {
+            "is": 4,
+            "it": 11
+        },
+        {
+            "is": 3,
+            "it": 12
+        },
+        {
+            "is": 7,
+            "it": 12
+        },
+        {
+            "is": 2,
+            "it": 12
+        },
+        {
+            "is": 5,
+            "it": 12
+        },
+        {
+            "is": 1,
+            "it": 12
+        },
+        {
+            "is": 4,
+            "it": 12
+        },
+        {
+            "is": 7,
+            "it": 13
+        },
+        {
+            "is": 8,
+            "it": 14
+        },
+        {
+            "is": 8,
+            "it": 15
+        }
+    ],
+    "O": [
+        {
+            "os": 3,
+            "ot": 1
+        },
+        {
+            "os": 4,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 5,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        },
+        {
+            "os": 7,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 2
+        },
+        {
+            "os": 2,
+            "ot": 2
+        },
+        {
+            "os": 5,
+            "ot": 2
+        },
+        {
+            "os": 6,
+            "ot": 2
+        },
+        {
+            "os": 1,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 3,
+            "ot": 6
+        },
+        {
+            "os": 7,
+            "ot": 6
+        },
+        {
+            "os": 4,
+            "ot": 6
+        },
+        {
+            "os": 5,
+            "ot": 6
+        },
+        {
+            "os": 1,
+            "ot": 6
+        },
+        {
+            "os": 7,
+            "ot": 6
+        },
+        {
+            "os": 8,
+            "ot": 7
+        },
+        {
+            "os": 5,
+            "ot": 9
+        },
+        {
+            "os": 3,
+            "ot": 10
+        },
+        {
+            "os": 7,
+            "ot": 10
+        },
+        {
+            "os": 4,
+            "ot": 10
+        },
+        {
+            "os": 2,
+            "ot": 10
+        },
+        {
+            "os": 5,
+            "ot": 10
+        },
+        {
+            "os": 1,
+            "ot": 10
+        },
+        {
+            "os": 7,
+            "ot": 10
+        },
+        {
+            "os": 5,
+            "ot": 11
+        },
+        {
+            "os": 3,
+            "ot": 12
+        },
+        {
+            "os": 7,
+            "ot": 12
+        },
+        {
+            "os": 2,
+            "ot": 12
+        },
+        {
+            "os": 5,
+            "ot": 12
+        },
+        {
+            "os": 1,
+            "ot": 12
+        },
+        {
+            "os": 7,
+            "ot": 12
+        },
+        {
+            "os": 8,
+            "ot": 13
+        },
+        {
+            "os": 9,
+            "ot": 14
+        },
+        {
+            "os": 5,
+            "ot": 15
+        }
+    ]
+}

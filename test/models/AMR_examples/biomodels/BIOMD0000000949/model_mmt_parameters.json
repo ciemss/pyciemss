@@ -1,0 +1,160 @@
+{
+    "parameters": {
+        "Capital_lambda_h": {
+            "name": "Capital_lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.041
+        },
+        "Psi_h": {
+            "name": "Psi_h",
+            "identifiers": {},
+            "context": {},
+            "value": 5.5e-05
+        },
+        "Psi_v": {
+            "name": "Psi_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13
+        },
+        "sigma_v": {
+            "name": "sigma_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33
+        },
+        "sigma_h": {
+            "name": "sigma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 4.3
+        },
+        "Beta_hv": {
+            "name": "Beta_hv",
+            "identifiers": {},
+            "context": {},
+            "value": 0.022
+        },
+        "Beta_vh": {
+            "name": "Beta_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.24
+        },
+        "Beta_tilde_vh": {
+            "name": "Beta_tilde_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.024
+        },
+        "v_h": {
+            "name": "v_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v_v": {
+            "name": "v_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.083
+        },
+        "gamma_h": {
+            "name": "gamma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0035
+        },
+        "delta_h": {
+            "name": "delta_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8e-05
+        },
+        "rho_h": {
+            "name": "rho_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0027
+        },
+        "u_1h": {
+            "name": "u_1h",
+            "identifiers": {},
+            "context": {},
+            "value": 8.8e-06
+        },
+        "u_2h": {
+            "name": "u_2h",
+            "identifiers": {},
+            "context": {},
+            "value": 2e-07
+        },
+        "u_1v": {
+            "name": "u_1v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.033
+        },
+        "u_2v": {
+            "name": "u_2v",
+            "identifiers": {},
+            "context": {},
+            "value": 4e-05
+        },
+        "N_h": {
+            "name": "N_h",
+            "identifiers": {},
+            "context": {},
+            "value": 623.0
+        },
+        "N_v": {
+            "name": "N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 2435.0
+        },
+        "f_h": {
+            "name": "f_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0001334
+        },
+        "f_v": {
+            "name": "f_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1304
+        },
+        "lambda_h": {
+            "name": "lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 4.48218926330601e-05
+        },
+        "lambda_v": {
+            "name": "lambda_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000293379660870939
+        },
+        "Baseline_dummy_variable": {
+            "name": "Baseline_dummy_variable",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Mosquito": {
+            "name": "Mosquito",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

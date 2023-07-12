@@ -1,0 +1,150 @@
+{
+    "S": [
+        {
+            "sname": "S",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "E",
+            "mira_ids": "[('identity', 'ncit:C71551')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "M",
+            "mira_ids": "[('identity', 'ncit:C62608')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "A",
+            "parameter_value": "0.8",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "0.7",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "alpha1",
+            "parameter_value": "0.6",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "rho",
+            "parameter_value": "0.09",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "alpha1",
+            "parameter_value": "0.6",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_7",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "tau",
+            "parameter_value": "0.6",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 2,
+            "it": 3
+        },
+        {
+            "is": 4,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 4
+        },
+        {
+            "is": 3,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 2,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 1,
+            "ot": 2
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 4,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 2,
+            "ot": 5
+        }
+    ]
+}

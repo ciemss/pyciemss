@@ -1,0 +1,428 @@
+{
+    "templates": [
+        {
+            "rate_law": "uninfected_nontested*(1 - epidemic_extinguished_bool)*(Infection_from_non_tested_no_symptoms_0*infected_nontested + Infection_from_non_tested_symptoms*symptoms_nontested + Infection_from_tested_no_symptoms_0*infected_tested + Infection_from_tested_symptoms*symptoms_tested)/Social_Distance",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "uninfected_nontested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "infected_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Testing_Randome*uninfected_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "uninfected_nontested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "uninfected_tested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "uninfected_tested*(1 - epidemic_extinguished_bool)*(Infection_from_non_tested_no_symptoms_0*infected_nontested + Infection_from_non_tested_symptoms*symptoms_nontested + Infection_from_tested_no_symptoms_0*infected_tested + Infection_from_tested_symptoms*symptoms_tested)/Social_Distance",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "uninfected_tested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "infected_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Testing_Randome*infected_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "infected_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "infected_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Symptoms_appear*infected_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "infected_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "symptoms_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Symptoms_appear*infected_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "infected_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "symptoms_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Testing_for_Symptoms*symptoms_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptoms_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "symptoms_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_death_rate_constant*symptoms_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptoms_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "dead_corona_tested",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220",
+                    "cause_of_death": "ncit:C171133"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_recover*symptoms_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptoms_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "recovered_tested",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_recover*symptoms_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptoms_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "recovered_nontested",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "630003.0*Birth_rate*susceptible",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "uninfected_nontested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Normal_death_rate_constant_0*uninfected_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "uninfected_nontested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "dead_noncorona",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "cause_of_death": "ncit:C17649"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Normal_death_rate_constant_0*recovered_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "recovered_tested",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "dead_noncorona",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "cause_of_death": "ncit:C17649"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Normal_death_rate_constant_0*recovered_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "recovered_nontested",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "dead_noncorona",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "cause_of_death": "ncit:C17649"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_death_rate_constant*infected_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "infected_tested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "dead_corona_tested",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220",
+                    "cause_of_death": "ncit:C171133"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_death_rate_constant*infected_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "infected_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "dead_corona_nontested",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725",
+                    "cause_of_death": "ncit:C171133"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Normal_death_rate_constant_0*uninfected_tested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "uninfected_tested",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "dead_noncorona",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "cause_of_death": "ncit:C17649"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Corona_death_rate_constant*symptoms_nontested",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptoms_nontested",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "dead_corona_nontested",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "diagnosis": "ncit:C113725",
+                    "cause_of_death": "ncit:C171133"
+                }
+            },
+            "provenance": []
+        }
+    ]
+}

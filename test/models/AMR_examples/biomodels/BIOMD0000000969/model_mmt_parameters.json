@@ -1,0 +1,412 @@
+{
+    "parameters": {
+        "lambda_Counties_with_airports": {
+            "name": "lambda_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.41
+        },
+        "lambda_Counties_neighbouring_counties_with_airports": {
+            "name": "lambda_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.34
+        },
+        "lambda_Counties_with_highways": {
+            "name": "lambda_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 0.23
+        },
+        "lambda_Low_risk_counties": {
+            "name": "lambda_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13
+        },
+        "epsilon": {
+            "name": "epsilon",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.229885
+        },
+        "eta_Counties_with_airports": {
+            "name": "eta_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "eta_Counties_neighbouring_counties_with_airports": {
+            "name": "eta_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.07
+        },
+        "eta_Counties_with_highways": {
+            "name": "eta_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 0.07
+        },
+        "eta_Low_risk_counties": {
+            "name": "eta_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 0.14
+        },
+        "omega_Counties_with_airports": {
+            "name": "omega_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.04
+        },
+        "omega_Counties_neighbouring_counties_with_airports": {
+            "name": "omega_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.06
+        },
+        "omega_Counties_with_highways": {
+            "name": "omega_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 0.04
+        },
+        "omega_Low_risk_counties": {
+            "name": "omega_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 0.07
+        },
+        "xi": {
+            "name": "xi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.06
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "mu_Counties_with_airports": {
+            "name": "mu_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.22
+        },
+        "mu_Counties_neighbouring_counties_with_airports": {
+            "name": "mu_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 0.17
+        },
+        "mu_Counties_with_highways": {
+            "name": "mu_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "mu_Low_risk_counties": {
+            "name": "mu_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.01
+        },
+        "phi": {
+            "name": "phi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.04
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.03
+        },
+        "Population_Counties_with_airports": {
+            "name": "Population_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 4052906.0
+        },
+        "Population_Counties_neighbouring_counties_with_airports": {
+            "name": "Population_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 4431699.0
+        },
+        "Population_Counties_with_highways": {
+            "name": "Population_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 1811069.0
+        },
+        "Population_Low_risk_counties": {
+            "name": "Population_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 1269948.0
+        },
+        "Cumulative_cases_Counties_with_airports": {
+            "name": "Cumulative_cases_Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 30.0
+        },
+        "Cumulative_cases_Counties_neighbouring_counties_with_airports": {
+            "name": "Cumulative_cases_Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 26.0
+        },
+        "Cumulative_cases_Counties_with_highways": {
+            "name": "Cumulative_cases_Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 10.0
+        },
+        "Cumulative_cases_Low_risk_counties": {
+            "name": "Cumulative_cases_Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "Total_cumulative_cases": {
+            "name": "Total_cumulative_cases",
+            "identifiers": {},
+            "context": {},
+            "value": 72.0
+        },
+        "Total_hospitalisations": {
+            "name": "Total_hospitalisations",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Total_deaths": {
+            "name": "Total_deaths",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_11": {
+            "name": "Metabolite_11",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_13": {
+            "name": "Metabolite_13",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_9": {
+            "name": "Metabolite_9",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_10": {
+            "name": "Metabolite_10",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_8": {
+            "name": "Metabolite_8",
+            "identifiers": {},
+            "context": {},
+            "value": 26.0
+        },
+        "Metabolite_12": {
+            "name": "Metabolite_12",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_7": {
+            "name": "Metabolite_7",
+            "identifiers": {},
+            "context": {},
+            "value": 4431673.0
+        },
+        "Metabolite_4": {
+            "name": "Metabolite_4",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_6": {
+            "name": "Metabolite_6",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_2": {
+            "name": "Metabolite_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_3": {
+            "name": "Metabolite_3",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_1": {
+            "name": "Metabolite_1",
+            "identifiers": {},
+            "context": {},
+            "value": 30.0
+        },
+        "Metabolite_5": {
+            "name": "Metabolite_5",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_0": {
+            "name": "Metabolite_0",
+            "identifiers": {},
+            "context": {},
+            "value": 4052876.0
+        },
+        "Metabolite_18": {
+            "name": "Metabolite_18",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_20": {
+            "name": "Metabolite_20",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_16": {
+            "name": "Metabolite_16",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_17": {
+            "name": "Metabolite_17",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_15": {
+            "name": "Metabolite_15",
+            "identifiers": {},
+            "context": {},
+            "value": 10.0
+        },
+        "Metabolite_19": {
+            "name": "Metabolite_19",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_14": {
+            "name": "Metabolite_14",
+            "identifiers": {},
+            "context": {},
+            "value": 1811059.0
+        },
+        "Metabolite_25": {
+            "name": "Metabolite_25",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_27": {
+            "name": "Metabolite_27",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_23": {
+            "name": "Metabolite_23",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_24": {
+            "name": "Metabolite_24",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_22": {
+            "name": "Metabolite_22",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "Metabolite_26": {
+            "name": "Metabolite_26",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Metabolite_21": {
+            "name": "Metabolite_21",
+            "identifiers": {},
+            "context": {},
+            "value": 1269942.0
+        },
+        "Counties_with_airports": {
+            "name": "Counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Counties_neighbouring_counties_with_airports": {
+            "name": "Counties_neighbouring_counties_with_airports",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Counties_with_highways": {
+            "name": "Counties_with_highways",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Low_risk_counties": {
+            "name": "Low_risk_counties",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

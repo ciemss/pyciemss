@@ -1,0 +1,70 @@
+{
+    "parameters": {
+        "z": {
+            "name": "z",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4047
+        },
+        "beta_0": {
+            "name": "beta_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4114
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0466
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4114
+        },
+        "I_total": {
+            "name": "I_total",
+            "identifiers": {},
+            "context": {},
+            "value": 790.0
+        },
+        "N": {
+            "name": "N",
+            "identifiers": {},
+            "context": {},
+            "value": 32680790.0
+        },
+        "Trigger_Stage_1": {
+            "name": "Trigger_Stage_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_Stage_2": {
+            "name": "Trigger_Stage_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_Stage_3": {
+            "name": "Trigger_Stage_3",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Malayasia": {
+            "name": "Malayasia",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

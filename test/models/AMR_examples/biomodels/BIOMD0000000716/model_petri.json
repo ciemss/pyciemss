@@ -1,0 +1,146 @@
+{
+    "S": [
+        {
+            "sname": "S_b",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I_b",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "S_h",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I_a",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalProduction",
+            "parameter_name": "ModelValue_1",
+            "parameter_value": "171977.0",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_7",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_8",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 2,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 2,
+            "it": 7
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 5
+        },
+        {
+            "os": 2,
+            "ot": 7
+        },
+        {
+            "os": 4,
+            "ot": 7
+        }
+    ]
+}

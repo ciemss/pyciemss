@@ -1,0 +1,28 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 2.09e-07
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.909
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Wuhan": {
+            "name": "Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

@@ -1,0 +1,349 @@
+{
+    "S": [
+        {
+            "sname": "S_d",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "R_d",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncit:C49498')]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "E_d",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'efo:0000487')]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I_d",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "S_h",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "R_h",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncit:C49498')]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "E_h",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'efo:0000487')]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I_h",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "A",
+            "parameter_value": "3000000.0",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "lambda",
+            "parameter_value": "1.0",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "ControlledConversion",
+            "parameter_name": "beta",
+            "parameter_value": "1.58e-07",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "k",
+            "parameter_value": "0.09",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "k",
+            "parameter_value": "0.09",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalProduction",
+            "parameter_name": "B",
+            "parameter_value": "15400000.0",
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_13",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_14",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m_h",
+            "parameter_value": "0.003",
+            "parameters": null
+        },
+        {
+            "tname": "t16",
+            "template_type": "ControlledConversion",
+            "parameter_name": "beta_dh",
+            "parameter_value": "2.29e-12",
+            "parameters": null
+        },
+        {
+            "tname": "t17",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_17",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t18",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m_h",
+            "parameter_value": "0.003",
+            "parameters": null
+        },
+        {
+            "tname": "t19",
+            "template_type": "NaturalConversion",
+            "parameter_name": "k_h",
+            "parameter_value": "0.54",
+            "parameters": null
+        },
+        {
+            "tname": "t20",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m_h",
+            "parameter_value": "0.003",
+            "parameters": null
+        },
+        {
+            "tname": "t21",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "m_h",
+            "parameter_value": "0.003",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 3,
+            "it": 3
+        },
+        {
+            "is": 4,
+            "it": 4
+        },
+        {
+            "is": 1,
+            "it": 4
+        },
+        {
+            "is": 1,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        },
+        {
+            "is": 1,
+            "it": 9
+        },
+        {
+            "is": 3,
+            "it": 10
+        },
+        {
+            "is": 2,
+            "it": 11
+        },
+        {
+            "is": 6,
+            "it": 13
+        },
+        {
+            "is": 7,
+            "it": 14
+        },
+        {
+            "is": 5,
+            "it": 15
+        },
+        {
+            "is": 4,
+            "it": 16
+        },
+        {
+            "is": 5,
+            "it": 16
+        },
+        {
+            "is": 7,
+            "it": 17
+        },
+        {
+            "is": 7,
+            "it": 18
+        },
+        {
+            "is": 7,
+            "it": 19
+        },
+        {
+            "is": 8,
+            "it": 20
+        },
+        {
+            "is": 6,
+            "it": 21
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 1,
+            "ot": 2
+        },
+        {
+            "os": 1,
+            "ot": 3
+        },
+        {
+            "os": 4,
+            "ot": 4
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 4,
+            "ot": 6
+        },
+        {
+            "os": 2,
+            "ot": 9
+        },
+        {
+            "os": 2,
+            "ot": 10
+        },
+        {
+            "os": 5,
+            "ot": 12
+        },
+        {
+            "os": 5,
+            "ot": 13
+        },
+        {
+            "os": 5,
+            "ot": 14
+        },
+        {
+            "os": 4,
+            "ot": 16
+        },
+        {
+            "os": 7,
+            "ot": 16
+        },
+        {
+            "os": 8,
+            "ot": 17
+        },
+        {
+            "os": 6,
+            "ot": 19
+        }
+    ]
+}

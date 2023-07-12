@@ -1,0 +1,17 @@
+{
+    "annotations": {
+        "name": "Mukandavire2009 - Model for HIV-Malaria co-infection",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": []
+    }
+}

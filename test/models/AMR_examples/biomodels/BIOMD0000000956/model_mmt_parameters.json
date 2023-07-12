@@ -1,0 +1,226 @@
+{
+    "parameters": {
+        "Pop_CA": {
+            "name": "Pop_CA",
+            "identifiers": {},
+            "context": {},
+            "value": 39560000.0
+        },
+        "Ro_CA": {
+            "name": "Ro_CA",
+            "identifiers": {},
+            "context": {},
+            "value": 2.7
+        },
+        "gamma_CA": {
+            "name": "gamma_CA",
+            "identifiers": {},
+            "context": {},
+            "value": 0.14
+        },
+        "Io_CA": {
+            "name": "Io_CA",
+            "identifiers": {},
+            "context": {},
+            "value": 5.0
+        },
+        "Time": {
+            "name": "Time",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_CA": {
+            "name": "Trigger_CA",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Trigger_NY": {
+            "name": "Trigger_NY",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Pop_NY": {
+            "name": "Pop_NY",
+            "identifiers": {},
+            "context": {},
+            "value": 19540000.0
+        },
+        "Ro_NY": {
+            "name": "Ro_NY",
+            "identifiers": {},
+            "context": {},
+            "value": 4.1
+        },
+        "gamma_NY": {
+            "name": "gamma_NY",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Io_NY": {
+            "name": "Io_NY",
+            "identifiers": {},
+            "context": {},
+            "value": 29.0
+        },
+        "Pop": {
+            "name": "Pop",
+            "identifiers": {},
+            "context": {},
+            "value": 39560000.0
+        },
+        "Ro": {
+            "name": "Ro",
+            "identifiers": {},
+            "context": {},
+            "value": 2.7
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.14
+        },
+        "Trigger_Lockdown": {
+            "name": "Trigger_Lockdown",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Lockdown_CA_start": {
+            "name": "Lockdown_CA_start",
+            "identifiers": {},
+            "context": {},
+            "value": 27.0
+        },
+        "Lockdown_CA_end": {
+            "name": "Lockdown_CA_end",
+            "identifiers": {},
+            "context": {},
+            "value": 66.0
+        },
+        "Lockdown_NY_start": {
+            "name": "Lockdown_NY_start",
+            "identifiers": {},
+            "context": {},
+            "value": 30.0
+        },
+        "Lockdown_NY_end": {
+            "name": "Lockdown_NY_end",
+            "identifiers": {},
+            "context": {},
+            "value": 67.0
+        },
+        "Io": {
+            "name": "Io",
+            "identifiers": {},
+            "context": {},
+            "value": 5.0
+        },
+        "Peak_Time": {
+            "name": "Peak_Time",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_3": {
+            "name": "ModelValue_3",
+            "identifiers": {},
+            "context": {},
+            "value": 5.0
+        },
+        "ModelValue_10": {
+            "name": "ModelValue_10",
+            "identifiers": {},
+            "context": {},
+            "value": 29.0
+        },
+        "ModelValue_16": {
+            "name": "ModelValue_16",
+            "identifiers": {},
+            "context": {},
+            "value": 66.0
+        },
+        "ModelValue_15": {
+            "name": "ModelValue_15",
+            "identifiers": {},
+            "context": {},
+            "value": 27.0
+        },
+        "ModelValue_18": {
+            "name": "ModelValue_18",
+            "identifiers": {},
+            "context": {},
+            "value": 67.0
+        },
+        "ModelValue_17": {
+            "name": "ModelValue_17",
+            "identifiers": {},
+            "context": {},
+            "value": 30.0
+        },
+        "ModelValue_0": {
+            "name": "ModelValue_0",
+            "identifiers": {},
+            "context": {},
+            "value": 39560000.0
+        },
+        "ModelValue_7": {
+            "name": "ModelValue_7",
+            "identifiers": {},
+            "context": {},
+            "value": 19540000.0
+        },
+        "ModelValue_1": {
+            "name": "ModelValue_1",
+            "identifiers": {},
+            "context": {},
+            "value": 2.7
+        },
+        "ModelValue_8": {
+            "name": "ModelValue_8",
+            "identifiers": {},
+            "context": {},
+            "value": 4.1
+        },
+        "ModelValue_5": {
+            "name": "ModelValue_5",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "ModelValue_14": {
+            "name": "ModelValue_14",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_6": {
+            "name": "ModelValue_6",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_2": {
+            "name": "ModelValue_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.14
+        },
+        "ModelValue_9": {
+            "name": "ModelValue_9",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "USA___CA__NY": {
+            "name": "USA___CA__NY",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

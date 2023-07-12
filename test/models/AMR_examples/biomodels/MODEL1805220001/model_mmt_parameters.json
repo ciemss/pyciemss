@@ -1,0 +1,166 @@
+{
+    "parameters": {
+        "Human_Capital_lambda": {
+            "name": "Human_Capital_lambda",
+            "identifiers": {},
+            "context": {},
+            "value": 0.03285
+        },
+        "Human_lambda": {
+            "name": "Human_lambda",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Human_psi": {
+            "name": "Human_psi",
+            "identifiers": {},
+            "context": {},
+            "value": 7.666e-05
+        },
+        "Human_sigma": {
+            "name": "Human_sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 18.0
+        },
+        "Human_B_hv": {
+            "name": "Human_B_hv",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "Human_v_h": {
+            "name": "Human_v_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08333
+        },
+        "Human_gamma": {
+            "name": "Human_gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.003704
+        },
+        "Human_delta": {
+            "name": "Human_delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0003454
+        },
+        "Human_rho": {
+            "name": "Human_rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0146
+        },
+        "Human_u1": {
+            "name": "Human_u1",
+            "identifiers": {},
+            "context": {},
+            "value": 1.6e-05
+        },
+        "Human_u2": {
+            "name": "Human_u2",
+            "identifiers": {},
+            "context": {},
+            "value": 3e-07
+        },
+        "Human_b_N_h_N_v": {
+            "name": "Human_b_N_h_N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 2.57142857142857
+        },
+        "Vector_lambda": {
+            "name": "Vector_lambda",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Vector_psi": {
+            "name": "Vector_psi",
+            "identifiers": {},
+            "context": {},
+            "value": 80.0
+        },
+        "Vector_sigma": {
+            "name": "Vector_sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "Vector_B_vh": {
+            "name": "Vector_B_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "Vector_B_tilde_vh": {
+            "name": "Vector_B_tilde_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.833
+        },
+        "Vector_v": {
+            "name": "Vector_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Vector_u1": {
+            "name": "Vector_u1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1429
+        },
+        "Vector_u2": {
+            "name": "Vector_u2",
+            "identifiers": {},
+            "context": {},
+            "value": 2.279e-06
+        },
+        "Vector_b_N_h_N_v": {
+            "name": "Vector_b_N_h_N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.514285714285714
+        },
+        "Human_total_Pop_N_h": {
+            "name": "Human_total_Pop_N_h",
+            "identifiers": {},
+            "context": {},
+            "value": 500.0
+        },
+        "Human_f_h": {
+            "name": "Human_f_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000166
+        },
+        "Mosquito_tot_pop_N_v": {
+            "name": "Mosquito_tot_pop_N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 2500.0
+        },
+        "Mosquito_f_v": {
+            "name": "Mosquito_f_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1485975
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Mosquito": {
+            "name": "Mosquito",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

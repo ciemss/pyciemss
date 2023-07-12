@@ -1,0 +1,672 @@
+{
+    "templates": [
+        {
+            "rate_law": "S/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "V/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I1/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I2/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Iv2/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R1/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R2/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "R2",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "J1/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "J2/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R/l_e",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "R",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*J1*R0*S*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I1*R0*S*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*J2*R0*S*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*Iv2*R0*S*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I2*R0*S*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*J2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:V"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:V"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*Iv2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:V"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "365*I1/tInf",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "365*I2/tInf",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R2",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I1*R0*R2*(1 - theta)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I1"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "R2",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*J1*R0*R2*(1 - theta)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "R2",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:I2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*Iv2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*J2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "365*J1/(tInf*(1 - nu))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "J1",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "365*J2/(tInf*(1 - nu))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "J2",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000294:J2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "365*Iv2/(tInf*(1 - eta))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Iv2",
+                "identifiers": {
+                    "ncbitaxon": "520",
+                    "biomodels.species": "BIOMD0000000294:Iv2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "R",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R1/tImm",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "R1",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R2/tImm",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "R2",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "R/tImm",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "R",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:R"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "V/tImm_V",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:V"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ncbitaxon": "9606",
+                    "biomodels.species": "BIOMD0000000294:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

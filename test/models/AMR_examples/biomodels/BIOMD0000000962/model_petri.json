@@ -1,0 +1,87 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 9010000.0
+        },
+        {
+            "sname": "Unquarantined_Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('quarantined', 'ncit:C68851')]",
+            "mira_initial_value": 258.0
+        },
+        {
+            "sname": "Quarantined_Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Confirmed_Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 3,
+            "it": 3
+        }
+    ],
+    "O": [
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 3
+        }
+    ]
+}

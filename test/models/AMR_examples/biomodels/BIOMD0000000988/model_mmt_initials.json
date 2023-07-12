@@ -1,0 +1,260 @@
+{
+    "initials": {
+        "uninfected_nontested": {
+            "name": "uninfected_nontested",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "diagnosis": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "uninfected_nontested",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C113725"
+                    }
+                },
+                "value": 630000.0
+            }
+        },
+        "uninfected_tested": {
+            "name": "uninfected_tested",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "uninfected_tested",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "infected_nontested": {
+            "name": "infected_nontested",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosed": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "infected_nontested",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosed": "ncit:C113725"
+                    }
+                },
+                "value": 2.0
+            }
+        },
+        "infected_tested": {
+            "name": "infected_tested",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "infected_tested",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 1.0
+            }
+        },
+        "symptoms_nontested": {
+            "name": "symptoms_nontested",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269",
+                "diagnosed": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "symptoms_nontested",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269",
+                        "diagnosed": "ncit:C113725"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "symptoms_tested": {
+            "name": "symptoms_tested",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269",
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "symptoms_tested",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269",
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "susceptible": {
+            "name": "susceptible",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "susceptible",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {}
+                },
+                "value": 1.0
+            }
+        },
+        "recovered_tested": {
+            "name": "recovered_tested",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "recovered_tested",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "recovered_nontested": {
+            "name": "recovered_nontested",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "diagnosis": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "recovered_nontested",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C113725"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "dead_corona_tested": {
+            "name": "dead_corona_tested",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220",
+                "cause_of_death": "ncit:C171133"
+            },
+            "value": {
+                "concept": {
+                    "name": "dead_corona_tested",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220",
+                        "cause_of_death": "ncit:C171133"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "dead_noncorona": {
+            "name": "dead_noncorona",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "cause_of_death": "ncit:C17649"
+            },
+            "value": {
+                "concept": {
+                    "name": "dead_noncorona",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "cause_of_death": "ncit:C17649"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "dead_corona_nontested": {
+            "name": "dead_corona_nontested",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "diagnosis": "ncit:C113725",
+                "cause_of_death": "ncit:C171133"
+            },
+            "value": {
+                "concept": {
+                    "name": "dead_corona_nontested",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C113725",
+                        "cause_of_death": "ncit:C171133"
+                    }
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

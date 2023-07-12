@@ -1,0 +1,377 @@
+{
+    "templates": [
+        {
+            "rate_law": "Diagnosed*Susceptible*beta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Diagnosed",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Ailing*Susceptible*gamma",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Ailing",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recognized*Susceptible*delta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Recognized",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*Susceptible*alpha",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*epsilon",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Diagnosed",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*zeta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Ailing",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*XXlambdaXX",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Healed",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Diagnosed*eta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Diagnosed",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "Recognized",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Diagnosed*rho",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Diagnosed",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "Healed",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Ailing*theta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Ailing",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "Recognized",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Ailing*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Ailing",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "Healed",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Ailing*mu",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Ailing",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269",
+                    "diagnosis": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "Threatened",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25467"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recognized*nu",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Recognized",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "Threatened",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25467"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recognized*xi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Recognized",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "Healed",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Threatened*tau",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Threatened",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25467"
+                }
+            },
+            "outcome": {
+                "name": "Extinct",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Threatened*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Threatened",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25467"
+                }
+            },
+            "outcome": {
+                "name": "Healed",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

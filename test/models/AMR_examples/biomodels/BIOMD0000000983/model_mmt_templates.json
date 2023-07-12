@@ -1,0 +1,304 @@
+{
+    "templates": [
+        {
+            "rate_law": "Susceptible_confined*(-m_t_phase_1*(1 - exp(-a*(-tau_1 + time))) - m_t_phase_2*p - m_t_phase_3*(b*(-tau_3 + time) + p) + 1.0)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible_confined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_unconfined*(m_t_phase_1*(1 - exp(-a*(-tau_1 + time))) + m_t_phase_2*p + m_t_phase_3*(b*(-tau_3 + time) + p))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Susceptible_confined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_reported*Susceptible_unconfined*beta*n*(1.0 - sigma)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_reported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_unreported*Susceptible_unconfined*beta*(1.0 - sigma)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_unreported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_reported*Susceptible_unconfined*beta*n*sigma",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_reported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_unreported*Susceptible_unconfined*beta*sigma",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_unreported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Quarantined*XXlambdaXX*theta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Infected_reported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*f*mu",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_reported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*mu*(1.0 - f)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_unreported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_reported*eta_r",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_reported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_unreported*eta_u",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_unreported",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosed": "ncit:C113725"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX*theta*(1.0 - Quarantined)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Quarantined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Susceptible_unconfined",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        }
+    ]
+}

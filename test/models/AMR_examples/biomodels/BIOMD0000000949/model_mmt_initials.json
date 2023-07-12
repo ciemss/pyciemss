@@ -1,0 +1,92 @@
+{
+    "initials": {
+        "Recovered": {
+            "name": "Recovered",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000949:Recovered"
+            },
+            "context": {
+                "property": "ncit:C25746"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "biomodels.species": "BIOMD0000000949:Recovered"
+                    },
+                    "context": {
+                        "property": "ncit:C25746"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+            },
+            "context": {
+                "property": "omit:0005461"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+                    },
+                    "context": {
+                        "property": "omit:0005461"
+                    }
+                },
+                "value": 2400.0
+            }
+        },
+        "Exposed": {
+            "name": "Exposed",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+            },
+            "context": {
+                "property": "ncim:C123547",
+                "property1": "ncit:C17214"
+            },
+            "value": {
+                "concept": {
+                    "name": "Exposed",
+                    "identifiers": {
+                        "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+                    },
+                    "context": {
+                        "property": "ncim:C123547",
+                        "property1": "ncit:C17214"
+                    }
+                },
+                "value": 30.0
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000949:Infected_Mosquito"
+            },
+            "context": {
+                "property": "ncit:C123547",
+                "property1": "ncit:C128320"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {
+                        "biomodels.species": "BIOMD0000000949:Infected_Mosquito"
+                    },
+                    "context": {
+                        "property": "ncit:C123547",
+                        "property1": "ncit:C128320"
+                    }
+                },
+                "value": 5.0
+            }
+        }
+    }
+}

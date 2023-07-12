@@ -1,0 +1,40 @@
+{
+    "parameters": {
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Epidemic_size": {
+            "name": "Epidemic_size",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Uninfected": {
+            "name": "Uninfected",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Country": {
+            "name": "Country",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

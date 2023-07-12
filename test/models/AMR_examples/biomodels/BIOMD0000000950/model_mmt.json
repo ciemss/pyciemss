@@ -1,0 +1,261 @@
+{
+    "templates": [],
+    "parameters": {
+        "u_h": {
+            "name": "u_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00045662100456621
+        },
+        "u_v": {
+            "name": "u_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "psi_v": {
+            "name": "psi_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "theta_h": {
+            "name": "theta_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "sigma_v": {
+            "name": "sigma_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33
+        },
+        "sigma_h": {
+            "name": "sigma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 19.0
+        },
+        "beta_hv": {
+            "name": "beta_hv",
+            "identifiers": {},
+            "context": {},
+            "value": 0.21
+        },
+        "beta_vh": {
+            "name": "beta_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "beta_tilde_vh": {
+            "name": "beta_tilde_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.3
+        },
+        "v_v": {
+            "name": "v_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0714285714285714
+        },
+        "gamma_h": {
+            "name": "gamma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "gamma_tilde_h": {
+            "name": "gamma_tilde_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "delta_h": {
+            "name": "delta_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "gamma_e": {
+            "name": "gamma_e",
+            "identifiers": {},
+            "context": {},
+            "value": 0.2
+        },
+        "M0": {
+            "name": "M0",
+            "identifiers": {},
+            "context": {},
+            "value": 20000.0
+        },
+        "C0": {
+            "name": "C0",
+            "identifiers": {},
+            "context": {},
+            "value": 1000.0
+        },
+        "N_v": {
+            "name": "N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 20000.0
+        },
+        "lambda_h": {
+            "name": "lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 5.143359375e-05
+        },
+        "lambda_v": {
+            "name": "lambda_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "N_h": {
+            "name": "N_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1000.0
+        },
+        "Total_Infected_Cattle": {
+            "name": "Total_Infected_Cattle",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Season_Dummy_Variable": {
+            "name": "Season_Dummy_Variable",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Cattle": {
+            "name": "Cattle",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Vector": {
+            "name": "Vector",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "S_h": {
+            "concept": {
+                "name": "S_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:S_h"
+                },
+                "context": {
+                    "property": "ncit:C66819",
+                    "property1": "omit:0003748"
+                }
+            },
+            "value": 1000.0
+        },
+        "A_h": {
+            "concept": {
+                "name": "A_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:A_h"
+                },
+                "context": {
+                    "property": "ncit:C128320",
+                    "property1": "ncit:C3833"
+                }
+            },
+            "value": 0.0
+        },
+        "I_h": {
+            "concept": {
+                "name": "I_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:I_h"
+                },
+                "context": {
+                    "property": "ido:0000460",
+                    "property1": "omit:0003748"
+                }
+            },
+            "value": 0.0
+        },
+        "R_h": {
+            "concept": {
+                "name": "R_h",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:R_h"
+                },
+                "context": {
+                    "property": "ncit:C49498",
+                    "property1": "omit:0003748"
+                }
+            },
+            "value": 0.0
+        },
+        "S_v": {
+            "concept": {
+                "name": "S_v",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:S_v"
+                },
+                "context": {
+                    "property": "ncit:C66819",
+                    "property1": "omit:0004757"
+                }
+            },
+            "value": 19999.0
+        },
+        "E_v": {
+            "concept": {
+                "name": "E_v",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:E_v"
+                },
+                "context": {
+                    "property": "omit:0003748",
+                    "property1": "pato:0002425"
+                }
+            },
+            "value": 0.0
+        },
+        "I_v": {
+            "concept": {
+                "name": "I_v",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000950:I_v"
+                },
+                "context": {
+                    "property": "ido:0000460",
+                    "property1": "omit:0004757"
+                }
+            },
+            "value": 1.0
+        }
+    },
+    "annotations": {
+        "name": "Chitnis2012 - Model Rift Valley Fever transmission between cattle and mosquitoes (Model 1)",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:23098257"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

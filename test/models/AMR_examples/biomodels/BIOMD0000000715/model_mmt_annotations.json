@@ -1,0 +1,23 @@
+{
+    "annotations": {
+        "name": "Huo2017 - SEIS epidemic model with the impact of media",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [
+            "efo:0005741"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

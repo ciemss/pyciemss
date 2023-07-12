@@ -1,0 +1,52 @@
+{
+    "parameters": {
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.012048
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.833
+        },
+        "epsilon": {
+            "name": "epsilon",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33333
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.125
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.006
+        },
+        "City": {
+            "name": "City",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 120480.0
+        },
+        "Total_population": {
+            "name": "Total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 10000000.0
+        }
+    }
+}

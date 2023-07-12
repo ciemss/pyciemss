@@ -1,0 +1,632 @@
+{
+    "initials": {
+        "Susceptible_Counties_with_airports": {
+            "name": "Susceptible_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 4052876.0
+            }
+        },
+        "Infected_Counties_with_airports": {
+            "name": "Infected_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 30.0
+            }
+        },
+        "Hospitalised_Counties_with_airports": {
+            "name": "Hospitalised_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "county_property": "with_airports",
+                "icu": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Hospitalised_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "county_property": "with_airports",
+                        "icu": "ncit:C68851"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "ICU_Counties_with_airports": {
+            "name": "ICU_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "icu": "ncit:C53511",
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "ICU_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "icu": "ncit:C53511",
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible_Counties_neighbouring_counties_with_airports": {
+            "name": "Susceptible_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 4431673.0
+            }
+        },
+        "Infected_Counties_neighbouring_counties_with_airports": {
+            "name": "Infected_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 26.0
+            }
+        },
+        "Hospitalised_Counties_neighbouring_counties_with_airports": {
+            "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "county_property": "neighbouring_counties_with_airports",
+                "icu": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "county_property": "neighbouring_counties_with_airports",
+                        "icu": "ncit:C68851"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "ICU_Counties_neighbouring_counties_with_airports": {
+            "name": "ICU_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "icu": "ncit:C53511",
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "ICU_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "icu": "ncit:C53511",
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible_Counties_with_highways": {
+            "name": "Susceptible_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 1811059.0
+            }
+        },
+        "Infected_Counties_with_highways": {
+            "name": "Infected_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 10.0
+            }
+        },
+        "Hospitalised_Counties_with_highways": {
+            "name": "Hospitalised_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "county_property": "with_highways",
+                "icu": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Hospitalised_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "county_property": "with_highways",
+                        "icu": "ncit:C68851"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "ICU_Counties_with_highways": {
+            "name": "ICU_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "icu": "ncit:C53511",
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "ICU_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "icu": "ncit:C53511",
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible_Low_risk_counties": {
+            "name": "Susceptible_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 1269942.0
+            }
+        },
+        "Infected_Low_risk_counties": {
+            "name": "Infected_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 6.0
+            }
+        },
+        "Hospitalised_Low_risk_counties": {
+            "name": "Hospitalised_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "county_property": "low_risk",
+                "icu": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Hospitalised_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "county_property": "low_risk",
+                        "icu": "ncit:C68851"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "ICU_Low_risk_counties": {
+            "name": "ICU_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "hospitalization": "ncit:C25179",
+                "icu": "ncit:C53511",
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "ICU_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C25179",
+                        "icu": "ncit:C53511",
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Deceased_Counties_with_airports": {
+            "name": "Deceased_Counties_with_airports",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Deceased_Counties_with_airports",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Recovered_Counties_with_airports": {
+            "name": "Recovered_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recovered_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Discharged_Counties_with_airports": {
+            "name": "Discharged_Counties_with_airports",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "hospitalization": "ncit:C154475",
+                "county_property": "with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Discharged_Counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C154475",
+                        "county_property": "with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Deceased_Counties_neighbouring_counties_with_airports": {
+            "name": "Deceased_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Deceased_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Recovered_Counties_neighbouring_counties_with_airports": {
+            "name": "Recovered_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recovered_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Discharged_Counties_neighbouring_counties_with_airports": {
+            "name": "Discharged_Counties_neighbouring_counties_with_airports",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "hospitalization": "ncit:C154475",
+                "county_property": "neighbouring_counties_with_airports"
+            },
+            "value": {
+                "concept": {
+                    "name": "Discharged_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C154475",
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Deceased_Counties_with_highways": {
+            "name": "Deceased_Counties_with_highways",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "Deceased_Counties_with_highways",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Recovered_Counties_with_highways": {
+            "name": "Recovered_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recovered_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Discharged_Counties_with_highways": {
+            "name": "Discharged_Counties_with_highways",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "hospitalization": "ncit:C154475",
+                "county_property": "with_highways"
+            },
+            "value": {
+                "concept": {
+                    "name": "Discharged_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C154475",
+                        "county_property": "with_highways"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Deceased_Low_risk_counties": {
+            "name": "Deceased_Low_risk_counties",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "Deceased_Low_risk_counties",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Recovered_Low_risk_counties": {
+            "name": "Recovered_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recovered_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Discharged_Low_risk_counties": {
+            "name": "Discharged_Low_risk_counties",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {
+                "hospitalization": "ncit:C154475",
+                "county_property": "low_risk"
+            },
+            "value": {
+                "concept": {
+                    "name": "Discharged_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {
+                        "hospitalization": "ncit:C154475",
+                        "county_property": "low_risk"
+                    }
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

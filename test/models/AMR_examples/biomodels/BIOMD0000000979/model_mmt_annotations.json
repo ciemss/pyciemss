@@ -1,0 +1,23 @@
+{
+    "annotations": {
+        "name": "Malkov2020 - SEIRS model of COVID-19 transmission with reinfection",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

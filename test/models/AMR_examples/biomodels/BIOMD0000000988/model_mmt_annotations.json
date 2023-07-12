@@ -1,0 +1,23 @@
+{
+    "annotations": {
+        "name": "Westerhoff2020 - systems biology model of the coronavirus pandemic 2020",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

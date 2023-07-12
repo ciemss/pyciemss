@@ -1,0 +1,525 @@
+{
+    "templates": [
+        {
+            "rate_law": "Capital_XXlambdaXX_h",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Human"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*piecewise(0.0027, eq(Baseline_dummy_variable, 0), 0.00055)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Recovered"
+                },
+                "context": {
+                    "property": "ncit:C25746"
+                }
+            },
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Human"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*XXlambdaXX_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Human"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C156623"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*(N_h*piecewise(2.0e-7, eq(Baseline_dummy_variable, 0), 3.0e-7) + piecewise(8.8e-6, eq(Baseline_dummy_variable, 0), 1.6e-5))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Human"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*piecewise(0.1, eq(Baseline_dummy_variable, 0), 0.1)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C156623"
+                }
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*(N_h*piecewise(2.0e-7, eq(Baseline_dummy_variable, 0), 3.0e-7) + piecewise(8.8e-6, eq(Baseline_dummy_variable, 0), 1.6e-5))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C156623"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*piecewise(0.0035, eq(Baseline_dummy_variable, 0), 0.0035)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Recovered"
+                },
+                "context": {
+                    "property": "ncit:C25746"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*piecewise(1.8e-5, eq(Baseline_dummy_variable, 0), 9.0e-5)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*(N_h*piecewise(2.0e-7, eq(Baseline_dummy_variable, 0), 3.0e-7) + piecewise(8.8e-6, eq(Baseline_dummy_variable, 0), 1.6e-5))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Human"
+                },
+                "context": {
+                    "property": "ncbitaxon:9606",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*(N_h*piecewise(2.0e-7, eq(Baseline_dummy_variable, 0), 3.0e-7) + piecewise(8.8e-6, eq(Baseline_dummy_variable, 0), 1.6e-5))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Recovered"
+                },
+                "context": {
+                    "property": "ncit:C25746"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "(Exposed + Infected + Susceptible)*piecewise(0.13, eq(Baseline_dummy_variable, 0), 0.13)",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*XXlambdaXX_v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+                },
+                "context": {
+                    "property": "ncim:C123547",
+                    "property1": "ncit:C17214"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*(N_v*piecewise(4.0e-5, eq(Baseline_dummy_variable, 0), 2.0e-5) + piecewise(0.033, eq(Baseline_dummy_variable, 0), 0.033))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*piecewise(0.083, eq(Baseline_dummy_variable, 0), 0.091)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+                },
+                "context": {
+                    "property": "ncim:C123547",
+                    "property1": "ncit:C17214"
+                }
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Mosquito"
+                },
+                "context": {
+                    "property": "ncit:C123547",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*(N_v*piecewise(4.0e-5, eq(Baseline_dummy_variable, 0), 2.0e-5) + piecewise(0.033, eq(Baseline_dummy_variable, 0), 0.033))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+                },
+                "context": {
+                    "property": "ncim:C123547",
+                    "property1": "ncit:C17214"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*(N_v*piecewise(4.0e-5, eq(Baseline_dummy_variable, 0), 2.0e-5) + piecewise(0.033, eq(Baseline_dummy_variable, 0), 0.033))",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Mosquito"
+                },
+                "context": {
+                    "property": "ncit:C123547",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "Capital_lambda_h": {
+            "name": "Capital_lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.041
+        },
+        "Psi_h": {
+            "name": "Psi_h",
+            "identifiers": {},
+            "context": {},
+            "value": 5.5e-05
+        },
+        "Psi_v": {
+            "name": "Psi_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13
+        },
+        "sigma_v": {
+            "name": "sigma_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33
+        },
+        "sigma_h": {
+            "name": "sigma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 4.3
+        },
+        "Beta_hv": {
+            "name": "Beta_hv",
+            "identifiers": {},
+            "context": {},
+            "value": 0.022
+        },
+        "Beta_vh": {
+            "name": "Beta_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.24
+        },
+        "Beta_tilde_vh": {
+            "name": "Beta_tilde_vh",
+            "identifiers": {},
+            "context": {},
+            "value": 0.024
+        },
+        "v_h": {
+            "name": "v_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v_v": {
+            "name": "v_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.083
+        },
+        "gamma_h": {
+            "name": "gamma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0035
+        },
+        "delta_h": {
+            "name": "delta_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8e-05
+        },
+        "rho_h": {
+            "name": "rho_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0027
+        },
+        "u_1h": {
+            "name": "u_1h",
+            "identifiers": {},
+            "context": {},
+            "value": 8.8e-06
+        },
+        "u_2h": {
+            "name": "u_2h",
+            "identifiers": {},
+            "context": {},
+            "value": 2e-07
+        },
+        "u_1v": {
+            "name": "u_1v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.033
+        },
+        "u_2v": {
+            "name": "u_2v",
+            "identifiers": {},
+            "context": {},
+            "value": 4e-05
+        },
+        "N_h": {
+            "name": "N_h",
+            "identifiers": {},
+            "context": {},
+            "value": 623.0
+        },
+        "N_v": {
+            "name": "N_v",
+            "identifiers": {},
+            "context": {},
+            "value": 2435.0
+        },
+        "f_h": {
+            "name": "f_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0001334
+        },
+        "f_v": {
+            "name": "f_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1304
+        },
+        "lambda_h": {
+            "name": "lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 4.48218926330601e-05
+        },
+        "lambda_v": {
+            "name": "lambda_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000293379660870939
+        },
+        "Baseline_dummy_variable": {
+            "name": "Baseline_dummy_variable",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Mosquito": {
+            "name": "Mosquito",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Susceptible_Mosquito"
+                },
+                "context": {
+                    "property": "omit:0005461"
+                }
+            },
+            "value": 2400.0
+        },
+        "Exposed": {
+            "concept": {
+                "name": "Exposed",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Exposed_Mosquito"
+                },
+                "context": {
+                    "property": "ncim:C123547",
+                    "property1": "ncit:C17214"
+                }
+            },
+            "value": 30.0
+        },
+        "Infected": {
+            "concept": {
+                "name": "Infected",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Infected_Mosquito"
+                },
+                "context": {
+                    "property": "ncit:C123547",
+                    "property1": "ncit:C128320"
+                }
+            },
+            "value": 5.0
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000949:Recovered"
+                },
+                "context": {
+                    "property": "ncit:C25746"
+                }
+            },
+            "value": 0.0
+        }
+    },
+    "annotations": {
+        "name": "Chitnis2008 - Mathematical model of malaria transmission",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:18293044"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

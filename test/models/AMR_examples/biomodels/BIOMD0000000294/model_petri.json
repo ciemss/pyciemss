@@ -1,0 +1,614 @@
+{
+    "S": [
+        {
+            "sname": "S",
+            "mira_ids": "[('identity', 'ncbitaxon:9606')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "V",
+            "mira_ids": "[('identity', 'ncbitaxon:9606')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I1",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "I2",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "Iv2",
+            "mira_ids": "[('identity', 'ncbitaxon:520')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "R1",
+            "mira_ids": "[('identity', 'ncbitaxon:9606')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "R2",
+            "mira_ids": "[('identity', 'ncbitaxon:9606')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "J1",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "J2",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        },
+        {
+            "sname": "R",
+            "mira_ids": "[('identity', 'ncbitaxon:9606')]",
+            "mira_context": "[]",
+            "mira_initial_value": null
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "l_e",
+            "parameter_value": "50.0",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_11",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_13",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_14",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_15",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t16",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_16",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t17",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_17",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t18",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_18",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t19",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tInf",
+            "parameter_value": "21.0",
+            "parameters": null
+        },
+        {
+            "tname": "t20",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tInf",
+            "parameter_value": "21.0",
+            "parameters": null
+        },
+        {
+            "tname": "t21",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_21",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t22",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_22",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t23",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_23",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t24",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_24",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t25",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_25",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t26",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_26",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t27",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_27",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t28",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_28",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t29",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tImm",
+            "parameter_value": "20.0",
+            "parameters": null
+        },
+        {
+            "tname": "t30",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tImm",
+            "parameter_value": "20.0",
+            "parameters": null
+        },
+        {
+            "tname": "t31",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tImm",
+            "parameter_value": "20.0",
+            "parameters": null
+        },
+        {
+            "tname": "t32",
+            "template_type": "NaturalConversion",
+            "parameter_name": "tImm_V",
+            "parameter_value": "50.0",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 3,
+            "it": 3
+        },
+        {
+            "is": 4,
+            "it": 4
+        },
+        {
+            "is": 5,
+            "it": 5
+        },
+        {
+            "is": 6,
+            "it": 6
+        },
+        {
+            "is": 7,
+            "it": 7
+        },
+        {
+            "is": 8,
+            "it": 8
+        },
+        {
+            "is": 9,
+            "it": 9
+        },
+        {
+            "is": 10,
+            "it": 10
+        },
+        {
+            "is": 8,
+            "it": 11
+        },
+        {
+            "is": 1,
+            "it": 11
+        },
+        {
+            "is": 3,
+            "it": 12
+        },
+        {
+            "is": 1,
+            "it": 12
+        },
+        {
+            "is": 9,
+            "it": 13
+        },
+        {
+            "is": 1,
+            "it": 13
+        },
+        {
+            "is": 5,
+            "it": 14
+        },
+        {
+            "is": 1,
+            "it": 14
+        },
+        {
+            "is": 4,
+            "it": 15
+        },
+        {
+            "is": 1,
+            "it": 15
+        },
+        {
+            "is": 9,
+            "it": 16
+        },
+        {
+            "is": 2,
+            "it": 16
+        },
+        {
+            "is": 4,
+            "it": 17
+        },
+        {
+            "is": 2,
+            "it": 17
+        },
+        {
+            "is": 5,
+            "it": 18
+        },
+        {
+            "is": 2,
+            "it": 18
+        },
+        {
+            "is": 3,
+            "it": 19
+        },
+        {
+            "is": 4,
+            "it": 20
+        },
+        {
+            "is": 3,
+            "it": 21
+        },
+        {
+            "is": 7,
+            "it": 21
+        },
+        {
+            "is": 8,
+            "it": 22
+        },
+        {
+            "is": 7,
+            "it": 22
+        },
+        {
+            "is": 4,
+            "it": 23
+        },
+        {
+            "is": 6,
+            "it": 23
+        },
+        {
+            "is": 5,
+            "it": 24
+        },
+        {
+            "is": 6,
+            "it": 24
+        },
+        {
+            "is": 9,
+            "it": 25
+        },
+        {
+            "is": 6,
+            "it": 25
+        },
+        {
+            "is": 8,
+            "it": 26
+        },
+        {
+            "is": 9,
+            "it": 27
+        },
+        {
+            "is": 5,
+            "it": 28
+        },
+        {
+            "is": 6,
+            "it": 29
+        },
+        {
+            "is": 7,
+            "it": 30
+        },
+        {
+            "is": 10,
+            "it": 31
+        },
+        {
+            "is": 2,
+            "it": 32
+        }
+    ],
+    "O": [
+        {
+            "os": 8,
+            "ot": 11
+        },
+        {
+            "os": 3,
+            "ot": 11
+        },
+        {
+            "os": 3,
+            "ot": 12
+        },
+        {
+            "os": 3,
+            "ot": 12
+        },
+        {
+            "os": 9,
+            "ot": 13
+        },
+        {
+            "os": 4,
+            "ot": 13
+        },
+        {
+            "os": 5,
+            "ot": 14
+        },
+        {
+            "os": 4,
+            "ot": 14
+        },
+        {
+            "os": 4,
+            "ot": 15
+        },
+        {
+            "os": 4,
+            "ot": 15
+        },
+        {
+            "os": 9,
+            "ot": 16
+        },
+        {
+            "os": 5,
+            "ot": 16
+        },
+        {
+            "os": 4,
+            "ot": 17
+        },
+        {
+            "os": 5,
+            "ot": 17
+        },
+        {
+            "os": 5,
+            "ot": 18
+        },
+        {
+            "os": 5,
+            "ot": 18
+        },
+        {
+            "os": 6,
+            "ot": 19
+        },
+        {
+            "os": 7,
+            "ot": 20
+        },
+        {
+            "os": 3,
+            "ot": 21
+        },
+        {
+            "os": 8,
+            "ot": 21
+        },
+        {
+            "os": 8,
+            "ot": 22
+        },
+        {
+            "os": 8,
+            "ot": 22
+        },
+        {
+            "os": 4,
+            "ot": 23
+        },
+        {
+            "os": 9,
+            "ot": 23
+        },
+        {
+            "os": 5,
+            "ot": 24
+        },
+        {
+            "os": 9,
+            "ot": 24
+        },
+        {
+            "os": 9,
+            "ot": 25
+        },
+        {
+            "os": 9,
+            "ot": 25
+        },
+        {
+            "os": 10,
+            "ot": 26
+        },
+        {
+            "os": 10,
+            "ot": 27
+        },
+        {
+            "os": 10,
+            "ot": 28
+        },
+        {
+            "os": 1,
+            "ot": 29
+        },
+        {
+            "os": 1,
+            "ot": 30
+        },
+        {
+            "os": 1,
+            "ot": 31
+        },
+        {
+            "os": 1,
+            "ot": 32
+        }
+    ]
+}

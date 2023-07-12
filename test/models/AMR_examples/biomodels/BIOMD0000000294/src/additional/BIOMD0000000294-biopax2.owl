@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level2.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level2.owl#" />
+</owl:Ontology>
+
+<bp:unificationXref rdf:about="http://identifiers.org/biomodels.db/MODEL1012210000">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">MODEL1012210000</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BioModels Database</bp:DB>
+</bp:unificationXref>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r22_Iv2">
+ <bp:PHYSICAL-ENTITY rdf:resource="Iv2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="I1">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/520" />
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:physicalEntity rdf:about="I2">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/520" />
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:interaction rdf:about="interaction_r14_J2_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r25_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r21_R">
+ <bp:PHYSICAL-ENTITY rdf:resource="R" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:interaction rdf:about="interaction_r13_N_1">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r26_V">
+ <bp:PHYSICAL-ENTITY rdf:resource="V" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="R1">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:physicalEntity rdf:about="R2">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:interaction rdf:about="interaction_r2_N_0">
+</bp:interaction>
+
+<bp:interaction rdf:about="interaction_r14_Iv2_2">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r1_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="J1">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/520" />
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:physicalEntity rdf:about="J2">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/520" />
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:unificationXref rdf:about="http://identifiers.org/go/GO:0009814">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">GO:0009814</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Gene Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:interaction rdf:about="interaction_r18_N_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r19_R1">
+ <bp:PHYSICAL-ENTITY rdf:resource="R1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r11_J2">
+ <bp:PHYSICAL-ENTITY rdf:resource="J2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r14_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r17_R2">
+ <bp:PHYSICAL-ENTITY rdf:resource="R2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r14_I2">
+ <bp:PHYSICAL-ENTITY rdf:resource="I2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r20_J1">
+ <bp:PHYSICAL-ENTITY rdf:resource="J1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r24_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="N">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:unificationXref rdf:about="http://identifiers.org/go/GO:0007567">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">GO:0007567</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Gene Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r19_J2">
+ <bp:PHYSICAL-ENTITY rdf:resource="J2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r20_R">
+ <bp:PHYSICAL-ENTITY rdf:resource="R" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="R">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:physicalEntity rdf:about="S">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r25_R">
+ <bp:PHYSICAL-ENTITY rdf:resource="R" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:pathway rdf:about="restif07">
+ <bp:XREF rdf:resource="http://identifiers.org/biomodels.db/MODEL1012210000" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0035635" />
+ <bp:XREF rdf:resource="http://identifiers.org/pubmed/460412" />
+ <bp:XREF rdf:resource="http://identifiers.org/pubmed/17210532" />
+ <bp:XREF rdf:resource="http://identifiers.org/doid/DOID:1116" />
+ <bp:XREF rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000249" />
+ <bp:XREF rdf:resource="http://identifiers.org/pubmed/460424" />
+ <bp:XREF rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000294" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0009814" />
+ <bp:XREF rdf:resource="http://identifiers.org/mamo/MAMO_0000046" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r6" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r7" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r8" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r9" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r2" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r22" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r3" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r23" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r4" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r20" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r5" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r21" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r1" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r26" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r24" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r25" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r11" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r12" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r10" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r19" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r17" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r18" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r15" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r16" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r13" />
+ <bp:PATHWAY-COMPONENTS rdf:resource="conversion_r14" />
+ <bp:COMMENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">The original model, &apos;restif07&apos;, was published in BioModels Database (http://www.ebi.ac.uk/biomodels/).</bp:COMMENT>
+ <bp:COMMENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">This BioPAX Level2 file was automatically generated on 23-Jun-2017 by SBML2BioPAX-3.1, BioModels.net, EMBL-EBI.</bp:COMMENT>
+ <bp:ORGANISM rdf:resource="biosource_2" />
+ <bp:DATA-SOURCE rdf:resource="datasource_2" />
+ <bp:DATA-SOURCE rdf:resource="datasource_1" />
+</bp:pathway>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r5_I1">
+ <bp:PHYSICAL-ENTITY rdf:resource="I1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntity rdf:about="V">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:interaction rdf:about="interaction_r13_J1_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r17_I2">
+ <bp:PHYSICAL-ENTITY rdf:resource="I2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:unificationXref rdf:about="http://identifiers.org/biomodels.db/BIOMD0000000249">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BIOMD0000000249</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BioModels Database</bp:DB>
+</bp:unificationXref>
+
+<bp:publicationXref rdf:about="http://identifiers.org/pubmed/460412">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">460412</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+</bp:publicationXref>
+
+<bp:unificationXref rdf:about="http://identifiers.org/go/GO:0035635">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">GO:0035635</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Gene Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:interaction rdf:about="interaction_r19_Iv2_2">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r7_Iv2">
+ <bp:PHYSICAL-ENTITY rdf:resource="Iv2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r11">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r11_J2" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r10">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r10_J1" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r13">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r13_S" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r13_I1" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r12">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r12_R" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r15">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r15_V" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r15_Iv2" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r14">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r14_S" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r14_I2" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r8_R1">
+ <bp:PHYSICAL-ENTITY rdf:resource="R1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r17">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r17_I2" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r17_R2" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r16">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r16_I1" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r16_R1" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r19">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r19_R1" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r19_J2" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r18">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r18_R2" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r18_J1" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r13_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:bioSource rdf:about="biosource_2">
+</bp:bioSource>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r23_R1">
+ <bp:PHYSICAL-ENTITY rdf:resource="R1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:bioSource rdf:about="biosource_1">
+</bp:bioSource>
+
+<bp:interaction rdf:about="interaction_r15_N_1">
+</bp:interaction>
+
+<bp:publicationXref rdf:about="http://identifiers.org/pubmed/460424">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">460424</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+</bp:publicationXref>
+
+<bp:interaction rdf:about="interaction_r15_I2_2">
+</bp:interaction>
+
+<bp:interaction rdf:about="interaction_r18_I1_1">
+</bp:interaction>
+
+<bp:physicalEntity rdf:about="Iv2">
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/520" />
+ <bp:XREF rdf:resource="http://identifiers.org/taxonomy/9606" />
+</bp:physicalEntity>
+
+<bp:biochemicalReaction rdf:about="conversion_r20">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r20_J1" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r20_R" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r22">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r22_Iv2" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r22_R" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r21">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r21_J2" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r21_R" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r24">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r24_R2" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r24_S" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r23">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r23_R1" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r23_S" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r26">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r26_V" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r26_S" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r23_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r25">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r25_R" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r25_S" />
+</bp:biochemicalReaction>
+
+<bp:interaction rdf:about="interaction_r1_N_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r16_R1">
+ <bp:PHYSICAL-ENTITY rdf:resource="R1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:unificationXref rdf:about="http://identifiers.org/taxonomy/9606">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">9606</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Taxonomy</bp:DB>
+</bp:unificationXref>
+
+<bp:publicationXref rdf:about="http://identifiers.org/pubmed/17210532">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">17210532</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+</bp:publicationXref>
+
+<bp:unificationXref rdf:about="http://identifiers.org/mamo/MAMO_0000046">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">MAMO_0000046</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Mathematical Modelling Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:interaction rdf:about="interaction_r19_N_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r13_I1">
+ <bp:PHYSICAL-ENTITY rdf:resource="I1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:unificationXref rdf:about="http://identifiers.org/taxonomy/520">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">520</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Taxonomy</bp:DB>
+</bp:unificationXref>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r21_J2">
+ <bp:PHYSICAL-ENTITY rdf:resource="J2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r18_J1">
+ <bp:PHYSICAL-ENTITY rdf:resource="J1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r3_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r12_R">
+ <bp:PHYSICAL-ENTITY rdf:resource="R" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r6_I2">
+ <bp:PHYSICAL-ENTITY rdf:resource="I2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:unificationXref rdf:about="http://identifiers.org/go/GO:0016265">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">GO:0016265</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Gene Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:unificationXref rdf:about="http://identifiers.org/doid/DOID:1116">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">DOID:1116</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Human Disease Ontology</bp:DB>
+</bp:unificationXref>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r18_R2">
+ <bp:PHYSICAL-ENTITY rdf:resource="R2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r1">
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0007567" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r1_S" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r2">
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0007567" />
+ <bp:RIGHT rdf:resource="RIGHT_0_conversion_r2_V" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r3">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r3_S" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r4">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r4_V" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r5">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r5_I1" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r6">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r6_I2" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:biochemicalReaction rdf:about="conversion_r7">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r7_Iv2" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r26_S">
+ <bp:PHYSICAL-ENTITY rdf:resource="S" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r8">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r8_R1" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r9_R2">
+ <bp:PHYSICAL-ENTITY rdf:resource="R2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:biochemicalReaction rdf:about="conversion_r9">
+ <bp:LEFT rdf:resource="LEFT_0_conversion_r9_R2" />
+ <bp:XREF rdf:resource="http://identifiers.org/go/GO:0016265" />
+</bp:biochemicalReaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r10_J1">
+ <bp:PHYSICAL-ENTITY rdf:resource="J1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r22_R">
+ <bp:PHYSICAL-ENTITY rdf:resource="R" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r24_R2">
+ <bp:PHYSICAL-ENTITY rdf:resource="R2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r15_Iv2">
+ <bp:PHYSICAL-ENTITY rdf:resource="Iv2" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:dataSource rdf:about="datasource_2">
+ <bp:XREF rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000294" />
+ <bp:NAME rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BioModels Database</bp:NAME>
+</bp:dataSource>
+
+<bp:interaction rdf:about="interaction_r14_N_1">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="RIGHT_0_conversion_r2_V">
+ <bp:PHYSICAL-ENTITY rdf:resource="V" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:unificationXref rdf:about="http://identifiers.org/biomodels.db/BIOMD0000000294">
+ <bp:ID rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BIOMD0000000294</bp:ID>
+ <bp:DB rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BioModels Database</bp:DB>
+</bp:unificationXref>
+
+<bp:interaction rdf:about="interaction_r19_I2_1">
+</bp:interaction>
+
+<bp:openControlledVocabulary rdf:about="env">
+ <bp:TERM rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">environment</bp:TERM>
+</bp:openControlledVocabulary>
+
+<bp:dataSource rdf:about="datasource_1">
+ <bp:XREF rdf:resource="http://identifiers.org/biomodels.db/MODEL1012210000" />
+ <bp:NAME rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">BioModels Database</bp:NAME>
+</bp:dataSource>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r16_I1">
+ <bp:PHYSICAL-ENTITY rdf:resource="I1" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r4_V">
+ <bp:PHYSICAL-ENTITY rdf:resource="V" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+
+<bp:interaction rdf:about="interaction_r15_J2_0">
+</bp:interaction>
+
+<bp:physicalEntityParticipant rdf:about="LEFT_0_conversion_r15_V">
+ <bp:PHYSICAL-ENTITY rdf:resource="V" />
+ <bp:CELLULAR-LOCATION rdf:resource="env" />
+ <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype = "http://www.w3.org/2001/XMLSchema#double">1.0</bp:STOICHIOMETRIC-COEFFICIENT>
+</bp:physicalEntityParticipant>
+</rdf:RDF>

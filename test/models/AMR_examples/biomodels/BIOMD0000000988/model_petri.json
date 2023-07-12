@@ -1,0 +1,352 @@
+{
+    "S": [
+        {
+            "sname": "uninfected_nontested",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('diagnosis', 'ncit:C113725')]",
+            "mira_initial_value": 630000.0
+        },
+        {
+            "sname": "infected_nontested",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosed', 'ncit:C113725')]",
+            "mira_initial_value": 2.0
+        },
+        {
+            "sname": "uninfected_tested",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "infected_tested",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 1.0
+        },
+        {
+            "sname": "symptoms_nontested",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosed', 'ncit:C113725'), ('disease_severity', 'ncit:C25269')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "symptoms_tested",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220'), ('disease_severity', 'ncit:C25269')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "dead_corona_tested",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('cause_of_death', 'ncit:C171133'), ('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "recovered_tested",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "recovered_nontested",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('diagnosis', 'ncit:C113725')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 1.0
+        },
+        {
+            "sname": "dead_noncorona",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('cause_of_death', 'ncit:C17649')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "dead_corona_nontested",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('cause_of_death', 'ncit:C171133'), ('diagnosis', 'ncit:C113725')]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Testing_Randome",
+            "parameter_value": "0.0008",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Testing_Randome",
+            "parameter_value": "0.0008",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Symptoms_appear",
+            "parameter_value": "0.30165",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Symptoms_appear",
+            "parameter_value": "0.30165",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Testing_for_Symptoms",
+            "parameter_value": "500.0",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_death_rate_constant",
+            "parameter_value": "0.002",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_recover",
+            "parameter_value": "0.067",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_recover",
+            "parameter_value": "0.067",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Birth_rate",
+            "parameter_value": "3.29e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Normal_death_rate_constant_0",
+            "parameter_value": "3.29e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Normal_death_rate_constant_0",
+            "parameter_value": "3.29e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Normal_death_rate_constant_0",
+            "parameter_value": "3.29e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_death_rate_constant",
+            "parameter_value": "0.002",
+            "parameters": null
+        },
+        {
+            "tname": "t16",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_death_rate_constant",
+            "parameter_value": "0.002",
+            "parameters": null
+        },
+        {
+            "tname": "t17",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Normal_death_rate_constant_0",
+            "parameter_value": "3.29e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t18",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Corona_death_rate_constant",
+            "parameter_value": "0.002",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 3,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 4,
+            "it": 6
+        },
+        {
+            "is": 5,
+            "it": 7
+        },
+        {
+            "is": 6,
+            "it": 8
+        },
+        {
+            "is": 6,
+            "it": 9
+        },
+        {
+            "is": 5,
+            "it": 10
+        },
+        {
+            "is": 10,
+            "it": 11
+        },
+        {
+            "is": 1,
+            "it": 12
+        },
+        {
+            "is": 8,
+            "it": 13
+        },
+        {
+            "is": 9,
+            "it": 14
+        },
+        {
+            "is": 4,
+            "it": 15
+        },
+        {
+            "is": 2,
+            "it": 16
+        },
+        {
+            "is": 3,
+            "it": 17
+        },
+        {
+            "is": 5,
+            "it": 18
+        }
+    ],
+    "O": [
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 4,
+            "ot": 4
+        },
+        {
+            "os": 5,
+            "ot": 5
+        },
+        {
+            "os": 6,
+            "ot": 6
+        },
+        {
+            "os": 6,
+            "ot": 7
+        },
+        {
+            "os": 7,
+            "ot": 8
+        },
+        {
+            "os": 8,
+            "ot": 9
+        },
+        {
+            "os": 9,
+            "ot": 10
+        },
+        {
+            "os": 1,
+            "ot": 11
+        },
+        {
+            "os": 11,
+            "ot": 12
+        },
+        {
+            "os": 11,
+            "ot": 13
+        },
+        {
+            "os": 11,
+            "ot": 14
+        },
+        {
+            "os": 7,
+            "ot": 15
+        },
+        {
+            "os": 12,
+            "ot": 16
+        },
+        {
+            "os": 11,
+            "ot": 17
+        },
+        {
+            "os": 12,
+            "ot": 18
+        }
+    ]
+}

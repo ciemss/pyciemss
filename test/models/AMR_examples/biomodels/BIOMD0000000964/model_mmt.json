@@ -1,0 +1,476 @@
+{
+    "templates": [
+        {
+            "rate_law": "b",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*psi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "(Pathogen*Susceptible*beta_1/(Pathogen*alpha_1 + 1.0) + Susceptible*beta_2*(Infected_Asymptomatic + Infected_Symptomatic)/(alpha_2*(Infected_Asymptomatic + Infected_Symptomatic) + 1.0))/Pathogen",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Pathogen",
+                    "identifiers": {
+                        "ncit": "C80324"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "Infected_Asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                {
+                    "name": "Infected_Symptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*mu",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*mu",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*delta*omega",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_Symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*omega*(1.0 - delta)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Symptomatic*(mu + sigma)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected_Symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Asymptomatic*(mu + sigma)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected_Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Symptomatic*gamma_S",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Asymptomatic*gamma_A",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*mu",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Asymptomatic*eta_A",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "Infected_Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "Pathogen",
+                "identifiers": {
+                    "ncit": "C80324"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Symptomatic*eta_S",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "Infected_Symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "outcome": {
+                "name": "Pathogen",
+                "identifiers": {
+                    "ncit": "C80324"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Pathogen*mu_p",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Pathogen",
+                "identifiers": {
+                    "ncit": "C80324"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "alpha_1": {
+            "name": "alpha_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "alpha_2": {
+            "name": "alpha_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "b": {
+            "name": "b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00018
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 4.563e-05
+        },
+        "mu_p": {
+            "name": "mu_p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1724
+        },
+        "beta_1": {
+            "name": "beta_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00414
+        },
+        "beta_2": {
+            "name": "beta_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0115
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.005
+        },
+        "omega": {
+            "name": "omega",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0018
+        },
+        "gamma_S": {
+            "name": "gamma_S",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "gamma_A": {
+            "name": "gamma_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0714
+        },
+        "eta_S": {
+            "name": "eta_S",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "eta_A": {
+            "name": "eta_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Pathogen": {
+            "name": "Pathogen",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "value": 93000.0
+        },
+        "Exposed": {
+            "concept": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "value": 1000.0
+        },
+        "Infected_Symptomatic": {
+            "concept": {
+                "name": "Infected_Symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "value": 50.0
+        },
+        "Infected_Asymptomatic": {
+            "concept": {
+                "name": "Infected_Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "value": 50.0
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "Pathogen": {
+            "concept": {
+                "name": "Pathogen",
+                "identifiers": {
+                    "ncit": "C80324"
+                },
+                "context": {}
+            },
+            "value": 500.0
+        }
+    },
+    "annotations": {
+        "name": "Mwalili2020 - SEIR model of COVID-19 transmission and environmental pathogen prevalence",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:32703315"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

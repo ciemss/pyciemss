@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This biomodel was generated in VCML Version 0.4-->
+<vcml xmlns="http://sourceforge.net/projects/vcell/vcml" Version="0.4">
+   <BioModel Name="Munz2009 - Zombie SIZRQ">
+      <Model Name="MODEL1008060002">
+         <ModelParameters>
+            <Parameter Name="N" Role="user defined" Unit="1000 molecules">500.0</Parameter>
+            <Parameter Name="VC_SpConcFactor_1000_um3_litre_1" Role="user defined" Unit="1000 um3.litre-1">
+               6.020000000000001E14
+               <Annotation>Conversion from VC concentration units to SBML concentration units</Annotation>
+            </Parameter>
+            <Parameter Name="p" Role="user defined" Unit="0.011574074074074073 molecules.second-1">(delta * S * VC_SpConcFactor_1000_um3_litre_1)</Parameter>
+            <Parameter Name="delta" Role="user defined" Unit="1.1574074074074073E-5 second-1">1.0E-4</Parameter>
+            <Parameter Name="beta" Role="user defined" Unit="1.1574074074074074E-8 second-1.molecules-1">0.0095</Parameter>
+            <Parameter Name="kappa" Role="user defined" Unit="1.1574074074074073E-5 second-1">1.0E-4</Parameter>
+            <Parameter Name="sigma" Role="user defined" Unit="1.1574074074074073E-5 second-1">1.0E-4</Parameter>
+            <Parameter Name="gamma" Role="user defined" Unit="1.1574074074074073E-5 second-1">1.0E-4</Parameter>
+            <Parameter Name="rho" Role="user defined" Unit="1.1574074074074073E-5 second-1">0.05</Parameter>
+            <Parameter Name="zeta" Role="user defined" Unit="1.1574074074074073E-5 second-1">1.0E-4</Parameter>
+            <Parameter Name="alpha" Role="user defined" Unit="1.1574074074074074E-8 second-1.molecules-1">0.005</Parameter>
+         </ModelParameters>
+         <Compound Name="S">
+            <Annotation>S</Annotation>
+         </Compound>
+         <Compound Name="I">
+            <Annotation>I</Annotation>
+         </Compound>
+         <Compound Name="Z">
+            <Annotation>Z</Annotation>
+         </Compound>
+         <Compound Name="R">
+            <Annotation>R</Annotation>
+         </Compound>
+         <Compound Name="Q">
+            <Annotation>Q</Annotation>
+         </Compound>
+         <Feature Name="env" />
+         <LocalizedCompound Name="S" CompoundRef="S" Structure="env" OverrideName="true" />
+         <LocalizedCompound Name="I" CompoundRef="I" Structure="env" OverrideName="true" />
+         <LocalizedCompound Name="Z" CompoundRef="Z" Structure="env" OverrideName="true" />
+         <LocalizedCompound Name="R" CompoundRef="R" Structure="env" OverrideName="true" />
+         <LocalizedCompound Name="Q" CompoundRef="Q" Structure="env" OverrideName="true" />
+         <SimpleReaction Structure="env" Name="birth" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Product LocalizedCompoundRef="S" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(p * sbmlRateFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="death_healthy" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="S" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="R" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * delta * S * S_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="S_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="infection" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="S" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="I" Stoichiometry="1" />
+            <Modifier LocalizedCompoundRef="Z" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * beta * S * S_ConcFactor * Z * Z_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="S_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+               <Parameter Name="Z_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="quarantine_infected" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="I" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="Q" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * kappa * I * I_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="I_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="quarantine_zombies" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="Z" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="Q" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * sigma * Z * Z_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="Z_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="death_quarantined" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="Q" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="R" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * gamma * Q * Q_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="Q_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="natural_death_infected" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="I" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="R" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * delta * I * I_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="I_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="zombification_infected" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="I" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="Z" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * rho * I * I_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="I_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="resurrection" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="R" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="Z" Stoichiometry="1" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * zeta * R * R_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="R_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <SimpleReaction Structure="env" Name="destruction" FluxCarrierValence="0" FluxOption="MolecularOnly">
+            <Reactant LocalizedCompoundRef="Z" Stoichiometry="1" />
+            <Product LocalizedCompoundRef="R" Stoichiometry="1" />
+            <Modifier LocalizedCompoundRef="S" />
+            <Kinetics KineticsType="GeneralLumpedKinetics">
+               <Parameter Name="LumpedJ" Role="lumped reaction rate" Unit="molecules.s-1">(sbmlRateFactor * alpha * S * S_ConcFactor * Z * Z_ConcFactor)</Parameter>
+               <Parameter Name="sbmlRateFactor" Role="user defined" Unit="86.4 second.s-1">0.011574074074074</Parameter>
+               <Parameter Name="S_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+               <Parameter Name="Z_ConcFactor" Role="user defined" Unit="1000 um3.litre-1">6.020000000000001E14</Parameter>
+            </Kinetics>
+         </SimpleReaction>
+         <Diagram Name="env" Structure="env" />
+      </Model>
+      <SimulationSpec Name="MODEL1008060002_Compartmental" Stochastic="false" UseConcentration="true">
+         <Geometry Name="Compartmental" Dimension="0">
+            <Extent X="10.0" Y="10.0" Z="10.0" />
+            <Origin X="0.0" Y="0.0" Z="0.0" />
+            <SubVolume Name="Compartment" Handle="0" Type="Compartmental" />
+         </Geometry>
+         <GeometryContext>
+            <FeatureMapping Feature="env" GeometryClass="Compartment" SubVolume="Compartment" Size="1.0000000000000001E15">
+               <BoundariesTypes Xm="Flux" Xp="Flux" Ym="Flux" Yp="Flux" Zm="Flux" Zp="Flux" />
+            </FeatureMapping>
+         </GeometryContext>
+         <ReactionContext>
+            <LocalizedCompoundSpec LocalizedCompoundRef="S" ForceConstant="false" WellMixed="false">
+               <InitialConcentration>N</InitialConcentration>
+               <Diffusion>0.0</Diffusion>
+            </LocalizedCompoundSpec>
+            <LocalizedCompoundSpec LocalizedCompoundRef="I" ForceConstant="false" WellMixed="false">
+               <InitialConcentration>0.0</InitialConcentration>
+               <Diffusion>0.0</Diffusion>
+            </LocalizedCompoundSpec>
+            <LocalizedCompoundSpec LocalizedCompoundRef="Z" ForceConstant="false" WellMixed="false">
+               <InitialConcentration>0.0</InitialConcentration>
+               <Diffusion>0.0</Diffusion>
+            </LocalizedCompoundSpec>
+            <LocalizedCompoundSpec LocalizedCompoundRef="R" ForceConstant="false" WellMixed="false">
+               <InitialConcentration>0.0</InitialConcentration>
+               <Diffusion>0.0</Diffusion>
+            </LocalizedCompoundSpec>
+            <LocalizedCompoundSpec LocalizedCompoundRef="Q" ForceConstant="false" WellMixed="false">
+               <InitialConcentration>0.0</InitialConcentration>
+               <Diffusion>0.0</Diffusion>
+            </LocalizedCompoundSpec>
+            <ReactionSpec ReactionStepRef="birth" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="death_healthy" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="infection" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="quarantine_infected" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="quarantine_zombies" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="death_quarantined" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="natural_death_infected" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="zombification_infected" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="resurrection" ReactionMapping="included" />
+            <ReactionSpec ReactionStepRef="destruction" ReactionMapping="included" />
+         </ReactionContext>
+         <MicroscopeMeasurement Name="fluor">
+            <ConvolutionKernel Type="ProjectionZKernel" />
+         </MicroscopeMeasurement>
+      </SimulationSpec>
+      <pathwayModel>
+         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" version="3.0" />
+      </pathwayModel>
+      <relationshipModel>
+         <RMNS version="3.0" />
+      </relationshipModel>
+      <vcmetadata>
+         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/_393276">
+               <bqmodel:is xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+                  <rdf:Bag rdf:nodeID="node0">
+                     <rdf:_1>
+                        <rdf:Description rdf:about="http://identifiers.org/biomodels.db/MODEL1008060002" />
+                     </rdf:_1>
+                  </rdf:Bag>
+               </bqmodel:is>
+               <bqmodel:isDescribedBy xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+                  <rdf:Bag rdf:nodeID="node1">
+                     <rdf:_1>
+                        <rdf:Description rdf:about="http://identifiers.org/isbn/ISBN:1607413477" />
+                     </rdf:_1>
+                  </rdf:Bag>
+               </bqmodel:isDescribedBy>
+            </rdf:Description>
+         </rdf:RDF>
+         <nonrdfAnnotationList>
+            <nonrdfAnnotation vcid="BioModel(Munz2009 - Zombie SIZRQ)">
+               <notes>
+                  
+  
+                  <body xmlns="http://www.w3.org/1999/xhtml">
+                     
+    
+                     <div class="dc:title">Munz2009 - Zombie SIZRQ</div>
+                     
+    
+                     <div class="dc:description">
+                        
+      
+                        <p>This is the model with latent infection and quarantine described in the article.</p>
+                        
+    
+                     </div>
+                     
+    
+                     <div class="dc:provenance">
+                        
+      
+                        <p>This model was originally created by libAntimony v1.4 (using libSBML 3.4.1).</p>
+                        
+    
+                     </div>
+                     
+    
+                     <div class="dc:bibliographicCitation">
+                        
+      
+                        <p>This model is described in the article:</p>
+                        
+      
+                        <div class="bibo:title">
+                           
+        
+                           <a href="http://isbndb.com/book/infectious_disease_modelling_research_progress" title="Access to this publication">When zombies attack!: Mathematical modelling of an outbreak of zombie infection</a>
+                           
+      
+                        </div>
+                        
+      
+                        <div class="bibo:authorList">P. Munz, I. Hudea, J. Imad and R.J. Smith?</div>
+                        
+      
+                        <div class="bibo:Journal">Infectious Disease Modelling Research Progress 2009, chapter 4, pp 133-150. Editors: Jean Michel Tchuenche and C. Chiyaka; Nova Science Publishers, Inc., NY, USA.</div>
+                        
+      
+                        <p>Abstract:</p>
+                        
+      
+                        <div class="bibo:abstract">
+                           
+        
+                           <p>Zombies are a popular figure in pop culture/entertainment and they are usually portrayed as being brought about through an outbreak or epidemic. Consequently, we model a zombie attack, using biological assumptions based on popular zombie movies. We introduce a basic model for zombie infection, determine equilibria and their stability, and illustrate the outcome with numerical solutions. We then refine the model to introduce a latent period of zombification, whereby humans are infected, but not infectious, before becoming undead. We then modify the model to include the effects of possible quarantine or a cure. Finally, we examine the impact of regular, impulsive reductions in the number of zombies and derive conditions under which eradication can occur. We show that only quick, aggressive attacks can stave off the doomsday scenario: the collapse of society as zombies overtake us all.</p>
+                           
+      
+                        </div>
+                        
+    
+                     </div>
+                     
+    
+                     <div class="dc:publisher">
+                        
+      
+                        <p>
+                           This model is hosted on        
+                           <a href="http://www.ebi.ac.uk/biomodels/">BioModels Database</a>
+                           
+            and identified by:        
+                           <a href="http://identifiers.org/biomodels.db/MODEL1008060002">MODEL1008060002</a>
+                           
+            .        
+                        </p>
+                        
+    
+                        <p>
+                           To cite BioModels Database, please use:        
+                           <a href="http://identifiers.org/pubmed/20587024" title="Latest BioModels Database publication">BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models</a>
+                           
+            .        
+                        </p>
+                        
+
+                     </div>
+                     <div class="dc:license">
+                        
+  
+                        <p>
+                           To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to        
+                           <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication">CC0 Public Domain Dedication</a>
+                           
+            for more information.        
+                        </p>
+                        
+
+                     </div>
+                     
+
+                  </body>
+                  
+
+               </notes>
+            </nonrdfAnnotation>
+         </nonrdfAnnotationList>
+         <uriBindingList>
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393294" vcid="ReactionStep(zombification_infected)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393293" vcid="ReactionStep(natural_death_infected)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393296" vcid="ReactionStep(resurrection)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393286" vcid="ReactionStep(death_healthy)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393292" vcid="ReactionStep(death_quarantined)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393283" vcid="Species(R)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393284" vcid="Species(Q)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393288" vcid="ReactionStep(infection)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393290" vcid="ReactionStep(quarantine_zombies)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393280" vcid="Species(I)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393297" vcid="ReactionStep(destruction)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393279" vcid="Species(S)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393276" vcid="BioModel(Munz2009 - Zombie SIZRQ)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393285" vcid="ReactionStep(birth)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393282" vcid="Species(Z)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393278" vcid="Structure(env)" />
+            <uriBinding uri="http://www.sbml.org/sbml/level2/version4/_393289" vcid="ReactionStep(quarantine_infected)" />
+         </uriBindingList>
+      </vcmetadata>
+   </BioModel>
+</vcml>
+

@@ -1,0 +1,114 @@
+{
+    "initials": {
+        "Exposed": {
+            "name": "Exposed",
+            "identifiers": {
+                "apollosv": "00000154"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Exposed",
+                    "identifiers": {
+                        "apollosv": "00000154"
+                    },
+                    "context": {}
+                },
+                "value": 1000.0
+            }
+        },
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {}
+                },
+                "value": 93000.0
+            }
+        },
+        "Infected_Symptomatic": {
+            "name": "Infected_Symptomatic",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Symptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269"
+                    }
+                },
+                "value": 50.0
+            }
+        },
+        "Infected_Asymptomatic": {
+            "name": "Infected_Asymptomatic",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C3833"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_Asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                "value": 50.0
+            }
+        },
+        "Recovered": {
+            "name": "Recovered",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Pathogen": {
+            "name": "Pathogen",
+            "identifiers": {
+                "ncit": "C80324"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Pathogen",
+                    "identifiers": {
+                        "ncit": "C80324"
+                    },
+                    "context": {}
+                },
+                "value": 500.0
+            }
+        }
+    }
+}

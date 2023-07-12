@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" metaid="_853695" level="2" version="4">
+  <model metaid="_199007" id="MODEL1008060000" name="Munz2009 - Zombi Impulsive Killing">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div class="dc:title">Munz2009 - Zombie Impulsive Killing</div>
+        <div class="dc:description">
+          <p>This is the basic SZR model with impulsive killing described in the article.</p>
+        </div>
+        <div class="dc:provenance">
+          <p>This model was originally created by libAntimony v1.4 (using libSBML 3.4.1).</p>
+        </div>
+        <div class="dc:bibliographicCitation">
+          <p>This model is described in the article:</p>
+          <div class="bibo:title">
+            <a href="http://isbndb.com/book/infectious_disease_modelling_research_progress" title="Access to this publication">When zombies attack!: Mathematical modelling of an outbreak of zombie infection</a>
+          </div>
+          <div class="bibo:authorList">P. Munz, I. Hudea, J. Imad and R.J. Smith?</div>
+          <div class="bibo:Journal">Infectious Disease Modelling Research Progress 2009, chapter 4, pp 133-150. Editors: Jean Michel Tchuenche and C. Chiyaka; Nova Science Publishers, Inc., NY, USA.</div>
+          <p>Abstract:</p>
+          <div class="bibo:abstract">
+            <p>Zombies are a popular figure in pop culture/entertainment and they are usually portrayed as being brought about through an outbreak or epidemic. Consequently, we model a zombie attack, using biological assumptions based on popular zombie movies. We introduce a basic model for zombie infection, determine equilibria and their stability, and illustrate the outcome with numerical solutions. We then refine the model to introduce a latent period of zombification, whereby humans are infected, but not infectious, before becoming undead. We then modify the model to include the effects of possible quarantine or a cure. Finally, we examine the impact of regular, impulsive reductions in the number of zombies and derive conditions under which eradication can occur. We show that only quick, aggressive attacks can stave off the doomsday scenario: the collapse of society as zombies overtake us all.</p>
+          </div>
+        </div>
+        <div class="dc:publisher">
+          <p>This model is hosted on        <a href="http://www.ebi.ac.uk/biomodels/">BioModels Database</a>
+            and identified by:        <a href="http://identifiers.org/biomodels.db/MODEL1008060000">MODEL1008060000</a>
+            .        </p>
+        <p>To cite BioModels Database, please use:        <a href="http://identifiers.org/pubmed/20587024" title="Latest BioModels Database publication">BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models</a>
+            .        </p>
+    </div>
+    <div class="dc:license">
+      <p>To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to        <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication">CC0 Public Domain Dedication</a>
+            for more information.        </p>
+  </div>
+</body>
+</notes><annotation>
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+    <rdf:Description rdf:about="#_199007">
+      <bqmodel:is>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL1008060000"/>
+        </rdf:Bag>
+      </bqmodel:is>
+      <bqmodel:isDescribedBy>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/isbn/ISBN:1607413477"/>
+        </rdf:Bag>
+      </bqmodel:isDescribedBy>
+      <bqbiol:hasTaxon>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+        </rdf:Bag>
+      </bqbiol:hasTaxon>
+      <bqbiol:isVersionOf>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/go/GO:0016032"/>
+          <rdf:li rdf:resource="http://identifiers.org/doid/DOID:0050117"/>
+        </rdf:Bag>
+      </bqbiol:isVersionOf>
+    </rdf:Description>
+  </rdf:RDF>
+</annotation><listOfUnitDefinitions>
+  <unitDefinition metaid="metaid_0000071" id="substance" name="individuals(thousands)">
+    <listOfUnits>
+      <unit metaid="_853707" kind="item" scale="3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="metaid_0000072" id="time" name="days">
+    <listOfUnits>
+      <unit metaid="_853719" kind="second" multiplier="86400"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="metaid_0000073" id="perday" name="per day">
+    <listOfUnits>
+      <unit metaid="_853731" kind="second" exponent="-1" multiplier="86400"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="metaid_0000074" id="perdayperind" name="per day per thousand individuals">
+    <listOfUnits>
+      <unit metaid="_853743" kind="second" exponent="-1" multiplier="86400"/>
+      <unit metaid="_853755" kind="item" exponent="-1" scale="3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="metaid_0000075" id="indperday" name="thousand individuals per day">
+    <listOfUnits>
+      <unit metaid="_853767" kind="second" exponent="-1" multiplier="86400"/>
+      <unit metaid="_853779" kind="item" scale="3"/>
+    </listOfUnits>
+  </unitDefinition>
+</listOfUnitDefinitions><listOfCompartments>
+  <compartment metaid="_199009" id="env" name="environment" size="1"/>
+</listOfCompartments><listOfSpecies>
+  <species metaid="_199011" id="S" name="Susceptible" compartment="env" hasOnlySubstanceUnits="true"/>
+  <species metaid="_199012" id="Z" name="Zombie" compartment="env" initialAmount="1" hasOnlySubstanceUnits="true"/>
+  <species metaid="_199013" id="R" name="Removed" compartment="env" initialAmount="0" hasOnlySubstanceUnits="true"/>
+</listOfSpecies><listOfParameters>
+  <parameter metaid="_199032" id="N" name="starting Population" value="500" units="substance"/>
+  <parameter metaid="_199033" id="p" name="birth rate" units="indperday" constant="false"/>
+  <parameter metaid="_199034" id="delta" value="0.0001" units="perday">
+    <notes>
+      <p xmlns="http://www.w3.org/1999/xhtml">
+        background death rate</p>
+    </notes>
+  </parameter>
+  <parameter metaid="_199035" id="beta" value="0.0055" units="perdayperind">
+    <notes>
+      <p xmlns="http://www.w3.org/1999/xhtml">
+        rate of zombie bites</p>
+    </notes>
+  </parameter>
+  <parameter metaid="_199036" id="zeta" value="0.09" units="perday">
+    <notes>
+      <p xmlns="http://www.w3.org/1999/xhtml">
+        rate of undead resurrection</p>
+    </notes>
+  </parameter>
+  <parameter metaid="_199039" id="alpha" value="0.0075" units="perdayperind">
+    <notes>
+      <p xmlns="http://www.w3.org/1999/xhtml">
+        rate of zombie destruction</p>
+    </notes>
+  </parameter>
+  <parameter metaid="_199040" id="n" name="number of kills" value="0" units="dimensionless" constant="false"/>
+  <parameter metaid="_199041" id="k" name="kill ratio" value="0.25" units="dimensionless"/>
+  <parameter metaid="_199042" id="tau" name="kill intervall" value="2.5" units="time"/>
+</listOfParameters><listOfInitialAssignments>
+  <initialAssignment metaid="_853791" symbol="S">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <ci> N </ci>
+    </math>
+  </initialAssignment>
+</listOfInitialAssignments><listOfRules>
+  <assignmentRule metaid="_199029" variable="p">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> S </ci>
+        <ci> delta </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+</listOfRules><listOfReactions>
+  <reaction metaid="_199015" id="birth" reversible="false">
+    <listOfProducts>
+      <speciesReference metaid="_853803" species="S"/>
+    </listOfProducts>
+    <kineticLaw metaid="_853815">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p </ci>
+      </math>
+    </kineticLaw>
+  </reaction>
+  <reaction metaid="_199016" id="death" reversible="false">
+    <listOfReactants>
+      <speciesReference metaid="_853827" species="S"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference metaid="_853839" species="R"/>
+    </listOfProducts>
+    <kineticLaw metaid="_853851">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> delta </ci>
+          <ci> S </ci>
+        </apply>
+      </math>
+    </kineticLaw>
+  </reaction>
+  <reaction metaid="_199019" id="infection" reversible="false">
+    <listOfReactants>
+      <speciesReference metaid="_853863" species="S"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference metaid="_853875" species="Z"/>
+    </listOfProducts>
+    <kineticLaw metaid="_853888">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> beta </ci>
+          <ci> S </ci>
+          <ci> Z </ci>
+        </apply>
+      </math>
+    </kineticLaw>
+  </reaction>
+  <reaction metaid="_199020" id="resurrection" reversible="false">
+    <listOfReactants>
+      <speciesReference metaid="_853900" species="R"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference metaid="_853912" species="Z"/>
+    </listOfProducts>
+    <kineticLaw metaid="_853924">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> zeta </ci>
+          <ci> R </ci>
+        </apply>
+      </math>
+    </kineticLaw>
+  </reaction>
+  <reaction metaid="_199021" id="destruction" reversible="false">
+    <listOfReactants>
+      <speciesReference metaid="_853936" species="Z"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference metaid="_853948" species="R"/>
+    </listOfProducts>
+    <listOfModifiers>
+      <modifierSpeciesReference metaid="_853960" species="S"/>
+    </listOfModifiers>
+    <kineticLaw metaid="_853972">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> alpha </ci>
+          <ci> S </ci>
+          <ci> Z </ci>
+        </apply>
+      </math>
+    </kineticLaw>
+  </reaction>
+</listOfReactions><listOfEvents>
+  <event metaid="_199028" id="zombie_eradication">
+    <trigger metaid="_853984">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <and/>
+          <apply>
+            <geq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> n </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> tau </ci>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <apply>
+                <plus/>
+                <ci> n </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </apply>
+      </math>
+    </trigger>
+    <listOfEventAssignments>
+      <eventAssignment metaid="_853996" variable="Z">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Z </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <times/>
+                <ci> k </ci>
+                <apply>
+                  <plus/>
+                  <ci> n </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </eventAssignment>
+      <eventAssignment metaid="_854008" variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> n </ci>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </eventAssignment>
+    </listOfEventAssignments>
+  </event>
+</listOfEvents>
+</model>
+</sbml>

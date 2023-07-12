@@ -1,0 +1,17 @@
+{
+    "annotations": {
+        "name": "Leung2016 - SIRWS model with immune boosting and cross-immunity between two pathogens",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": []
+    }
+}

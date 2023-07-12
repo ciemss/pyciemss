@@ -1,0 +1,67 @@
+{
+    "initials": {
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "ncit": "C77737",
+                "ido": "0000514",
+                "biomodels.species": "BIOMD0000001045:Susceptible"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "ncit": "C77737",
+                        "ido": "0000514",
+                        "biomodels.species": "BIOMD0000001045:Susceptible"
+                    },
+                    "context": {}
+                },
+                "value": 0.999999999999998
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {
+                "ncit": "C77737",
+                "ido": "0000511",
+                "biomodels.species": "BIOMD0000001045:Infected"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ncit": "C77737",
+                        "ido": "0000511",
+                        "biomodels.species": "BIOMD0000001045:Infected"
+                    },
+                    "context": {}
+                },
+                "value": 1.27e-06
+            }
+        },
+        "Recovered": {
+            "name": "Recovered",
+            "identifiers": {
+                "ncit": "C77737",
+                "ido": "0000592",
+                "biomodels.species": "BIOMD0000001045:Recovered"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ncit": "C77737",
+                        "ido": "0000592",
+                        "biomodels.species": "BIOMD0000001045:Recovered"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

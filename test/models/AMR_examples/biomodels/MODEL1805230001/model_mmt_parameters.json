@@ -1,0 +1,244 @@
+{
+    "parameters": {
+        "Capital_lambda_H": {
+            "name": "Capital_lambda_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "Capital_lambda_V": {
+            "name": "Capital_lambda_V",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "u_H": {
+            "name": "u_H",
+            "identifiers": {},
+            "context": {},
+            "value": 3.9e-05
+        },
+        "u_V": {
+            "name": "u_V",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1429
+        },
+        "delta_H": {
+            "name": "delta_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000913
+        },
+        "delta_M": {
+            "name": "delta_M",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0003454
+        },
+        "Beta_H": {
+            "name": "Beta_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0007
+        },
+        "Beta_M": {
+            "name": "Beta_M",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8333
+        },
+        "Beta_V": {
+            "name": "Beta_V",
+            "identifiers": {},
+            "context": {},
+            "value": 0.9
+        },
+        "b_M": {
+            "name": "b_M",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "eta_A": {
+            "name": "eta_A",
+            "identifiers": {},
+            "context": {},
+            "value": 1.4
+        },
+        "eta_HM": {
+            "name": "eta_HM",
+            "identifiers": {},
+            "context": {},
+            "value": 1.5
+        },
+        "xi": {
+            "name": "xi",
+            "identifiers": {},
+            "context": {},
+            "value": 1.002
+        },
+        "theta_HM": {
+            "name": "theta_HM",
+            "identifiers": {},
+            "context": {},
+            "value": 1.002
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 1.001
+        },
+        "epsilon": {
+            "name": "epsilon",
+            "identifiers": {},
+            "context": {},
+            "value": 1.02
+        },
+        "nu": {
+            "name": "nu",
+            "identifiers": {},
+            "context": {},
+            "value": 1.002
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 1.002
+        },
+        "phi1": {
+            "name": "phi1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00556
+        },
+        "phi2": {
+            "name": "phi2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.002
+        },
+        "phi3": {
+            "name": "phi3",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0005
+        },
+        "eta_v": {
+            "name": "eta_v",
+            "identifiers": {},
+            "context": {},
+            "value": 1.5
+        },
+        "theta_V": {
+            "name": "theta_V",
+            "identifiers": {},
+            "context": {},
+            "value": 1.5
+        },
+        "kappa": {
+            "name": "kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000548
+        },
+        "gamma_H": {
+            "name": "gamma_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08333
+        },
+        "gamma_V": {
+            "name": "gamma_V",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "N_H": {
+            "name": "N_H",
+            "identifiers": {},
+            "context": {},
+            "value": 10184.0
+        },
+        "N_V": {
+            "name": "N_V",
+            "identifiers": {},
+            "context": {},
+            "value": 25550.0
+        },
+        "lambda_H": {
+            "name": "lambda_H",
+            "identifiers": {},
+            "context": {},
+            "value": 3.23571288295365e-06
+        },
+        "lambda_M": {
+            "name": "lambda_M",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00102280538098979
+        },
+        "lambda_V": {
+            "name": "lambda_V",
+            "identifiers": {},
+            "context": {},
+            "value": 0.000585477219167321
+        },
+        "New_HIV_cases": {
+            "name": "New_HIV_cases",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "New_Malaria_Cases": {
+            "name": "New_Malaria_Cases",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "New_Co_infection_Cases": {
+            "name": "New_Co_infection_Cases",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Mortality_Malaria": {
+            "name": "Mortality_Malaria",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Mortality_HIV": {
+            "name": "Mortality_HIV",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Mortality_Mixed": {
+            "name": "Mortality_Mixed",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Vector": {
+            "name": "Vector",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

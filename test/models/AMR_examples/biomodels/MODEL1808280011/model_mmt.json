@@ -1,0 +1,240 @@
+{
+    "templates": [],
+    "parameters": {
+        "LAMBDA": {
+            "name": "LAMBDA",
+            "identifiers": {},
+            "context": {},
+            "value": 53.8055
+        },
+        "epsilon": {
+            "name": "epsilon",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5082
+        },
+        "Kappa": {
+            "name": "Kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0529
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 1.9856
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.371
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.302
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 2.391
+        },
+        "delta1": {
+            "name": "delta1",
+            "identifiers": {},
+            "context": {},
+            "value": 1.02
+        },
+        "delta2": {
+            "name": "delta2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0003
+        },
+        "eta": {
+            "name": "eta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8595
+        },
+        "T": {
+            "name": "T",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0428
+        },
+        "a1": {
+            "name": "a1",
+            "identifiers": {},
+            "context": {},
+            "value": 10.9688
+        },
+        "a2": {
+            "name": "a2",
+            "identifiers": {},
+            "context": {},
+            "value": 274.6218
+        },
+        "b1": {
+            "name": "b1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.9182
+        },
+        "b2": {
+            "name": "b2",
+            "identifiers": {},
+            "context": {},
+            "value": 300.0
+        },
+        "c1": {
+            "name": "c1",
+            "identifiers": {},
+            "context": {},
+            "value": 5.163
+        },
+        "c2": {
+            "name": "c2",
+            "identifiers": {},
+            "context": {},
+            "value": 19.1097
+        },
+        "beta1": {
+            "name": "beta1",
+            "identifiers": {},
+            "context": {},
+            "value": 11.1422536572286
+        },
+        "beta2": {
+            "name": "beta2",
+            "identifiers": {},
+            "context": {},
+            "value": 352.787735561309
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0011
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0529
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0935
+        }
+    },
+    "initials": {
+        "S": {
+            "concept": {
+                "name": "S",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:S"
+                },
+                "context": {}
+            },
+            "value": 370.21
+        },
+        "V": {
+            "concept": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:V"
+                },
+                "context": {}
+            },
+            "value": 0.046947
+        },
+        "E": {
+            "concept": {
+                "name": "E",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:E"
+                },
+                "context": {}
+            },
+            "value": 0.055003
+        },
+        "I": {
+            "concept": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:I"
+                },
+                "context": {}
+            },
+            "value": 0.12245
+        },
+        "L": {
+            "concept": {
+                "name": "L",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:L"
+                },
+                "context": {}
+            },
+            "value": 0.072075
+        },
+        "H": {
+            "concept": {
+                "name": "H",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:H"
+                },
+                "context": {}
+            },
+            "value": 0.03741
+        },
+        "R": {
+            "concept": {
+                "name": "R",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:R"
+                },
+                "context": {}
+            },
+            "value": 4.0217
+        },
+        "N": {
+            "concept": {
+                "name": "N",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280011:N"
+                },
+                "context": {}
+            },
+            "value": 374.565585
+        }
+    },
+    "annotations": {
+        "name": "Qu2017 - A mumps model with seasonal fluctuations in China",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": []
+    }
+}

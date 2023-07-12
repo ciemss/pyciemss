@@ -1,0 +1,80 @@
+{
+    "initials": {
+        "R_d": {
+            "name": "R_d",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000726:R_d"
+            },
+            "context": {
+                "property": "ncit:C49498"
+            },
+            "value": null
+        },
+        "E_d": {
+            "name": "E_d",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000726:E_d"
+            },
+            "context": {
+                "property": "efo:0000487"
+            },
+            "value": null
+        },
+        "S_d": {
+            "name": "S_d",
+            "identifiers": {
+                "ido": "0000514",
+                "biomodels.species": "BIOMD0000000726:S_d"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_d": {
+            "name": "I_d",
+            "identifiers": {
+                "ido": "0000511",
+                "biomodels.species": "BIOMD0000000726:I_d"
+            },
+            "context": {},
+            "value": null
+        },
+        "R_h": {
+            "name": "R_h",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000726:R_h"
+            },
+            "context": {
+                "property": "ncit:C49498"
+            },
+            "value": null
+        },
+        "E_h": {
+            "name": "E_h",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000726:E_h"
+            },
+            "context": {
+                "property": "efo:0000487"
+            },
+            "value": null
+        },
+        "S_h": {
+            "name": "S_h",
+            "identifiers": {
+                "ido": "0000514",
+                "biomodels.species": "BIOMD0000000726:S_h"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_h": {
+            "name": "I_h",
+            "identifiers": {
+                "ido": "0000511",
+                "biomodels.species": "BIOMD0000000726:I_h"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

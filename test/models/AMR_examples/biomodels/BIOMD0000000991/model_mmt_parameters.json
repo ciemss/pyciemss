@@ -1,0 +1,112 @@
+{
+    "parameters": {
+        "transmission_rate_effective": {
+            "name": "transmission_rate_effective",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4236
+        },
+        "gamma_a": {
+            "name": "gamma_a",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13978
+        },
+        "gamma_0": {
+            "name": "gamma_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13978
+        },
+        "gamma_i": {
+            "name": "gamma_i",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0666666666666667
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0135
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8999e-12
+        },
+        "d_0": {
+            "name": "d_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.015
+        },
+        "d_D": {
+            "name": "d_D",
+            "identifiers": {},
+            "context": {},
+            "value": 0.015
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.192307692307692
+        },
+        "nu": {
+            "name": "nu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "eps": {
+            "name": "eps",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "lam": {
+            "name": "lam",
+            "identifiers": {},
+            "context": {},
+            "value": 9.02103115891956e-06
+        },
+        "exposed_start": {
+            "name": "exposed_start",
+            "identifiers": {},
+            "context": {},
+            "value": 441.0
+        },
+        "asymptomatic_start": {
+            "name": "asymptomatic_start",
+            "identifiers": {},
+            "context": {},
+            "value": 188.0
+        },
+        "symptomatic_start": {
+            "name": "symptomatic_start",
+            "identifiers": {},
+            "context": {},
+            "value": 212.0
+        },
+        "Lagos": {
+            "name": "Lagos",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

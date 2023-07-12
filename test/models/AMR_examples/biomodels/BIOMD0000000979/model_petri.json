@@ -1,0 +1,108 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 315283090.04
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 14439817.0
+        },
+        {
+            "sname": "Total_population",
+            "mira_ids": "[('identity', 'ido:0000509')]",
+            "mira_context": "[]",
+            "mira_initial_value": 330052960.0
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": 330052.96
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.19231",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "0.05556",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "omega",
+            "parameter_value": "0.01667",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 3,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 4,
+            "it": 3
+        },
+        {
+            "is": 5,
+            "it": 4
+        }
+    ],
+    "O": [
+        {
+            "os": 3,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 4,
+            "ot": 2
+        },
+        {
+            "os": 5,
+            "ot": 3
+        },
+        {
+            "os": 1,
+            "ot": 4
+        }
+    ]
+}

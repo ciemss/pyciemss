@@ -1,0 +1,55 @@
+{
+    "initials": {
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {}
+                },
+                "value": 32680000.0
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                },
+                "value": 728.0
+            }
+        },
+        "Removed": {
+            "name": "Removed",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Removed",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                "value": 62.0000000000001
+            }
+        }
+    }
+}

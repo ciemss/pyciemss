@@ -1,0 +1,21 @@
+{
+    "annotations": {
+        "name": "Chitnis2012 - Model Rift Valley Fever transmission between cattle and mosquitoes (Model 1)",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:23098257"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

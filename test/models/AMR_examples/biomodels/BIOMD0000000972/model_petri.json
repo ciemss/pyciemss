@@ -1,0 +1,293 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 11081000.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 23382.3126079714
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[]",
+            "mira_initial_value": 2200.0
+        },
+        {
+            "sname": "Asymptomatic",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C3833')]",
+            "mira_initial_value": 531.176
+        },
+        {
+            "sname": "Susceptible_quarantined",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 163804.0
+        },
+        {
+            "sname": "Hospitalised",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('hospitalization', 'ncit:C25179')]",
+            "mira_initial_value": 515.168
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 1898.36
+        },
+        {
+            "sname": "Exposed_quarantined",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 0.378022
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "lambda",
+            "parameter_value": "0.0714285",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_5",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_I",
+            "parameter_value": "0.33029",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_A",
+            "parameter_value": "0.13978",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_H",
+            "parameter_value": "0.11624",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "alpha",
+            "parameter_value": "1.7826e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "alpha",
+            "parameter_value": "1.7826e-05",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta_q",
+            "parameter_value": "0.1259",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 3,
+            "it": 1
+        },
+        {
+            "is": 4,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 3,
+            "it": 2
+        },
+        {
+            "is": 4,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 5,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        },
+        {
+            "is": 6,
+            "it": 9
+        },
+        {
+            "is": 3,
+            "it": 10
+        },
+        {
+            "is": 6,
+            "it": 11
+        },
+        {
+            "is": 3,
+            "it": 12
+        },
+        {
+            "is": 4,
+            "it": 12
+        },
+        {
+            "is": 1,
+            "it": 12
+        },
+        {
+            "is": 8,
+            "it": 13
+        }
+    ],
+    "O": [
+        {
+            "os": 3,
+            "ot": 1
+        },
+        {
+            "os": 4,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 2
+        },
+        {
+            "os": 5,
+            "ot": 2
+        },
+        {
+            "os": 1,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 6,
+            "ot": 6
+        },
+        {
+            "os": 7,
+            "ot": 7
+        },
+        {
+            "os": 7,
+            "ot": 8
+        },
+        {
+            "os": 7,
+            "ot": 9
+        },
+        {
+            "os": 3,
+            "ot": 12
+        },
+        {
+            "os": 4,
+            "ot": 12
+        },
+        {
+            "os": 8,
+            "ot": 12
+        },
+        {
+            "os": 6,
+            "ot": 13
+        }
+    ]
+}

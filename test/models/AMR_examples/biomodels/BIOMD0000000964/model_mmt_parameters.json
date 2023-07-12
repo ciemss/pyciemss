@@ -1,0 +1,106 @@
+{
+    "parameters": {
+        "alpha_1": {
+            "name": "alpha_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "alpha_2": {
+            "name": "alpha_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "b": {
+            "name": "b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00018
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 4.563e-05
+        },
+        "mu_p": {
+            "name": "mu_p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1724
+        },
+        "beta_1": {
+            "name": "beta_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00414
+        },
+        "beta_2": {
+            "name": "beta_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0115
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.005
+        },
+        "omega": {
+            "name": "omega",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0018
+        },
+        "gamma_S": {
+            "name": "gamma_S",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "gamma_A": {
+            "name": "gamma_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0714
+        },
+        "eta_S": {
+            "name": "eta_S",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "eta_A": {
+            "name": "eta_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "Human": {
+            "name": "Human",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Pathogen": {
+            "name": "Pathogen",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

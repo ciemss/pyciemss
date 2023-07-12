@@ -1,0 +1,59 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected*Susceptible*beta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000001045:Susceptible"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*k",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000001045:Infected"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ncit": "C77737",
+                    "ido": "0000592",
+                    "biomodels.species": "BIOMD0000001045:Recovered"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

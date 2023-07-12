@@ -1,0 +1,292 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 43994.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Infectious",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('transmissibility', 'ncit:C25376')]",
+            "mira_initial_value": 1.0
+        },
+        {
+            "sname": "Hospitalised",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('hospitalization', 'ncit:C25179')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Super_spreaders",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('transmissibility', 'ncit:C49508')]",
+            "mira_initial_value": 5.0
+        },
+        {
+            "sname": "Asymptomatic",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C3833')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Fatalities",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_5",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta_p",
+            "parameter_value": "1.0",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_a",
+            "parameter_value": "0.94",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_i",
+            "parameter_value": "0.27",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta_i",
+            "parameter_value": "0.035",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_a",
+            "parameter_value": "0.94",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_i",
+            "parameter_value": "0.27",
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma_r",
+            "parameter_value": "0.5",
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta_h",
+            "parameter_value": "0.085",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 3,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 4,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 5,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 2,
+            "it": 6
+        },
+        {
+            "is": 5,
+            "it": 7
+        },
+        {
+            "is": 5,
+            "it": 8
+        },
+        {
+            "is": 5,
+            "it": 9
+        },
+        {
+            "is": 3,
+            "it": 10
+        },
+        {
+            "is": 3,
+            "it": 11
+        },
+        {
+            "is": 3,
+            "it": 12
+        },
+        {
+            "is": 4,
+            "it": 13
+        },
+        {
+            "is": 4,
+            "it": 14
+        }
+    ],
+    "O": [
+        {
+            "os": 3,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 4,
+            "ot": 2
+        },
+        {
+            "os": 2,
+            "ot": 2
+        },
+        {
+            "os": 5,
+            "ot": 3
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 6,
+            "ot": 4
+        },
+        {
+            "os": 5,
+            "ot": 5
+        },
+        {
+            "os": 3,
+            "ot": 6
+        },
+        {
+            "os": 7,
+            "ot": 7
+        },
+        {
+            "os": 4,
+            "ot": 8
+        },
+        {
+            "os": 8,
+            "ot": 9
+        },
+        {
+            "os": 7,
+            "ot": 10
+        },
+        {
+            "os": 4,
+            "ot": 11
+        },
+        {
+            "os": 8,
+            "ot": 12
+        },
+        {
+            "os": 8,
+            "ot": 13
+        },
+        {
+            "os": 7,
+            "ot": 14
+        }
+    ]
+}

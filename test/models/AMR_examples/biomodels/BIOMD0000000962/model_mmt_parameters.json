@@ -1,0 +1,436 @@
+{
+    "parameters": {
+        "Trigger_Stage_I": {
+            "name": "Trigger_Stage_I",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Trigger_Stage_II": {
+            "name": "Trigger_Stage_II",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_Stage_III": {
+            "name": "Trigger_Stage_III",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_Wuhan": {
+            "name": "Trigger_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Trigger_Hubei": {
+            "name": "Trigger_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Trigger_China": {
+            "name": "Trigger_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "R": {
+            "name": "R",
+            "identifiers": {},
+            "context": {},
+            "value": 4.7092
+        },
+        "gamma_1": {
+            "name": "gamma_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.063
+        },
+        "gamma_2": {
+            "name": "gamma_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.2966796
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "Total_Pop": {
+            "name": "Total_Pop",
+            "identifiers": {},
+            "context": {},
+            "value": 9010000.0
+        },
+        "Total_Pop_Wuhan": {
+            "name": "Total_Pop_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 9010000.0
+        },
+        "Total_Pop_Hubei": {
+            "name": "Total_Pop_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 48000000.0
+        },
+        "Total_Pop_China": {
+            "name": "Total_Pop_China",
+            "identifiers": {},
+            "context": {},
+            "value": 1335000000.0
+        },
+        "R_Stage_I_Wuhan": {
+            "name": "R_Stage_I_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 4.7092
+        },
+        "gamma_1_Stage_I_Wuhan": {
+            "name": "gamma_1_Stage_I_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.063
+        },
+        "gamma_2_Stage_I_Wuhan": {
+            "name": "gamma_2_Stage_I_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "R_Stage_II_Wuhan": {
+            "name": "R_Stage_II_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7575
+        },
+        "gamma_1_Stage_II_Wuhan": {
+            "name": "gamma_1_Stage_II_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.3917
+        },
+        "gamma_2_Stage_II_Wuhan": {
+            "name": "gamma_2_Stage_II_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0643
+        },
+        "R_Stage_III_Wuhan": {
+            "name": "R_Stage_III_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4797
+        },
+        "gamma_1_Stage_III_Wuhan": {
+            "name": "gamma_1_Stage_III_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6185
+        },
+        "gamma_2_Stage_III_Wuhan": {
+            "name": "gamma_2_Stage_III_Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 0.322
+        },
+        "R_Stage_I_Hubei": {
+            "name": "R_Stage_I_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 5.934
+        },
+        "gamma_1_Stage_I_Hubei": {
+            "name": "gamma_1_Stage_I_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "gamma_2_Stage_I_Hubei": {
+            "name": "gamma_2_Stage_I_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "R_Stage_II_Hubei": {
+            "name": "R_Stage_II_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6079
+        },
+        "gamma_1_Stage_II_Hubei": {
+            "name": "gamma_1_Stage_II_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.488
+        },
+        "gamma_2_Stage_II_Hubei": {
+            "name": "gamma_2_Stage_II_Hubei",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1914
+        },
+        "R_Stage_I_China": {
+            "name": "R_Stage_I_China",
+            "identifiers": {},
+            "context": {},
+            "value": 1.5283
+        },
+        "gamma_1_Stage_I_China": {
+            "name": "gamma_1_Stage_I_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1941
+        },
+        "gamma_2_Stage_I_China": {
+            "name": "gamma_2_Stage_I_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "R_Stage_II_China": {
+            "name": "R_Stage_II_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5753
+        },
+        "gamma_1_Stage_II_China": {
+            "name": "gamma_1_Stage_II_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5157
+        },
+        "gamma_2_Stage_II_China": {
+            "name": "gamma_2_Stage_II_China",
+            "identifiers": {},
+            "context": {},
+            "value": 0.2189
+        },
+        "ModelValue_6": {
+            "name": "ModelValue_6",
+            "identifiers": {},
+            "context": {},
+            "value": 4.7092
+        },
+        "ModelValue_22": {
+            "name": "ModelValue_22",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4797
+        },
+        "ModelValue_34": {
+            "name": "ModelValue_34",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5753
+        },
+        "ModelValue_28": {
+            "name": "ModelValue_28",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6079
+        },
+        "ModelValue_19": {
+            "name": "ModelValue_19",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7575
+        },
+        "ModelValue_31": {
+            "name": "ModelValue_31",
+            "identifiers": {},
+            "context": {},
+            "value": 1.5283
+        },
+        "ModelValue_25": {
+            "name": "ModelValue_25",
+            "identifiers": {},
+            "context": {},
+            "value": 5.934
+        },
+        "ModelValue_16": {
+            "name": "ModelValue_16",
+            "identifiers": {},
+            "context": {},
+            "value": 4.7092
+        },
+        "ModelValue_15": {
+            "name": "ModelValue_15",
+            "identifiers": {},
+            "context": {},
+            "value": 1335000000.0
+        },
+        "ModelValue_14": {
+            "name": "ModelValue_14",
+            "identifiers": {},
+            "context": {},
+            "value": 48000000.0
+        },
+        "ModelValue_13": {
+            "name": "ModelValue_13",
+            "identifiers": {},
+            "context": {},
+            "value": 9010000.0
+        },
+        "ModelValue_5": {
+            "name": "ModelValue_5",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_4": {
+            "name": "ModelValue_4",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_2": {
+            "name": "ModelValue_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_1": {
+            "name": "ModelValue_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_0": {
+            "name": "ModelValue_0",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "ModelValue_3": {
+            "name": "ModelValue_3",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "ModelValue_7": {
+            "name": "ModelValue_7",
+            "identifiers": {},
+            "context": {},
+            "value": 0.063
+        },
+        "ModelValue_23": {
+            "name": "ModelValue_23",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6185
+        },
+        "ModelValue_35": {
+            "name": "ModelValue_35",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5157
+        },
+        "ModelValue_29": {
+            "name": "ModelValue_29",
+            "identifiers": {},
+            "context": {},
+            "value": 0.488
+        },
+        "ModelValue_20": {
+            "name": "ModelValue_20",
+            "identifiers": {},
+            "context": {},
+            "value": 0.3917
+        },
+        "ModelValue_32": {
+            "name": "ModelValue_32",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1941
+        },
+        "ModelValue_26": {
+            "name": "ModelValue_26",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "ModelValue_17": {
+            "name": "ModelValue_17",
+            "identifiers": {},
+            "context": {},
+            "value": 0.063
+        },
+        "ModelValue_8": {
+            "name": "ModelValue_8",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "ModelValue_24": {
+            "name": "ModelValue_24",
+            "identifiers": {},
+            "context": {},
+            "value": 0.322
+        },
+        "ModelValue_36": {
+            "name": "ModelValue_36",
+            "identifiers": {},
+            "context": {},
+            "value": 0.2189
+        },
+        "ModelValue_30": {
+            "name": "ModelValue_30",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1914
+        },
+        "ModelValue_21": {
+            "name": "ModelValue_21",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0643
+        },
+        "ModelValue_33": {
+            "name": "ModelValue_33",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "ModelValue_27": {
+            "name": "ModelValue_27",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "ModelValue_18": {
+            "name": "ModelValue_18",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "ModelValue_9": {
+            "name": "ModelValue_9",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "China": {
+            "name": "China",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

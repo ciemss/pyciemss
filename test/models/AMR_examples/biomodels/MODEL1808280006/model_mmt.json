@@ -1,0 +1,1297 @@
+{
+    "templates": [
+        {
+            "rate_law": "1/80",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_SS/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_SS",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_SS",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WS*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_SW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_IW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_IS*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IS*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IS/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_WS*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_RS*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RS*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_RS/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_WS*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_WS/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WI*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_SI*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_SI*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_SI/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_II*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_II*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_II/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_WI*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RI*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_RI*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_RI/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_WI*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_WI/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_SW*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_SR*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_SR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_SR/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_IW*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_IR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IR*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IR/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_WR*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_RW*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_RR/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX2*X_WW*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WR*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_WR/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_WW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_SW*(1.0 - sigma)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_SW/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IW*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_IW/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "XXlambdaXX1*X_WW*v",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "2.0*X_RW*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_RW/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X_WW/80",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0125
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "kappa": {
+            "name": "kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v": {
+            "name": "v",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "gamma1": {
+            "name": "gamma1",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "gamma2": {
+            "name": "gamma2",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "kappa1": {
+            "name": "kappa1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "kappa2": {
+            "name": "kappa2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v1": {
+            "name": "v1",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "v2": {
+            "name": "v2",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "beta1": {
+            "name": "beta1",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "beta2": {
+            "name": "beta2",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "alpha1": {
+            "name": "alpha1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "alpha2": {
+            "name": "alpha2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "lambda1": {
+            "name": "lambda1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.26
+        },
+        "lambda2": {
+            "name": "lambda2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.26
+        },
+        "sigma1": {
+            "name": "sigma1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "sigma2": {
+            "name": "sigma2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "X_Sdot": {
+            "name": "X_Sdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.489
+        },
+        "X_Idot": {
+            "name": "X_Idot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.001
+        },
+        "X_Rdot": {
+            "name": "X_Rdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.41
+        },
+        "X_Wdot": {
+            "name": "X_Wdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "X_SS": {
+            "concept": {
+                "name": "X_SS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SS"
+                },
+                "context": {}
+            },
+            "value": 0.058
+        },
+        "X_IS": {
+            "concept": {
+                "name": "X_IS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IS"
+                },
+                "context": {}
+            },
+            "value": 0.001
+        },
+        "X_RS": {
+            "concept": {
+                "name": "X_RS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RS"
+                },
+                "context": {}
+            },
+            "value": 0.41
+        },
+        "X_WS": {
+            "concept": {
+                "name": "X_WS",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WS"
+                },
+                "context": {}
+            },
+            "value": 0.1
+        },
+        "X_SI": {
+            "concept": {
+                "name": "X_SI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SI"
+                },
+                "context": {}
+            },
+            "value": 0.001
+        },
+        "X_II": {
+            "concept": {
+                "name": "X_II",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_II"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_RI": {
+            "concept": {
+                "name": "X_RI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RI"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_WI": {
+            "concept": {
+                "name": "X_WI",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WI"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_SR": {
+            "concept": {
+                "name": "X_SR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SR"
+                },
+                "context": {}
+            },
+            "value": 0.33
+        },
+        "X_IR": {
+            "concept": {
+                "name": "X_IR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IR"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_RR": {
+            "concept": {
+                "name": "X_RR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RR"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_WR": {
+            "concept": {
+                "name": "X_WR",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WR"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_SW": {
+            "concept": {
+                "name": "X_SW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_SW"
+                },
+                "context": {}
+            },
+            "value": 0.1
+        },
+        "X_IW": {
+            "concept": {
+                "name": "X_IW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_IW"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_RW": {
+            "concept": {
+                "name": "X_RW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_RW"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "X_WW": {
+            "concept": {
+                "name": "X_WW",
+                "identifiers": {
+                    "biomodels.species": "MODEL1808280006:X_WW"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        }
+    },
+    "annotations": {
+        "name": "Leung2016 - SIRWS model with immune boosting and cross-immunity between two pathogens",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [],
+        "model_types": []
+    }
+}

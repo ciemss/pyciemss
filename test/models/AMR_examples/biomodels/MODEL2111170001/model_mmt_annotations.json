@@ -1,0 +1,23 @@
+{
+    "annotations": {
+        "name": "Leander2021 - innate immune response to SARS-CoV-2 in the alveolar epithelium",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [
+            "efo:0007224"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

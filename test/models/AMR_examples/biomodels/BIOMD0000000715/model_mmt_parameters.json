@@ -1,0 +1,76 @@
+{
+    "parameters": {
+        "A": {
+            "name": "A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "mu1": {
+            "name": "mu1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.99
+        },
+        "mu2": {
+            "name": "mu2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "mu3": {
+            "name": "mu3",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "alpha1": {
+            "name": "alpha1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "alpha2": {
+            "name": "alpha2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

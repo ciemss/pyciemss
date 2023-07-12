@@ -1,0 +1,276 @@
+{
+    "initials": {
+        "X_SS": {
+            "name": "X_SS",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_SS"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_SS",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_SS"
+                    },
+                    "context": {}
+                },
+                "value": 0.058
+            }
+        },
+        "X_WS": {
+            "name": "X_WS",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_WS"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_WS",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_WS"
+                    },
+                    "context": {}
+                },
+                "value": 0.1
+            }
+        },
+        "X_SW": {
+            "name": "X_SW",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_SW"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_SW",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_SW"
+                    },
+                    "context": {}
+                },
+                "value": 0.1
+            }
+        },
+        "X_IW": {
+            "name": "X_IW",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_IW"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_IW",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_IW"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_IS": {
+            "name": "X_IS",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_IS"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_IS",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_IS"
+                    },
+                    "context": {}
+                },
+                "value": 0.001
+            }
+        },
+        "X_RW": {
+            "name": "X_RW",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_RW"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_RW",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_RW"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_RS": {
+            "name": "X_RS",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_RS"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_RS",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_RS"
+                    },
+                    "context": {}
+                },
+                "value": 0.41
+            }
+        },
+        "X_WW": {
+            "name": "X_WW",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_WW"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_WW",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_WW"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_WI": {
+            "name": "X_WI",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_WI"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_WI",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_WI"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_SI": {
+            "name": "X_SI",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_SI"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_SI",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_SI"
+                    },
+                    "context": {}
+                },
+                "value": 0.001
+            }
+        },
+        "X_II": {
+            "name": "X_II",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_II"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_II",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_II"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_RI": {
+            "name": "X_RI",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_RI"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_RI",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_RI"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_WR": {
+            "name": "X_WR",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_WR"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_WR",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_WR"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_SR": {
+            "name": "X_SR",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_SR"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_SR",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_SR"
+                    },
+                    "context": {}
+                },
+                "value": 0.33
+            }
+        },
+        "X_IR": {
+            "name": "X_IR",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_IR"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_IR",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_IR"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "X_RR": {
+            "name": "X_RR",
+            "identifiers": {
+                "biomodels.species": "MODEL1808280006:X_RR"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "X_RR",
+                    "identifiers": {
+                        "biomodels.species": "MODEL1808280006:X_RR"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.16668
+        },
+        "omega": {
+            "name": "omega",
+            "identifiers": {},
+            "context": {},
+            "value": 0.01667
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.19231
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05556
+        },
+        "R_fixed": {
+            "name": "R_fixed",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "Fraction_infected": {
+            "name": "Fraction_infected",
+            "identifiers": {},
+            "context": {},
+            "value": 0.001
+        },
+        "USA": {
+            "name": "USA",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Total_population": {
+            "name": "Total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 330052960.0
+        }
+    }
+}

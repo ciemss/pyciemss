@@ -1,0 +1,370 @@
+{
+    "templates": [
+        {
+            "rate_law": "412/73",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "S_b",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_b"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S_b/730",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S_b",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_b"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "9137*I_b*S_b/2635182",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S_b",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_b"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "22841*I_b/6587955",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_b/730",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "6.49315068493151e-5*ModelValue_1",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "3.95914165808853e-5*S_h",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_h"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.62354134956875e-10*I_b*S_h",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_h"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I_a",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_a"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "6.0882800608828e-11*I_a",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_a",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_a"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "3.95914165808853e-5*I_a",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_a",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_a"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "Nb": {
+            "name": "Nb",
+            "identifiers": {},
+            "context": {},
+            "value": 281441.0
+        },
+        "Nh": {
+            "name": "Nh",
+            "identifiers": {},
+            "context": {},
+            "value": 171977.0
+        },
+        "LAMBDA_b": {
+            "name": "LAMBDA_b",
+            "identifiers": {},
+            "context": {},
+            "value": 5.64383561643836
+        },
+        "LAMBDA_h": {
+            "name": "LAMBDA_h",
+            "identifiers": {},
+            "context": {},
+            "value": 11.1667257534247
+        },
+        "mu_b": {
+            "name": "mu_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00136986301369863
+        },
+        "mu_h": {
+            "name": "mu_h",
+            "identifiers": {},
+            "context": {},
+            "value": 3.95914165808853e-05
+        },
+        "beta_bh": {
+            "name": "beta_bh",
+            "identifiers": {},
+            "context": {},
+            "value": 1.62354134956875e-10
+        },
+        "beta_b": {
+            "name": "beta_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00346731269415168
+        },
+        "beta_v": {
+            "name": "beta_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00173365634707584
+        },
+        "H_b": {
+            "name": "H_b",
+            "identifiers": {},
+            "context": {},
+            "value": 180000.0
+        },
+        "H_bh": {
+            "name": "H_bh",
+            "identifiers": {},
+            "context": {},
+            "value": 120000.0
+        },
+        "H_v": {
+            "name": "H_v",
+            "identifiers": {},
+            "context": {},
+            "value": 850.0
+        },
+        "d": {
+            "name": "d",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0882800608828e-11
+        },
+        "delta_b": {
+            "name": "delta_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00346708500589333
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "phi": {
+            "name": "phi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "gamma_b": {
+            "name": "gamma_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.003
+        },
+        "c": {
+            "name": "c",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "q": {
+            "name": "q",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_1": {
+            "name": "ModelValue_1",
+            "identifiers": {},
+            "context": {},
+            "value": 171977.0
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Human_Population": {
+            "name": "Human_Population",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible bird (S_b)": {
+            "concept": {
+                "name": "S_b",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_b"
+                },
+                "context": {}
+            },
+            "value": 244956.0
+        },
+        "Infected bird (I_b)": {
+            "concept": {
+                "name": "I_b",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_b"
+                },
+                "context": {}
+            },
+            "value": 36485.0
+        },
+        "Susceptible human (S_h)": {
+            "concept": {
+                "name": "S_h",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000716:S_h"
+                },
+                "context": {}
+            },
+            "value": 171977.0
+        },
+        "Infected Human (I_a)": {
+            "concept": {
+                "name": "I_a",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000716:I_a"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        }
+    },
+    "annotations": {
+        "name": "Lee2018 - Avian human bilinear incidence (BI) model",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:329376",
+            "ncbitaxon:8782"
+        ],
+        "diseases": [
+            "efo:0005222"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

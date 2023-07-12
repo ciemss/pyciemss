@@ -1,0 +1,970 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected_Counties_with_airports*Susceptible_Counties_with_airports*XXlambdaXX_Counties_with_airports*epsilon/(Metabolite_0 + Metabolite_1 + Metabolite_2 + Metabolite_3 + Metabolite_4 + Metabolite_5 + Metabolite_6)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_airports*eta_Counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_airports*psi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_with_airports",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_airports*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Recovered_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_with_airports*omega_Counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "ICU_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_with_airports*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Discharged_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "hospitalization": "ncit:C154475",
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_with_airports*xi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_with_airports*mu_Counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_with_airports",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_airports*Susceptible_Counties_neighbouring_counties_with_airports*phi/(Metabolite_0 + Metabolite_1 + Metabolite_2 + Metabolite_3 + Metabolite_4 + Metabolite_5 + Metabolite_6)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_Counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_airports"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_Counties_neighbouring_counties_with_airports*(Infected_Counties_neighbouring_counties_with_airports*XXlambdaXX_Counties_neighbouring_counties_with_airports*epsilon/(Metabolite_10 + Metabolite_11 + Metabolite_12 + Metabolite_13 + Metabolite_7 + Metabolite_8 + Metabolite_9) + Infected_Counties_with_airports*phi/(Metabolite_0 + Metabolite_1 + Metabolite_2 + Metabolite_3 + Metabolite_4 + Metabolite_5 + Metabolite_6))",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected_Counties_neighbouring_counties_with_airports",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "neighbouring_counties_with_airports"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_neighbouring_counties_with_airports*eta_Counties_neighbouring_counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "neighbouring_counties_with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_neighbouring_counties_with_airports*psi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_neighbouring_counties_with_airports*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Recovered_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_neighbouring_counties_with_airports*omega_Counties_neighbouring_counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "neighbouring_counties_with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "ICU_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_neighbouring_counties_with_airports*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "neighbouring_counties_with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Discharged_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "hospitalization": "ncit:C154475",
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_neighbouring_counties_with_airports*xi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "neighbouring_counties_with_airports",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_neighbouring_counties_with_airports*mu_Counties_neighbouring_counties_with_airports",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_neighbouring_counties_with_airports*Susceptible_Counties_with_highways*tau/(Metabolite_10 + Metabolite_11 + Metabolite_12 + Metabolite_13 + Metabolite_7 + Metabolite_8 + Metabolite_9)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_Counties_with_highways*(Infected_Counties_neighbouring_counties_with_airports*tau/(Metabolite_10 + Metabolite_11 + Metabolite_12 + Metabolite_13 + Metabolite_7 + Metabolite_8 + Metabolite_9) + Infected_Counties_with_highways*XXlambdaXX_Counties_with_highways*epsilon/(Metabolite_14 + Metabolite_15 + Metabolite_16 + Metabolite_17 + Metabolite_18 + Metabolite_19 + Metabolite_20))",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected_Counties_with_highways",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "with_highways"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_highways*eta_Counties_with_highways",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_highways",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_highways*psi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_with_highways",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_highways*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Recovered_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_with_highways*omega_Counties_with_highways",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_highways",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "ICU_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Counties_with_highways*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_highways",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Discharged_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "hospitalization": "ncit:C154475",
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_with_highways*xi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "with_highways",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Counties_with_highways*mu_Counties_with_highways",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "with_highways"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Counties_with_highways",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_neighbouring_counties_with_airports*Susceptible_Low_risk_counties*gamma/(Metabolite_10 + Metabolite_11 + Metabolite_12 + Metabolite_13 + Metabolite_7 + Metabolite_8 + Metabolite_9)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_Counties_neighbouring_counties_with_airports",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "neighbouring_counties_with_airports"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Counties_with_highways*Susceptible_Low_risk_counties*alpha/(Metabolite_14 + Metabolite_15 + Metabolite_16 + Metabolite_17 + Metabolite_18 + Metabolite_19 + Metabolite_20)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_Counties_with_highways",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "with_highways"
+                }
+            },
+            "subject": {
+                "name": "Susceptible_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible_Low_risk_counties*(Infected_Counties_neighbouring_counties_with_airports*gamma/(Metabolite_10 + Metabolite_11 + Metabolite_12 + Metabolite_13 + Metabolite_7 + Metabolite_8 + Metabolite_9) + Infected_Counties_with_highways*alpha/(Metabolite_14 + Metabolite_15 + Metabolite_16 + Metabolite_17 + Metabolite_18 + Metabolite_19 + Metabolite_20) + Infected_Low_risk_counties*XXlambdaXX_Low_risk_counties*epsilon/(Metabolite_21 + Metabolite_22 + Metabolite_23 + Metabolite_24 + Metabolite_25 + Metabolite_26 + Metabolite_27))",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "Infected_Low_risk_counties",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "county_property": "low_risk"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "Susceptible_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Low_risk_counties*eta_Low_risk_counties",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "low_risk",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Low_risk_counties*psi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Low_risk_counties",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_Low_risk_counties*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Recovered_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Low_risk_counties*omega_Low_risk_counties",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "low_risk",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "ICU_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised_Low_risk_counties*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "low_risk",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Discharged_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {
+                    "hospitalization": "ncit:C154475",
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Low_risk_counties*xi",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "county_property": "low_risk",
+                    "icu": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "ICU_Low_risk_counties*mu_Low_risk_counties",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "ICU_Low_risk_counties",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179",
+                    "icu": "ncit:C53511",
+                    "county_property": "low_risk"
+                }
+            },
+            "outcome": {
+                "name": "Deceased_Low_risk_counties",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {
+                    "county_property": "low_risk"
+                }
+            },
+            "provenance": []
+        }
+    ]
+}

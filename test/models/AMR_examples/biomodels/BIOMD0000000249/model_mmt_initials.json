@@ -1,0 +1,72 @@
+{
+    "initials": {
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000249:S"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_1": {
+            "name": "I_1",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000249:I_1"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_2": {
+            "name": "I_2",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000249:I_2"
+            },
+            "context": {},
+            "value": null
+        },
+        "R_1": {
+            "name": "R_1",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000249:R_1"
+            },
+            "context": {},
+            "value": null
+        },
+        "R_2": {
+            "name": "R_2",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000249:R_2"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_1p": {
+            "name": "I_1p",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000249:I_1p"
+            },
+            "context": {},
+            "value": null
+        },
+        "I_2p": {
+            "name": "I_2p",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000249:I_2p"
+            },
+            "context": {},
+            "value": null
+        },
+        "R_p": {
+            "name": "R_p",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000249:R_p"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

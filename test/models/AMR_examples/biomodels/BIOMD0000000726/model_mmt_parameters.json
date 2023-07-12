@@ -1,0 +1,112 @@
+{
+    "parameters": {
+        "A": {
+            "name": "A",
+            "identifiers": {},
+            "context": {},
+            "value": 3000000.0
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "m": {
+            "name": "m",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.58e-07
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "B": {
+            "name": "B",
+            "identifiers": {},
+            "context": {},
+            "value": 15400000.0
+        },
+        "lambda_h": {
+            "name": "lambda_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "gamma_h": {
+            "name": "gamma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "sigma_h": {
+            "name": "sigma_h",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "m_h": {
+            "name": "m_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.003
+        },
+        "beta_dh": {
+            "name": "beta_dh",
+            "identifiers": {},
+            "context": {},
+            "value": 2.29e-12
+        },
+        "k_h": {
+            "name": "k_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.54
+        },
+        "mu_h": {
+            "name": "mu_h",
+            "identifiers": {},
+            "context": {},
+            "value": 1.34
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Human_Population": {
+            "name": "Human_Population",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

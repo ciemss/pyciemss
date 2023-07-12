@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 228) on 2020-11-04 04:08 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="80" numberOfPoints="8000">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_1_task1" name="[Susceptible]">
+      <listOfVariables>
+        <variable id="p1_Susceptible_task1" name="Susceptible" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Susceptible_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Exposed_2_task1" name="[Exposed]">
+      <listOfVariables>
+        <variable id="p1_Exposed_task1" name="Exposed" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Exposed&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Exposed_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_3_task1" name="[Infected]">
+      <listOfVariables>
+        <variable id="p1_Infected_task1" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Recovered_4_task1" name="[Recovered]">
+      <listOfVariables>
+        <variable id="p1_Recovered_task1" name="Recovered" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Recovered&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Recovered_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Deceased_1_task1" name="[Deceased]">
+      <listOfVariables>
+        <variable id="p2_Deceased_task1" name="Deceased" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Deceased&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_Deceased_task1 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="Concentrations, Volumes, and Global Quantity Values">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="[Susceptible]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Susceptible_1_task1"/>
+        <curve id="p1_curve_2_task1" name="[Exposed]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Exposed_2_task1"/>
+        <curve id="p1_curve_3_task1" name="[Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_3_task1"/>
+        <curve id="p1_curve_4_task1" name="[Recovered]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Recovered_4_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task1" name="plot">
+      <listOfCurves>
+        <curve id="p2_curve_1_task1" name="[Deceased]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Deceased_1_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_3_task1" name="plot_1"/>
+  </listOfOutputs>
+</sedML>

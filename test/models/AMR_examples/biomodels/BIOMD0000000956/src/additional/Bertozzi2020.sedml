@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 227) on 2020-08-07 20:29 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="215" numberOfPoints="282">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+    <repeatedTask id="task2" range="range0" resetModel="true">
+      <listOfRanges>
+        <vectorRange id="range0">
+          <value> 1.9544 </value>
+        </vectorRange>
+        <vectorRange id="range1">
+          <value> 3956 </value>
+          <value> 39.56 </value>
+          <value> 0.3956 </value>
+          <value> 0.003956 </value>
+        </vectorRange>
+      </listOfRanges>
+      <listOfChanges>
+        <setValue range="range0" modelReference="model" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Ro_CA&apos;]">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> range0 </ci>
+          </math>
+        </setValue>
+        <setValue range="range1" modelReference="model" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Io_CA&apos;]">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> range1 </ci>
+          </math>
+        </setValue>
+      </listOfChanges>
+      <listOfSubTasks>
+        <subTask order="1" task="task1"/>
+      </listOfSubTasks>
+    </repeatedTask>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_1_task1" name="[Infected]">
+      <listOfVariables>
+        <variable id="p3_Infected_task1" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_1_task1" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task1" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Recovered_2_task1" name="[Recovered]">
+      <listOfVariables>
+        <variable id="p3_Recovered_task1" name="Recovered" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Recovered&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Recovered_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_2_task1" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task1" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_3_task1" name="[Susceptible]">
+      <listOfVariables>
+        <variable id="p3_Susceptible_task1" name="Susceptible" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Susceptible_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_3_task1" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task1" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Peak_Time_4_task1" name="Values[Peak_Time]">
+      <listOfVariables>
+        <variable id="p3_Peak_Time_task1" name="Peak_Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Peak_Time&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Peak_Time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_4_task1" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task1" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="time_task2" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task2" symbol="urn:sedml:symbol:time" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_1_task2" name="[Infected]">
+      <listOfVariables>
+        <variable id="p3_Infected_task2" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Infected_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_1_task2" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task2" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Recovered_2_task2" name="[Recovered]">
+      <listOfVariables>
+        <variable id="p3_Recovered_task2" name="Recovered" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Recovered&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Recovered_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_2_task2" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task2" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_3_task2" name="[Susceptible]">
+      <listOfVariables>
+        <variable id="p3_Susceptible_task2" name="Susceptible" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Susceptible_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_3_task2" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task2" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Peak_Time_4_task2" name="Values[Peak_Time]">
+      <listOfVariables>
+        <variable id="p3_Peak_Time_task2" name="Peak_Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Peak_Time&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Peak_Time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Time_4_task2" name="Time">
+      <listOfVariables>
+        <variable id="p3_Time_task2" name="Time" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Time&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Time_task2 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="plot_1">
+      <listOfCurves>
+        <curve id="p3_curve_1_task1" name="[Infected]" logX="false" logY="false" xDataReference="Time_1_task1" yDataReference="Infected_1_task1"/>
+        <curve id="p3_curve_2_task1" name="[Recovered]" logX="false" logY="false" xDataReference="Time_2_task1" yDataReference="Recovered_2_task1"/>
+        <curve id="p3_curve_3_task1" name="[Susceptible]" logX="false" logY="false" xDataReference="Time_3_task1" yDataReference="Susceptible_3_task1"/>
+        <curve id="p3_curve_4_task1" name="Values[Peak_Time]" logX="false" logY="false" xDataReference="Time_4_task1" yDataReference="Peak_Time_4_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task2" name="plot_1">
+      <listOfCurves>
+        <curve id="p3_curve_1_task2" name="[Infected]" logX="false" logY="false" xDataReference="Time_1_task2" yDataReference="Infected_1_task2"/>
+        <curve id="p3_curve_2_task2" name="[Recovered]" logX="false" logY="false" xDataReference="Time_2_task2" yDataReference="Recovered_2_task2"/>
+        <curve id="p3_curve_3_task2" name="[Susceptible]" logX="false" logY="false" xDataReference="Time_3_task2" yDataReference="Susceptible_3_task2"/>
+        <curve id="p3_curve_4_task2" name="Values[Peak_Time]" logX="false" logY="false" xDataReference="Time_4_task2" yDataReference="Peak_Time_4_task2"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

@@ -1,0 +1,219 @@
+{
+    "templates": [
+        {
+            "rate_law": "9.02445627650934e-8*Infected*Susceptible*beta_1*r_1",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "9.02445627650934e-8*Exposed*Susceptible*beta_2*r_2",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*alpha",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "r_1": {
+            "name": "r_1",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "r_2": {
+            "name": "r_2",
+            "identifiers": {},
+            "context": {},
+            "value": 18.0
+        },
+        "beta_1": {
+            "name": "beta_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.04
+        },
+        "beta_2": {
+            "name": "beta_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.14
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.048
+        },
+        "Wuhan": {
+            "name": "Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Total_Population": {
+            "name": "Total_Population",
+            "identifiers": {},
+            "context": {},
+            "value": 11081000.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "value": 11080778.0
+        },
+        "Exposed": {
+            "concept": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "value": 193.0
+        },
+        "Infected": {
+            "concept": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "value": 27.0
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "value": 2.0
+        },
+        "Total_Population": {
+            "concept": {
+                "name": "Total_Population",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000970:Total_Population"
+                },
+                "context": {}
+            },
+            "value": 11081000.0
+        }
+    },
+    "annotations": {
+        "name": "Hou2020 - SEIR model of COVID-19 transmission in Wuhan",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:32243599"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

@@ -1,0 +1,136 @@
+{
+    "parameters": {
+        "Nb": {
+            "name": "Nb",
+            "identifiers": {},
+            "context": {},
+            "value": 281441.0
+        },
+        "Nh": {
+            "name": "Nh",
+            "identifiers": {},
+            "context": {},
+            "value": 171977.0
+        },
+        "LAMBDA_b": {
+            "name": "LAMBDA_b",
+            "identifiers": {},
+            "context": {},
+            "value": 5.64383561643836
+        },
+        "LAMBDA_h": {
+            "name": "LAMBDA_h",
+            "identifiers": {},
+            "context": {},
+            "value": 11.1667257534247
+        },
+        "mu_b": {
+            "name": "mu_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00136986301369863
+        },
+        "mu_h": {
+            "name": "mu_h",
+            "identifiers": {},
+            "context": {},
+            "value": 3.95914165808853e-05
+        },
+        "beta_bh": {
+            "name": "beta_bh",
+            "identifiers": {},
+            "context": {},
+            "value": 1.62354134956875e-10
+        },
+        "beta_b": {
+            "name": "beta_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00346731269415168
+        },
+        "beta_v": {
+            "name": "beta_v",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00173365634707584
+        },
+        "H_b": {
+            "name": "H_b",
+            "identifiers": {},
+            "context": {},
+            "value": 180000.0
+        },
+        "H_bh": {
+            "name": "H_bh",
+            "identifiers": {},
+            "context": {},
+            "value": 120000.0
+        },
+        "H_v": {
+            "name": "H_v",
+            "identifiers": {},
+            "context": {},
+            "value": 850.0
+        },
+        "d": {
+            "name": "d",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0882800608828e-11
+        },
+        "delta_b": {
+            "name": "delta_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00346708500589333
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "phi": {
+            "name": "phi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "gamma_b": {
+            "name": "gamma_b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.003
+        },
+        "c": {
+            "name": "c",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "q": {
+            "name": "q",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_1": {
+            "name": "ModelValue_1",
+            "identifiers": {},
+            "context": {},
+            "value": 171977.0
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Human_Population": {
+            "name": "Human_Population",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

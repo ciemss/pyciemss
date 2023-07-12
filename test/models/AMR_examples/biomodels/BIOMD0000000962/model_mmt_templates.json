@@ -1,0 +1,80 @@
+{
+    "templates": [
+        {
+            "rate_law": "ModelValue_6*ModelValue_7*Susceptible*Unquarantined_Infected/(ModelValue_13*ModelValue_3 + ModelValue_14*ModelValue_4 + ModelValue_15*ModelValue_5)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Unquarantined_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Unquarantined_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Unquarantined_Infected*(ModelValue_3*(ModelValue_0*ModelValue_17 + ModelValue_1*ModelValue_20 + ModelValue_2*ModelValue_23) + ModelValue_4*(ModelValue_0*ModelValue_26 + ModelValue_1*ModelValue_29) + ModelValue_5*(ModelValue_0*ModelValue_32 + ModelValue_1*ModelValue_35))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Unquarantined_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C68851"
+                }
+            },
+            "outcome": {
+                "name": "Quarantined_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Quarantined_Infected*(ModelValue_8 + ModelValue_9*(1 - ModelValue_8))",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Quarantined_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "quarantined": "ncit:C71902"
+                }
+            },
+            "outcome": {
+                "name": "Confirmed_Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        }
+    ]
+}

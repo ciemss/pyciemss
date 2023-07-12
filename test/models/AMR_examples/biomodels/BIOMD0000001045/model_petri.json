@@ -1,0 +1,66 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C77737')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.999999999999998
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C77737')]",
+            "mira_context": "[]",
+            "mira_initial_value": 1.27e-06
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592'), ('identity', 'ncit:C77737')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "beta",
+            "parameter_value": "0.5",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "k",
+            "parameter_value": "0.33",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        }
+    ],
+    "O": [
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        }
+    ]
+}

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.27 (Build 217) on 2020-05-13 17:30 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="10000" numberOfPoints="10000">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Exposed_Human_1_task1" name="[Exposed{Human}]">
+      <listOfVariables>
+        <variable id="p1_Exposed_Human_task1" name="Exposed_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Exposed_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Exposed_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_Human_2_task1" name="[Infected{Human}]">
+      <listOfVariables>
+        <variable id="p1_Infected_Human_task1" name="Infected_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Infected_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Recovered_3_task1" name="[Recovered]">
+      <listOfVariables>
+        <variable id="p1_Recovered_task1" name="Recovered" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Recovered&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Recovered_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_Human_1_task1" name="[Susceptible{Human}]">
+      <listOfVariables>
+        <variable id="p2_Susceptible_Human_task1" name="Susceptible_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_Susceptible_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Exposed_Mosquito_1_task1" name="[Exposed{Mosquito}]">
+      <listOfVariables>
+        <variable id="p3_Exposed_Mosquito_task1" name="Exposed_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Exposed_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Exposed_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_Mosquito_2_task1" name="[Infected{Mosquito}]">
+      <listOfVariables>
+        <variable id="p3_Infected_Mosquito_task1" name="Infected_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p3_Infected_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_Mosquito_1_task1" name="[Susceptible{Mosquito}]">
+      <listOfVariables>
+        <variable id="p4_Susceptible_Mosquito_task1" name="Susceptible_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p4_Susceptible_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Exposed_Human_1_task1" name="[Exposed{Human}]">
+      <listOfVariables>
+        <variable id="p5_Exposed_Human_task1" name="Exposed_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Exposed_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p5_Exposed_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_Human_2_task1" name="[Infected{Human}]">
+      <listOfVariables>
+        <variable id="p5_Infected_Human_task1" name="Infected_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p5_Infected_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Recovered_3_task1" name="[Recovered]">
+      <listOfVariables>
+        <variable id="p5_Recovered_task1" name="Recovered" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Recovered&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p5_Recovered_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_Human_4_task1" name="[Susceptible{Human}]">
+      <listOfVariables>
+        <variable id="p5_Susceptible_Human_task1" name="Susceptible_Human" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible_Human&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p5_Susceptible_Human_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Exposed_Mosquito_1_task1" name="[Exposed{Mosquito}]">
+      <listOfVariables>
+        <variable id="p6_Exposed_Mosquito_task1" name="Exposed_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Exposed_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p6_Exposed_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_Mosquito_2_task1" name="[Infected{Mosquito}]">
+      <listOfVariables>
+        <variable id="p6_Infected_Mosquito_task1" name="Infected_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p6_Infected_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Susceptible_Mosquito_3_task1" name="[Susceptible{Mosquito}]">
+      <listOfVariables>
+        <variable id="p6_Susceptible_Mosquito_task1" name="Susceptible_Mosquito" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Susceptible_Mosquito&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p6_Susceptible_Mosquito_task1 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="Figure 2 top left">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="[Exposed{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Exposed_Human_1_task1"/>
+        <curve id="p1_curve_2_task1" name="[Infected{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_Human_2_task1"/>
+        <curve id="p1_curve_3_task1" name="[Recovered]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Recovered_3_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task1" name="Figure 2 top right">
+      <listOfCurves>
+        <curve id="p2_curve_1_task1" name="[Susceptible{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Susceptible_Human_1_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_3_task1" name="Figure 2 bottom left">
+      <listOfCurves>
+        <curve id="p3_curve_1_task1" name="[Exposed{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Exposed_Mosquito_1_task1"/>
+        <curve id="p3_curve_2_task1" name="[Infected{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_Mosquito_2_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_4_task1" name="Figure 2 bottom right">
+      <listOfCurves>
+        <curve id="p4_curve_1_task1" name="[Susceptible{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Susceptible_Mosquito_1_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_5_task1" name="Figure 3 top">
+      <listOfCurves>
+        <curve id="p5_curve_1_task1" name="[Exposed{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Exposed_Human_1_task1"/>
+        <curve id="p5_curve_2_task1" name="[Infected{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_Human_2_task1"/>
+        <curve id="p5_curve_3_task1" name="[Recovered]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Recovered_3_task1"/>
+        <curve id="p5_curve_4_task1" name="[Susceptible{Human}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Susceptible_Human_4_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_6_task1" name="Figure 3 bottom">
+      <listOfCurves>
+        <curve id="p6_curve_1_task1" name="[Exposed{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Exposed_Mosquito_1_task1"/>
+        <curve id="p6_curve_2_task1" name="[Infected{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_Mosquito_2_task1"/>
+        <curve id="p6_curve_3_task1" name="[Susceptible{Mosquito}]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Susceptible_Mosquito_3_task1"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

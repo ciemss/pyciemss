@@ -1,0 +1,143 @@
+{
+    "initials": {
+        "Susceptible_confined": {
+            "name": "Susceptible_confined",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "quarantined": "ncit:C71902"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_confined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible_unconfined": {
+            "name": "Susceptible_unconfined",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "quarantined": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Susceptible_unconfined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C68851"
+                    }
+                },
+                "value": 66990000.0
+            }
+        },
+        "Quarantined": {
+            "name": "Quarantined",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {
+                "quarantined": "ncit:C71902"
+            },
+            "value": {
+                "concept": {
+                    "name": "Quarantined",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                },
+                "value": 36.0
+            }
+        },
+        "Exposed": {
+            "name": "Exposed",
+            "identifiers": {
+                "apollosv": "00000154"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Exposed",
+                    "identifiers": {
+                        "apollosv": "00000154"
+                    },
+                    "context": {}
+                },
+                "value": 112.0
+            }
+        },
+        "Infected_reported": {
+            "name": "Infected_reported",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_reported",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 12.0
+            }
+        },
+        "Infected_unreported": {
+            "name": "Infected_unreported",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosed": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "Infected_unreported",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosed": "ncit:C113725"
+                    }
+                },
+                "value": 50.0
+            }
+        },
+        "Recovered": {
+            "name": "Recovered",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

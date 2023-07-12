@@ -1,0 +1,213 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'omit:0005461')]",
+            "mira_initial_value": 2400.0
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncit:C25746')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncbitaxon:9606'), ('property1', 'ncit:C156623')]",
+            "mira_initial_value": 30.0
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncbitaxon:9606'), ('property1', 'ncit:C128320')]",
+            "mira_initial_value": 5.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncim:C123547'), ('property1', 'ncit:C17214')]",
+            "mira_initial_value": 30.0
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[]",
+            "mira_context": "[('property', 'ncit:C123547'), ('property1', 'ncit:C128320')]",
+            "mira_initial_value": 5.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Baseline_dummy_variable",
+            "parameter_value": "0.0",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Baseline_dummy_variable",
+            "parameter_value": "0.0",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Baseline_dummy_variable",
+            "parameter_value": "0.0",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "Baseline_dummy_variable",
+            "parameter_value": "0.0",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_9",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_10",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Baseline_dummy_variable",
+            "parameter_value": "0.0",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_13",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 4
+        },
+        {
+            "is": 3,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 4,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        },
+        {
+            "is": 2,
+            "it": 9
+        },
+        {
+            "is": 1,
+            "it": 10
+        },
+        {
+            "is": 5,
+            "it": 11
+        },
+        {
+            "is": 5,
+            "it": 12
+        },
+        {
+            "is": 6,
+            "it": 13
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 1,
+            "ot": 2
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 2,
+            "ot": 7
+        },
+        {
+            "os": 5,
+            "ot": 10
+        },
+        {
+            "os": 6,
+            "ot": 11
+        }
+    ]
+}

@@ -1,0 +1,782 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('county_property', 'with_airports')]",
+            "mira_initial_value": 4052876.0
+        },
+        {
+            "sname": "Infected_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_airports')]",
+            "mira_initial_value": 30.0
+        },
+        {
+            "sname": "Hospitalised_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_airports'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C68851')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Deceased_Counties_with_airports",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('county_property', 'with_airports')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'with_airports')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "ICU_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_airports'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C53511')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Discharged_Counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'with_airports'), ('hospitalization', 'ncit:C154475')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Susceptible_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports')]",
+            "mira_initial_value": 4431673.0
+        },
+        {
+            "sname": "Infected_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports')]",
+            "mira_initial_value": 26.0
+        },
+        {
+            "sname": "Hospitalised_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C68851')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Deceased_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "ICU_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C53511')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Discharged_Counties_neighbouring_counties_with_airports",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'neighbouring_counties_with_airports'), ('hospitalization', 'ncit:C154475')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Susceptible_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('county_property', 'with_highways')]",
+            "mira_initial_value": 1811059.0
+        },
+        {
+            "sname": "Infected_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_highways')]",
+            "mira_initial_value": 10.0
+        },
+        {
+            "sname": "Hospitalised_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_highways'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C68851')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Deceased_Counties_with_highways",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('county_property', 'with_highways')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'with_highways')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "ICU_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'with_highways'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C53511')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Discharged_Counties_with_highways",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'with_highways'), ('hospitalization', 'ncit:C154475')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Susceptible_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('county_property', 'low_risk')]",
+            "mira_initial_value": 1269942.0
+        },
+        {
+            "sname": "Infected_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'low_risk')]",
+            "mira_initial_value": 6.0
+        },
+        {
+            "sname": "Hospitalised_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'low_risk'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C68851')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Deceased_Low_risk_counties",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[('county_property', 'low_risk')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'low_risk')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "ICU_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('county_property', 'low_risk'), ('hospitalization', 'ncit:C25179'), ('icu', 'ncit:C53511')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Discharged_Low_risk_counties",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[('county_property', 'low_risk'), ('hospitalization', 'ncit:C154475')]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_Counties_with_airports",
+            "parameter_value": "0.05",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "psi",
+            "parameter_value": "0.01",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.229885",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "omega_Counties_with_airports",
+            "parameter_value": "0.04",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "xi",
+            "parameter_value": "0.06",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "mu_Counties_with_airports",
+            "parameter_value": "0.22",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_9",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_10",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_Counties_neighbouring_counties_with_airports",
+            "parameter_value": "0.07",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "psi",
+            "parameter_value": "0.01",
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.229885",
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "omega_Counties_neighbouring_counties_with_airports",
+            "parameter_value": "0.06",
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t16",
+            "template_type": "NaturalConversion",
+            "parameter_name": "xi",
+            "parameter_value": "0.06",
+            "parameters": null
+        },
+        {
+            "tname": "t17",
+            "template_type": "NaturalConversion",
+            "parameter_name": "mu_Counties_neighbouring_counties_with_airports",
+            "parameter_value": "0.17",
+            "parameters": null
+        },
+        {
+            "tname": "t18",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_18",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t19",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_19",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t20",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_Counties_with_highways",
+            "parameter_value": "0.07",
+            "parameters": null
+        },
+        {
+            "tname": "t21",
+            "template_type": "NaturalConversion",
+            "parameter_name": "psi",
+            "parameter_value": "0.01",
+            "parameters": null
+        },
+        {
+            "tname": "t22",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.229885",
+            "parameters": null
+        },
+        {
+            "tname": "t23",
+            "template_type": "NaturalConversion",
+            "parameter_name": "omega_Counties_with_highways",
+            "parameter_value": "0.04",
+            "parameters": null
+        },
+        {
+            "tname": "t24",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t25",
+            "template_type": "NaturalConversion",
+            "parameter_name": "xi",
+            "parameter_value": "0.06",
+            "parameters": null
+        },
+        {
+            "tname": "t26",
+            "template_type": "NaturalConversion",
+            "parameter_name": "mu_Counties_with_highways",
+            "parameter_value": "0.05",
+            "parameters": null
+        },
+        {
+            "tname": "t27",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_27",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t28",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_28",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t29",
+            "template_type": "GroupedControlledConversion",
+            "parameter_name": "p_petri_29",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t30",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_Low_risk_counties",
+            "parameter_value": "0.14",
+            "parameters": null
+        },
+        {
+            "tname": "t31",
+            "template_type": "NaturalConversion",
+            "parameter_name": "psi",
+            "parameter_value": "0.01",
+            "parameters": null
+        },
+        {
+            "tname": "t32",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.229885",
+            "parameters": null
+        },
+        {
+            "tname": "t33",
+            "template_type": "NaturalConversion",
+            "parameter_name": "omega_Low_risk_counties",
+            "parameter_value": "0.07",
+            "parameters": null
+        },
+        {
+            "tname": "t34",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.08",
+            "parameters": null
+        },
+        {
+            "tname": "t35",
+            "template_type": "NaturalConversion",
+            "parameter_name": "xi",
+            "parameter_value": "0.06",
+            "parameters": null
+        },
+        {
+            "tname": "t36",
+            "template_type": "NaturalConversion",
+            "parameter_name": "mu_Low_risk_counties",
+            "parameter_value": "0.25",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 2,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 3,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 6,
+            "it": 7
+        },
+        {
+            "is": 6,
+            "it": 8
+        },
+        {
+            "is": 2,
+            "it": 9
+        },
+        {
+            "is": 8,
+            "it": 9
+        },
+        {
+            "is": 9,
+            "it": 10
+        },
+        {
+            "is": 8,
+            "it": 10
+        },
+        {
+            "is": 9,
+            "it": 11
+        },
+        {
+            "is": 9,
+            "it": 12
+        },
+        {
+            "is": 9,
+            "it": 13
+        },
+        {
+            "is": 10,
+            "it": 14
+        },
+        {
+            "is": 10,
+            "it": 15
+        },
+        {
+            "is": 13,
+            "it": 16
+        },
+        {
+            "is": 13,
+            "it": 17
+        },
+        {
+            "is": 9,
+            "it": 18
+        },
+        {
+            "is": 15,
+            "it": 18
+        },
+        {
+            "is": 16,
+            "it": 19
+        },
+        {
+            "is": 15,
+            "it": 19
+        },
+        {
+            "is": 16,
+            "it": 20
+        },
+        {
+            "is": 16,
+            "it": 21
+        },
+        {
+            "is": 16,
+            "it": 22
+        },
+        {
+            "is": 17,
+            "it": 23
+        },
+        {
+            "is": 17,
+            "it": 24
+        },
+        {
+            "is": 20,
+            "it": 25
+        },
+        {
+            "is": 20,
+            "it": 26
+        },
+        {
+            "is": 9,
+            "it": 27
+        },
+        {
+            "is": 22,
+            "it": 27
+        },
+        {
+            "is": 16,
+            "it": 28
+        },
+        {
+            "is": 22,
+            "it": 28
+        },
+        {
+            "is": 23,
+            "it": 29
+        },
+        {
+            "is": 22,
+            "it": 29
+        },
+        {
+            "is": 23,
+            "it": 30
+        },
+        {
+            "is": 23,
+            "it": 31
+        },
+        {
+            "is": 23,
+            "it": 32
+        },
+        {
+            "is": 24,
+            "it": 33
+        },
+        {
+            "is": 24,
+            "it": 34
+        },
+        {
+            "is": 27,
+            "it": 35
+        },
+        {
+            "is": 27,
+            "it": 36
+        }
+    ],
+    "O": [
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 3,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 3
+        },
+        {
+            "os": 5,
+            "ot": 4
+        },
+        {
+            "os": 6,
+            "ot": 5
+        },
+        {
+            "os": 7,
+            "ot": 6
+        },
+        {
+            "os": 3,
+            "ot": 7
+        },
+        {
+            "os": 4,
+            "ot": 8
+        },
+        {
+            "os": 2,
+            "ot": 9
+        },
+        {
+            "os": 9,
+            "ot": 9
+        },
+        {
+            "os": 9,
+            "ot": 10
+        },
+        {
+            "os": 9,
+            "ot": 10
+        },
+        {
+            "os": 10,
+            "ot": 11
+        },
+        {
+            "os": 11,
+            "ot": 12
+        },
+        {
+            "os": 12,
+            "ot": 13
+        },
+        {
+            "os": 13,
+            "ot": 14
+        },
+        {
+            "os": 14,
+            "ot": 15
+        },
+        {
+            "os": 10,
+            "ot": 16
+        },
+        {
+            "os": 11,
+            "ot": 17
+        },
+        {
+            "os": 9,
+            "ot": 18
+        },
+        {
+            "os": 16,
+            "ot": 18
+        },
+        {
+            "os": 16,
+            "ot": 19
+        },
+        {
+            "os": 16,
+            "ot": 19
+        },
+        {
+            "os": 17,
+            "ot": 20
+        },
+        {
+            "os": 18,
+            "ot": 21
+        },
+        {
+            "os": 19,
+            "ot": 22
+        },
+        {
+            "os": 20,
+            "ot": 23
+        },
+        {
+            "os": 21,
+            "ot": 24
+        },
+        {
+            "os": 17,
+            "ot": 25
+        },
+        {
+            "os": 18,
+            "ot": 26
+        },
+        {
+            "os": 9,
+            "ot": 27
+        },
+        {
+            "os": 23,
+            "ot": 27
+        },
+        {
+            "os": 16,
+            "ot": 28
+        },
+        {
+            "os": 23,
+            "ot": 28
+        },
+        {
+            "os": 23,
+            "ot": 29
+        },
+        {
+            "os": 23,
+            "ot": 29
+        },
+        {
+            "os": 24,
+            "ot": 30
+        },
+        {
+            "os": 25,
+            "ot": 31
+        },
+        {
+            "os": 26,
+            "ot": 32
+        },
+        {
+            "os": 27,
+            "ot": 33
+        },
+        {
+            "os": 28,
+            "ot": 34
+        },
+        {
+            "os": 24,
+            "ot": 35
+        },
+        {
+            "os": 25,
+            "ot": 36
+        }
+    ]
+}

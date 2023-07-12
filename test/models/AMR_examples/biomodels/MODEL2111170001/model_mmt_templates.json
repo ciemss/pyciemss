@@ -1,0 +1,787 @@
+{
+    "templates": [
+        {
+            "rate_law": "A2*alpha",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "A2",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_0"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A1",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*alpha",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "A2+",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "A1",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A1*muA - A1*rg",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "A1",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "-A1*A2*r2/KA",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "A1",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "-A2*I*r2/KA",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "-A2*I_act*r2/KA",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*r2*(1.0 - (A1 + A2 + A2_1 + A2_act + A2_act_0 + I + I_act)/KA) + A2_1*a2_0 + A2_act*u",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "AT",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:AT"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2-",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_1"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2+act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2+",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2-act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act_0"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2_act*rg + A2_act*(alpha + muA + u)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "A2+act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2_act_0*rg + A2_act_0*(alpha + muA + u)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "A2-act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_act_0"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*rg + I*(mu1 + muA)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*alpha*f",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_act*rg + I_act*(mu1 + muA)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "rg*(I + I_act) + (I + I_act)*(mu1 + muA)",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "I",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:I"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "I_act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:I_act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "T",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:T"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "D",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:D"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M*kM0/C1 + M_act*kM/C1",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "D",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:D"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I*pf2/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I_act*pf2/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*M_act*pf1/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "M_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*rg + A2*(a2 + alpha + muA)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*alpha*f",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A2+act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*beta*f",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "A2+",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2*a2 + A2_1*r2*(1.0 - (A1 + A2 + A2_1 + A2_act + A2_act_0 + I + I_act)/KA) + A2_act_0*u",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "AT",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:AT"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2+",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2-act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act_0"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A1",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A1"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2-",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_1"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2+act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "I",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:I"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "I_act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:I_act"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "A2-",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2_1*rg + A2_1*(a2_0 + alpha + muA)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "A2-",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_1"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "A2_1*alpha*f",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "A2-",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_1"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "A2-act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:A2_act_0"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "F*muF",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "F",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:F"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*pX/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:X"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I_act*pX/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:X"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M_act*pX/C2",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "M_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "X",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:X"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "pX*(A2_act + A2_act_0 + I + I_act + M_act)/C2",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "A2act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2+act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "A2-act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:A2_act_0"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "X",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:X"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "X*muX",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "X",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:X"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M*T*kM0 + M_act*T*kM",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "T",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:T"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M*kM0*(V + D/C1)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "M",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "M_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M*T*kM0 + M*muM",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "M",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M_act*T*kM + M_act*mu_M + M_act*pT",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "M_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M_act"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I_act*pV_0/C1",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I_act",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I_act"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*I*pV/C1",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "I",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "-1.0*M*kM0/C1",
+            "type": "ControlledProduction",
+            "controller": {
+                "name": "M",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:M"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "1.0*(I*pV + I_act*pV_0 - M*kM0 - M_act*V*kM)/C1",
+            "type": "GroupedControlledProduction",
+            "controllers": [
+                {
+                    "name": "M_act",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:M_act"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "V",
+                    "identifiers": {
+                        "biomodels.species": "MODEL2111170001:V"
+                    },
+                    "context": {}
+                }
+            ],
+            "outcome": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "V*muV",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "V",
+                "identifiers": {
+                    "biomodels.species": "MODEL2111170001:V"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

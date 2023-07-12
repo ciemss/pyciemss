@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 228) on 2021-01-16 03:11 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="126" numberOfPoints="126">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+    <repeatedTask id="task2" range="range0" resetModel="true">
+      <listOfRanges>
+        <vectorRange id="range0">
+          <value> 76 </value>
+          <value> 96 </value>
+          <value> 126 </value>
+        </vectorRange>
+      </listOfRanges>
+      <listOfChanges>
+        <setValue range="range0" modelReference="model" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;tau_3&apos;]">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> range0 </ci>
+          </math>
+        </setValue>
+      </listOfChanges>
+      <listOfSubTasks>
+        <subTask order="1" task="task1"/>
+      </listOfSubTasks>
+    </repeatedTask>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="m_t_1_task1" name="Values[m_t]">
+      <listOfVariables>
+        <variable id="p1_m_t_task1" name="m_t" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;m_t&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_m_t_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="sigma_2_task1" name="Values[sigma]">
+      <listOfVariables>
+        <variable id="p1_sigma_task1" name="sigma" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;sigma&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_sigma_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="S_c_1_task1" name="[Susceptible_confined]">
+      <listOfVariables>
+        <variable id="p2_S_c_task1" name="S_c" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S_c&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_S_c_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="S_u_2_task1" name="[Susceptible_unconfined]">
+      <listOfVariables>
+        <variable id="p2_S_u_task1" name="S_u" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S_u&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_S_u_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="time_task2" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task2" symbol="urn:sedml:symbol:time" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="m_t_1_task2" name="Values[m_t]">
+      <listOfVariables>
+        <variable id="p1_m_t_task2" name="m_t" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;m_t&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_m_t_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="sigma_2_task2" name="Values[sigma]">
+      <listOfVariables>
+        <variable id="p1_sigma_task2" name="sigma" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;sigma&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_sigma_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="S_c_1_task2" name="[Susceptible_confined]">
+      <listOfVariables>
+        <variable id="p2_S_c_task2" name="S_c" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S_c&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_S_c_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="S_u_2_task2" name="[Susceptible_unconfined]">
+      <listOfVariables>
+        <variable id="p2_S_u_task2" name="S_u" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S_u&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_S_u_task2 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="plot">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="Values[m_t]" logX="false" logY="false" xDataReference="time_task1" yDataReference="m_t_1_task1"/>
+        <curve id="p1_curve_2_task1" name="Values[sigma]" logX="false" logY="false" xDataReference="time_task1" yDataReference="sigma_2_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task1" name="plot_2">
+      <listOfCurves>
+        <curve id="p2_curve_1_task1" name="[Susceptible_confined]" logX="false" logY="false" xDataReference="time_task1" yDataReference="S_c_1_task1"/>
+        <curve id="p2_curve_2_task1" name="[Susceptible_unconfined]" logX="false" logY="false" xDataReference="time_task1" yDataReference="S_u_2_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_3_task2" name="plot">
+      <listOfCurves>
+        <curve id="p1_curve_1_task2" name="Values[m_t]" logX="false" logY="false" xDataReference="time_task2" yDataReference="m_t_1_task2"/>
+        <curve id="p1_curve_2_task2" name="Values[sigma]" logX="false" logY="false" xDataReference="time_task2" yDataReference="sigma_2_task2"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_4_task2" name="plot_2">
+      <listOfCurves>
+        <curve id="p2_curve_1_task2" name="[Susceptible_confined]" logX="false" logY="false" xDataReference="time_task2" yDataReference="S_c_1_task2"/>
+        <curve id="p2_curve_2_task2" name="[Susceptible_unconfined]" logX="false" logY="false" xDataReference="time_task2" yDataReference="S_u_2_task2"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

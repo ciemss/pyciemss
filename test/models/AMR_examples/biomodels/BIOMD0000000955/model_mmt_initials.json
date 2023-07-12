@@ -1,0 +1,158 @@
+{
+    "initials": {
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {}
+                },
+                "value": 0.9999963
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {}
+                },
+                "value": 3.33333333e-06
+            }
+        },
+        "Diagnosed": {
+            "name": "Diagnosed",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "Diagnosed",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 3.33333333e-07
+            }
+        },
+        "Ailing": {
+            "name": "Ailing",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25269",
+                "diagnosis": "ncit:C113725"
+            },
+            "value": {
+                "concept": {
+                    "name": "Ailing",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269",
+                        "diagnosis": "ncit:C113725"
+                    }
+                },
+                "value": 1.66666666e-08
+            }
+        },
+        "Recognized": {
+            "name": "Recognized",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "Recognized",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 3.33333333e-08
+            }
+        },
+        "Threatened": {
+            "name": "Threatened",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "disease_severity": "ncit:C25467"
+            },
+            "value": {
+                "concept": {
+                    "name": "Threatened",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25467"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Healed": {
+            "name": "Healed",
+            "identifiers": {
+                "ido": "0000592"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Healed",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Extinct": {
+            "name": "Extinct",
+            "identifiers": {
+                "ncit": "C28554"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Extinct",
+                    "identifiers": {
+                        "ncit": "C28554"
+                    },
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

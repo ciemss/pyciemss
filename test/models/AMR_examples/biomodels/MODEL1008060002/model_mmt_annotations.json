@@ -1,0 +1,21 @@
+{
+    "annotations": {
+        "name": "Munz2009 - Zombie SIZRQ",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [
+            "isbn:ISBN:1607413477"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": []
+    }
+}

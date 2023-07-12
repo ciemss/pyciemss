@@ -1,0 +1,56 @@
+{
+    "initials": {
+        "Recovered": {
+            "name": "Recovered",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Recovered",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 2500.0
+            }
+        },
+        "Exposed": {
+            "name": "Exposed",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Exposed",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

@@ -1,0 +1,1181 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="Mukandavire2009___Model_for_HIV_Malaria_co_infection" metaid="COPASI0" name="Mukandavire2009 - Model for HIV-Malaria co-infection">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+     <p>Mathematical model for HIV, malaria and HIV-malaria co-infection.</p>
+  </body>
+    </notes>
+    <annotation>
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+        <rdf:Description rdf:about="#COPASI0">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Roberts</vCard:Family>
+	<vCard:Given>Matthew Grant</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>mroberts@ebi.ac.uk</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>EMBL-EBI</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2018-05-22T16:51:57Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2018-05-22T16:51:57Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/efo/0000764"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/efo/0001068"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	<bqbiol:isDescribedBy>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pubmed/19364156"/>
+	</rdf:Bag>
+	</bqbiol:isDescribedBy>
+	</rdf:Description>
+	
+      </rdf:RDF>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <rdf:Description rdf:about="#COPASI0">
+            <dcterms:bibliographicCitation>
+              <rdf:Description>
+                <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:19364156"/>
+              </rdf:Description>
+            </dcterms:bibliographicCitation>
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2018-05-22T16:51:57Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+            <dcterms:creator>
+              <rdf:Description>
+                <vCard:EMAIL>mroberts@ebi.ac.uk</vCard:EMAIL>
+                <vCard:N>
+                  <rdf:Description>
+                    <vCard:Family>Roberts</vCard:Family>
+                    <vCard:Given>Matthew Grant</vCard:Given>
+                  </rdf:Description>
+                </vCard:N>
+                <vCard:ORG>
+                  <rdf:Description>
+                    <vCard:Orgname>EMBL-EBI</vCard:Orgname>
+                  </rdf:Description>
+                </vCard:ORG>
+              </rdf:Description>
+            </dcterms:creator>
+            <CopasiMT:hasPart rdf:resource="urn:miriam:efo:0000764"/>
+            <CopasiMT:hasPart rdf:resource="urn:miriam:efo:0001068"/>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+    </annotation>
+      <listOfUnitDefinitions>
+      <unitDefinition id="volume" name="volume">
+        <listOfUnits>
+          <unit exponent="1" kind="litre" multiplier="1" scale="-3"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance" name="substance">
+        <listOfUnits>
+          <unit exponent="1" kind="mole" multiplier="1" scale="-3"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment constant="true" id="Human" name="Human" size="1" spatialDimensions="3"/>
+      <compartment constant="true" id="Vector" name="Vector" size="1" spatialDimensions="3"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="S_H" initialConcentration="10000" metaid="COPASI1" name="S_H">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI1">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:09:31Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="E_M" initialConcentration="150" metaid="COPASI2" name="E_M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI2">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:28:45Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="I_M" initialConcentration="25" metaid="COPASI3" name="I_M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI3">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:37:52Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="I_H" initialConcentration="5" metaid="COPASI4" name="I_H">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI4">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:32:47Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="E_H_M" initialConcentration="3" metaid="COPASI5" name="E_H,M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI5">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:24:39Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="I_H_M" initialConcentration="1" metaid="COPASI6" name="I_H,M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI6">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:34:25Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="A_H" initialConcentration="0" metaid="COPASI7" name="A_H">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI7">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:15:46Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="E_A_M" initialConcentration="0" metaid="COPASI8" name="E_A,M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI8">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:22:32Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Human" constant="false" id="A_H_M" initialConcentration="0" metaid="COPASI9" name="A_H,M">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI9">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:20:22Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Vector" constant="false" id="S_V" initialConcentration="25000" metaid="COPASI10" name="S_V">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI10">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:10:47Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Vector" constant="false" id="E_V" initialConcentration="500" metaid="COPASI11" name="E_V">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI11">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:31:43Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="Vector" constant="false" id="I_V" initialConcentration="50" metaid="COPASI12" name="I_V">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI12">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:39:16Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter constant="true" id="Capital_lambda_H" metaid="COPASI13" name="Capital_lambda_H" value="0.05">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI13">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:19:34Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Capital_lambda_V" name="Capital_lambda_V" value="6"/>
+      <parameter constant="true" id="u_H" name="u_H" value="3.9E-5"/>
+      <parameter constant="true" id="u_V" name="u_V" value="0.1429"/>
+      <parameter constant="true" id="delta_H" name="delta_H" value="0.000913"/>
+      <parameter constant="true" id="delta_M" name="delta_M" value="0.0003454"/>
+      <parameter constant="true" id="Beta_H" metaid="COPASI14" name="Beta_H" value="0.0007">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI14">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:14:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Beta_M" name="Beta_M" value="0.8333"/>
+      <parameter constant="true" id="Beta_V" metaid="COPASI15" name="Beta_V" value="0.9">
+        <notes>
+          <body xmlns="http://www.w3.org/1999/xhtml">
+            <pre>Value: (0,1)</pre>
+          </body>
+        </notes>
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI15">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:15:09Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="b_M" metaid="COPASI16" name="b_M" value="0.25">
+        <notes>
+          <body xmlns="http://www.w3.org/1999/xhtml">
+            <pre>value: (0.25,1)</pre>
+          </body>
+        </notes>
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI16">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:17:46Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="eta_A" name="eta_A" value="1.4"/>
+      <parameter constant="true" id="eta_HM" metaid="COPASI17" name="eta_HM" value="1.5">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI17">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T10:12:06Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="xi" name="xi" value="1.002"/>
+      <parameter constant="true" id="theta_HM" name="theta_HM" value="1.002"/>
+      <parameter constant="true" id="sigma" metaid="COPASI18" name="sigma" value="1">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI18">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:16:20Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="tau" name="tau" value="1.001"/>
+      <parameter constant="true" id="epsilon" name="epsilon" value="1.02"/>
+      <parameter constant="true" id="nu" name="nu" value="1.002"/>
+      <parameter constant="true" id="psi" name="psi" value="1.002"/>
+      <parameter constant="true" id="phi1" name="phi1" value="0.00556"/>
+      <parameter constant="true" id="phi2" name="phi2" value="0.002"/>
+      <parameter constant="true" id="phi3" name="phi3" value="0.0005"/>
+      <parameter constant="true" id="eta_v" name="eta_v" value="1.5"/>
+      <parameter constant="true" id="theta_V" name="theta_V" value="1.5"/>
+      <parameter constant="true" id="kappa" name="kappa" value="0.000548"/>
+      <parameter constant="true" id="gamma_H" name="gamma_H" value="0.08333"/>
+      <parameter constant="true" id="gamma_V" name="gamma_V" value="0.1"/>
+      <parameter constant="false" id="N_H" metaid="COPASI19" name="N_H" value="10184">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI19">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:08:39Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="N_V" metaid="COPASI20" name="N_V" value="25550">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI20">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:10:06Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="lambda_H" metaid="COPASI21" name="lambda_H" value="3.23571288295365E-6">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI21">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:10:39Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="lambda_M" metaid="COPASI22" name="lambda_M" value="0.00102280538098979">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI22">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:13:36Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="lambda_V" metaid="COPASI23" name="lambda_V" value="0.000585477219167321">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI23">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-22T17:14:18Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="New_HIV_cases" metaid="COPASI24" name="New_HIV_cases" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI24">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:32:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="New_Malaria_Cases" metaid="COPASI25" name="New_Malaria_Cases" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI25">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T09:47:31Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="New_Co_infection_Cases" metaid="COPASI26" name="New_Co-infection_Cases" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI26">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T10:00:55Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="Mortality_Malaria" metaid="COPASI27" name="Mortality_Malaria" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI27">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T10:08:28Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="Mortality_HIV" metaid="COPASI28" name="Mortality_HIV" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI28">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T10:09:33Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter constant="false" id="Mortality_Mixed" metaid="COPASI29" name="Mortality_Mixed" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI29">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2018-05-23T10:15:18Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="N_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> S_H </ci>
+            <ci> E_M </ci>
+            <ci> I_M </ci>
+            <ci> I_H </ci>
+            <ci> E_H_M </ci>
+            <ci> I_H_M </ci>
+            <ci> A_H </ci>
+            <ci> E_A_M </ci>
+            <ci> A_H_M </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="N_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> S_V </ci>
+            <ci> E_V </ci>
+            <ci> I_V </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="lambda_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> Beta_H </ci>
+              <apply>
+                <plus/>
+                <ci> I_H </ci>
+                <apply>
+                  <times/>
+                  <ci> eta_HM </ci>
+                  <apply>
+                    <plus/>
+                    <ci> E_H_M </ci>
+                    <apply>
+                      <times/>
+                      <ci> theta_HM </ci>
+                      <ci> I_M </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> eta_A </ci>
+                  <apply>
+                    <plus/>
+                    <ci> A_H </ci>
+                    <apply>
+                      <times/>
+                      <ci> eta_HM </ci>
+                      <apply>
+                        <plus/>
+                        <ci> E_A_M </ci>
+                        <apply>
+                          <times/>
+                          <ci> theta_HM </ci>
+                          <ci> A_H_M </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> N_H </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="lambda_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Beta_M </ci>
+            <ci> b_M </ci>
+            <apply>
+              <divide/>
+              <ci> I_V </ci>
+              <ci> N_H </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="lambda_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Beta_V </ci>
+            <ci> b_M </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> I_M </ci>
+                <apply>
+                  <times/>
+                  <ci> eta_v </ci>
+                  <apply>
+                    <plus/>
+                    <ci> I_H_M </ci>
+                    <apply>
+                      <times/>
+                      <ci> theta_V </ci>
+                      <ci> A_H_M </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> N_H </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <rateRule variable="S_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Capital_lambda_H </ci>
+                  <apply>
+                    <times/>
+                    <ci> phi1 </ci>
+                    <ci> I_M </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> lambda_H </ci>
+                  <ci> S_H </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> lambda_M </ci>
+                <ci> S_H </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> u_H </ci>
+              <ci> S_H </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="E_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> lambda_M </ci>
+                <ci> S_H </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> lambda_H </ci>
+                <ci> E_M </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> gamma_H </ci>
+                <ci> u_H </ci>
+              </apply>
+              <ci> E_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="I_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> gamma_H </ci>
+                <ci> E_M </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> sigma </ci>
+                <ci> lambda_H </ci>
+                <ci> I_M </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> u_H </ci>
+                <ci> delta_M </ci>
+                <ci> phi1 </ci>
+              </apply>
+              <ci> I_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="I_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> lambda_H </ci>
+                  <ci> S_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> phi2 </ci>
+                  <ci> I_H_M </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> nu </ci>
+                <ci> lambda_M </ci>
+                <ci> I_H </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> u_H </ci>
+                <ci> kappa </ci>
+              </apply>
+              <ci> I_H </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="E_H_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> lambda_H </ci>
+                <ci> E_M </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> nu </ci>
+                <ci> lambda_M </ci>
+                <ci> I_H </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> epsilon </ci>
+                  <ci> lambda_H </ci>
+                </apply>
+                <ci> u_H </ci>
+                <ci> kappa </ci>
+              </apply>
+              <ci> E_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="I_H_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> sigma </ci>
+                <ci> lambda_H </ci>
+                <ci> I_M </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> epsilon </ci>
+                <ci> gamma_H </ci>
+                <ci> E_H_M </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> u_H </ci>
+                <apply>
+                  <times/>
+                  <ci> tau </ci>
+                  <ci> delta_M </ci>
+                </apply>
+                <ci> phi2 </ci>
+                <apply>
+                  <times/>
+                  <ci> xi </ci>
+                  <ci> kappa </ci>
+                </apply>
+              </apply>
+              <ci> I_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="A_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> kappa </ci>
+                  <ci> I_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> phi3 </ci>
+                  <ci> A_H_M </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> nu </ci>
+                <ci> lambda_M </ci>
+                <ci> A_H </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> u_H </ci>
+                <ci> delta_H </ci>
+              </apply>
+              <ci> A_H </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="E_A_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> nu </ci>
+                <ci> lambda_M </ci>
+                <ci> A_H </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kappa </ci>
+                <ci> eta_HM </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> epsilon </ci>
+                  <ci> gamma_H </ci>
+                </apply>
+                <ci> u_H </ci>
+                <ci> delta_H </ci>
+              </apply>
+              <ci> E_A_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="A_H_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> xi </ci>
+                <ci> kappa </ci>
+                <ci> I_H_M </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> epsilon </ci>
+                <ci> gamma_H </ci>
+                <ci> E_A_M </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> u_H </ci>
+                <ci> phi3 </ci>
+                <apply>
+                  <times/>
+                  <ci> tau </ci>
+                  <ci> delta_M </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> psi </ci>
+                  <ci> delta_H </ci>
+                </apply>
+              </apply>
+              <ci> A_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="S_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> Capital_lambda_V </ci>
+              <apply>
+                <times/>
+                <ci> lambda_V </ci>
+                <ci> S_V </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> u_V </ci>
+              <ci> S_V </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="E_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> lambda_V </ci>
+              <ci> S_V </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> gamma_V </ci>
+                <ci> u_V </ci>
+              </apply>
+              <ci> E_V </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="I_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> gamma_V </ci>
+              <ci> E_V </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> u_V </ci>
+              <ci> I_V </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="New_HIV_cases">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> lambda_H </ci>
+              <ci> S_H </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> sigma </ci>
+              <ci> lambda_H </ci>
+              <ci> I_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="New_Malaria_Cases">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> gamma_H </ci>
+              <ci> E_M </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> epsilon </ci>
+              <ci> gamma_H </ci>
+              <ci> E_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="New_Co_infection_Cases">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> sigma </ci>
+              <ci> lambda_H </ci>
+              <ci> I_M </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> epsilon </ci>
+              <ci> gamma_H </ci>
+              <ci> E_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="Mortality_Malaria">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> delta_M </ci>
+              <ci> I_M </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> tau </ci>
+              <ci> delta_M </ci>
+              <ci> I_H_M </ci>
+            </apply>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="Mortality_HIV">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> delta_H </ci>
+            <ci> A_H </ci>
+          </apply>
+        </math>
+            </rateRule>
+      <rateRule variable="Mortality_Mixed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> psi </ci>
+                <ci> delta_H </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> tau </ci>
+                <ci> delta_M </ci>
+              </apply>
+            </apply>
+            <ci> A_H_M </ci>
+          </apply>
+        </math>
+            </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

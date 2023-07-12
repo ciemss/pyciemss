@@ -1,0 +1,124 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.054043
+        },
+        "c_0": {
+            "name": "c_0",
+            "identifiers": {},
+            "context": {},
+            "value": 40.319
+        },
+        "phi": {
+            "name": "phi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.19231
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6628
+        },
+        "eta": {
+            "name": "eta",
+            "identifiers": {},
+            "context": {},
+            "value": 17.379
+        },
+        "gamma_I": {
+            "name": "gamma_I",
+            "identifiers": {},
+            "context": {},
+            "value": 0.15796
+        },
+        "gamma_A": {
+            "name": "gamma_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.55671
+        },
+        "gamma_H": {
+            "name": "gamma_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.035352
+        },
+        "d": {
+            "name": "d",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00055888
+        },
+        "xi": {
+            "name": "xi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.80987
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.07142857
+        },
+        "q1": {
+            "name": "q1",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "q2": {
+            "name": "q2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.47218
+        },
+        "q3": {
+            "name": "q3",
+            "identifiers": {},
+            "context": {},
+            "value": 2.6954
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00028286
+        },
+        "c_t": {
+            "name": "c_t",
+            "identifiers": {},
+            "context": {},
+            "value": 40.0802126286369
+        },
+        "q_1_t": {
+            "name": "q_1_t",
+            "identifiers": {},
+            "context": {},
+            "value": 0.994077547276392
+        },
+        "China": {
+            "name": "China",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Total_population": {
+            "name": "Total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 1336211733.50839
+        },
+        "Total_reported_cases": {
+            "name": "Total_reported_cases",
+            "identifiers": {},
+            "context": {},
+            "value": 21.0
+        }
+    }
+}

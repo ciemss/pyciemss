@@ -1,0 +1,40 @@
+{
+    "initials": {
+        "I": {
+            "name": "I",
+            "identifiers": {
+                "ido": "0000511",
+                "biomodels.species": "BIOMD0000000715:I"
+            },
+            "context": {},
+            "value": null
+        },
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ido": "0000514",
+                "biomodels.species": "BIOMD0000000715:S"
+            },
+            "context": {},
+            "value": null
+        },
+        "E": {
+            "name": "E",
+            "identifiers": {
+                "ncit": "C71551",
+                "biomodels.species": "BIOMD0000000715:E"
+            },
+            "context": {},
+            "value": null
+        },
+        "M": {
+            "name": "M",
+            "identifiers": {
+                "ncit": "C62608",
+                "biomodels.species": "BIOMD0000000715:M"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

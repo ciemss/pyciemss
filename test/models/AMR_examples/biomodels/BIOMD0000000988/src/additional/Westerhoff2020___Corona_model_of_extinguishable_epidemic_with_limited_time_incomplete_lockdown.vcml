@@ -1,0 +1,1426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This biomodel was generated in VCML Version Rel_Version_7.3.0_build_1p--><vcml xmlns="http://sourceforge.net/projects/vcell/vcml" Version="Rel_Version_7.3.0_build_1p"><BioModel Name="Westerhoff2020 - Corona model of extinguishable epidemic with limited time incomplete lockdown"><Model Name="unnamed"><ModelParameters><Parameter Name="Testing_Randome" Role="user defined" Unit="tbd" SbmlName="test_random">8.0E-4</Parameter><Parameter Name="Total_Infection_coefficient" Role="user defined" Unit="tbd" SbmlName="infection_rate">((((infected_nontested_0 * Infection_from_non_tested_no_symptoms_0) + (symptoms_nontested_0 * Infection_from_non_tested_symptoms) + (infected_tested_0 * Infection_from_tested_no_symptoms_0) + (symptoms_tested_0 * Infection_from_tested_symptoms)) * (1.0 - epidemic_extinguished_bool_0)) / Social_Distance)</Parameter><Parameter Name="Normal_death_rate_constant_0" Role="user defined" Unit="tbd" SbmlName="death_rate_natural">3.29E-5</Parameter><Parameter Name="Corona_death_rate_constant" Role="user defined" Unit="tbd" SbmlName="death_rate_corona">0.002</Parameter><Parameter Name="Birth_rate" Role="user defined" Unit="tbd" SbmlName="birth_rate">3.29E-5</Parameter><Parameter Name="Testing_for_Symptoms" Role="user defined" Unit="tbd" SbmlName="test_symptoms">500.0</Parameter><Parameter Name="Corona_recover" Role="user defined" Unit="tbd" SbmlName="recovery_rate">0.067</Parameter><Parameter Name="Symptoms_appear" Role="user defined" Unit="tbd" SbmlName="symptoms_rate">0.30165</Parameter><Parameter Name="Infection_from_non_tested_no_symptoms_0" Role="user defined" Unit="tbd" SbmlName="iota_ntns">0.508</Parameter><Parameter Name="Infection_from_non_tested_symptoms" Role="user defined" Unit="tbd" SbmlName="iota_nts">0.25</Parameter><Parameter Name="Infection_from_tested_no_symptoms_0" Role="user defined" Unit="tbd" SbmlName="iota_tns">0.025</Parameter><Parameter Name="Infection_from_tested_symptoms" Role="user defined" Unit="tbd" SbmlName="iota_ts">0.025</Parameter><Parameter Name="Social_Distance" Role="user defined" Unit="tbd" SbmlName="social_distance">(((Social_Distance_base * Government_induced_isolation_factor_0) * ((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0)))))) + (Social_Distance_base * !(((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0))))))))</Parameter><Parameter Name="Government_induced_isolation_factor_0" Role="user defined" Unit="tbd" SbmlName="lockdown_severity">(social_distancing_factor * (1.0 + (((2.5 * symptoms_tested_0) / symptomatic_numberTolerance_0) * ((0.0 * (t &lt; Time_government_action_0)) + (governmentResponseFactorToDiagnosedInfected_0 * !((t &lt; Time_government_action_0)))))))</Parameter><Parameter Name="Time_government_action_0" Role="user defined" Unit="tbd" SbmlName="t_government_action">15.0</Parameter><Parameter Name="lockdown_duration" Role="user defined" Unit="day" SbmlName="t_lockdown">7.0</Parameter><Parameter Name="lockdownPause_duration_0" Role="user defined" Unit="day" SbmlName="t_lockdown_pause">7.0</Parameter><Parameter Name="n_lockdowns" Role="user defined" Unit="1" SbmlName="n_lockdowns">(((1.0 * ((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))))))</Parameter><Parameter Name="n_pauses" Role="user defined" Unit="1" SbmlName="n_pauses">0.0</Parameter><Parameter Name="intermittent_time" Role="user defined" Unit="day" SbmlName="t_intermittent">((t - (n_lockdowns * lockdown_duration)) - (n_pauses * lockdownPause_duration_0))</Parameter><Parameter Name="timeFraction_lockdown_0" Role="user defined" Unit="tbd" SbmlName="t_lockdown_effective">0.55</Parameter><Parameter Name="number_cutoff" Role="user defined" Unit="1" SbmlName="number_cutoff">0.0</Parameter><Parameter Name="symptomatic_numberTolerance_0" Role="user defined" Unit="tbd" SbmlName="symptoms_tolerance">141.0</Parameter><Parameter Name="governmentResponseFactorToDiagnosedInfected_0" Role="user defined" Unit="tbd" SbmlName="bool_adaptive_lockdown">0.0</Parameter><Parameter Name="social_distancing_factor" Role="user defined" Unit="tbd" SbmlName="social_distancing_factor">10.0</Parameter><Parameter Name="Social_Distance_base" Role="user defined" Unit="tbd" SbmlName="social_distance_base">534700.0</Parameter></ModelParameters><Compound Name="infected_tested_0"><Annotation>infected_tested_0</Annotation></Compound><Compound Name="recovered_nontested_0"><Annotation>recovered_nontested_0</Annotation></Compound><Compound Name="dead_corona_nontested_0"><Annotation>dead_corona_nontested_0</Annotation></Compound><Compound Name="dead_corona_perc_0"><Annotation>dead_corona_perc_0</Annotation></Compound><Compound Name="uninfected_nontested_0"><Annotation>uninfected_nontested_0</Annotation></Compound><Compound Name="dead_corona_tested_0"><Annotation>dead_corona_tested_0</Annotation></Compound><Compound Name="frac_coronaDeadOfAllDead_0"><Annotation>frac_coronaDeadOfAllDead_0</Annotation></Compound><Compound Name="dead_noncorona_0"><Annotation>dead_noncorona_0</Annotation></Compound><Compound Name="registered_corona_0"><Annotation>registered_corona_0</Annotation></Compound><Compound Name="uninfected_tested_0"><Annotation>uninfected_tested_0</Annotation></Compound><Compound Name="infected_tested_div10"><Annotation>infected_tested_div10</Annotation></Compound><Compound Name="susceptible_0"><Annotation>susceptible_0</Annotation></Compound><Compound Name="recovered_tested_0"><Annotation>recovered_tested_0</Annotation></Compound><Compound Name="dead_noncorona_perc_0"><Annotation>dead_noncorona_perc_0</Annotation></Compound><Compound Name="symptoms_nontested_0"><Annotation>symptoms_nontested_0</Annotation></Compound><Compound Name="total_population_0"><Annotation>total_population_0</Annotation></Compound><Compound Name="recovered_corona_perc_0"><Annotation>recovered_corona_perc_0</Annotation></Compound><Compound Name="infected_nontested_0"><Annotation>infected_nontested_0</Annotation></Compound><Compound Name="symptoms_tested_0"><Annotation>symptoms_tested_0</Annotation></Compound><Compound Name="epidemic_extinguished_bool_0"><Annotation>epidemic_extinguished_bool_0</Annotation></Compound><Feature Name="default" /><LocalizedCompound Name="infected_nontested_0" SbmlName="infected_nontested" CompoundRef="infected_nontested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="infected_tested_0" SbmlName="infected_tested" CompoundRef="infected_tested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="uninfected_nontested_0" SbmlName="uninfected_nontested" CompoundRef="uninfected_nontested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="uninfected_tested_0" SbmlName="uninfected_tested" CompoundRef="uninfected_tested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="symptoms_tested_0" SbmlName="symptoms_tested" CompoundRef="symptoms_tested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="symptoms_nontested_0" SbmlName="symptoms_nontested" CompoundRef="symptoms_nontested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="recovered_tested_0" SbmlName="recovered_tested" CompoundRef="recovered_tested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="recovered_nontested_0" SbmlName="recovered_nontested" CompoundRef="recovered_nontested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="susceptible_0" SbmlName="susceptible" CompoundRef="susceptible_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="dead_corona_tested_0" SbmlName="dead_corona_tested" CompoundRef="dead_corona_tested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="dead_corona_nontested_0" SbmlName="dead_corona_nontested" CompoundRef="dead_corona_nontested_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="dead_noncorona_0" SbmlName="dead_noncorona" CompoundRef="dead_noncorona_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="total_population_0" SbmlName="total_population" CompoundRef="total_population_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="registered_corona_0" SbmlName="registered_corona" CompoundRef="registered_corona_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="dead_corona_perc_0" SbmlName="dead_corona_perc" CompoundRef="dead_corona_perc_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="recovered_corona_perc_0" SbmlName="recovered_corona_perc" CompoundRef="recovered_corona_perc_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="dead_noncorona_perc_0" SbmlName="dead_noncorona_perc" CompoundRef="dead_noncorona_perc_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="frac_coronaDeadOfAllDead_0" SbmlName="frac_coronaDeadOfAllDead" CompoundRef="frac_coronaDeadOfAllDead_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="epidemic_extinguished_bool_0" SbmlName="epidemic_extinguished_bool" CompoundRef="epidemic_extinguished_bool_0" Structure="default" OverrideName="true" /><LocalizedCompound Name="infected_tested_div10" SbmlName="infected_tested_div10" CompoundRef="infected_tested_div10" Structure="default" OverrideName="true" /><SimpleReaction Structure="default" Name="re1" Reversible="false" FluxOption="MolecularOnly" SbmlName="infection_uninfected_nt"><Reactant LocalizedCompoundRef="uninfected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="infected_nontested_0" Stoichiometry="1" /><Modifier LocalizedCompoundRef="infected_tested_0" /><Modifier LocalizedCompoundRef="symptoms_nontested_0" /><Modifier LocalizedCompoundRef="symptoms_tested_0" /><Modifier LocalizedCompoundRef="epidemic_extinguished_bool_0" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Total_Infection_coefficient * uninfected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re2" Reversible="false" FluxOption="MolecularOnly" SbmlName="test_uninfected"><Reactant LocalizedCompoundRef="uninfected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="uninfected_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Testing_Randome * uninfected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re3" Reversible="false" FluxOption="MolecularOnly" SbmlName="infection_uninfected_t"><Reactant LocalizedCompoundRef="uninfected_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="infected_nontested_0" Stoichiometry="1" /><Modifier LocalizedCompoundRef="infected_tested_0" /><Modifier LocalizedCompoundRef="symptoms_nontested_0" /><Modifier LocalizedCompoundRef="symptoms_tested_0" /><Modifier LocalizedCompoundRef="epidemic_extinguished_bool_0" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Total_Infection_coefficient * uninfected_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re4" Reversible="false" FluxOption="MolecularOnly" SbmlName="test_infected"><Reactant LocalizedCompoundRef="infected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="infected_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Testing_Randome * infected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re5" Reversible="false" FluxOption="MolecularOnly" SbmlName="symptoms_infected_nt"><Reactant LocalizedCompoundRef="infected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="symptoms_nontested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Symptoms_appear * infected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re6" Reversible="false" FluxOption="MolecularOnly" SbmlName="symptoms_infected_t"><Reactant LocalizedCompoundRef="infected_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="symptoms_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Symptoms_appear * infected_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re7" Reversible="false" FluxOption="MolecularOnly" SbmlName="test_symptoms"><Reactant LocalizedCompoundRef="symptoms_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="symptoms_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Testing_for_Symptoms * symptoms_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re8" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_c_symptoms_t"><Reactant LocalizedCompoundRef="symptoms_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_corona_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_death_rate_constant * symptoms_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re9" Reversible="false" FluxOption="MolecularOnly" SbmlName="recovery_symptoms_t"><Reactant LocalizedCompoundRef="symptoms_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="recovered_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_recover * symptoms_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re10" Reversible="false" FluxOption="MolecularOnly" SbmlName="recovery_symptoms_nt"><Reactant LocalizedCompoundRef="symptoms_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="recovered_nontested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_recover * symptoms_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re11" Reversible="false" FluxOption="MolecularOnly" SbmlName="population_growth"><Reactant LocalizedCompoundRef="susceptible_0" Stoichiometry="1" /><Product LocalizedCompoundRef="uninfected_nontested_0" Stoichiometry="1" /><Modifier LocalizedCompoundRef="total_population_0" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(susceptible_0 * total_population_0 * Birth_rate)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re12" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_nc_uninfected_nt"><Reactant LocalizedCompoundRef="uninfected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_noncorona_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Normal_death_rate_constant_0 * uninfected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re13" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_recovered_t"><Reactant LocalizedCompoundRef="recovered_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_noncorona_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Normal_death_rate_constant_0 * recovered_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re14" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_nc_recovered_nt"><Reactant LocalizedCompoundRef="recovered_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_noncorona_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Normal_death_rate_constant_0 * recovered_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re15" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_c_infected_t"><Reactant LocalizedCompoundRef="infected_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_corona_tested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_death_rate_constant * infected_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re16" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_c_infected_nt"><Reactant LocalizedCompoundRef="infected_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_corona_nontested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_death_rate_constant * infected_nontested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re17" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_nc_uninfected_t"><Reactant LocalizedCompoundRef="uninfected_tested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_noncorona_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Normal_death_rate_constant_0 * uninfected_tested_0)</Parameter></Kinetics></SimpleReaction><SimpleReaction Structure="default" Name="re18" Reversible="false" FluxOption="MolecularOnly" SbmlName="death_c_symptoms_nt"><Reactant LocalizedCompoundRef="symptoms_nontested_0" Stoichiometry="1" /><Product LocalizedCompoundRef="dead_corona_nontested_0" Stoichiometry="1" /><Kinetics KineticsType="GeneralKinetics"><Parameter Name="J" Role="reaction rate" Unit="molecules.ml-1.day-1">(Corona_death_rate_constant * symptoms_nontested_0)</Parameter></Kinetics></SimpleReaction><Diagram Name="default" Structure="default"><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re4" LocationX="260" LocationY="124" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="recovered_nontested_0" LocationX="244" LocationY="220" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="frac_coronaDeadOfAllDead_0" LocationX="470" LocationY="34" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re3" LocationX="199" LocationY="111" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="recovered_tested_0" LocationX="242" LocationY="190" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="total_population_0" LocationX="146" LocationY="34" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="dead_corona_nontested_0" LocationX="393" LocationY="90" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re9" LocationX="277" LocationY="164" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re15" LocationX="212" LocationY="35" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re16" LocationX="359" LocationY="84" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="dead_corona_perc_0" LocationX="21" LocationY="220" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re5" LocationX="322" LocationY="185" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re6" LocationX="291" LocationY="62" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="infected_tested_div10" LocationX="14" LocationY="128" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="symptoms_nontested_0" LocationX="337" LocationY="166" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="registered_corona_0" LocationX="470" LocationY="146" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="dead_noncorona_0" LocationX="155" LocationY="182" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="symptoms_tested_0" LocationX="300" LocationY="92" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re8" LocationX="283" LocationY="35" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="epidemic_extinguished_bool_0" LocationX="178" LocationY="147" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="dead_corona_tested_0" LocationX="244" LocationY="34" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="dead_noncorona_perc_0" LocationX="414" LocationY="220" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="uninfected_nontested_0" LocationX="126" LocationY="79" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="uninfected_tested_0" LocationX="105" LocationY="145" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re13" LocationX="198" LocationY="197" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re7" LocationX="360" LocationY="135" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re10" LocationX="288" LocationY="220" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re1" LocationX="221" LocationY="128" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re11" LocationX="112" LocationY="35" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re2" LocationX="91" LocationY="112" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re12" LocationX="146" LocationY="121" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re18" LocationX="399" LocationY="129" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="infected_tested_0" LocationX="230" LocationY="74" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="susceptible_0" LocationX="73" LocationY="34" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="recovered_corona_perc_0" LocationX="14" LocationY="35" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re14" LocationX="202" LocationY="221" /><SimpleReactionShape NodeReferenceModeAttrTag="full" SimpleReactionRef="re17" LocationX="113" LocationY="185" /><LocalizedCompoundShape NodeReferenceModeAttrTag="full" LocalizedCompoundRef="infected_nontested_0" LocationX="307" LocationY="127" /></Diagram><ModelUnitSystem VolumeSubstanceUnit="molecules" MembraneSubstanceUnit="molecules" LumpedReactionSubstanceUnit="molecules" VolumeUnit="ml" AreaUnit="m2" LengthUnit="m" TimeUnit="day" /></Model><SimulationSpec Name="unnamed" Stochastic="false" UseConcentration="true" RuleBased="false" MassConservationModelReduction="false" InsufficientIterations="false" InsufficientMaxMolecules="false"><NetworkConstraints RbmMaxIteration="3" RbmMaxMoleculesPerSpecies="10" RbmSpeciesLimit="800" RbmReactionsLimit="2500" /><Annotation></Annotation><Geometry Name="Compartmental" Dimension="0"><Extent X="10.0" Y="10.0" Z="10.0" /><Origin X="0.0" Y="0.0" Z="0.0" /><SubVolume Name="Compartment" Handle="0" Type="Compartmental" /></Geometry><GeometryContext><FeatureMapping Feature="default" GeometryClass="Compartment" SubVolume="Compartment" Size="1.0"><BoundariesTypes Xm="Flux" Xp="Flux" Ym="Flux" Yp="Flux" Zm="Flux" Zp="Flux" /></FeatureMapping></GeometryContext><ReactionContext><LocalizedCompoundSpec LocalizedCompoundRef="infected_nontested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>2.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="infected_tested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>1.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="uninfected_nontested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>630000.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="uninfected_tested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="symptoms_tested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="symptoms_nontested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="recovered_tested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="recovered_nontested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="susceptible_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>1.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="dead_corona_tested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="dead_corona_nontested_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="dead_noncorona_0" ForceConstant="false" WellMixed="false" ForceContinuous="false"><InitialConcentration>0.0</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="total_population_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>(infected_nontested_0 + infected_tested_0 + uninfected_nontested_0 + uninfected_tested_0 + recovered_nontested_0 + recovered_tested_0 + symptoms_nontested_0 + symptoms_tested_0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="registered_corona_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>(infected_tested_0 + symptoms_tested_0 + recovered_tested_0 + dead_corona_tested_0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="dead_corona_perc_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>(((dead_corona_nontested_0 + dead_corona_tested_0) * 100.0) / total_population_0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="recovered_corona_perc_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>(((recovered_nontested_0 + recovered_tested_0) * 100.0) / total_population_0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="dead_noncorona_perc_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>((dead_noncorona_0 * 100.0) / total_population_0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="frac_coronaDeadOfAllDead_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>((100.0 * dead_corona_perc_0) / (dead_corona_perc_0 + dead_noncorona_perc_0))</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="epidemic_extinguished_bool_0" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>((1.0 * ((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff)) + (0.0 * !(((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff))))</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><LocalizedCompoundSpec LocalizedCompoundRef="infected_tested_div10" ForceConstant="true" WellMixed="false" ForceContinuous="false"><InitialConcentration>((infected_tested_0 * default) / 10.0)</InitialConcentration><Diffusion>0.0</Diffusion></LocalizedCompoundSpec><ReactionSpec ReactionStepRef="re1" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re2" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re3" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re4" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re5" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re6" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re7" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re8" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re9" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re10" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re11" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re12" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re13" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re14" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re15" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re16" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re17" ReactionMapping="included" /><ReactionSpec ReactionStepRef="re18" ReactionMapping="included" /></ReactionContext><MathDescription Name="unnamed_generated"><Constant Name="_F_">96485.3321</Constant><Constant Name="_F_nmol_">9.64853321E-5</Constant><Constant Name="_K_GHK_">1.0E-9</Constant><Constant Name="_N_pmol_">6.02214179E11</Constant><Constant Name="_PI_">3.141592653589793</Constant><Constant Name="_R_">8314.46261815</Constant><Constant Name="_T_">300.0</Constant><Constant Name="Birth_rate">3.29E-5</Constant><Constant Name="Corona_death_rate_constant">0.002</Constant><Constant Name="Corona_recover">0.067</Constant><Constant Name="dead_corona_nontested_0_init_molecules_ml_1">0.0</Constant><Constant Name="dead_corona_tested_0_init_molecules_ml_1">0.0</Constant><Constant Name="dead_noncorona_0_init_molecules_ml_1">0.0</Constant><Constant Name="governmentResponseFactorToDiagnosedInfected_0">0.0</Constant><Constant Name="infected_nontested_0_init_molecules_ml_1">2.0</Constant><Constant Name="infected_tested_0_init_molecules_ml_1">1.0</Constant><Constant Name="Infection_from_non_tested_no_symptoms_0">0.508</Constant><Constant Name="Infection_from_non_tested_symptoms">0.25</Constant><Constant Name="Infection_from_tested_no_symptoms_0">0.025</Constant><Constant Name="Infection_from_tested_symptoms">0.025</Constant><Constant Name="K_millivolts_per_volt">1000.0</Constant><Constant Name="KMOLE">0.001660538783162726</Constant><Constant Name="lockdown_duration">7.0</Constant><Constant Name="lockdownPause_duration_0">7.0</Constant><Constant Name="n_pauses">0.0</Constant><Constant Name="Normal_death_rate_constant_0">3.29E-5</Constant><Constant Name="number_cutoff">0.0</Constant><Constant Name="recovered_nontested_0_init_molecules_ml_1">0.0</Constant><Constant Name="recovered_tested_0_init_molecules_ml_1">0.0</Constant><Constant Name="Size_default">1.0</Constant><Constant Name="Social_Distance_base">534700.0</Constant><Constant Name="social_distancing_factor">10.0</Constant><Constant Name="susceptible_0_init_molecules_ml_1">1.0</Constant><Constant Name="symptomatic_numberTolerance_0">141.0</Constant><Constant Name="Symptoms_appear">0.30165</Constant><Constant Name="symptoms_nontested_0_init_molecules_ml_1">0.0</Constant><Constant Name="symptoms_tested_0_init_molecules_ml_1">0.0</Constant><Constant Name="Testing_for_Symptoms">500.0</Constant><Constant Name="Testing_Randome">8.0E-4</Constant><Constant Name="Time_government_action_0">15.0</Constant><Constant Name="timeFraction_lockdown_0">0.55</Constant><Constant Name="uninfected_nontested_0_init_molecules_ml_1">630000.0</Constant><Constant Name="uninfected_tested_0_init_molecules_ml_1">0.0</Constant><VolumeVariable Name="dead_corona_nontested_0" Domain="Compartment" /><VolumeVariable Name="dead_corona_tested_0" Domain="Compartment" /><VolumeVariable Name="dead_noncorona_0" Domain="Compartment" /><VolumeVariable Name="infected_nontested_0" Domain="Compartment" /><VolumeVariable Name="infected_tested_0" Domain="Compartment" /><VolumeVariable Name="recovered_nontested_0" Domain="Compartment" /><VolumeVariable Name="recovered_tested_0" Domain="Compartment" /><VolumeVariable Name="symptoms_nontested_0" Domain="Compartment" /><VolumeVariable Name="symptoms_tested_0" Domain="Compartment" /><VolumeVariable Name="uninfected_nontested_0" Domain="Compartment" /><VolumeVariable Name="uninfected_tested_0" Domain="Compartment" /><Function Name="dead_corona_perc_0" Domain="Compartment">(((dead_corona_nontested_0 + dead_corona_tested_0) * 100.0) / total_population_0)</Function><Function Name="dead_corona_perc_0_init_molecules_ml_1" Domain="Compartment">(((dead_corona_nontested_0_init_molecules_ml_1 + dead_corona_tested_0_init_molecules_ml_1) * 100.0) / total_population_0_init_molecules_ml_1)</Function><Function Name="dead_noncorona_perc_0" Domain="Compartment">((dead_noncorona_0 * 100.0) / total_population_0)</Function><Function Name="dead_noncorona_perc_0_init_molecules_ml_1" Domain="Compartment">((dead_noncorona_0_init_molecules_ml_1 * 100.0) / total_population_0_init_molecules_ml_1)</Function><Function Name="epidemic_extinguished_bool_0" Domain="Compartment">((1.0 * ((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff)) + (0.0 * !(((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff))))</Function><Function Name="epidemic_extinguished_bool_0_init_molecules_ml_1" Domain="Compartment">((1.0 * ((infected_nontested_0_init_molecules_ml_1 + infected_tested_0_init_molecules_ml_1 + symptoms_nontested_0_init_molecules_ml_1 + symptoms_tested_0_init_molecules_ml_1) &lt; number_cutoff)) + (0.0 * !(((infected_nontested_0_init_molecules_ml_1 + infected_tested_0_init_molecules_ml_1 + symptoms_nontested_0_init_molecules_ml_1 + symptoms_tested_0_init_molecules_ml_1) &lt; number_cutoff))))</Function><Function Name="frac_coronaDeadOfAllDead_0" Domain="Compartment">((100.0 * dead_corona_perc_0) / (dead_corona_perc_0 + dead_noncorona_perc_0))</Function><Function Name="frac_coronaDeadOfAllDead_0_init_molecules_ml_1" Domain="Compartment">((100.0 * dead_corona_perc_0_init_molecules_ml_1) / (dead_corona_perc_0_init_molecules_ml_1 + dead_noncorona_perc_0_init_molecules_ml_1))</Function><Function Name="Government_induced_isolation_factor_0" Domain="Compartment">(social_distancing_factor * (1.0 + (((2.5 * symptoms_tested_0) / symptomatic_numberTolerance_0) * ((0.0 * (t &lt; Time_government_action_0)) + (governmentResponseFactorToDiagnosedInfected_0 * !((t &lt; Time_government_action_0)))))))</Function><Function Name="infected_tested_div10" Domain="Compartment">((infected_tested_0 * Size_default) / 10.0)</Function><Function Name="infected_tested_div10_init_molecules_ml_1" Domain="Compartment">((infected_tested_0_init_molecules_ml_1 * Size_default) / 10.0)</Function><Function Name="intermittent_time" Domain="Compartment">((t - (n_lockdowns * lockdown_duration)) - (n_pauses * lockdownPause_duration_0))</Function><Function Name="J_re1" Domain="Compartment">(Total_Infection_coefficient * uninfected_nontested_0)</Function><Function Name="J_re10" Domain="Compartment">(Corona_recover * symptoms_nontested_0)</Function><Function Name="J_re11" Domain="Compartment">(susceptible_0 * total_population_0 * Birth_rate)</Function><Function Name="J_re12" Domain="Compartment">(Normal_death_rate_constant_0 * uninfected_nontested_0)</Function><Function Name="J_re13" Domain="Compartment">(Normal_death_rate_constant_0 * recovered_tested_0)</Function><Function Name="J_re14" Domain="Compartment">(Normal_death_rate_constant_0 * recovered_nontested_0)</Function><Function Name="J_re15" Domain="Compartment">(Corona_death_rate_constant * infected_tested_0)</Function><Function Name="J_re16" Domain="Compartment">(Corona_death_rate_constant * infected_nontested_0)</Function><Function Name="J_re17" Domain="Compartment">(Normal_death_rate_constant_0 * uninfected_tested_0)</Function><Function Name="J_re18" Domain="Compartment">(Corona_death_rate_constant * symptoms_nontested_0)</Function><Function Name="J_re2" Domain="Compartment">(Testing_Randome * uninfected_nontested_0)</Function><Function Name="J_re3" Domain="Compartment">(Total_Infection_coefficient * uninfected_tested_0)</Function><Function Name="J_re4" Domain="Compartment">(Testing_Randome * infected_nontested_0)</Function><Function Name="J_re5" Domain="Compartment">(Symptoms_appear * infected_nontested_0)</Function><Function Name="J_re6" Domain="Compartment">(Symptoms_appear * infected_tested_0)</Function><Function Name="J_re7" Domain="Compartment">(Testing_for_Symptoms * symptoms_nontested_0)</Function><Function Name="J_re8" Domain="Compartment">(Corona_death_rate_constant * symptoms_tested_0)</Function><Function Name="J_re9" Domain="Compartment">(Corona_recover * symptoms_tested_0)</Function><Function Name="n_lockdowns" Domain="Compartment">(((1.0 * ((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))))))</Function><Function Name="recovered_corona_perc_0" Domain="Compartment">(((recovered_nontested_0 + recovered_tested_0) * 100.0) / total_population_0)</Function><Function Name="recovered_corona_perc_0_init_molecules_ml_1" Domain="Compartment">(((recovered_nontested_0_init_molecules_ml_1 + recovered_tested_0_init_molecules_ml_1) * 100.0) / total_population_0_init_molecules_ml_1)</Function><Function Name="registered_corona_0" Domain="Compartment">(infected_tested_0 + symptoms_tested_0 + recovered_tested_0 + dead_corona_tested_0)</Function><Function Name="registered_corona_0_init_molecules_ml_1" Domain="Compartment">(infected_tested_0_init_molecules_ml_1 + symptoms_tested_0_init_molecules_ml_1 + recovered_tested_0_init_molecules_ml_1 + dead_corona_tested_0_init_molecules_ml_1)</Function><Function Name="Social_Distance" Domain="Compartment">(((Social_Distance_base * Government_induced_isolation_factor_0) * ((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0)))))) + (Social_Distance_base * !(((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0))))))))</Function><Function Name="susceptible_0" Domain="Compartment">susceptible_0_init_molecules_ml_1</Function><Function Name="Total_Infection_coefficient" Domain="Compartment">((((infected_nontested_0 * Infection_from_non_tested_no_symptoms_0) + (symptoms_nontested_0 * Infection_from_non_tested_symptoms) + (infected_tested_0 * Infection_from_tested_no_symptoms_0) + (symptoms_tested_0 * Infection_from_tested_symptoms)) * (1.0 - epidemic_extinguished_bool_0)) / Social_Distance)</Function><Function Name="total_population_0" Domain="Compartment">(infected_nontested_0 + infected_tested_0 + uninfected_nontested_0 + uninfected_tested_0 + recovered_nontested_0 + recovered_tested_0 + symptoms_nontested_0 + symptoms_tested_0)</Function><Function Name="total_population_0_init_molecules_ml_1" Domain="Compartment">(infected_nontested_0_init_molecules_ml_1 + infected_tested_0_init_molecules_ml_1 + uninfected_nontested_0_init_molecules_ml_1 + uninfected_tested_0_init_molecules_ml_1 + recovered_nontested_0_init_molecules_ml_1 + recovered_tested_0_init_molecules_ml_1 + symptoms_nontested_0_init_molecules_ml_1 + symptoms_tested_0_init_molecules_ml_1)</Function><CompartmentSubDomain Name="Compartment"><BoundaryType Boundary="Xm" Type="Value" /><BoundaryType Boundary="Xp" Type="Value" /><BoundaryType Boundary="Ym" Type="Value" /><BoundaryType Boundary="Yp" Type="Value" /><BoundaryType Boundary="Zm" Type="Value" /><BoundaryType Boundary="Zp" Type="Value" /><OdeEquation Name="infected_nontested_0" SolutionType="Unknown"><Rate>(J_re1 + J_re3 - J_re4 - J_re5 - J_re16)</Rate><Initial>infected_nontested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="infected_tested_0" SolutionType="Unknown"><Rate>(J_re4 - J_re6 - J_re15)</Rate><Initial>infected_tested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="uninfected_nontested_0" SolutionType="Unknown"><Rate>( - J_re1 - J_re2 + J_re11 - J_re12)</Rate><Initial>uninfected_nontested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="uninfected_tested_0" SolutionType="Unknown"><Rate>(J_re2 - J_re3 - J_re17)</Rate><Initial>uninfected_tested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="symptoms_tested_0" SolutionType="Unknown"><Rate>(J_re6 + J_re7 - J_re8 - J_re9)</Rate><Initial>symptoms_tested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="symptoms_nontested_0" SolutionType="Unknown"><Rate>(J_re5 - J_re7 - J_re10 - J_re18)</Rate><Initial>symptoms_nontested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="recovered_tested_0" SolutionType="Unknown"><Rate>(J_re9 - J_re13)</Rate><Initial>recovered_tested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="recovered_nontested_0" SolutionType="Unknown"><Rate>(J_re10 - J_re14)</Rate><Initial>recovered_nontested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="dead_corona_tested_0" SolutionType="Unknown"><Rate>(J_re8 + J_re15)</Rate><Initial>dead_corona_tested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="dead_corona_nontested_0" SolutionType="Unknown"><Rate>(J_re16 + J_re18)</Rate><Initial>dead_corona_nontested_0_init_molecules_ml_1</Initial></OdeEquation><OdeEquation Name="dead_noncorona_0" SolutionType="Unknown"><Rate>(J_re12 + J_re13 + J_re14 + J_re17)</Rate><Initial>dead_noncorona_0_init_molecules_ml_1</Initial></OdeEquation></CompartmentSubDomain></MathDescription><Simulation Name="Simulation0"><SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Combined Stiff Solver (IDA/CVODE)"><TimeBound StartTime="0.0" EndTime="365.0" /><TimeStep DefaultTime="0.1" MinTime="1.0E-8" MaxTime="1.0" /><ErrorTolerance Absolut="1.0E-9" Relative="1.0E-9" /><OutputOptions KeepEvery="1" KeepAtMost="1000" /><NumberProcessors>1</NumberProcessors></SolverTaskDescription><MathOverrides /></Simulation><AssignmentRules><AssignmentRule Name="assignmentRule0" AssignmentRuleVariable="Total_Infection_coefficient">((((infected_nontested_0 * Infection_from_non_tested_no_symptoms_0) + (symptoms_nontested_0 * Infection_from_non_tested_symptoms) + (infected_tested_0 * Infection_from_tested_no_symptoms_0) + (symptoms_tested_0 * Infection_from_tested_symptoms)) * (1.0 - epidemic_extinguished_bool_0)) / Social_Distance)</AssignmentRule><AssignmentRule Name="assignmentRule1" AssignmentRuleVariable="dead_corona_perc_0">(((dead_corona_nontested_0 + dead_corona_tested_0) * 100.0) / total_population_0)</AssignmentRule><AssignmentRule Name="assignmentRule2" AssignmentRuleVariable="frac_coronaDeadOfAllDead_0">((100.0 * dead_corona_perc_0) / (dead_corona_perc_0 + dead_noncorona_perc_0))</AssignmentRule><AssignmentRule Name="assignmentRule3" AssignmentRuleVariable="registered_corona_0">(infected_tested_0 + symptoms_tested_0 + recovered_tested_0 + dead_corona_tested_0)</AssignmentRule><AssignmentRule Name="assignmentRule4" AssignmentRuleVariable="Social_Distance">(((Social_Distance_base * Government_induced_isolation_factor_0) * ((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0)))))) + (Social_Distance_base * !(((t &gt; Time_government_action_0) &amp;&amp; (intermittent_time &lt; (Time_government_action_0 - (lockdown_duration * (1.0 - timeFraction_lockdown_0))))))))</AssignmentRule><AssignmentRule Name="assignmentRule5" AssignmentRuleVariable="n_lockdowns">(((1.0 * ((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (0.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (1.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (2.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (3.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (4.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (5.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (6.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (7.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (8.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (9.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (10.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (11.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (12.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (13.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (14.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (15.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (16.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (17.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (18.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (19.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (20.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (21.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (22.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (23.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (24.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (25.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (26.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (27.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (28.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (29.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (30.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (31.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (32.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (33.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (34.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (35.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (36.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (37.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (38.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (39.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (40.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (41.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (42.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (43.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (44.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (45.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (46.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (47.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (48.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (49.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (50.0 * lockdown_duration))))) + ((1.0 * ((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))) + (0.0 * !(((t - Time_government_action_0) &gt; (51.0 * lockdown_duration))))))</AssignmentRule><AssignmentRule Name="assignmentRule6" AssignmentRuleVariable="infected_tested_div10">((infected_tested_0 * default) / 10.0)</AssignmentRule><AssignmentRule Name="assignmentRule7" AssignmentRuleVariable="dead_noncorona_perc_0">((dead_noncorona_0 * 100.0) / total_population_0)</AssignmentRule><AssignmentRule Name="assignmentRule8" AssignmentRuleVariable="total_population_0">(infected_nontested_0 + infected_tested_0 + uninfected_nontested_0 + uninfected_tested_0 + recovered_nontested_0 + recovered_tested_0 + symptoms_nontested_0 + symptoms_tested_0)</AssignmentRule><AssignmentRule Name="assignmentRule9" AssignmentRuleVariable="recovered_corona_perc_0">(((recovered_nontested_0 + recovered_tested_0) * 100.0) / total_population_0)</AssignmentRule><AssignmentRule Name="assignmentRule10" AssignmentRuleVariable="intermittent_time">((t - (n_lockdowns * lockdown_duration)) - (n_pauses * lockdownPause_duration_0))</AssignmentRule><AssignmentRule Name="assignmentRule11" AssignmentRuleVariable="epidemic_extinguished_bool_0">((1.0 * ((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff)) + (0.0 * !(((infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) &lt; number_cutoff))))</AssignmentRule><AssignmentRule Name="assignmentRule12" AssignmentRuleVariable="Government_induced_isolation_factor_0">(social_distancing_factor * (1.0 + (((2.5 * symptoms_tested_0) / symptomatic_numberTolerance_0) * ((0.0 * (t &lt; Time_government_action_0)) + (governmentResponseFactorToDiagnosedInfected_0 * !((t &lt; Time_government_action_0)))))))</AssignmentRule></AssignmentRules><MicroscopeMeasurement Name="fluor"><ConvolutionKernel Type="ProjectionZKernel" /></MicroscopeMeasurement></SimulationSpec><pathwayModel><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" version="3.0" /></pathwayModel><relationshipModel><RMNS version="3.0" /></relationshipModel><vcmetadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI0"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node0"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/mamo/MAMO_0000046" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node1"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/mamo/MAMO_0000028" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasTaxon xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node2"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/taxonomy/2697049" /></rdf:_1></rdf:Bag></bqbiol:hasTaxon><bqbiol:hasTaxon xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node3"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/taxonomy/9606" /></rdf:_1></rdf:Bag></bqbiol:hasTaxon><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node4"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/doid/DOID:0080600" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:isDescribedBy xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node5"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/pubmed/32532983" /></rdf:_1></rdf:Bag></bqbiol:isDescribedBy></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI1"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node6"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C48156" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI10"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node7"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000514" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI11"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node8"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node9"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node10"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI12"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node11"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node12"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node13"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI13"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node14"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI2"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node15"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node16"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000511" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node17"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI3"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node18"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node19"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node20"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000511" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI4"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node21"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node22"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/efo/0001460" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI48"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node23"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node24"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node25"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C128320" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI49"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node26"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node27"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/efo/0001460" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI5"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node28"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node29"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/efo/0001460" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI50"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node30"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node31"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node32"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C128320" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI51"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node33"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node34"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C128320" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI52"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node35"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node36"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node37"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI53"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node38"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node39"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node40"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI54"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node41"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node42"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI55"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node43"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI56"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node44"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node45"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node46"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C25746" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI57"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node47"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node48"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node49"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C25746" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI59"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node50"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI6"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node51"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node52"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node53"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node54"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000511" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI60"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node55"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI61"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node56"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI62"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node57"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI63"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node58"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI64"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node59"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI65"><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node60"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C28554" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI7"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node61"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C173069" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node62"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node63"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/C171133" /></rdf:_1></rdf:Bag></bqbiol:is><bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node64"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000511" /></rdf:_1></rdf:Bag></bqbiol:is></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI8"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node65"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C47891" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node66"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/0000621" /></rdf:_1></rdf:Bag></bqbiol:hasProperty></rdf:Description><rdf:Description rdf:about="http://www.sbml.org/sbml/level2/version4/COPASI9"><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node67"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ido/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty><bqbiol:hasProperty xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"><rdf:Bag rdf:nodeID="node68"><rdf:_1><rdf:Description rdf:about="http://identifiers.org/ncit/C101887" /></rdf:_1></rdf:Bag></bqbiol:hasProperty></rdf:Description></rdf:RDF><nonrdfAnnotationList><nonrdfAnnotation vcid="ReactionStep(re18)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re18 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s9" alias="sa6">
+                <celldesigner:linkAnchor position="NW" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s18" alias="sa12">
+                <celldesigner:linkAnchor position="SE" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI65">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:32Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(frac_coronaDeadOfAllDead_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI19">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-22T16:18:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re15)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re15  in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s5" alias="sa2">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s13" alias="sa11">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI62">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:18Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(infected_tested_div10)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI21">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2021-01-18T12:33:03Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(dead_noncorona_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>innocent-dead</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI13">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:00:06Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(epidemic_extinguished_bool_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI20">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-22T17:09:11Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re9)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re9 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s8" alias="sa5">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s14" alias="sa7">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI56">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C173069" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:58:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C25746" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re14)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re14 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s15" alias="sa8">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s18" alias="sa12">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI61">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:13Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re1)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re1 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s6" alias="sa3">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s4" alias="sa1">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+            <celldesigner:listOfModification>
+              <celldesigner:modification type="CATALYSIS" modifiers="s22" aliases="sa10" targetLineIndex="-1,4" editPoints="-0.02817442596291808,-0.011469491956719868 0.19116888845642027,-0.5502790570088124 1.0771813241170358,-0.1895933586475348">
+                <celldesigner:connectScheme connectPolicy="square">
+                  <celldesigner:listOfLineDirection>
+                    <celldesigner:lineDirection index="0" value="horizontal" />
+                    <celldesigner:lineDirection index="1" value="vertical" />
+                    <celldesigner:lineDirection index="2" value="horizontal" />
+                    <celldesigner:lineDirection index="3" value="vertical" />
+                  </celldesigner:listOfLineDirection>
+                </celldesigner:connectScheme>
+                <celldesigner:linkTarget species="s22" alias="sa10">
+                  <celldesigner:linkAnchor position="W" />
+                </celldesigner:linkTarget>
+                <celldesigner:line width="3.0" color="ffff6699" />
+              </celldesigner:modification>
+            </celldesigner:listOfModification>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI48">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:58:17Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C128320" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(recovered_tested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>recovered-tested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI8">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ido:0000621" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T15:00:24Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(susceptible_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PROTEIN</celldesigner:class>
+              <celldesigner:proteinReference>pr1</celldesigner:proteinReference>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI10">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:01:13Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ido:0000514" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(registered_corona_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI15">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T22:32:31Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(dead_corona_tested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>Corona-dead-tested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI11">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:59:51Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Structure(default)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI1">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-11-06T09:45:17Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C48156" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re8)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re8 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s8" alias="sa5">
+                <celldesigner:linkAnchor position="SW" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s13" alias="sa11">
+                <celldesigner:linkAnchor position="NE" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI55">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:21:02Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(recovered_nontested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>recovered-nontested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI9">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ido:C101887" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:19:22Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re6)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re6 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s5" alias="sa2">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s8" alias="sa5">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI53">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:54Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C173069" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re11)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re11 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s16" alias="sa9">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s6" alias="sa3">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="5.0" color="ff000000" />
+            <celldesigner:listOfModification>
+              <celldesigner:modification type="CATALYSIS" modifiers="s29" aliases="sa14" targetLineIndex="-1,2">
+                <celldesigner:connectScheme connectPolicy="direct">
+                  <celldesigner:listOfLineDirection>
+                    <celldesigner:lineDirection index="0" value="unknown" />
+                  </celldesigner:listOfLineDirection>
+                </celldesigner:connectScheme>
+                <celldesigner:linkTarget species="s29" alias="sa14">
+                  <celldesigner:linkAnchor position="S" />
+                </celldesigner:linkTarget>
+                <celldesigner:line width="3.0" color="ffff3366" />
+              </celldesigner:modification>
+            </celldesigner:listOfModification>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI58">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:04:23Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re17)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re17 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s7" alias="sa4">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s25" alias="sa13">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI64">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:28Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re3)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re3 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s7" alias="sa4">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s5" alias="sa2">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+            <celldesigner:listOfModification>
+              <celldesigner:modification type="CATALYSIS" modifiers="s22" aliases="sa10" targetLineIndex="-1,6" editPoints="0.025021622992395853,-0.1010096438712007 0.9672065065557284,0.1323838623539768">
+                <celldesigner:connectScheme connectPolicy="square">
+                  <celldesigner:listOfLineDirection>
+                    <celldesigner:lineDirection index="0" value="vertical" />
+                    <celldesigner:lineDirection index="1" value="horizontal" />
+                    <celldesigner:lineDirection index="2" value="vertical" />
+                  </celldesigner:listOfLineDirection>
+                </celldesigner:connectScheme>
+                <celldesigner:linkTarget species="s22" alias="sa10">
+                  <celldesigner:linkAnchor position="N" />
+                </celldesigner:linkTarget>
+                <celldesigner:line width="3.0" color="ffff6699" />
+              </celldesigner:modification>
+            </celldesigner:listOfModification>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI50">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:41Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C128320" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(dead_noncorona_perc_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI18">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-22T16:14:49Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(uninfected_nontested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>innocent-nontested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI4">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:00:12Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:efo:0001460" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re2)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re3 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s6" alias="sa3">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s7" alias="sa4">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI49">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:36Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:efo:0001460" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C47891" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re5)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re5 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s4" alias="sa1">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s9" alias="sa6">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI52">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:50Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C173069" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(recovered_corona_perc_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI17">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-21T19:49:34Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(symptoms_nontested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>symptoms-nontested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI7">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C173069" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:01:44Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ido:0000511" />
+                <CopasiMT:is rdf:resource="urn:miriam:ido:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re7)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re7 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s9" alias="sa6">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s8" alias="sa5">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI54">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:58Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C173069" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C47891" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re16)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re16 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s4" alias="sa1">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s18" alias="sa12">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI63">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:23Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re4)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re4 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s4" alias="sa1">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s5" alias="sa2">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI51">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:45Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C128320" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C47891" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re10)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re10 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s9" alias="sa6">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s15" alias="sa8">
+                <celldesigner:linkAnchor position="S" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI57">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C173069" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:58:25Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C25746" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(uninfected_tested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>inocent-tested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI5">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:00:17Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:efo:0001460" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(total_population_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>total population</celldesigner:name>
+            </celldesigner:speciesIdentity>
+            <celldesigner:listOfCatalyzedReactions>
+              <celldesigner:catalyzed reaction="re11" />
+            </celldesigner:listOfCatalyzedReactions>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI14">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:01:52Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(symptoms_tested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>symptoms-tested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI6">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C173069" />
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:01:48Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ido:0000511" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(dead_corona_perc_0)"><annotationList><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI16">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-21T16:04:05Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(infected_nontested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>infected-nontested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI2">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:59:56Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ido:0000511" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(infected_tested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>infected-tested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI3">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C47891" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:00:03Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ido:0000511" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="Species(dead_corona_nontested_0)"><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+            <celldesigner:speciesIdentity>
+              <celldesigner:class>PHENOTYPE</celldesigner:class>
+              <celldesigner:name>Corona-dead-nontested</celldesigner:name>
+            </celldesigner:speciesIdentity>
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI12">
+                <bqbiol:hasProperty rdf:resource="urn:miriam:ncit:C101887" />
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:59:45Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C171133" />
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="BioModel(Westerhoff2020 - Corona model of extinguishable epidemic with limited time incomplete lockdown)"><freetext>&lt;notes&gt;
+      &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+        &lt;pre&gt;Using standard systems biology methodologies a 14-compartment dynamic model was developed for the Corona virus epidemic. The model predicts that: (i) it will be impossible to limit lockdown intensity such that sufficient herd immunity develops for this epidemic to die down, (ii) the death toll from the SARS-CoV-2 virus decreases very strongly with increasing intensity of the lockdown, but (iii) the duration of the epidemic increases at first with that intensity and then decreases again, such that (iv) it may be best to begin with selecting a lockdown intensity beyond the intensity that leads to the maximum duration, (v) an intermittent lockdown strategy should also work and might be more acceptable socially and economically, (vi) an initially intensive but adaptive lockdown strategy should be most efficient, both in terms of its low number of casualties and shorter duration, (vii) such an adaptive lockdown strategy offers the advantage of being robust to unexpected imports of the virus, e.g. due to international travel, (viii) the eradication strategy may still be superior as it leads to even fewer deaths and a shorter period of economic downturn, but should have the adaptive strategy as backup in case of unexpected infection imports, (ix) earlier detection of infections is the most effective way in which the epidemic can be controlled, whilst waiting for vaccines.&lt;/pre&gt;
+      &lt;/body&gt;
+    &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+        <celldesigner:modelVersion>4.0</celldesigner:modelVersion>
+        <celldesigner:modelDisplay sizeX="1356" sizeY="412" />
+        <celldesigner:listOfCompartmentAliases />
+        <celldesigner:listOfComplexSpeciesAliases />
+        <celldesigner:listOfSpeciesAliases>
+          <celldesigner:speciesAlias id="sa1" species="s4">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="611.0157004275316" y="125.13814449062434" w="312.0" h="55.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="312.0" height="55.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffcc99ff" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa2" species="s5">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="634.0157004275316" y="235.13814449062434" w="276.0" h="55.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="276.0" height="55.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffffff66" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa3" species="s6">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="269.01570042753156" y="126.13814449062434" w="281.0" h="52.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="281.0" height="52.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffccffcc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa4" species="s7">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="312.01570042753156" y="234.13814449062434" w="231.0" h="52.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="231.0" height="52.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffccffcc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa5" species="s8">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="1041.0157004275316" y="237.13814449062434" w="309.0" h="53.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="309.0" height="53.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffff9900" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa6" species="s9">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="1031.0157004275316" y="127.13814449062434" w="319.0" h="53.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="319.0" height="53.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffcc99ff" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa7" species="s14">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="1049.0157004275316" y="349.1381444906243" w="299.0" h="44.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="299.0" height="44.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ff33cc00" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa8" species="s15">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="1027.0157004275316" y="25.13814449062434" w="317.0" h="49.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="317.0" height="49.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffcc99ff" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa9" species="s16">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="59.015700427531556" y="132.13814449062434" w="59.0" h="45.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="59.0" height="45.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffccffcc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa10" species="s22">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="27.015700427531556" y="343.1381444906243" w="492.0" h="55.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="492.0" height="55.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffff6666" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa11" species="s13">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="607.0157004275316" y="354.1381444906243" w="322.0" h="47.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="322.0" height="47.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffff00cc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa12" species="s18">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="598.0157004275316" y="32.13814449062434" w="338.0" h="43.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="338.0" height="43.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffcccccc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa13" species="s25">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="29.015700427531556" y="240.13814449062434" w="230.0" h="50.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="230.0" height="50.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ffcccccc" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+          <celldesigner:speciesAlias id="sa14" species="s29">
+            <celldesigner:activity>inactive</celldesigner:activity>
+            <celldesigner:bounds x="70.01570042753156" y="66.13814449062434" w="244.0" h="39.0" />
+            <celldesigner:font size="30" />
+            <celldesigner:view state="usual" />
+            <celldesigner:usualView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="244.0" height="39.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="ff33ff33" scheme="Color" />
+            </celldesigner:usualView>
+            <celldesigner:briefView>
+              <celldesigner:innerPosition x="0.0" y="0.0" />
+              <celldesigner:boxSize width="80.0" height="60.0" />
+              <celldesigner:singleLine width="1.0" />
+              <celldesigner:paint color="3fff0000" scheme="Color" />
+            </celldesigner:briefView>
+            <celldesigner:info state="empty" angle="-1.5707963267948966" />
+          </celldesigner:speciesAlias>
+        </celldesigner:listOfSpeciesAliases>
+        <celldesigner:listOfGroups />
+        <celldesigner:listOfProteins>
+          <celldesigner:protein id="pr1" name="S" type="GENERIC" />
+        </celldesigner:listOfProteins>
+        <celldesigner:listOfGenes />
+        <celldesigner:listOfRNAs />
+        <celldesigner:listOfAntisenseRNAs />
+        <celldesigner:listOfLayers />
+        <celldesigner:listOfBlockDiagrams />
+      </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dcterms="http://purl.org/dc/terms/">
+          <rdf:Description rdf:about="#COPASI0">
+            <bqbiol:hasProperty rdf:resource="urn:miriam:mamo:MAMO_0000028" />
+            <bqbiol:hasProperty rdf:resource="urn:miriam:mamo:MAMO_0000046" />
+            <bqbiol:hasTaxon rdf:resource="urn:miriam:taxonomy:2697049" />
+            <bqbiol:hasTaxon rdf:resource="urn:miriam:taxonomy:9606" />
+            <dcterms:bibliographicCitation>
+              <rdf:Description>
+                <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:32532983" />
+              </rdf:Description>
+            </dcterms:bibliographicCitation>
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2020-03-19T13:58:08Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+            <CopasiMT:is rdf:resource="urn:miriam:doid:DOID:0080600" />
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re12)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re12 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s6" alias="sa3">
+                <celldesigner:linkAnchor position="SW" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s25" alias="sa13">
+                <celldesigner:linkAnchor position="N" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="5.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI59">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T13:58:27Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation><nonrdfAnnotation vcid="ReactionStep(re13)"><freetext>&lt;notes&gt;
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;pre&gt;re13 in article&lt;/pre&gt;
+          &lt;/body&gt;
+        &lt;/notes&gt;</freetext><annotationList><annotation>
+  <celldesigner:extension xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner">
+            <celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+            <celldesigner:baseReactants>
+              <celldesigner:baseReactant species="s14" alias="sa7">
+                <celldesigner:linkAnchor position="W" />
+              </celldesigner:baseReactant>
+            </celldesigner:baseReactants>
+            <celldesigner:baseProducts>
+              <celldesigner:baseProduct species="s13" alias="sa11">
+                <celldesigner:linkAnchor position="E" />
+              </celldesigner:baseProduct>
+            </celldesigner:baseProducts>
+            <celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+              <celldesigner:listOfLineDirection>
+                <celldesigner:lineDirection index="0" value="unknown" />
+              </celldesigner:listOfLineDirection>
+            </celldesigner:connectScheme>
+            <celldesigner:line width="1.0" color="ff000000" />
+          </celldesigner:extension>
+</annotation><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/">
+              <rdf:Description rdf:about="#COPASI60">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2020-03-19T14:20:08Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+                <CopasiMT:is rdf:resource="urn:miriam:ncit:C28554" />
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+</annotation></annotationList></nonrdfAnnotation></nonrdfAnnotationList><uriBindingList><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI9" vcid="Species(recovered_nontested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI3" vcid="Species(infected_tested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI57" vcid="ReactionStep(re10)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI48" vcid="ReactionStep(re1)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI4" vcid="Species(uninfected_nontested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI16" vcid="Species(dead_corona_perc_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI5" vcid="Species(uninfected_tested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI60" vcid="ReactionStep(re13)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI17" vcid="Species(recovered_corona_perc_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI63" vcid="ReactionStep(re16)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI61" vcid="ReactionStep(re14)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI55" vcid="ReactionStep(re8)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI59" vcid="ReactionStep(re12)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI50" vcid="ReactionStep(re3)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI54" vcid="ReactionStep(re7)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI58" vcid="ReactionStep(re11)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI65" vcid="ReactionStep(re18)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI18" vcid="Species(dead_noncorona_perc_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI19" vcid="Species(frac_coronaDeadOfAllDead_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI11" vcid="Species(dead_corona_tested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI10" vcid="Species(susceptible_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI53" vcid="ReactionStep(re6)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI49" vcid="ReactionStep(re2)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI21" vcid="Species(infected_tested_div10)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI1" vcid="Structure(default)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI51" vcid="ReactionStep(re4)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI8" vcid="Species(recovered_tested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI12" vcid="Species(dead_corona_nontested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI13" vcid="Species(dead_noncorona_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI15" vcid="Species(registered_corona_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI20" vcid="Species(epidemic_extinguished_bool_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI62" vcid="ReactionStep(re15)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI7" vcid="Species(symptoms_nontested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI14" vcid="Species(total_population_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI6" vcid="Species(symptoms_tested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI64" vcid="ReactionStep(re17)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI56" vcid="ReactionStep(re9)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI2" vcid="Species(infected_nontested_0)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI52" vcid="ReactionStep(re5)" /><uriBinding uri="http://www.sbml.org/sbml/level2/version4/COPASI0" vcid="BioModel(Westerhoff2020 - Corona model of extinguishable epidemic with limited time incomplete lockdown)" /></uriBindingList></vcmetadata></BioModel></vcml>

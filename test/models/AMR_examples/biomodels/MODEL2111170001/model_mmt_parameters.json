@@ -1,0 +1,274 @@
+{
+    "parameters": {
+        "C1": {
+            "name": "C1",
+            "identifiers": {},
+            "context": {},
+            "value": 20.0
+        },
+        "C2": {
+            "name": "C2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "muA": {
+            "name": "muA",
+            "identifiers": {},
+            "context": {},
+            "value": 0.00035
+        },
+        "muM": {
+            "name": "muM",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0005
+        },
+        "mu_M": {
+            "name": "mu_M",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "r2": {
+            "name": "r2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.055
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 7.73
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.006
+        },
+        "Ka1": {
+            "name": "Ka1",
+            "identifiers": {},
+            "context": {},
+            "value": 20320.0
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05
+        },
+        "a2": {
+            "name": "a2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0005
+        },
+        "a2_0": {
+            "name": "a2_0",
+            "identifiers": {},
+            "context": {},
+            "value": 2.8e-05
+        },
+        "KA": {
+            "name": "KA",
+            "identifiers": {},
+            "context": {},
+            "value": 53000.0
+        },
+        "rM": {
+            "name": "rM",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "rM_0": {
+            "name": "rM_0",
+            "identifiers": {},
+            "context": {},
+            "value": 350.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.16666
+        },
+        "Kv": {
+            "name": "Kv",
+            "identifiers": {},
+            "context": {},
+            "value": 1000.0
+        },
+        "qv": {
+            "name": "qv",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "muV": {
+            "name": "muV",
+            "identifiers": {},
+            "context": {},
+            "value": 0.3333
+        },
+        "pV": {
+            "name": "pV",
+            "identifiers": {},
+            "context": {},
+            "value": 3.18
+        },
+        "pV_0": {
+            "name": "pV_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0318
+        },
+        "u": {
+            "name": "u",
+            "identifiers": {},
+            "context": {},
+            "value": 0.005
+        },
+        "mu1": {
+            "name": "mu1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.013888
+        },
+        "kM0": {
+            "name": "kM0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0001
+        },
+        "kM": {
+            "name": "kM",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0003
+        },
+        "pX": {
+            "name": "pX",
+            "identifiers": {},
+            "context": {},
+            "value": 0.006
+        },
+        "Kx": {
+            "name": "Kx",
+            "identifiers": {},
+            "context": {},
+            "value": 500.0
+        },
+        "pf1": {
+            "name": "pf1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.01
+        },
+        "pf2": {
+            "name": "pf2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "muF": {
+            "name": "muF",
+            "identifiers": {},
+            "context": {},
+            "value": 0.35
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "Kf": {
+            "name": "Kf",
+            "identifiers": {},
+            "context": {},
+            "value": 100.0
+        },
+        "qF": {
+            "name": "qF",
+            "identifiers": {},
+            "context": {},
+            "value": 40.0
+        },
+        "pT": {
+            "name": "pT",
+            "identifiers": {},
+            "context": {},
+            "value": 0.12
+        },
+        "r": {
+            "name": "r",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "Kt": {
+            "name": "Kt",
+            "identifiers": {},
+            "context": {},
+            "value": 300.0
+        },
+        "muX": {
+            "name": "muX",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "muT": {
+            "name": "muT",
+            "identifiers": {},
+            "context": {},
+            "value": 0.29
+        },
+        "T0": {
+            "name": "T0",
+            "identifiers": {},
+            "context": {},
+            "value": 5.0
+        },
+        "q": {
+            "name": "q",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "A2act": {
+            "name": "A2act",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "AT": {
+            "name": "AT",
+            "identifiers": {},
+            "context": {},
+            "value": 52500000000.0
+        },
+        "A2": {
+            "name": "A2",
+            "identifiers": {},
+            "context": {},
+            "value": 32900000000.0
+        },
+        "A": {
+            "name": "A",
+            "identifiers": {},
+            "context": {},
+            "value": 4360465.11627907
+        }
+    }
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 228) on 2020-08-26 20:04 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="500.00000001" numberOfPoints="1050">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model1" language="urn:sedml:language:sbml" source="model1.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model1" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Unquarantined_Infected_1_task1" name="[Unquarantined_Infected]">
+      <listOfVariables>
+        <variable id="p1_Unquarantined_Infected_task1" name="Unquarantined_Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Unquarantined_Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Unquarantined_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Quarantined_Infected_2_task1" name="[Quarantined_Infected]">
+      <listOfVariables>
+        <variable id="p1_Quarantined_Infected_task1" name="Quarantined_Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Quarantined_Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Quarantined_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Confirmed_Infected_3_task1" name="[Confirmed_Infected]">
+      <listOfVariables>
+        <variable id="p1_Confirmed_Infected_task1" name="Confirmed_Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Confirmed_Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Confirmed_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Cumulative_Infected_4_task1" name="[Cumulative_Infected]">
+      <listOfVariables>
+        <variable id="p1_Cumulative_Infected_task1" name="Cumulative_Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Cumulative_Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Cumulative_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="Concentrations, Volumes, and Global Quantity Values">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="[Unquarantined_Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Unquarantined_Infected_1_task1"/>
+        <curve id="p1_curve_2_task1" name="[Quarantined_Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Quarantined_Infected_2_task1"/>
+        <curve id="p1_curve_3_task1" name="[Confirmed_Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Confirmed_Infected_3_task1"/>
+        <curve id="p1_curve_4_task1" name="[Cumulative_Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Cumulative_Infected_4_task1"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

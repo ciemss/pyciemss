@@ -1,0 +1,323 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infectious*Susceptible*beta/N",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infectious",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C25376"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised*Susceptible*beta*l/N",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Hospitalised",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Super_spreaders*Susceptible*beta_prime/N",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Super_spreaders",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C49508"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*kappa*(-rho1 - rho2 + 1.0)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*kappa*rho2",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Super_spreaders",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C49508"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*kappa*rho1",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infectious",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C25376"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Super_spreaders*delta_p",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Super_spreaders",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C49508"
+                }
+            },
+            "outcome": {
+                "name": "Fatalities",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Super_spreaders*gamma_a",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Super_spreaders",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C49508"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Super_spreaders*gamma_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Super_spreaders",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C49508"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infectious*delta_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infectious",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C25376"
+                }
+            },
+            "outcome": {
+                "name": "Fatalities",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infectious*gamma_a",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infectious",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C25376"
+                }
+            },
+            "outcome": {
+                "name": "Hospitalised",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infectious*gamma_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infectious",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "transmissibility": "ncit:C25376"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised*gamma_r",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Hospitalised*delta_h",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Hospitalised",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "hospitalization": "ncit:C25179"
+                }
+            },
+            "outcome": {
+                "name": "Fatalities",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

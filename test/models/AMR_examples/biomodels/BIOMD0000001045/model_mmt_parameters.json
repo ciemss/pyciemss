@@ -1,0 +1,22 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33
+        },
+        "New_York_1968_69": {
+            "name": "New_York_1968_69",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

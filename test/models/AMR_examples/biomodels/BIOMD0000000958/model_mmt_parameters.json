@@ -1,0 +1,94 @@
+{
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 2.8
+        },
+        "beta_prime": {
+            "name": "beta_prime",
+            "identifiers": {},
+            "context": {},
+            "value": 7.65
+        },
+        "rho1": {
+            "name": "rho1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.58
+        },
+        "rho2": {
+            "name": "rho2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.001
+        },
+        "l": {
+            "name": "l",
+            "identifiers": {},
+            "context": {},
+            "value": 1.56
+        },
+        "kappa": {
+            "name": "kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "gamma_a": {
+            "name": "gamma_a",
+            "identifiers": {},
+            "context": {},
+            "value": 0.94
+        },
+        "gamma_i": {
+            "name": "gamma_i",
+            "identifiers": {},
+            "context": {},
+            "value": 0.27
+        },
+        "gamma_r": {
+            "name": "gamma_r",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "delta_i": {
+            "name": "delta_i",
+            "identifiers": {},
+            "context": {},
+            "value": 0.035
+        },
+        "delta_p": {
+            "name": "delta_p",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "delta_h": {
+            "name": "delta_h",
+            "identifiers": {},
+            "context": {},
+            "value": 0.085
+        },
+        "N": {
+            "name": "N",
+            "identifiers": {},
+            "context": {},
+            "value": 44000.0
+        },
+        "Confimed_cases": {
+            "name": "Confimed_cases",
+            "identifiers": {},
+            "context": {},
+            "value": 6.0
+        },
+        "Wuhan": {
+            "name": "Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

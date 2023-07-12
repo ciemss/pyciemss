@@ -1,0 +1,481 @@
+{
+    "templates": [
+        {
+            "rate_law": "susceptible*transmission_rate_effective*(1 - delta)*(1 - eps)*(alpha*asymptomatic + symptomatic)/(asymptomatic + exposed + recovered + susceptible + symptomatic)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "asymptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C3833"
+                    }
+                },
+                {
+                    "name": "exposed",
+                    "identifiers": {
+                        "apollosv": "00000154"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "recovered",
+                    "identifiers": {
+                        "ido": "0000592"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "symptomatic",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "disease_severity": "ncit:C25269"
+                    }
+                }
+            ],
+            "subject": {
+                "name": "susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "exposed*sigma*(1.0 - nu)",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "exposed*nu*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "psi*symptomatic",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "outcome": {
+                "name": "detected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "asymptomatic*theta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "detected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "gamma_0*symptomatic",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "outcome": {
+                "name": "recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "asymptomatic*gamma_a",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "outcome": {
+                "name": "recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "detected*gamma_i",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "detected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "d_0*symptomatic",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "outcome": {
+                "name": "deceased",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "d_D*detected",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "detected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "outcome": {
+                "name": "deceased",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "transmission_rate_effective": {
+            "name": "transmission_rate_effective",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4236
+        },
+        "gamma_a": {
+            "name": "gamma_a",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13978
+        },
+        "gamma_0": {
+            "name": "gamma_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13978
+        },
+        "gamma_i": {
+            "name": "gamma_i",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0666666666666667
+        },
+        "psi": {
+            "name": "psi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0135
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8999e-12
+        },
+        "d_0": {
+            "name": "d_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.015
+        },
+        "d_D": {
+            "name": "d_D",
+            "identifiers": {},
+            "context": {},
+            "value": 0.015
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.192307692307692
+        },
+        "nu": {
+            "name": "nu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "eps": {
+            "name": "eps",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "lam": {
+            "name": "lam",
+            "identifiers": {},
+            "context": {},
+            "value": 9.02103115891956e-06
+        },
+        "exposed_start": {
+            "name": "exposed_start",
+            "identifiers": {},
+            "context": {},
+            "value": 441.0
+        },
+        "asymptomatic_start": {
+            "name": "asymptomatic_start",
+            "identifiers": {},
+            "context": {},
+            "value": 188.0
+        },
+        "symptomatic_start": {
+            "name": "symptomatic_start",
+            "identifiers": {},
+            "context": {},
+            "value": 212.0
+        },
+        "Lagos": {
+            "name": "Lagos",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "susceptible": {
+            "concept": {
+                "name": "susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "value": 14367982.0
+        },
+        "exposed": {
+            "concept": {
+                "name": "exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "value": 441.0
+        },
+        "asymptomatic": {
+            "concept": {
+                "name": "asymptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C3833"
+                }
+            },
+            "value": 188.0
+        },
+        "symptomatic": {
+            "concept": {
+                "name": "symptomatic",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "disease_severity": "ncit:C25269"
+                }
+            },
+            "value": 212.0
+        },
+        "detected": {
+            "concept": {
+                "name": "detected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "diagnosis": "ncit:C15220"
+                }
+            },
+            "value": 1.0
+        },
+        "recovered": {
+            "concept": {
+                "name": "recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "deceased": {
+            "concept": {
+                "name": "deceased",
+                "identifiers": {
+                    "ncit": "C28554"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "total_pop": {
+            "concept": {
+                "name": "total_pop",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000991:total_pop"
+                },
+                "context": {}
+            },
+            "value": 14368824.0
+        },
+        "detected_cumulative": {
+            "concept": {
+                "name": "detected_cumulative",
+                "identifiers": {
+                    "biomodels.species": "BIOMD0000000991:detected_cumulative"
+                },
+                "context": {}
+            },
+            "value": 1.0
+        }
+    },
+    "annotations": {
+        "name": "Okuonghae2020 - SEAIR model of COVID-19 transmission in Lagos, Nigeria",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:32834593"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

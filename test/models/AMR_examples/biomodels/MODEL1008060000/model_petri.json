@@ -1,0 +1,107 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Removed",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Zombie",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "delta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "delta",
+            "parameter_value": "0.0001",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "beta",
+            "parameter_value": "0.0055",
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "zeta",
+            "parameter_value": "0.09",
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "ControlledConversion",
+            "parameter_name": "alpha",
+            "parameter_value": "0.0075",
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 1,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 5
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 2
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 1,
+            "ot": 5
+        },
+        {
+            "os": 2,
+            "ot": 5
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "annotations": {
+        "name": "Lee2018 - Avian human bilinear incidence (BI) model",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:329376",
+            "ncbitaxon:8782"
+        ],
+        "diseases": [
+            "efo:0005222"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

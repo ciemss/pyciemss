@@ -1,0 +1,84 @@
+{
+    "initials": {
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {
+                "ido": "0000514"
+            },
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {
+                        "ido": "0000514"
+                    },
+                    "context": {}
+                },
+                "value": 9010000.0
+            }
+        },
+        "Unquarantined_Infected": {
+            "name": "Unquarantined_Infected",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "quarantined": "ncit:C68851"
+            },
+            "value": {
+                "concept": {
+                    "name": "Unquarantined_Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C68851"
+                    }
+                },
+                "value": 258.0
+            }
+        },
+        "Quarantined_Infected": {
+            "name": "Quarantined_Infected",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "quarantined": "ncit:C71902"
+            },
+            "value": {
+                "concept": {
+                    "name": "Quarantined_Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "quarantined": "ncit:C71902"
+                    }
+                },
+                "value": 0.0
+            }
+        },
+        "Confirmed_Infected": {
+            "name": "Confirmed_Infected",
+            "identifiers": {
+                "ido": "0000511"
+            },
+            "context": {
+                "diagnosis": "ncit:C15220"
+            },
+            "value": {
+                "concept": {
+                    "name": "Confirmed_Infected",
+                    "identifiers": {
+                        "ido": "0000511"
+                    },
+                    "context": {
+                        "diagnosis": "ncit:C15220"
+                    }
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

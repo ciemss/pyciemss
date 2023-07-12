@@ -1,0 +1,178 @@
+{
+    "parameters": {
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.57
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.011
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.456
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.011
+        },
+        "epsilon": {
+            "name": "epsilon",
+            "identifiers": {},
+            "context": {},
+            "value": 0.171
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.371
+        },
+        "zeta": {
+            "name": "zeta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.125
+        },
+        "eta": {
+            "name": "eta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.125
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.017
+        },
+        "nu": {
+            "name": "nu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.027
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 0.01
+        },
+        "kappa": {
+            "name": "kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.017
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.034
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.017
+        },
+        "xi": {
+            "name": "xi",
+            "identifiers": {},
+            "context": {},
+            "value": 0.017
+        },
+        "Event_trigger_Fig3b": {
+            "name": "Event_trigger_Fig3b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Event_trigger_Fig3d": {
+            "name": "Event_trigger_Fig3d",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Event_trigger_Fig4b": {
+            "name": "Event_trigger_Fig4b",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "Event_trigger_Fig4d": {
+            "name": "Event_trigger_Fig4d",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "epsilon_modifier": {
+            "name": "epsilon_modifier",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "alpha_modifier": {
+            "name": "alpha_modifier",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "ModelValue_16": {
+            "name": "ModelValue_16",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_17": {
+            "name": "ModelValue_17",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_18": {
+            "name": "ModelValue_18",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_19": {
+            "name": "ModelValue_19",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "ModelValue_21": {
+            "name": "ModelValue_21",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "ModelValue_20": {
+            "name": "ModelValue_20",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Italy": {
+            "name": "Italy",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 0.034
+        }
+    }
+}

@@ -1,0 +1,303 @@
+{
+    "templates": [
+        {
+            "rate_law": "A",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000715:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000715:I"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000715:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*S*beta*exp(-M*alpha)",
+            "type": "GroupedControlledConversion",
+            "controllers": [
+                {
+                    "name": "I",
+                    "identifiers": {
+                        "ido": "0000511",
+                        "biomodels.species": "BIOMD0000000715:I"
+                    },
+                    "context": {}
+                },
+                {
+                    "name": "M",
+                    "identifiers": {
+                        "ncit": "C62608",
+                        "biomodels.species": "BIOMD0000000715:M"
+                    },
+                    "context": {}
+                }
+            ],
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000715:S"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "E",
+                "identifiers": {
+                    "ncit": "C71551",
+                    "biomodels.species": "BIOMD0000000715:E"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "S*alpha1",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000715:S"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E*rho",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "E",
+                "identifiers": {
+                    "ncit": "C71551",
+                    "biomodels.species": "BIOMD0000000715:E"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000715:I"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "E*alpha1",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "E",
+                "identifiers": {
+                    "ncit": "C71551",
+                    "biomodels.species": "BIOMD0000000715:E"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "I*(alpha1 + alpha2)",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000715:I"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "M*tau",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "M",
+                "identifiers": {
+                    "ncit": "C62608",
+                    "biomodels.species": "BIOMD0000000715:M"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "A": {
+            "name": "A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.08
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "mu1": {
+            "name": "mu1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.99
+        },
+        "mu2": {
+            "name": "mu2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.4
+        },
+        "mu3": {
+            "name": "mu3",
+            "identifiers": {},
+            "context": {},
+            "value": 0.8
+        },
+        "alpha1": {
+            "name": "alpha1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "alpha2": {
+            "name": "alpha2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 0.6
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible Individuals (S)": {
+            "concept": {
+                "name": "S",
+                "identifiers": {
+                    "ido": "0000514",
+                    "biomodels.species": "BIOMD0000000715:S"
+                },
+                "context": {}
+            },
+            "value": 3.5
+        },
+        "Exposed Individuals (E)": {
+            "concept": {
+                "name": "E",
+                "identifiers": {
+                    "ncit": "C71551",
+                    "biomodels.species": "BIOMD0000000715:E"
+                },
+                "context": {}
+            },
+            "value": 2.5
+        },
+        "Infected Individuals (I)": {
+            "concept": {
+                "name": "I",
+                "identifiers": {
+                    "ido": "0000511",
+                    "biomodels.species": "BIOMD0000000715:I"
+                },
+                "context": {}
+            },
+            "value": 3.0
+        },
+        "Message (M)": {
+            "concept": {
+                "name": "M",
+                "identifiers": {
+                    "ncit": "C62608",
+                    "biomodels.species": "BIOMD0000000715:M"
+                },
+                "context": {}
+            },
+            "value": 6.0
+        },
+        "Total population (N)": {
+            "concept": {
+                "name": "N",
+                "identifiers": {
+                    "ncit": "C25304",
+                    "obi": "0000181",
+                    "biomodels.species": "BIOMD0000000715:N"
+                },
+                "context": {}
+            },
+            "value": 9.0
+        }
+    },
+    "annotations": {
+        "name": "Huo2017 - SEIS epidemic model with the impact of media",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [
+            "efo:0005741"
+        ],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000046"
+        ]
+    }
+}

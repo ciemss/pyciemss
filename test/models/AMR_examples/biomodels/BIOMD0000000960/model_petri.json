@@ -1,0 +1,256 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[]",
+            "mira_initial_value": 9900000.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 36600.0
+        },
+        {
+            "sname": "Infectious",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C25269'), ('hospitalization', 'ncit:C68851')]",
+            "mira_initial_value": 732.0
+        },
+        {
+            "sname": "Asymptomatic",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C3833'), ('hospitalization', 'ncit:C68851')]",
+            "mira_initial_value": 2196.0
+        },
+        {
+            "sname": "Hospitalized",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('disease_severity', 'ncit:C25269'), ('hospitalization', 'ncit:C25179')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Deceased",
+            "mira_ids": "[('identity', 'ncit:C28554')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_5",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_7",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_8",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_9",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_10",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_11",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 3,
+            "it": 1
+        },
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 4,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 5,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 3,
+            "it": 7
+        },
+        {
+            "is": 3,
+            "it": 8
+        },
+        {
+            "is": 4,
+            "it": 9
+        },
+        {
+            "is": 4,
+            "it": 10
+        },
+        {
+            "is": 5,
+            "it": 11
+        },
+        {
+            "is": 5,
+            "it": 12
+        }
+    ],
+    "O": [
+        {
+            "os": 3,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 4,
+            "ot": 2
+        },
+        {
+            "os": 2,
+            "ot": 2
+        },
+        {
+            "os": 5,
+            "ot": 3
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 5,
+            "ot": 6
+        },
+        {
+            "os": 6,
+            "ot": 7
+        },
+        {
+            "os": 7,
+            "ot": 8
+        },
+        {
+            "os": 6,
+            "ot": 9
+        },
+        {
+            "os": 7,
+            "ot": 10
+        },
+        {
+            "os": 7,
+            "ot": 11
+        },
+        {
+            "os": 6,
+            "ot": 12
+        }
+    ]
+}

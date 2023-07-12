@@ -1,0 +1,154 @@
+{
+    "parameters": {
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0125
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "kappa": {
+            "name": "kappa",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v": {
+            "name": "v",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "gamma1": {
+            "name": "gamma1",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "gamma2": {
+            "name": "gamma2",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "kappa1": {
+            "name": "kappa1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "kappa2": {
+            "name": "kappa2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "v1": {
+            "name": "v1",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "v2": {
+            "name": "v2",
+            "identifiers": {},
+            "context": {},
+            "value": 2.0
+        },
+        "beta1": {
+            "name": "beta1",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "beta2": {
+            "name": "beta2",
+            "identifiers": {},
+            "context": {},
+            "value": 260.0
+        },
+        "alpha1": {
+            "name": "alpha1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "alpha2": {
+            "name": "alpha2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "lambda1": {
+            "name": "lambda1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.26
+        },
+        "lambda2": {
+            "name": "lambda2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.26
+        },
+        "sigma1": {
+            "name": "sigma1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "sigma2": {
+            "name": "sigma2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "X_Sdot": {
+            "name": "X_Sdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.489
+        },
+        "X_Idot": {
+            "name": "X_Idot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.001
+        },
+        "X_Rdot": {
+            "name": "X_Rdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.41
+        },
+        "X_Wdot": {
+            "name": "X_Wdot",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.49
+        },
+        "compartment": {
+            "name": "compartment",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

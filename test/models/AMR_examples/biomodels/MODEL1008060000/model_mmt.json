@@ -1,0 +1,186 @@
+{
+    "templates": [
+        {
+            "rate_law": "Susceptible*delta",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*Zombie*beta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Removed*zeta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*Zombie*alpha",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "subject": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "N": {
+            "name": "N",
+            "identifiers": {},
+            "context": {},
+            "value": 500.0
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "delta": {
+            "name": "delta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0001
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0055
+        },
+        "zeta": {
+            "name": "zeta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.09
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0075
+        },
+        "n": {
+            "name": "n",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "k": {
+            "name": "k",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 2.5
+        },
+        "env": {
+            "name": "env",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "Zombie": {
+            "concept": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "Removed": {
+            "concept": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "value": 0.0
+        }
+    },
+    "annotations": {
+        "name": "Munz2009 - Zombi Impulsive Killing",
+        "description": null,
+        "license": null,
+        "authors": [],
+        "references": [
+            "isbn:ISBN:1607413477"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": []
+    }
+}

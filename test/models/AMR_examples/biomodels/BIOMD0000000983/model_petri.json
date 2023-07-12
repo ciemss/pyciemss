@@ -1,0 +1,264 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible_confined",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Susceptible_unconfined",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('quarantined', 'ncit:C68851')]",
+            "mira_initial_value": 66990000.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[('identity', 'apollosv:00000154')]",
+            "mira_context": "[]",
+            "mira_initial_value": 112.0
+        },
+        {
+            "sname": "Infected_reported",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosis', 'ncit:C15220')]",
+            "mira_initial_value": 12.0
+        },
+        {
+            "sname": "Infected_unreported",
+            "mira_ids": "[('identity', 'ido:0000511')]",
+            "mira_context": "[('diagnosed', 'ncit:C113725')]",
+            "mira_initial_value": 50.0
+        },
+        {
+            "sname": "Quarantined",
+            "mira_ids": "[('identity', 'ido:0000514')]",
+            "mira_context": "[('quarantined', 'ncit:C71902')]",
+            "mira_initial_value": 36.0
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[('identity', 'ido:0000592')]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_5",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "ControlledConversion",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_7",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_8",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_9",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_r",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "eta_u",
+            "parameter_value": "0.25",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_12",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 1
+        },
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 4,
+            "it": 3
+        },
+        {
+            "is": 2,
+            "it": 3
+        },
+        {
+            "is": 5,
+            "it": 4
+        },
+        {
+            "is": 2,
+            "it": 4
+        },
+        {
+            "is": 4,
+            "it": 5
+        },
+        {
+            "is": 2,
+            "it": 5
+        },
+        {
+            "is": 5,
+            "it": 6
+        },
+        {
+            "is": 2,
+            "it": 6
+        },
+        {
+            "is": 6,
+            "it": 7
+        },
+        {
+            "is": 3,
+            "it": 8
+        },
+        {
+            "is": 3,
+            "it": 9
+        },
+        {
+            "is": 4,
+            "it": 10
+        },
+        {
+            "is": 5,
+            "it": 11
+        },
+        {
+            "is": 6,
+            "it": 12
+        }
+    ],
+    "O": [
+        {
+            "os": 2,
+            "ot": 1
+        },
+        {
+            "os": 1,
+            "ot": 2
+        },
+        {
+            "os": 4,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 5,
+            "ot": 4
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 6,
+            "ot": 5
+        },
+        {
+            "os": 5,
+            "ot": 6
+        },
+        {
+            "os": 6,
+            "ot": 6
+        },
+        {
+            "os": 4,
+            "ot": 7
+        },
+        {
+            "os": 4,
+            "ot": 8
+        },
+        {
+            "os": 5,
+            "ot": 9
+        },
+        {
+            "os": 7,
+            "ot": 10
+        },
+        {
+            "os": 7,
+            "ot": 11
+        },
+        {
+            "os": 2,
+            "ot": 12
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "S": [
+        {
+            "sname": "Susceptible",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 2500.0
+        },
+        {
+            "sname": "Recovered",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Exposed",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "Infected",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Human_rho",
+            "parameter_value": "0.0146",
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Human_v_h",
+            "parameter_value": "0.08333",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_6",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "Human_gamma",
+            "parameter_value": "0.003704",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_8",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_9",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 2,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 4
+        },
+        {
+            "is": 3,
+            "it": 5
+        },
+        {
+            "is": 3,
+            "it": 6
+        },
+        {
+            "is": 4,
+            "it": 7
+        },
+        {
+            "is": 4,
+            "it": 8
+        },
+        {
+            "is": 2,
+            "it": 9
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 1,
+            "ot": 2
+        },
+        {
+            "os": 3,
+            "ot": 3
+        },
+        {
+            "os": 4,
+            "ot": 5
+        },
+        {
+            "os": 2,
+            "ot": 7
+        }
+    ]
+}

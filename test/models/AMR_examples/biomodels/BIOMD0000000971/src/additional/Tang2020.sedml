@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.29 (Build 228) on 2020-11-02 15:12 with libSBML version 5.18.0. -->
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" level="1" version="2">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="55" numberOfPoints="55">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model" simulationReference="sim1"/>
+    <repeatedTask id="task2" range="range0" resetModel="true">
+      <listOfRanges>
+        <vectorRange id="range0">
+          <value> 1.8887e-07 </value>
+          <value> 9.4435e-07 </value>
+          <value> 1.8887e-06 </value>
+          <value> 2.83305e-06 </value>
+          <value> 3.7774e-06 </value>
+        </vectorRange>
+      </listOfRanges>
+      <listOfChanges>
+        <setValue range="range0" modelReference="model" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;q_lockdown&apos;]">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> range0 </ci>
+          </math>
+        </setValue>
+      </listOfChanges>
+      <listOfSubTasks>
+        <subTask order="1" task="task1"/>
+      </listOfSubTasks>
+    </repeatedTask>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time_task1" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task1" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_1_task1" name="[Infected]">
+      <listOfVariables>
+        <variable id="p1_Infected_task1" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Infected_task1 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="time_task2" name="Time">
+      <listOfVariables>
+        <variable id="var_time_task2" symbol="urn:sedml:symbol:time" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time_task2 </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Infected_1_task2" name="[Infected]">
+      <listOfVariables>
+        <variable id="p1_Infected_task2" name="Infected" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Infected&apos;]" taskReference="task2"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Infected_task2 </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_1_task1" name="Concentrations, Volumes, and Global Quantity Values">
+      <listOfCurves>
+        <curve id="p1_curve_1_task1" name="[Infected]" logX="false" logY="false" xDataReference="time_task1" yDataReference="Infected_1_task1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2_task2" name="Concentrations, Volumes, and Global Quantity Values">
+      <listOfCurves>
+        <curve id="p1_curve_1_task2" name="[Infected]" logX="false" logY="false" xDataReference="time_task2" yDataReference="Infected_1_task2"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

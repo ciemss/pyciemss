@@ -1,0 +1,180 @@
+{
+    "templates": [
+        {
+            "rate_law": "Infected_weak_immune_system*Susceptible*alpha*tau",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_strong_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62223"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_strong_immune_system*Susceptible*alpha*tau",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_strong_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62223"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_strong_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62223"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_strong_immune_system*Susceptible*tau*(1.0 - alpha)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_strong_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62223"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_weak_immune_system*Susceptible*tau*(1.0 - alpha)",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_strong_immune_system*gamma_1",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_strong_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62223"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_weak_immune_system*gamma_2",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected_weak_immune_system*mu",
+            "type": "NaturalDegradation",
+            "subject": {
+                "name": "Infected_weak_immune_system",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {
+                    "immune_system": "ncit:C62224"
+                }
+            },
+            "provenance": []
+        }
+    ]
+}

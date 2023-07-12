@@ -1,0 +1,69 @@
+{
+    "initials": {
+        "Susceptible": {
+            "name": "Susceptible",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Susceptible",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Infected": {
+            "name": "Infected",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Infected",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Zombie": {
+            "name": "Zombie",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Zombie",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Quarantined": {
+            "name": "Quarantined",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Quarantined",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        },
+        "Removed": {
+            "name": "Removed",
+            "identifiers": {},
+            "context": {},
+            "value": {
+                "concept": {
+                    "name": "Removed",
+                    "identifiers": {},
+                    "context": {}
+                },
+                "value": 0.0
+            }
+        }
+    }
+}

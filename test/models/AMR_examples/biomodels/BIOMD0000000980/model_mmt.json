@@ -1,0 +1,254 @@
+{
+    "templates": [
+        {
+            "rate_law": "3.02981679061445e-9*Infected*R_fixed*Susceptible*gamma",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Total_population",
+                "identifiers": {
+                    "ido": "0000509"
+                },
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Exposed*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Recovered*omega",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "provenance": []
+        }
+    ],
+    "parameters": {
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.16668
+        },
+        "omega": {
+            "name": "omega",
+            "identifiers": {},
+            "context": {},
+            "value": 0.01667
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.19231
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.05556
+        },
+        "R_fixed": {
+            "name": "R_fixed",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "Fraction_infected": {
+            "name": "Fraction_infected",
+            "identifiers": {},
+            "context": {},
+            "value": 0.001
+        },
+        "R_1": {
+            "name": "R_1",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "R_2": {
+            "name": "R_2",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "R_1_0": {
+            "name": "R_1_0",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "R_2_0": {
+            "name": "R_2_0",
+            "identifiers": {},
+            "context": {},
+            "value": 3.0
+        },
+        "R_1_f": {
+            "name": "R_1_f",
+            "identifiers": {},
+            "context": {},
+            "value": 1.6
+        },
+        "R_2_f": {
+            "name": "R_2_f",
+            "identifiers": {},
+            "context": {},
+            "value": 1.6
+        },
+        "eta": {
+            "name": "eta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "USA": {
+            "name": "USA",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "Total_population": {
+            "name": "Total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 330052960.0
+        }
+    },
+    "initials": {
+        "Susceptible": {
+            "concept": {
+                "name": "Susceptible",
+                "identifiers": {
+                    "ido": "0000514"
+                },
+                "context": {}
+            },
+            "value": 315283090.04
+        },
+        "Exposed": {
+            "concept": {
+                "name": "Exposed",
+                "identifiers": {
+                    "apollosv": "00000154"
+                },
+                "context": {}
+            },
+            "value": 14439817.0
+        },
+        "Infected": {
+            "concept": {
+                "name": "Infected",
+                "identifiers": {
+                    "ido": "0000511"
+                },
+                "context": {}
+            },
+            "value": 330052.96
+        },
+        "Recovered": {
+            "concept": {
+                "name": "Recovered",
+                "identifiers": {
+                    "ido": "0000592"
+                },
+                "context": {}
+            },
+            "value": 0.0
+        },
+        "Total_population": {
+            "concept": {
+                "name": "Total_population",
+                "identifiers": {
+                    "ido": "0000509"
+                },
+                "context": {}
+            },
+            "value": 330052960.0
+        }
+    },
+    "annotations": {
+        "name": "Malkov2020 - SEIRS model of COVID-19 transmission with time-varying R values and reinfection",
+        "description": null,
+        "license": "CC0",
+        "authors": [],
+        "references": [
+            "pubmed:32982082"
+        ],
+        "time_scale": null,
+        "time_start": null,
+        "time_end": null,
+        "locations": [],
+        "pathogens": [
+            "ncbitaxon:2697049"
+        ],
+        "diseases": [],
+        "hosts": [
+            "ncbitaxon:9606"
+        ],
+        "model_types": [
+            "mamo:0000028"
+        ]
+    }
+}

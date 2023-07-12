@@ -1,0 +1,90 @@
+{
+    "initials": {
+        "S": {
+            "name": "S",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000294:S"
+            },
+            "context": {},
+            "value": null
+        },
+        "V": {
+            "name": "V",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000294:V"
+            },
+            "context": {},
+            "value": null
+        },
+        "I1": {
+            "name": "I1",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000294:I1"
+            },
+            "context": {},
+            "value": null
+        },
+        "I2": {
+            "name": "I2",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000294:I2"
+            },
+            "context": {},
+            "value": null
+        },
+        "Iv2": {
+            "name": "Iv2",
+            "identifiers": {
+                "ncbitaxon": "520",
+                "biomodels.species": "BIOMD0000000294:Iv2"
+            },
+            "context": {},
+            "value": null
+        },
+        "R1": {
+            "name": "R1",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000294:R1"
+            },
+            "context": {},
+            "value": null
+        },
+        "R2": {
+            "name": "R2",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000294:R2"
+            },
+            "context": {},
+            "value": null
+        },
+        "J1": {
+            "name": "J1",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000294:J1"
+            },
+            "context": {},
+            "value": null
+        },
+        "J2": {
+            "name": "J2",
+            "identifiers": {
+                "biomodels.species": "BIOMD0000000294:J2"
+            },
+            "context": {},
+            "value": null
+        },
+        "R": {
+            "name": "R",
+            "identifiers": {
+                "ncbitaxon": "9606",
+                "biomodels.species": "BIOMD0000000294:R"
+            },
+            "context": {},
+            "value": null
+        }
+    }
+}

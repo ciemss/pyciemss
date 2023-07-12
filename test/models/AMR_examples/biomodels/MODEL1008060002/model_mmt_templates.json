@@ -1,0 +1,159 @@
+{
+    "templates": [
+        {
+            "rate_law": "Susceptible*delta",
+            "type": "NaturalProduction",
+            "outcome": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*Zombie*beta",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "subject": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*kappa",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Quarantined",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Zombie*sigma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Quarantined",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Quarantined*gamma",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Quarantined",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*delta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Infected*rho",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Infected",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Removed*zeta",
+            "type": "NaturalConversion",
+            "subject": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        },
+        {
+            "rate_law": "Susceptible*Zombie*alpha",
+            "type": "ControlledConversion",
+            "controller": {
+                "name": "Susceptible",
+                "identifiers": {},
+                "context": {}
+            },
+            "subject": {
+                "name": "Zombie",
+                "identifiers": {},
+                "context": {}
+            },
+            "outcome": {
+                "name": "Removed",
+                "identifiers": {},
+                "context": {}
+            },
+            "provenance": []
+        }
+    ]
+}

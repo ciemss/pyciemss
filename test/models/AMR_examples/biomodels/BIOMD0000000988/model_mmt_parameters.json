@@ -1,0 +1,172 @@
+{
+    "parameters": {
+        "Testing_Randome": {
+            "name": "Testing_Randome",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0008
+        },
+        "Total_Infection_coefficient": {
+            "name": "Total_Infection_coefficient",
+            "identifiers": {},
+            "context": {},
+            "value": 1.94688610435758e-06
+        },
+        "Normal_death_rate_constant_0": {
+            "name": "Normal_death_rate_constant_0",
+            "identifiers": {},
+            "context": {},
+            "value": 3.29e-05
+        },
+        "Corona_death_rate_constant": {
+            "name": "Corona_death_rate_constant",
+            "identifiers": {},
+            "context": {},
+            "value": 0.002
+        },
+        "Birth_rate": {
+            "name": "Birth_rate",
+            "identifiers": {},
+            "context": {},
+            "value": 3.29e-05
+        },
+        "Testing_for_Symptoms": {
+            "name": "Testing_for_Symptoms",
+            "identifiers": {},
+            "context": {},
+            "value": 500.0
+        },
+        "Corona_recover": {
+            "name": "Corona_recover",
+            "identifiers": {},
+            "context": {},
+            "value": 0.067
+        },
+        "Symptoms_appear": {
+            "name": "Symptoms_appear",
+            "identifiers": {},
+            "context": {},
+            "value": 0.30165
+        },
+        "Infection_from_non_tested_no_symptoms_0": {
+            "name": "Infection_from_non_tested_no_symptoms_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.508
+        },
+        "Infection_from_non_tested_symptoms": {
+            "name": "Infection_from_non_tested_symptoms",
+            "identifiers": {},
+            "context": {},
+            "value": 0.25
+        },
+        "Infection_from_tested_no_symptoms_0": {
+            "name": "Infection_from_tested_no_symptoms_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.025
+        },
+        "Infection_from_tested_symptoms": {
+            "name": "Infection_from_tested_symptoms",
+            "identifiers": {},
+            "context": {},
+            "value": 0.025
+        },
+        "Social_Distance": {
+            "name": "Social_Distance",
+            "identifiers": {},
+            "context": {},
+            "value": 534700.0
+        },
+        "Government_induced_isolation_factor_0": {
+            "name": "Government_induced_isolation_factor_0",
+            "identifiers": {},
+            "context": {},
+            "value": 10.0
+        },
+        "Time_government_action_0": {
+            "name": "Time_government_action_0",
+            "identifiers": {},
+            "context": {},
+            "value": 15.0
+        },
+        "lockdown_duration": {
+            "name": "lockdown_duration",
+            "identifiers": {},
+            "context": {},
+            "value": 7.0
+        },
+        "lockdownPause_duration_0": {
+            "name": "lockdownPause_duration_0",
+            "identifiers": {},
+            "context": {},
+            "value": 7.0
+        },
+        "n_lockdowns": {
+            "name": "n_lockdowns",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "n_pauses": {
+            "name": "n_pauses",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "intermittent_time": {
+            "name": "intermittent_time",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "timeFraction_lockdown_0": {
+            "name": "timeFraction_lockdown_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.55
+        },
+        "number_cutoff": {
+            "name": "number_cutoff",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "symptomatic_numberTolerance_0": {
+            "name": "symptomatic_numberTolerance_0",
+            "identifiers": {},
+            "context": {},
+            "value": 141.0
+        },
+        "governmentResponseFactorToDiagnosedInfected_0": {
+            "name": "governmentResponseFactorToDiagnosedInfected_0",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "social_distancing_factor": {
+            "name": "social_distancing_factor",
+            "identifiers": {},
+            "context": {},
+            "value": 10.0
+        },
+        "Social_Distance_base": {
+            "name": "Social_Distance_base",
+            "identifiers": {},
+            "context": {},
+            "value": 534700.0
+        },
+        "default": {
+            "name": "default",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "total_population": {
+            "name": "total_population",
+            "identifiers": {},
+            "context": {},
+            "value": 630003.0
+        }
+    }
+}

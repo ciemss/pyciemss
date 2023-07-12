@@ -1,0 +1,893 @@
+{
+    "S": [
+        {
+            "sname": "X_SS",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.058
+        },
+        {
+            "sname": "X_IS",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.001
+        },
+        {
+            "sname": "X_SI",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.001
+        },
+        {
+            "sname": "X_WS",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.1
+        },
+        {
+            "sname": "X_SW",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.1
+        },
+        {
+            "sname": "X_IW",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_II",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_RS",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.41
+        },
+        {
+            "sname": "X_RW",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_RI",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_WW",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_WI",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_SR",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.33
+        },
+        {
+            "sname": "X_IR",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_RR",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        },
+        {
+            "sname": "X_WR",
+            "mira_ids": "[]",
+            "mira_context": "[]",
+            "mira_initial_value": 0.0
+        }
+    ],
+    "T": [
+        {
+            "tname": "t1",
+            "template_type": "NaturalProduction",
+            "parameter_name": "p_petri_1",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t2",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_2",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t3",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_3",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t4",
+            "template_type": "NaturalConversion",
+            "parameter_name": "p_petri_4",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t5",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t6",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t7",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t8",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t9",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t10",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_10",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t11",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t12",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t13",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t14",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t15",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_15",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t16",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t17",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t18",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_18",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t19",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t20",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t21",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t22",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_22",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t23",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t24",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t25",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_25",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t26",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t27",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t28",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t29",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_29",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t30",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t31",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_31",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t32",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t33",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t34",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t35",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t36",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_36",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t37",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t38",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t39",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t40",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_40",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t41",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t42",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t43",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t44",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t45",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_45",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t46",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t47",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t48",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_48",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t49",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t50",
+            "template_type": "NaturalConversion",
+            "parameter_name": "sigma",
+            "parameter_value": "0.49",
+            "parameters": null
+        },
+        {
+            "tname": "t51",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_51",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t52",
+            "template_type": "NaturalConversion",
+            "parameter_name": "gamma",
+            "parameter_value": "17.0",
+            "parameters": null
+        },
+        {
+            "tname": "t53",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_53",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t54",
+            "template_type": "NaturalConversion",
+            "parameter_name": "v",
+            "parameter_value": "2.0",
+            "parameters": null
+        },
+        {
+            "tname": "t55",
+            "template_type": "NaturalConversion",
+            "parameter_name": "kappa",
+            "parameter_value": "0.1",
+            "parameters": null
+        },
+        {
+            "tname": "t56",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_56",
+            "parameter_value": null,
+            "parameters": null
+        },
+        {
+            "tname": "t57",
+            "template_type": "NaturalDegradation",
+            "parameter_name": "p_petri_57",
+            "parameter_value": null,
+            "parameters": null
+        }
+    ],
+    "I": [
+        {
+            "is": 1,
+            "it": 2
+        },
+        {
+            "is": 1,
+            "it": 3
+        },
+        {
+            "is": 1,
+            "it": 4
+        },
+        {
+            "is": 4,
+            "it": 5
+        },
+        {
+            "is": 5,
+            "it": 6
+        },
+        {
+            "is": 6,
+            "it": 7
+        },
+        {
+            "is": 2,
+            "it": 8
+        },
+        {
+            "is": 2,
+            "it": 9
+        },
+        {
+            "is": 2,
+            "it": 10
+        },
+        {
+            "is": 9,
+            "it": 11
+        },
+        {
+            "is": 4,
+            "it": 12
+        },
+        {
+            "is": 8,
+            "it": 13
+        },
+        {
+            "is": 8,
+            "it": 14
+        },
+        {
+            "is": 8,
+            "it": 15
+        },
+        {
+            "is": 11,
+            "it": 16
+        },
+        {
+            "is": 4,
+            "it": 17
+        },
+        {
+            "is": 4,
+            "it": 18
+        },
+        {
+            "is": 12,
+            "it": 19
+        },
+        {
+            "is": 3,
+            "it": 20
+        },
+        {
+            "is": 3,
+            "it": 21
+        },
+        {
+            "is": 3,
+            "it": 22
+        },
+        {
+            "is": 7,
+            "it": 23
+        },
+        {
+            "is": 7,
+            "it": 24
+        },
+        {
+            "is": 7,
+            "it": 25
+        },
+        {
+            "is": 12,
+            "it": 26
+        },
+        {
+            "is": 10,
+            "it": 27
+        },
+        {
+            "is": 10,
+            "it": 28
+        },
+        {
+            "is": 10,
+            "it": 29
+        },
+        {
+            "is": 12,
+            "it": 30
+        },
+        {
+            "is": 12,
+            "it": 31
+        },
+        {
+            "is": 16,
+            "it": 32
+        },
+        {
+            "is": 5,
+            "it": 33
+        },
+        {
+            "is": 13,
+            "it": 34
+        },
+        {
+            "is": 13,
+            "it": 35
+        },
+        {
+            "is": 13,
+            "it": 36
+        },
+        {
+            "is": 6,
+            "it": 37
+        },
+        {
+            "is": 14,
+            "it": 38
+        },
+        {
+            "is": 14,
+            "it": 39
+        },
+        {
+            "is": 14,
+            "it": 40
+        },
+        {
+            "is": 16,
+            "it": 41
+        },
+        {
+            "is": 9,
+            "it": 42
+        },
+        {
+            "is": 15,
+            "it": 43
+        },
+        {
+            "is": 15,
+            "it": 44
+        },
+        {
+            "is": 15,
+            "it": 45
+        },
+        {
+            "is": 11,
+            "it": 46
+        },
+        {
+            "is": 16,
+            "it": 47
+        },
+        {
+            "is": 16,
+            "it": 48
+        },
+        {
+            "is": 11,
+            "it": 49
+        },
+        {
+            "is": 5,
+            "it": 50
+        },
+        {
+            "is": 5,
+            "it": 51
+        },
+        {
+            "is": 6,
+            "it": 52
+        },
+        {
+            "is": 6,
+            "it": 53
+        },
+        {
+            "is": 11,
+            "it": 54
+        },
+        {
+            "is": 9,
+            "it": 55
+        },
+        {
+            "is": 9,
+            "it": 56
+        },
+        {
+            "is": 11,
+            "it": 57
+        }
+    ],
+    "O": [
+        {
+            "os": 1,
+            "ot": 1
+        },
+        {
+            "os": 2,
+            "ot": 3
+        },
+        {
+            "os": 3,
+            "ot": 4
+        },
+        {
+            "os": 1,
+            "ot": 5
+        },
+        {
+            "os": 1,
+            "ot": 6
+        },
+        {
+            "os": 2,
+            "ot": 7
+        },
+        {
+            "os": 7,
+            "ot": 8
+        },
+        {
+            "os": 8,
+            "ot": 9
+        },
+        {
+            "os": 8,
+            "ot": 11
+        },
+        {
+            "os": 8,
+            "ot": 12
+        },
+        {
+            "os": 10,
+            "ot": 13
+        },
+        {
+            "os": 4,
+            "ot": 14
+        },
+        {
+            "os": 4,
+            "ot": 16
+        },
+        {
+            "os": 12,
+            "ot": 17
+        },
+        {
+            "os": 3,
+            "ot": 19
+        },
+        {
+            "os": 7,
+            "ot": 20
+        },
+        {
+            "os": 13,
+            "ot": 21
+        },
+        {
+            "os": 10,
+            "ot": 23
+        },
+        {
+            "os": 14,
+            "ot": 24
+        },
+        {
+            "os": 10,
+            "ot": 26
+        },
+        {
+            "os": 12,
+            "ot": 27
+        },
+        {
+            "os": 15,
+            "ot": 28
+        },
+        {
+            "os": 16,
+            "ot": 30
+        },
+        {
+            "os": 13,
+            "ot": 32
+        },
+        {
+            "os": 13,
+            "ot": 33
+        },
+        {
+            "os": 14,
+            "ot": 34
+        },
+        {
+            "os": 5,
+            "ot": 35
+        },
+        {
+            "os": 14,
+            "ot": 37
+        },
+        {
+            "os": 6,
+            "ot": 38
+        },
+        {
+            "os": 15,
+            "ot": 39
+        },
+        {
+            "os": 15,
+            "ot": 41
+        },
+        {
+            "os": 15,
+            "ot": 42
+        },
+        {
+            "os": 16,
+            "ot": 43
+        },
+        {
+            "os": 9,
+            "ot": 44
+        },
+        {
+            "os": 16,
+            "ot": 46
+        },
+        {
+            "os": 11,
+            "ot": 47
+        },
+        {
+            "os": 5,
+            "ot": 49
+        },
+        {
+            "os": 6,
+            "ot": 50
+        },
+        {
+            "os": 9,
+            "ot": 52
+        },
+        {
+            "os": 9,
+            "ot": 54
+        },
+        {
+            "os": 11,
+            "ot": 55
+        }
+    ]
+}

@@ -1,0 +1,52 @@
+{
+    "parameters": {
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 0.55
+        },
+        "gamma_1": {
+            "name": "gamma_1",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1
+        },
+        "gamma_2": {
+            "name": "gamma_2",
+            "identifiers": {},
+            "context": {},
+            "value": 0.061
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 2e-09
+        },
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.02
+        },
+        "Lockdown_start": {
+            "name": "Lockdown_start",
+            "identifiers": {},
+            "context": {},
+            "value": 19.0
+        },
+        "Lockdown_end": {
+            "name": "Lockdown_end",
+            "identifiers": {},
+            "context": {},
+            "value": 33.0
+        },
+        "Iran": {
+            "name": "Iran",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}

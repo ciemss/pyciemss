@@ -1,0 +1,106 @@
+{
+    "parameters": {
+        "c": {
+            "name": "c",
+            "identifiers": {},
+            "context": {},
+            "value": 14.781
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 2.1011e-08
+        },
+        "q": {
+            "name": "q",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8887e-07
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.142857
+        },
+        "rho": {
+            "name": "rho",
+            "identifiers": {},
+            "context": {},
+            "value": 0.86834
+        },
+        "delta_I": {
+            "name": "delta_I",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13266
+        },
+        "delta_q": {
+            "name": "delta_q",
+            "identifiers": {},
+            "context": {},
+            "value": 0.1259
+        },
+        "gamma_I": {
+            "name": "gamma_I",
+            "identifiers": {},
+            "context": {},
+            "value": 0.33029
+        },
+        "gamma_A": {
+            "name": "gamma_A",
+            "identifiers": {},
+            "context": {},
+            "value": 0.13978
+        },
+        "gamma_H": {
+            "name": "gamma_H",
+            "identifiers": {},
+            "context": {},
+            "value": 0.11624
+        },
+        "alpha": {
+            "name": "alpha",
+            "identifiers": {},
+            "context": {},
+            "value": 1.7826e-05
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "c_lockdown": {
+            "name": "c_lockdown",
+            "identifiers": {},
+            "context": {},
+            "value": 14.781
+        },
+        "q_lockdown": {
+            "name": "q_lockdown",
+            "identifiers": {},
+            "context": {},
+            "value": 1.8887e-07
+        },
+        "Infected_0": {
+            "name": "Infected_0",
+            "identifiers": {},
+            "context": {},
+            "value": 81.218
+        },
+        "Wuhan": {
+            "name": "Wuhan",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "XXlambdaXX": {
+            "name": "XXlambdaXX",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0714285
+        }
+    }
+}

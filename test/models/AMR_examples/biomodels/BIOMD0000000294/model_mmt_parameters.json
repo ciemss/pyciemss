@@ -1,0 +1,148 @@
+{
+    "parameters": {
+        "mu": {
+            "name": "mu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "l_e": {
+            "name": "l_e",
+            "identifiers": {},
+            "context": {},
+            "value": 50.0
+        },
+        "beta": {
+            "name": "beta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "R0": {
+            "name": "R0",
+            "identifiers": {},
+            "context": {},
+            "value": 17.0
+        },
+        "gamma": {
+            "name": "gamma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "p": {
+            "name": "p",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "tau": {
+            "name": "tau",
+            "identifiers": {},
+            "context": {},
+            "value": 0.7
+        },
+        "theta": {
+            "name": "theta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "nu": {
+            "name": "nu",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "eta": {
+            "name": "eta",
+            "identifiers": {},
+            "context": {},
+            "value": 0.5
+        },
+        "sigma": {
+            "name": "sigma",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "sigmaV": {
+            "name": "sigmaV",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "tInf": {
+            "name": "tInf",
+            "identifiers": {},
+            "context": {},
+            "value": 21.0
+        },
+        "tImm": {
+            "name": "tImm",
+            "identifiers": {},
+            "context": {},
+            "value": 20.0
+        },
+        "tImm_V": {
+            "name": "tImm_V",
+            "identifiers": {},
+            "context": {},
+            "value": 50.0
+        },
+        "strain1_frac": {
+            "name": "strain1_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "strain2_frac": {
+            "name": "strain2_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "S_frac": {
+            "name": "S_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "V_frac": {
+            "name": "V_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "R_1_frac": {
+            "name": "R_1_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "R_2_frac": {
+            "name": "R_2_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "R_frac": {
+            "name": "R_frac",
+            "identifiers": {},
+            "context": {},
+            "value": 0.0
+        },
+        "env": {
+            "name": "env",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        },
+        "N": {
+            "name": "N",
+            "identifiers": {},
+            "context": {},
+            "value": 1.0
+        }
+    }
+}
