@@ -6,7 +6,6 @@ import mira
 import pandas as pd
 
 from pyro.infer import Predictive
-from pyro import poutine
 
 from pyciemss.interfaces import (
     setup_model,
@@ -14,7 +13,6 @@ from pyciemss.interfaces import (
     intervene,
     sample,
     calibrate,
-    optimize,
     DynamicalSystem,
 )
 
@@ -26,13 +24,13 @@ from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 from typing import Iterable, Optional, Tuple, Callable, Union
 import copy
+from pyciemss.visuals import plots
 
 # TODO: probably refactor this out later.
 from pyciemss.PetriNetODE.events import (
     StartEvent,
     ObservationEvent,
     LoggingEvent,
-    StaticParameterInterventionEvent,
 )
 
 EnsembleSolution = Iterable[dict[str, torch.Tensor]]
@@ -54,6 +52,8 @@ def load_and_sample_petri_ensemble(
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -68,12 +68,14 @@ def load_and_sample_petri_ensemble(
             - By convention these weights should sum to 1.0.
         solution_mappings: Iterable[Callable]
             - A list of functions that map the output of the model to the output of the shared state space.
-            - Each element of the iterable is a function that takes in a model output and returns a dict of the form {variable_name: value}.
+            - Each element of the iterable is a function that takes in a model output
+              and returns a dict of the form {variable_name: value}.
             - The order of the functions should match the order of the models.
         num_samples: int
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
-            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected
+                in the choice of timepoints.
         start_states: Optional[Iterable[dict[str, float]]]
             - Each element of the iterable is the initial state of the component model.
             - If None, the initial state is taken from each of the mira models.
@@ -88,14 +90,23 @@ def load_and_sample_petri_ensemble(
             - Larger values of dirichlet_concentration correspond to more certainty about the weights.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
-            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+            - By default we set the `start_time` to be a small negative number to avoid numerical
+              issues w/ collision with the `timepoints` which typically start at 0.
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
-            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results
+              in faster simulation, the issue is likely that the model is stiff.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples: PetriSolution
-            - The samples from the model as a pandas DataFrame.
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
+            - dict{data: <samples>, visual: <visual>}: The PetriSolution and a visualization (for truthy visual_options)
     """
     models = [
         load_petri_model(
@@ -130,9 +141,17 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
-    processed_samples = convert_to_output_format(samples, timepoints)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, time_unit=time_unit
+    )
 
-    return processed_samples
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
+
 
 def load_and_calibrate_and_sample_ensemble_model(
     petri_model_or_paths: Iterable[
@@ -156,6 +175,8 @@ def load_and_calibrate_and_sample_ensemble_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a collection petri net from a file, compile them into an ensemble probabilistic program, calibrate it on data,
@@ -167,20 +188,24 @@ def load_and_calibrate_and_sample_ensemble_model(
             - This path can be a URL or a local path to a mira model or AMR model.
             - Alternatively, this can be a mira template model directly.
         data_path: str
-            - The path to the data to calibrate the model to. See notebook/integration_demo/data.csv for an example of the format.
+            - The path to the data to calibrate the model to. See notebook/integration_demo/data.csv
+              for an example of the format.
             - The data should be a csv with one column for "time" and remaining columns for each state variable.
-            - Each state variable must exactly align with the state variables in the shared ensemble representation. (See `solution_mappings` for more details.)
+            - Each state variable must exactly align with the state variables in the shared ensemble representation.
+              (See `solution_mappings` for more details.)
         weights: Iterable[float]
             - Weights representing prior belief about which models are more likely to be correct.
             - By convention these weights should sum to 1.0.
         solution_mappings: Iterable[Callable]
             - A list of functions that map the output of the model to the output of the shared state space.
-            - Each element of the iterable is a function that takes in a model output and returns a dict of the form {variable_name: value}.
+            - Each element of the iterable is a function that takes in a model output and returns a dict of
+              the form {variable_name: value}.
             - The order of the functions should match the order of the models.
         num_samples: int
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
-            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+            - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected
+              in the choice of timepoints.
         start_states: Optional[Iterable[dict[str, float]]]
             - Each element of the iterable is the initial state of the component model.
             - If None, the initial state is taken from each of the mira models.
@@ -195,28 +220,38 @@ def load_and_calibrate_and_sample_ensemble_model(
             - Larger values of dirichlet_concentration correspond to more certainty about the weights.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
-            - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
+            - By default we set the `start_time` to be a small negative number to avoid numerical issues
+              w/ collision with the `timepoints` which typically start at 0.
         num_iterations: int
             - The number of iterations to run the calibration for.
         lr: float
             - The learning rate to use for the calibration.
         verbose: bool
-            - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
+            - Whether to print out the calibration progress. This will include summaries of the evidence lower
+              bound (ELBO) and the parameters.
         verbose_every: int
             - How often to print out the loss during calibration.
         num_particles: int
-            - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
+            - The number of particles to use for the calibration. Increasing this value will result in lower variance
+              gradient estimates, but will also increase the computational cost per gradient step.
         autoguide: pyro.infer.autoguide.AutoGuide
             - The autoguide to use for the calibration.
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
-            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
-    Returns:
-        samples: pd.DataFrame
-            - A dataframe containing the samples from the calibrated model.
-            
-    """
+            - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results
+              in faster simulation, the issue is likely that the model is stiff.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
 
+    Returns:
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
+            - dict{data: <samples>, visual: <visual>}: The PetriSolution and a visualization (for truthy visual_options)
+    """
 
     data = csv_to_list(data_path)
 
@@ -267,10 +302,17 @@ def load_and_calibrate_and_sample_ensemble_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, timepoints)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, time_unit=time_unit
+    )
 
-    return processed_samples
-    
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
+
 
 ##############################################################################
 # Internal Interfaces Below - TA4 above

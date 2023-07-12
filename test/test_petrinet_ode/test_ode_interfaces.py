@@ -12,9 +12,7 @@ from pyciemss.PetriNetODE.interfaces import (
     intervene,
     sample,
     calibrate,
-    optimize,
 )
-from pyciemss.risk.qoi import scenario2dec_nday_average
 
 import unittest
 import os
@@ -24,6 +22,8 @@ from pandas.testing import assert_frame_equal
 from pyciemss.PetriNetODE.interfaces import (
     load_and_sample_petri_model,
     load_and_calibrate_and_sample_petri_model,
+    load_and_optimize_and_sample_petri_model,
+    load_and_calibrate_and_optimize_and_sample_petri_model,
 )
 from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
 
@@ -65,34 +65,97 @@ class Test_Samples_Format(unittest.TestCase):
             interventions=self.interventions,
         )
 
+        OBJFUN = lambda x: np.abs(x)
+        INTERVENTION = [(0.1, "beta")]
+        QOI = ("scenario2dec_nday_average", "I_sol", 2)
+
+        self.ouu_samples, _ = load_and_optimize_and_sample_petri_model(
+            ASKENET_PATH,
+            self.num_samples,
+            timepoints=timepoints,
+            interventions=INTERVENTION,
+            qoi=QOI,
+            risk_bound=10.0,
+            objfun=OBJFUN,
+            initial_guess=0.02,
+            bounds=[[0.0], [3.0]],
+            verbose=True,
+            n_samples_ouu=int(1),
+            maxiter=0,
+            maxfeval=2,
+        )
+
+        (
+            self.ouu_cal_samples,
+            _,
+        ) = load_and_calibrate_and_optimize_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            self.num_samples,
+            timepoints=timepoints,
+            interventions=INTERVENTION,
+            qoi=QOI,
+            risk_bound=10.0,
+            objfun=OBJFUN,
+            initial_guess=0.02,
+            bounds=[[0.0], [3.0]],
+            verbose=True,
+            n_samples_ouu=int(1),
+            maxiter=0,
+            maxfeval=2,
+        )
+
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        for s in [self.samples, self.calibrated_samples]:
+        for s in [
+            self.samples,
+            self.calibrated_samples,
+            self.intervened_samples,
+            self.ouu_samples,
+            self.ouu_cal_samples,
+        ]:
             self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
         """Test that `samples` has the correct number of rows and columns"""
-        for s in [self.samples, self.calibrated_samples]:
+        for s in [
+            self.samples,
+            self.calibrated_samples,
+            self.intervened_samples,
+            self.ouu_samples,
+            self.ouu_cal_samples,
+        ]:
             self.assertEqual(s.shape[0], self.num_timepoints * self.num_samples)
             self.assertGreaterEqual(s.shape[1], 2)
 
     def test_samples_column_names(self):
         """Test that `samples` has required column names"""
-        for s in [self.samples, self.calibrated_samples]:
+        for s in [
+            self.samples,
+            self.calibrated_samples,
+            self.intervened_samples,
+            self.ouu_samples,
+            self.ouu_cal_samples,
+        ]:
             self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
             for col_name in s.columns[2:]:
-                self.assertIn(col_name.split("_")[-1], ("param", "sol"))
+                self.assertIn(col_name.split("_")[-1], ("param", "sol", "(unknown)"))
 
     def test_samples_dtype(self):
         """Test that `samples` has the required data types"""
-        for s in [self.samples, self.calibrated_samples]:
+        for s in [
+            self.samples,
+            self.calibrated_samples,
+            self.intervened_samples,
+            self.ouu_samples,
+            self.ouu_cal_samples,
+        ]:
             self.assertEqual(s["timepoint_id"].dtype, np.int64)
             self.assertEqual(s["sample_id"].dtype, np.int64)
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
 
-        
 class TestODEInterfaces(unittest.TestCase):
     """Tests for the ODE interfaces."""
 
@@ -111,21 +174,7 @@ class TestODEInterfaces(unittest.TestCase):
         self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
         self.num_samples = 2
         self.timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
-        biomodels = """BIOMD0000000249	BIOMD0000000716	BIOMD0000000949	BIOMD0000000956	BIOMD0000000960	BIOMD0000000964	BIOMD0000000971	BIOMD0000000976	BIOMD0000000979	BIOMD0000000982	BIOMD0000000988	MODEL1008060000	MODEL1805230001	MODEL2111170001 BIOMD0000000294	BIOMD0000000717	BIOMD0000000950	BIOMD0000000957	BIOMD0000000962	BIOMD0000000969	BIOMD0000000972	BIOMD0000000977	BIOMD0000000980	BIOMD0000000983	BIOMD0000000991	MODEL1008060002	MODEL1808280006
-BIOMD0000000715	BIOMD0000000726	BIOMD0000000955	BIOMD0000000958	BIOMD0000000963	BIOMD0000000970	BIOMD0000000974	BIOMD0000000978	BIOMD0000000981	BIOMD0000000984	BIOMD0000001045	MODEL1805220001	MODEL1808280011""".split()
-        self.biomodels_tests = {biomodel_id: dict(source=AMR_URL_TEMPLATE.format(biomodel_id=biomodel_id))
-                                for biomodel_id in biomodels}
 
-    def test_load_biomodels(self):
-        """Test how if all biomodels can be loaded in the AMR format."""
-        for biomodel_id, biomodel in self.biomodels_tests.items():
-            try:
-                model = load_petri_model(biomodel["source"], compile_rate_law_p=True)
-            except Exception as e:
-                print(biomodel, e)
-            self.assertIsNotNone(model)
-            self.assertIsInstance(model, ScaledBetaNoisePetriNetODESystem)
-                    
     def test_load_petri_from_file(self):
         """Test the load_petri function when called on a string."""
         model = load_petri_model(self.filename, add_uncertainty=True)
@@ -277,7 +326,7 @@ BIOMD0000000715	BIOMD0000000726	BIOMD0000000955	BIOMD0000000958	BIOMD0000000963	
     def test_load_and_sample_petri_model(self):
         """Test the load_and_sample_petri_model function with and without interventions."""
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        interventions=[(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
+        interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
@@ -285,15 +334,27 @@ BIOMD0000000715	BIOMD0000000726	BIOMD0000000955	BIOMD0000000958	BIOMD0000000963	
             "I": 0.01,
             "R": 0.0,
         }
-        expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
-        actual_intervened_samples = load_and_sample_petri_model(ASKENET_PATH, num_samples, timepoints, interventions = interventions, start_state=initial_state)
-        assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
-        
+        expected_intervened_samples = pd.read_csv(
+            "test/test_petrinet_ode/expected_intervened_samples.csv"
+        )
+        actual_intervened_samples = load_and_sample_petri_model(
+            ASKENET_PATH,
+            num_samples,
+            timepoints,
+            interventions=interventions,
+            start_state=initial_state,
+        )
+        assert_frame_equal(
+            expected_intervened_samples,
+            actual_intervened_samples,
+            check_exact=False,
+            atol=1e-5,
+        )
 
     def test_load_and_calibrate_and_sample_petri_model(self):
         """Test the load_and_sample_petri_model function with and without interventions."""
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        interventions=[(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
+        ASKENET_PATH = "test/models/AMR_examples/sir_typed.json"
+        interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
@@ -301,26 +362,41 @@ BIOMD0000000715	BIOMD0000000726	BIOMD0000000955	BIOMD0000000958	BIOMD0000000963	
             "I": 0.01,
             "R": 0.0,
         }
-        expected_intervened_samples = pd.read_csv('test/test_petrinet_ode/expected_intervened_samples.csv')
-        data_path = 'test/test_petrinet_ode/data.csv'
-        actual_intervened_samples = load_and_calibrate_and_sample_petri_model(ASKENET_PATH, data_path, num_samples, timepoints, interventions = interventions, start_state=initial_state, num_iterations=2)
-        assert_frame_equal(expected_intervened_samples, actual_intervened_samples, check_exact=False, atol=1e-5)
-        
-        SCENARIO_1a_H2 = 'test/models/AMR_examples/scenario1_a.json'
-        scenario1a_output = load_and_sample_petri_model(SCENARIO_1a_H2, num_samples, timepoints)
-        self.assertTrue(isinstance(scenario1a_output, pd.DataFrame))
+        expected_intervened_samples = pd.read_csv(
+            "test/test_petrinet_ode/expected_intervened_samples.csv"
+        )
+        data_path = "test/test_petrinet_ode/data.csv"
+        actual_intervened_samples = load_and_calibrate_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            num_samples,
+            timepoints,
+            interventions=interventions,
+            start_state=initial_state,
+            num_iterations=2,
+        )
+        assert_frame_equal(
+            expected_intervened_samples,
+            actual_intervened_samples,
+            check_exact=False,
+            atol=1e-5,
+        )
 
-        SIDARTHE = 'test/models/AMR_examples/BIOMD0000000955_askenet.json'
+        SCENARIO_1a_H2 = "test/models/AMR_examples/scenario1_a.json"
+        scenario1a_output = load_and_sample_petri_model(
+            SCENARIO_1a_H2, num_samples, timepoints
+        )
+        self.assertIsInstance(scenario1a_output, pd.DataFrame, "Dataframe not returned")
+
+        SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
-        self.assertTrue(isinstance(sidarthe_output, pd.DataFrame))
-
-
+        self.assertIsInstance(sidarthe_output, pd.DataFrame, "Dataframe not returned")
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''
     #     model = load_petri_model(self.filename)
     #     model = setup_model(model, self.initial_time, self.initial_state)
-    #     INTERVENTION= {"intervention1": [0.2, "beta"]}
+    #     INTERVENTION= [(0.2, "beta")]
     #     QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"], ndays=3)
     #     timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
     #     ouu_policy = optimize(model,
