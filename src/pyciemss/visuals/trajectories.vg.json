@@ -14,6 +14,7 @@
           {"data": "distributions", "field": "timepoint"},
           {"data": "traces", "field": "timepoint"},
           {"data": "points", "field": "timepoint"},
+          {"data": "examplary_line", "field": "timepoint"},
           {"data": "markers", "field": "timepoint"}
          ]
       }
@@ -29,7 +30,8 @@
           {"data": "distributions", "field": "lower"},               
           {"data": "distributions", "field": "upper"},
           {"data": "traces", "field": "value"},
-          {"data": "points", "field": "value"}
+          {"data": "points", "field": "value"},
+          {"data": "examplary_line", "field": "value"}
          ]
       }
     },
@@ -41,7 +43,8 @@
         "fields": [
           {"data": "distributions", "field": "trajectory"},
           {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
+          {"data": "points", "field": "trajectory"},
+          {"data": "examplary_line", "field": "trajectory"}
          ]
       }
     }
@@ -172,7 +175,73 @@
         {
           "type": "line",
           "name": "_points_line",
-          "from": {"data": "points"},
+          "from": {"data": "points_split"},
+          "zindex": 3,
+          "encode": {
+            "update": {
+              "x": {"scale": "xscale", "field": "timepoint"},
+              "y": {"scale": "yscale", "field": "value"},
+              "strokeWidth": {"value": 2},
+              "stroke": {"scale": "color", "field": "trajectory"},
+              "interpolate": {"value": "linear"},
+              "strokeOpacity": [
+                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+                "value": 0.3},
+                {"value": 0.1}
+              ]
+            },
+            "hover": {
+              "fillOpacity": {"value": 0.9}
+            }
+          }
+        }
+      ]
+    },
+        {
+      "type": "group",
+      "zindex": 3,
+      "name": "_examplary_line",
+      "from": {
+        "facet": {
+          "name": "examplary_line_split",
+          "data": "examplary_line",
+          "groupby": "trajectory"
+        }
+      },
+      "marks": [
+        {"type": "symbol",
+        "name": "_examplary_line_symbol",
+        "from": {"data": "examplary_line"},
+        "zindex": 3,
+        "encode": {
+          "update": {
+              "x": {"scale": "xscale", "field": "timepoint"},
+              "y": {"scale": "yscale", "field": "value"},
+              "size": {"value": 1},
+              "strokeWidth": {"value": 2},
+              "fill": {"scale": "color", "field": "trajectory"},
+              "stroke": {"scale": "color", "field": "trajectory"},
+              "fillOpacity": [
+                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+                "value": 0.5 },
+                {"value": 0.15}
+              ],
+              "strokeOpacity": [
+                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
+                "value": 0.75},
+                {"value": 0.15}
+              ],
+              "tooltip": {"field": "value"}
+          },
+          "hover": {
+            "fillOpacity": {"value": 0.9}
+          }
+          }
+        },
+        {
+          "type": "line",
+          "name": "_examplary_line_line",
+          "from": {"data": "examplary_line_split"},
           "zindex": 3,
           "encode": {
             "update": {
@@ -341,6 +410,13 @@
     },    
     {
       "name": "points",
+      "values": [{"timepoint": 6, "value": 30, "trajectory": "d"},
+                 {"timepoint": 10, "value": 40, "trajectory": "d"},
+                 {"timepoint": 5, "value": 10, "trajectory": "e"},
+                 {"timepoint": 6, "value": 15, "trajectory": "e"}]
+    },   
+    {
+      "name": "examplary_line",
       "values": [{"timepoint": 6, "value": 30, "trajectory": "d"},
                  {"timepoint": 10, "value": 40, "trajectory": "d"},
                  {"timepoint": 5, "value": 10, "trajectory": "e"},

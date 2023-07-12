@@ -438,6 +438,7 @@ def sample_ensemble_model(
     new_ensemble = copy.deepcopy(ensemble)
     new_ensemble.load_events(logging_events)
     # **kwargs is used to pass in optional model parameters, such as the solver method for an ODE.
-    return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(
-        *args, **kwargs
-    )
+    # return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)(
+    #     *args, **kwargs
+    # )
+    return Predictive(new_ensemble, guide=inferred_parameters, num_samples=num_samples)
