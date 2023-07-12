@@ -83,11 +83,8 @@ def convert_to_output_format(
         }
         # Solution (state variables)
         for k, v in pyciemss_results["states"].items():
-            # q_vals = np.zeros(num_timepoints, num_ensemble_quantiles)
             q_vals = np.quantile(v, alpha_qs, axis=0)
             print(v.shape, num_samples, q_vals.shape)
-            # for count, val in enumerate(list(alpha_qs)):
-            #     q_vals[:,count] = np.quantile(v, val)
             q = {
                 **q,
                 **{
