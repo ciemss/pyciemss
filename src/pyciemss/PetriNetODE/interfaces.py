@@ -40,12 +40,14 @@ from pyciemss.PetriNetODE.events import (
     StaticParameterInterventionEvent,
 )
 
+from pyciemss.custom_decorators import pyciemss_logging_wrappper
+
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
-
+@pyciemss_logging_wrappper
 def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -122,7 +124,7 @@ def load_and_sample_petri_model(
 
     return processed_samples
 
-
+@pyciemss_logging_wrappper
 def load_and_calibrate_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -233,7 +235,7 @@ def load_and_calibrate_and_sample_petri_model(
 
 ##############################################################################
 # Internal Interfaces Below - TA4 above
-
+@pyciemss_logging_wrappper
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,
@@ -243,7 +245,6 @@ def load_petri_model(
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
-
     if add_uncertainty:
         model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
         model.pseudocount = torch.tensor(pseudocount)
@@ -253,6 +254,7 @@ def load_petri_model(
 
 
 @setup_model.register
+@pyciemss_logging_wrappper
 def setup_petri_model(
     petri: PetriNetODESystem,
     start_time: float,
@@ -269,6 +271,7 @@ def setup_petri_model(
 
 
 @reset_model.register
+@pyciemss_logging_wrappper
 def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
     """
     Reset a model to its initial state.
@@ -280,6 +283,7 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 
 
 @intervene.register
+@pyciemss_logging_wrappper
 def intervene_petri_model(
     petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]]
 ) -> PetriNetODESystem:
@@ -297,6 +301,7 @@ def intervene_petri_model(
 
 
 @calibrate.register
+@pyciemss_logging_wrappper
 def calibrate_petri(
     petri: PetriNetODESystem,
     data: Iterable[Tuple[float, dict[str, float]]],
@@ -340,6 +345,7 @@ def calibrate_petri(
 
 
 @sample.register
+@pyciemss_logging_wrappper
 def sample_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable[float],
@@ -366,6 +372,7 @@ def sample_petri(
 
 
 @optimize.register
+@pyciemss_logging_wrappper
 def optimize_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable,
