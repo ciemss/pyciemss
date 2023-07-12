@@ -130,9 +130,9 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
-    processed_samples = convert_to_output_format(samples, timepoints)
+    processed_samples, q_ensemble = convert_to_output_format(samples, timepoints, ensemble_quantiles=True, num_ensemble_quantiles=23)
 
-    return processed_samples
+    return processed_samples, q_ensemble
 
 def load_and_calibrate_and_sample_ensemble_model(
     petri_model_or_paths: Iterable[

@@ -11,6 +11,8 @@ def convert_to_output_format(
     samples: Dict[str, torch.Tensor],
     timepoints: Iterable[float],
     interventions: Optional[Dict[str, torch.Tensor]] = None,
+    ensemble_quantiles: Optional[bool] = False,
+    num_ensemble_quantiles: Optional[int] = 23,
 ) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
@@ -71,7 +73,30 @@ def convert_to_output_format(
         },
     }
 
-    return pd.DataFrame(d)
+    if ensemble_quantiles:
+        alpha_qs = np.linspace(0, 1, num_ensemble_quantiles)
+        alpha_qs[0] = 0.01
+        alpha_qs[-1] = 0.99
+        q = {
+            "timepoint_id": np.tile(np.array(range(num_timepoints)), num_ensemble_quantiles),
+            "quantile": np.repeat(alpha_qs, num_timepoints)
+        }
+        # Solution (state variables)
+        for k, v in pyciemss_results["states"].items():
+            # q_vals = np.zeros(num_timepoints, num_ensemble_quantiles)
+            q_vals = np.quantile(v, alpha_qs, axis=0)
+            print(v.shape, num_samples, q_vals.shape)
+            # for count, val in enumerate(list(alpha_qs)):
+            #     q_vals[:,count] = np.quantile(v, val)
+            q = {
+                **q,
+                **{
+                    k: q_vals
+                },
+            }
+        return pd.DataFrame(d), pd.DataFrame(q)
+    else:
+        return pd.DataFrame(d)
 
 
 def csv_to_list(filename):
