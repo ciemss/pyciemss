@@ -18,7 +18,7 @@ def convert_to_output_format(
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
 
     time_unit -- Label timepoints in a semantically relevant way `timepoint_<time_unit>`.
-       If ommited, a `timepoint_<time_unit>` field is not provided.
+       If None, a `timepoint_<time_unit>` field is not provided.
     """
 
     pyciemss_results = {"parameters": {}, "states": {}}

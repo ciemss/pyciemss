@@ -9,9 +9,10 @@ from pyciemss.PetriNetODE.base import (
     get_name,
 )
 from pyciemss.risk.ouu import computeRisk, solveOUU
-from pyciemss.risk.risk_measures import alpha_quantile, alpha_superquantile
+from pyciemss.risk.risk_measures import alpha_superquantile
 import pyciemss.risk.qoi
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
+from pyciemss.visuals import plots
 
 import time
 import numpy as np
@@ -48,6 +49,7 @@ from pyciemss.custom_decorators import pyciemss_logging_wrappper
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
+
 @pyciemss_logging_wrappper
 def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
@@ -59,7 +61,9 @@ def load_and_sample_petri_model(
     pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
-    compile_rate_law_p: bool = True
+    compile_rate_law_p: bool = True,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -86,16 +90,23 @@ def load_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples: PetriSolution
-            - The samples from the model as a pandas DataFrame.
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
         pseudocount=pseudocount,
-        compile_rate_law_p=compile_rate_law_p
+        compile_rate_law_p=compile_rate_law_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -120,9 +131,17 @@ def load_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit
+    )
 
-    return processed_samples
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
+
 
 @pyciemss_logging_wrappper
 def load_and_calibrate_and_sample_petri_model(
@@ -141,7 +160,9 @@ def load_and_calibrate_and_sample_petri_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-    compile_rate_law_p: bool = True
+    compile_rate_law_p: bool = True,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -181,10 +202,17 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples: pd.DataFrame
-            - A dataframe containing the samples from the calibrated model.
+        samples:
+            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
@@ -228,9 +256,16 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit
+    )
 
-    return processed_samples
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "visual": schema}
+    else:
+        return processed_samples
 
 
 def load_and_optimize_and_sample_petri_model(
@@ -238,7 +273,7 @@ def load_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str,str,float]],
+    qoi: Iterable[Tuple[str, str, float]],
     risk_bound: float,
     objfun: callable = lambda x: np.abs(x),
     initial_guess: Iterable[float] = 0.5,
@@ -251,10 +286,10 @@ def load_and_optimize_and_sample_petri_model(
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
-    maxfeval: int = 25
+    maxfeval: int = 25,
 ) -> Tuple[pd.DataFrame, dict]:
     """
-    Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty, 
+    Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty,
     sample for the optimal intervention, and estinate risk.
 
     Args:
@@ -270,7 +305,7 @@ def load_and_optimize_and_sample_petri_model(
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name).
         qoi: Tuple[str, str, **args]
             - The quantity of interest to optimize over. QoI is a tuple of the form (callable_qoi_function_name, state_variable_name, function_arguments).
-            - Options for "callable_qoi_function_name": 
+            - Options for "callable_qoi_function_name":
                 - scenario2dec_nday_average: performs average over last ndays of timepoints
         risk_bound: float
             - The threshold on the risk constraint.
@@ -326,7 +361,9 @@ def load_and_optimize_and_sample_petri_model(
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
-    qoi_fn = lambda y: getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])
+
     ouu_policy = optimize(
         model,
         timepoints=timepoints,
@@ -341,10 +378,10 @@ def load_and_optimize_and_sample_petri_model(
         maxfeval=maxfeval,
         method=method,
         verbose=verbose,
-        postprocess=False
-        )
-    
-    # Post-process OUU results    
+        postprocess=False,
+    )
+
+    # Post-process OUU results
     if verbose:
         print("Post-processing optimal policy...")
     control_model = copy.deepcopy(model)
@@ -360,11 +397,7 @@ def load_and_optimize_and_sample_petri_model(
     sq_optimal_prediction = RISK.propagate_uncertainty(ouu_policy["policy"])
     qois_sq = RISK.qoi(sq_optimal_prediction)
     sq_est = RISK.risk_measure(qois_sq)
-    ouu_results = {
-        "risk": [sq_est],
-        "samples": sq_optimal_prediction,
-        "qoi": qois_sq
-    }
+    ouu_results = {"risk": [sq_est], "samples": sq_optimal_prediction, "qoi": qois_sq}
     ouu_policy.update(ouu_results)
 
     if verbose:
@@ -374,10 +407,12 @@ def load_and_optimize_and_sample_petri_model(
     interventions_opt = []
     for intervention, value in zip(interventions, x):
         interventions_opt.append((intervention[0], intervention[1], value))
-    
+
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions_opt)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt
+    )
 
     return processed_samples, ouu_policy
 
@@ -388,7 +423,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str,str,float]],
+    qoi: Iterable[Tuple[str, str, float]],
     risk_bound: float,
     objfun: callable = lambda x: np.abs(x),
     initial_guess: Iterable[float] = 0.5,
@@ -405,10 +440,10 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
-    maxfeval: int = 25
-) -> Tuple[pd.DataFrame, dict]:    
+    maxfeval: int = 25,
+) -> Tuple[pd.DataFrame, dict]:
     """
-    Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty, 
+    Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty,
     sample for the optimal policy, and estinate risk for the optimal policy.
 
     Args:
@@ -426,7 +461,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name).
         qoi: Tuple[str, str, **args]
             - Quantity of interest to optimize over. QoI is a tuple of the form (callable_qoi_function_name, state_variable_name, function_arguments).
-            - Options for "callable_qoi_function_name": 
+            - Options for "callable_qoi_function_name":
                 - scenario2dec_nday_average: performs average over last ndays of timepoints
         risk_bound: float
             - Bound on the risk constraint.
@@ -504,7 +539,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         method=method,
     )
 
-    qoi_fn = lambda y: getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])
+
     ouu_policy = optimize(
         model,
         timepoints=timepoints,
@@ -521,9 +558,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         method=method,
         verbose=verbose,
         postprocess=False,
-        )
-    
-    # Post-process OUU results    
+    )
+
+    # Post-process OUU results
     if verbose:
         print("Post-processing optimal policy...")
     control_model = copy.deepcopy(model)
@@ -535,16 +572,12 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples=num_samples,
         method=method,
-        guide=inferred_parameters
+        guide=inferred_parameters,
     )
     sq_optimal_prediction = RISK.propagate_uncertainty(ouu_policy["policy"])
     qois_sq = RISK.qoi(sq_optimal_prediction)
     sq_est = RISK.risk_measure(qois_sq)
-    ouu_results = {
-        "risk": [sq_est],
-        "samples": sq_optimal_prediction,
-        "qoi": qois_sq
-    }
+    ouu_results = {"risk": [sq_est], "samples": sq_optimal_prediction, "qoi": qois_sq}
     ouu_policy.update(ouu_results)
 
     if verbose:
@@ -554,32 +587,39 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     interventions_opt = []
     for intervention, value in zip(interventions, x):
         interventions_opt.append((intervention[0], intervention[1], value))
-    
+
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(samples, timepoints, interventions=interventions_opt)
+    processed_samples = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt
+    )
 
     return processed_samples, ouu_policy
 
 
 ##############################################################################
 # Internal Interfaces Below - TA4 above
-@pyciemss_logging_wrappper
+
+
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty=True,
     pseudocount=1.0,
-    compile_rate_law_p: bool = False
+    compile_rate_law_p: bool = False,
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
+        model = ScaledBetaNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+        )
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
-        return MiraPetriNetODESystem.from_askenet(petri_model_or_path, compile_rate_law_p=compile_rate_law_p)
+        return MiraPetriNetODESystem.from_askenet(
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+        )
 
 
 @setup_model.register
@@ -807,7 +847,7 @@ def optimize_petri(
     if postprocess:
         if verbose:
             print("Post-processing optimal policy...")
-        #TODO: check best way to set tspan for plotting
+        # TODO: check best way to set tspan for plotting
         tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
         control_model = copy.deepcopy(petri)
         RISK = computeRisk(
