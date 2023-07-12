@@ -320,11 +320,11 @@ class TestODEInterfaces(unittest.TestCase):
         scenario1a_output = load_and_sample_petri_model(
             SCENARIO_1a_H2, num_samples, timepoints
         )
-        self.assertTrue(isinstance(scenario1a_output, pd.DataFrame))
+        self.assertIsInstance(scenario1a_output, pd.DataFrame, "Dataframe not returned")
 
         SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
-        self.assertTrue(isinstance(sidarthe_output, pd.DataFrame))
+        self.assertIsInstance(sidarthe_output, pd.DataFrame, "Dataframe not returned")
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''

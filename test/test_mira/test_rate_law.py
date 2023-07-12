@@ -210,7 +210,7 @@ class TestRateLaw(unittest.TestCase):
             timepoints=self.timepoints,
             compile_rate_law_p=True,
         )
-        self.assertTrue(isinstance(samples, pd.DataFrame))
+        self.assertIsInstance(samples, pd.DataFrame)
 
 
 if __name__ == "__main__":
