@@ -132,7 +132,7 @@ class TestRateLaw(unittest.TestCase):
         
     def test_time_varying_parameter_rate_law(self):
         """Test that the rate law can be compiled correctly."""
-        url = 'https://raw.githubusercontent.com/indralab/mira/hackathon/notebooks/hackathon_2023.07/scenario1_c.json'
+        url = 'https://raw.githubusercontent.com/indralab/mira/56bf4c0d77919142684c8cbfb3521b7bf4470888/notebooks/hackathon_2023.07/scenario1_c.json'
         scenario1_c = load_petri_model(url, compile_rate_law_p=True)
         expected_rate_law_str = 'kappa*(beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0))))'
         expected_rate_law_symbolic = sympy.sympify(expected_rate_law_str)
