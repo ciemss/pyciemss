@@ -20,9 +20,9 @@ def pyciemss_logging_wrappper( function):
 
                 There was an exception in pyciemss
                 
-                Function name: {function.__name__}
+                Error occured in function: {function.__name__}
 
-                Docs : {function.__doc__}
+                Function docs : {function.__doc__}
 
                 ################################
             """
