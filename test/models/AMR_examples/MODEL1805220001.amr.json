@@ -1,0 +1,364 @@
+{
+ "name": "MODEL1805220001",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model MODEL1805220001 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Exposed",
+    "name": "Exposed",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [],
+    "output": [
+     "Susceptible"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Recovered"
+    ],
+    "output": [
+     "Recovered",
+     "Susceptible"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Recovered"
+    ],
+    "output": [
+     "Susceptible"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Susceptible"
+    ],
+    "output": [
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Recovered",
+     "Susceptible"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Infected"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Recovered",
+     "Exposed"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "Recovered",
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "Infected"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "Recovered"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "Susceptible"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "Exposed"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t13"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Human_Capital_lambda",
+     "expression_mathml": "<ci>Human_Capital_lambda</ci>"
+    },
+    {
+     "target": "t2",
+     "expression": "Human_psi*(Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><times/><ci>Human_psi</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Human_rho*Recovered",
+     "expression_mathml": "<apply><times/><ci>Human_rho</ci><ci>Recovered</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Human_lambda*Susceptible",
+     "expression_mathml": "<apply><times/><ci>Human_lambda</ci><ci>Susceptible</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Susceptible*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><apply><plus/><ci>Human_u1</ci><apply><times/><ci>Human_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "Exposed*Human_v_h",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>Human_v_h</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Exposed*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><apply><plus/><ci>Human_u1</ci><apply><times/><ci>Human_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "Human_gamma*Infected",
+     "expression_mathml": "<apply><times/><ci>Human_gamma</ci><ci>Infected</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "Infected*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><apply><plus/><ci>Human_u1</ci><apply><times/><ci>Human_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "Human_delta*Infected",
+     "expression_mathml": "<apply><times/><ci>Human_delta</ci><ci>Infected</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "Recovered*(Human_u1 + Human_u2*(Exposed + Infected + Recovered + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Recovered</ci><apply><plus/><ci>Human_u1</ci><apply><times/><ci>Human_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "Susceptible*(Vector_u1 + Vector_u2*(Exposed + Infected + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><apply><plus/><ci>Vector_u1</ci><apply><times/><ci>Vector_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "Exposed*(Vector_u1 + Vector_u2*(Exposed + Infected + Susceptible))",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><apply><plus/><ci>Vector_u1</ci><apply><times/><ci>Vector_u2</ci><apply><plus/><ci>Exposed</ci><ci>Infected</ci><ci>Susceptible</ci></apply></apply></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "2500.00000000000",
+     "expression_mathml": "<cn>2500.0</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Exposed",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "Human_Capital_lambda",
+     "value": 0.03285
+    },
+    {
+     "id": "Human_psi",
+     "value": 7.666e-05
+    },
+    {
+     "id": "Human_rho",
+     "value": 0.0146
+    },
+    {
+     "id": "Human_lambda"
+    },
+    {
+     "id": "Human_u1",
+     "value": 1.6e-05
+    },
+    {
+     "id": "Human_u2",
+     "value": 3e-07
+    },
+    {
+     "id": "Human_v_h",
+     "value": 0.08333
+    },
+    {
+     "id": "Human_gamma",
+     "value": 0.003704
+    },
+    {
+     "id": "Human_delta",
+     "value": 0.0003454
+    },
+    {
+     "id": "Vector_psi",
+     "value": 80.0
+    },
+    {
+     "id": "Vector_lambda"
+    },
+    {
+     "id": "Vector_u1",
+     "value": 0.1429
+    },
+    {
+     "id": "Vector_u2",
+     "value": 2.279e-06
+    },
+    {
+     "id": "Vector_v",
+     "value": 0.1
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}

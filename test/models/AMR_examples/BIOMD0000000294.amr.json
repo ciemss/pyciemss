@@ -1,0 +1,824 @@
+{
+ "name": "BIOMD0000000294",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000294 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "N",
+    "name": "N",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "V",
+    "name": "V",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I1",
+    "name": "I1",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I2",
+    "name": "I2",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Iv2",
+    "name": "Iv2",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "520"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "R1",
+    "name": "R1",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "R2",
+    "name": "R2",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "J1",
+    "name": "J1",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "J2",
+    "name": "J2",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ncbitaxon": "9606"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "N"
+    ],
+    "output": [
+     "N",
+     "S"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "N"
+    ],
+    "output": [
+     "N",
+     "V"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "S"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "V"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "I1"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "I2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Iv2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "R1"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "R2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "J1"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "J2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "R"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "J1",
+     "S"
+    ],
+    "output": [
+     "J1",
+     "I1"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "I1",
+     "S"
+    ],
+    "output": [
+     "I1",
+     "I1"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "J2",
+     "S"
+    ],
+    "output": [
+     "J2",
+     "I2"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "Iv2",
+     "S"
+    ],
+    "output": [
+     "Iv2",
+     "I2"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "I2",
+     "S"
+    ],
+    "output": [
+     "I2",
+     "I2"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "J2",
+     "V"
+    ],
+    "output": [
+     "J2",
+     "Iv2"
+    ],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "I2",
+     "V"
+    ],
+    "output": [
+     "I2",
+     "Iv2"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "Iv2",
+     "V"
+    ],
+    "output": [
+     "Iv2",
+     "Iv2"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "I1"
+    ],
+    "output": [
+     "R1"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "I2"
+    ],
+    "output": [
+     "R2"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "I1",
+     "R2"
+    ],
+    "output": [
+     "I1",
+     "J1"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "J1",
+     "R2"
+    ],
+    "output": [
+     "J1",
+     "J1"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "I2",
+     "R1"
+    ],
+    "output": [
+     "I2",
+     "J2"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "Iv2",
+     "R1"
+    ],
+    "output": [
+     "Iv2",
+     "J2"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "J2",
+     "R1"
+    ],
+    "output": [
+     "J2",
+     "J2"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "J1"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "J2"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "Iv2"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "R1"
+    ],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "R2"
+    ],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "R"
+    ],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t33"
+    }
+   },
+   {
+    "id": "t34",
+    "input": [
+     "V"
+    ],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t34"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "N*(1 - p)/l_e",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>N</ci><apply><minus/><cn>1</cn><ci>p</ci></apply></apply><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "N*p/l_e",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>N</ci><ci>p</ci></apply><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "S/l_e",
+     "expression_mathml": "<apply><divide/><ci>S</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "V/l_e",
+     "expression_mathml": "<apply><divide/><ci>V</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "I1/l_e",
+     "expression_mathml": "<apply><divide/><ci>I1</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I2/l_e",
+     "expression_mathml": "<apply><divide/><ci>I2</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Iv2/l_e",
+     "expression_mathml": "<apply><divide/><ci>Iv2</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "R1/l_e",
+     "expression_mathml": "<apply><divide/><ci>R1</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "R2/l_e",
+     "expression_mathml": "<apply><divide/><ci>R2</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "J1/l_e",
+     "expression_mathml": "<apply><divide/><ci>J1</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "J2/l_e",
+     "expression_mathml": "<apply><divide/><ci>J2</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "R/l_e",
+     "expression_mathml": "<apply><divide/><ci>R</ci><ci>l_e</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "1.0*J1*R0*S*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>J1</ci><ci>R0</ci><ci>S</ci><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "1.0*I1*R0*S*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>I1</ci><ci>R0</ci><ci>S</ci><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "1.0*J2*R0*S*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>J2</ci><ci>R0</ci><ci>S</ci><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "1.0*Iv2*R0*S*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>Iv2</ci><ci>R0</ci><ci>S</ci><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "1.0*I2*R0*S*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>I2</ci><ci>R0</ci><ci>S</ci><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "1.0*J2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>J2</ci><ci>R0</ci><ci>V</ci><apply><minus/><cn>1</cn><ci>tau</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "1.0*I2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>I2</ci><ci>R0</ci><ci>V</ci><apply><minus/><cn>1</cn><ci>tau</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "1.0*Iv2*R0*V*(1 - tau)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>Iv2</ci><ci>R0</ci><ci>V</ci><apply><minus/><cn>1</cn><ci>tau</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "365*I1/tInf",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>365</cn><ci>I1</ci></apply><ci>tInf</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "365*I2/tInf",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>365</cn><ci>I2</ci></apply><ci>tInf</ci></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "1.0*I1*R0*R2*(1 - theta)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>I1</ci><ci>R0</ci><ci>R2</ci><apply><minus/><cn>1</cn><ci>theta</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "1.0*J1*R0*R2*(1 - theta)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>J1</ci><ci>R0</ci><ci>R2</ci><apply><minus/><cn>1</cn><ci>theta</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "1.0*I2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>I2</ci><ci>R0</ci><ci>R1</ci><apply><minus/><cn>1</cn><ci>theta</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "1.0*Iv2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>Iv2</ci><ci>R0</ci><ci>R1</ci><apply><minus/><cn>1</cn><ci>theta</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "1.0*J2*R0*R1*(1 - theta)*(365/tInf + 1/l_e)",
+     "expression_mathml": "<apply><times/><cn>1.0</cn><ci>J2</ci><ci>R0</ci><ci>R1</ci><apply><minus/><cn>1</cn><ci>theta</ci></apply><apply><plus/><apply><divide/><cn>365</cn><ci>tInf</ci></apply><apply><power/><ci>l_e</ci><cn>-1</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "365*J1/(tInf*(1 - nu))",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>365</cn><ci>J1</ci></apply><apply><times/><ci>tInf</ci><apply><minus/><cn>1</cn><ci>nu</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "365*J2/(tInf*(1 - nu))",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>365</cn><ci>J2</ci></apply><apply><times/><ci>tInf</ci><apply><minus/><cn>1</cn><ci>nu</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "365*Iv2/(tInf*(1 - eta))",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>365</cn><ci>Iv2</ci></apply><apply><times/><ci>tInf</ci><apply><minus/><cn>1</cn><ci>eta</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "R1/tImm",
+     "expression_mathml": "<apply><divide/><ci>R1</ci><ci>tImm</ci></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "R2/tImm",
+     "expression_mathml": "<apply><divide/><ci>R2</ci><ci>tImm</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "R/tImm",
+     "expression_mathml": "<apply><divide/><ci>R</ci><ci>tImm</ci></apply>"
+    },
+    {
+     "target": "t34",
+     "expression": "V/tImm_V",
+     "expression_mathml": "<apply><divide/><ci>V</ci><ci>tImm_V</ci></apply>"
+    }
+   ],
+   "initials": [],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 1.0
+    },
+    {
+     "id": "l_e",
+     "value": 50.0,
+     "units": {
+      "expression": "year",
+      "expression_mathml": "<ci>year</ci>"
+     }
+    },
+    {
+     "id": "p",
+     "value": 1.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "R0",
+     "value": 17.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "tInf",
+     "value": 21.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "tau",
+     "value": 0.7,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "theta",
+     "value": 0.5,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "nu",
+     "value": 0.5,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "eta",
+     "value": 0.5,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "tImm",
+     "value": 20.0,
+     "units": {
+      "expression": "year",
+      "expression_mathml": "<ci>year</ci>"
+     }
+    },
+    {
+     "id": "tImm_V",
+     "value": 50.0,
+     "units": {
+      "expression": "year",
+      "expression_mathml": "<ci>year</ci>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:17210532"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:520"
+   ],
+   "diseases": [
+    "doid:1116"
+   ],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000046"
+   ]
+  }
+ }
+}

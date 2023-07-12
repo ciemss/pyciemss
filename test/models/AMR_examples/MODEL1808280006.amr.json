@@ -1,0 +1,1210 @@
+{
+ "name": "MODEL1808280006",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model MODEL1808280006 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "X_SS",
+    "name": "X_SS",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_IS",
+    "name": "X_IS",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_SI",
+    "name": "X_SI",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_WS",
+    "name": "X_WS",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_SW",
+    "name": "X_SW",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_IW",
+    "name": "X_IW",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_II",
+    "name": "X_II",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_RS",
+    "name": "X_RS",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_RW",
+    "name": "X_RW",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_RI",
+    "name": "X_RI",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_WW",
+    "name": "X_WW",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_WI",
+    "name": "X_WI",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_SR",
+    "name": "X_SR",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_IR",
+    "name": "X_IR",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_RR",
+    "name": "X_RR",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "X_WR",
+    "name": "X_WR",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [],
+    "output": [
+     "X_SS"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "X_SS"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "X_SS"
+    ],
+    "output": [
+     "X_IS"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "X_SS"
+    ],
+    "output": [
+     "X_SI"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "X_WS"
+    ],
+    "output": [
+     "X_SS"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "X_SW"
+    ],
+    "output": [
+     "X_SS"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "X_IW"
+    ],
+    "output": [
+     "X_IS"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "X_IS"
+    ],
+    "output": [
+     "X_II"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "X_IS"
+    ],
+    "output": [
+     "X_RS"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "X_IS"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "X_RW"
+    ],
+    "output": [
+     "X_RS"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "X_WS"
+    ],
+    "output": [
+     "X_RS"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "X_RS"
+    ],
+    "output": [
+     "X_RI"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "X_RS"
+    ],
+    "output": [
+     "X_WS"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "X_RS"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "X_WW"
+    ],
+    "output": [
+     "X_WS"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "X_WS"
+    ],
+    "output": [
+     "X_WI"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "X_WS"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "X_WI"
+    ],
+    "output": [
+     "X_SI"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "X_SI"
+    ],
+    "output": [
+     "X_II"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "X_SI"
+    ],
+    "output": [
+     "X_SR"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "X_SI"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "X_II"
+    ],
+    "output": [
+     "X_RI"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "X_II"
+    ],
+    "output": [
+     "X_IR"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "X_II"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "X_WI"
+    ],
+    "output": [
+     "X_RI"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "X_RI"
+    ],
+    "output": [
+     "X_WI"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "X_RI"
+    ],
+    "output": [
+     "X_RR"
+    ],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "X_RI"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "X_WI"
+    ],
+    "output": [
+     "X_WR"
+    ],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "X_WI"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "X_WR"
+    ],
+    "output": [
+     "X_SR"
+    ],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "X_SW"
+    ],
+    "output": [
+     "X_SR"
+    ],
+    "properties": {
+     "name": "t33"
+    }
+   },
+   {
+    "id": "t34",
+    "input": [
+     "X_SR"
+    ],
+    "output": [
+     "X_IR"
+    ],
+    "properties": {
+     "name": "t34"
+    }
+   },
+   {
+    "id": "t35",
+    "input": [
+     "X_SR"
+    ],
+    "output": [
+     "X_SW"
+    ],
+    "properties": {
+     "name": "t35"
+    }
+   },
+   {
+    "id": "t36",
+    "input": [
+     "X_SR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t36"
+    }
+   },
+   {
+    "id": "t37",
+    "input": [
+     "X_IW"
+    ],
+    "output": [
+     "X_IR"
+    ],
+    "properties": {
+     "name": "t37"
+    }
+   },
+   {
+    "id": "t38",
+    "input": [
+     "X_IR"
+    ],
+    "output": [
+     "X_IW"
+    ],
+    "properties": {
+     "name": "t38"
+    }
+   },
+   {
+    "id": "t39",
+    "input": [
+     "X_IR"
+    ],
+    "output": [
+     "X_RR"
+    ],
+    "properties": {
+     "name": "t39"
+    }
+   },
+   {
+    "id": "t40",
+    "input": [
+     "X_IR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t40"
+    }
+   },
+   {
+    "id": "t41",
+    "input": [
+     "X_WR"
+    ],
+    "output": [
+     "X_RR"
+    ],
+    "properties": {
+     "name": "t41"
+    }
+   },
+   {
+    "id": "t42",
+    "input": [
+     "X_RW"
+    ],
+    "output": [
+     "X_RR"
+    ],
+    "properties": {
+     "name": "t42"
+    }
+   },
+   {
+    "id": "t43",
+    "input": [
+     "X_RR"
+    ],
+    "output": [
+     "X_WR"
+    ],
+    "properties": {
+     "name": "t43"
+    }
+   },
+   {
+    "id": "t44",
+    "input": [
+     "X_RR"
+    ],
+    "output": [
+     "X_RW"
+    ],
+    "properties": {
+     "name": "t44"
+    }
+   },
+   {
+    "id": "t45",
+    "input": [
+     "X_RR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t45"
+    }
+   },
+   {
+    "id": "t46",
+    "input": [
+     "X_WW"
+    ],
+    "output": [
+     "X_WR"
+    ],
+    "properties": {
+     "name": "t46"
+    }
+   },
+   {
+    "id": "t47",
+    "input": [
+     "X_WR"
+    ],
+    "output": [
+     "X_WW"
+    ],
+    "properties": {
+     "name": "t47"
+    }
+   },
+   {
+    "id": "t48",
+    "input": [
+     "X_WR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t48"
+    }
+   },
+   {
+    "id": "t49",
+    "input": [
+     "X_WW"
+    ],
+    "output": [
+     "X_SW"
+    ],
+    "properties": {
+     "name": "t49"
+    }
+   },
+   {
+    "id": "t50",
+    "input": [
+     "X_SW"
+    ],
+    "output": [
+     "X_IW"
+    ],
+    "properties": {
+     "name": "t50"
+    }
+   },
+   {
+    "id": "t51",
+    "input": [
+     "X_SW"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t51"
+    }
+   },
+   {
+    "id": "t52",
+    "input": [
+     "X_IW"
+    ],
+    "output": [
+     "X_RW"
+    ],
+    "properties": {
+     "name": "t52"
+    }
+   },
+   {
+    "id": "t53",
+    "input": [
+     "X_IW"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t53"
+    }
+   },
+   {
+    "id": "t54",
+    "input": [
+     "X_WW"
+    ],
+    "output": [
+     "X_RW"
+    ],
+    "properties": {
+     "name": "t54"
+    }
+   },
+   {
+    "id": "t55",
+    "input": [
+     "X_RW"
+    ],
+    "output": [
+     "X_WW"
+    ],
+    "properties": {
+     "name": "t55"
+    }
+   },
+   {
+    "id": "t56",
+    "input": [
+     "X_RW"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t56"
+    }
+   },
+   {
+    "id": "t57",
+    "input": [
+     "X_WW"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t57"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "1/80",
+     "expression_mathml": "<apply><divide/><cn>1</cn><cn>80</cn></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "X_SS/80",
+     "expression_mathml": "<apply><divide/><ci>X_SS</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "lambda1*X_SS",
+     "expression_mathml": "<apply><times/><ci>X_SS</ci><ci>lambda1</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "lambda2*X_SS",
+     "expression_mathml": "<apply><times/><ci>X_SS</ci><ci>lambda2</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "2.0*X_WS*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WS</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "2.0*X_SW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_SW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "2.0*X_IW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_IW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "lambda2*X_IS*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_IS</ci><ci>lambda2</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "X_IS*gamma",
+     "expression_mathml": "<apply><times/><ci>X_IS</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "X_IS/80",
+     "expression_mathml": "<apply><divide/><ci>X_IS</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "2.0*X_RW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "lambda1*X_WS*v",
+     "expression_mathml": "<apply><times/><ci>X_WS</ci><ci>lambda1</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "lambda2*X_RS*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_RS</ci><ci>lambda2</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "2.0*X_RS*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RS</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "X_RS/80",
+     "expression_mathml": "<apply><divide/><ci>X_RS</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "2.0*X_WW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "lambda2*X_WS*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_WS</ci><ci>lambda2</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "X_WS/80",
+     "expression_mathml": "<apply><divide/><ci>X_WS</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "2.0*X_WI*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WI</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "lambda1*X_SI*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_SI</ci><ci>lambda1</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "X_SI*gamma",
+     "expression_mathml": "<apply><times/><ci>X_SI</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "X_SI/80",
+     "expression_mathml": "<apply><divide/><ci>X_SI</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "X_II*gamma",
+     "expression_mathml": "<apply><times/><ci>X_II</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "X_II*gamma",
+     "expression_mathml": "<apply><times/><ci>X_II</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "X_II/80",
+     "expression_mathml": "<apply><divide/><ci>X_II</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "lambda1*X_WI*v",
+     "expression_mathml": "<apply><times/><ci>X_WI</ci><ci>lambda1</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "2.0*X_RI*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RI</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "X_RI*gamma",
+     "expression_mathml": "<apply><times/><ci>X_RI</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "X_RI/80",
+     "expression_mathml": "<apply><divide/><ci>X_RI</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "X_WI*gamma",
+     "expression_mathml": "<apply><times/><ci>X_WI</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "X_WI/80",
+     "expression_mathml": "<apply><divide/><ci>X_WI</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "2.0*X_WR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "lambda2*X_SW*v",
+     "expression_mathml": "<apply><times/><ci>X_SW</ci><ci>lambda2</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t34",
+     "expression": "lambda1*X_SR*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_SR</ci><ci>lambda1</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t35",
+     "expression": "2.0*X_SR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_SR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t36",
+     "expression": "X_SR/80",
+     "expression_mathml": "<apply><divide/><ci>X_SR</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t37",
+     "expression": "lambda2*X_IW*v",
+     "expression_mathml": "<apply><times/><ci>X_IW</ci><ci>lambda2</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t38",
+     "expression": "2.0*X_IR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_IR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t39",
+     "expression": "X_IR*gamma",
+     "expression_mathml": "<apply><times/><ci>X_IR</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t40",
+     "expression": "X_IR/80",
+     "expression_mathml": "<apply><divide/><ci>X_IR</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t41",
+     "expression": "lambda1*X_WR*v",
+     "expression_mathml": "<apply><times/><ci>X_WR</ci><ci>lambda1</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t42",
+     "expression": "lambda2*X_RW*v",
+     "expression_mathml": "<apply><times/><ci>X_RW</ci><ci>lambda2</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t43",
+     "expression": "2.0*X_RR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t44",
+     "expression": "2.0*X_RR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t45",
+     "expression": "X_RR/80",
+     "expression_mathml": "<apply><divide/><ci>X_RR</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t46",
+     "expression": "lambda2*X_WW*v",
+     "expression_mathml": "<apply><times/><ci>X_WW</ci><ci>lambda2</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t47",
+     "expression": "2.0*X_WR*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WR</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t48",
+     "expression": "X_WR/80",
+     "expression_mathml": "<apply><divide/><ci>X_WR</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t49",
+     "expression": "2.0*X_WW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_WW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t50",
+     "expression": "lambda1*X_SW*(1.0 - sigma)",
+     "expression_mathml": "<apply><times/><ci>X_SW</ci><ci>lambda1</ci><apply><minus/><cn>1.0</cn><ci>sigma</ci></apply></apply>"
+    },
+    {
+     "target": "t51",
+     "expression": "X_SW/80",
+     "expression_mathml": "<apply><divide/><ci>X_SW</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t52",
+     "expression": "X_IW*gamma",
+     "expression_mathml": "<apply><times/><ci>X_IW</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t53",
+     "expression": "X_IW/80",
+     "expression_mathml": "<apply><divide/><ci>X_IW</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t54",
+     "expression": "lambda1*X_WW*v",
+     "expression_mathml": "<apply><times/><ci>X_WW</ci><ci>lambda1</ci><ci>v</ci></apply>"
+    },
+    {
+     "target": "t55",
+     "expression": "2.0*X_RW*kappa",
+     "expression_mathml": "<apply><times/><cn>2.0</cn><ci>X_RW</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t56",
+     "expression": "X_RW/80",
+     "expression_mathml": "<apply><divide/><ci>X_RW</ci><cn>80</cn></apply>"
+    },
+    {
+     "target": "t57",
+     "expression": "X_WW/80",
+     "expression_mathml": "<apply><divide/><ci>X_WW</ci><cn>80</cn></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "X_SS",
+     "expression": "0.0580000000000000",
+     "expression_mathml": "<cn>0.058000000000000003</cn>"
+    },
+    {
+     "target": "X_IS",
+     "expression": "0.00100000000000000",
+     "expression_mathml": "<cn>0.001</cn>"
+    },
+    {
+     "target": "X_SI",
+     "expression": "0.00100000000000000",
+     "expression_mathml": "<cn>0.001</cn>"
+    },
+    {
+     "target": "X_WS",
+     "expression": "0.100000000000000",
+     "expression_mathml": "<cn>0.10000000000000001</cn>"
+    },
+    {
+     "target": "X_SW",
+     "expression": "0.100000000000000",
+     "expression_mathml": "<cn>0.10000000000000001</cn>"
+    },
+    {
+     "target": "X_IW",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_II",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_RS",
+     "expression": "0.410000000000000",
+     "expression_mathml": "<cn>0.40999999999999998</cn>"
+    },
+    {
+     "target": "X_RW",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_RI",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_WW",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_WI",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_SR",
+     "expression": "0.330000000000000",
+     "expression_mathml": "<cn>0.33000000000000002</cn>"
+    },
+    {
+     "target": "X_IR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_RR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X_WR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "lambda1",
+     "value": 0.26
+    },
+    {
+     "id": "lambda2",
+     "value": 0.26
+    },
+    {
+     "id": "kappa",
+     "value": 0.1
+    },
+    {
+     "id": "sigma",
+     "value": 0.49
+    },
+    {
+     "id": "gamma",
+     "value": 17.0
+    },
+    {
+     "id": "v",
+     "value": 2.0
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}

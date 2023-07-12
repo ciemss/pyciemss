@@ -1,0 +1,145 @@
+{
+ "name": "BIOMD0000000963",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000963 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Recovered",
+     "Infected",
+     "Susceptible"
+    ],
+    "output": [
+     "Recovered",
+     "Infected",
+     "Infected"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Infected*Susceptible*beta/(Recovered*alpha + 1.0)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Infected</ci><ci>Susceptible</ci><ci>beta</ci></apply><apply><plus/><apply><times/><ci>Recovered</ci><ci>alpha</ci></apply><cn>1.0</cn></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Infected*k1",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>k1</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "0.999000000000000",
+     "expression_mathml": "<cn>0.999</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "0.00100000000000000",
+     "expression_mathml": "<cn>0.001</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "alpha"
+    },
+    {
+     "id": "beta",
+     "value": 0.25
+    },
+    {
+     "id": "k1",
+     "value": 0.1
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32382154"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

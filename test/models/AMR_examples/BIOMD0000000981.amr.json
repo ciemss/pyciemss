@@ -1,0 +1,593 @@
+{
+ "name": "BIOMD0000000981",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000981 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Asymptomatic",
+    "name": "Asymptomatic",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C3833"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Exposed",
+    "name": "Exposed",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "00000154"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Quarantined",
+    "name": "Quarantined",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "quarantined": "ncit:C71902"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Susceptible_isolated",
+    "name": "Susceptible_isolated",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "quarantined": "ncit:C71902"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Hospitalised",
+    "name": "Hospitalised",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "hospitalization": "ncit:C25179"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Deceased",
+    "name": "Deceased",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infected",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Susceptible"
+    ],
+    "output": [
+     "Infected",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Susceptible"
+    ],
+    "output": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Susceptible_isolated"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Susceptible_isolated"
+    ],
+    "output": [
+     "Susceptible"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Infected"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Asymptomatic"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Recovered",
+     "Susceptible",
+     "Exposed"
+    ],
+    "output": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Recovered",
+     "Susceptible",
+     "Quarantined"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Hospitalised"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "Infected"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Susceptible",
+     "Infected"
+    ],
+    "output": [
+     "Infected",
+     "Quarantined",
+     "Asymptomatic",
+     "Exposed",
+     "Recovered",
+     "Susceptible",
+     "Quarantined"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "Asymptomatic"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "Infected",
+     "Quarantined",
+     "Exposed",
+     "Recovered",
+     "Susceptible",
+     "Asymptomatic"
+    ],
+    "output": [
+     "Infected",
+     "Quarantined",
+     "Exposed",
+     "Recovered",
+     "Susceptible",
+     "Quarantined"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "Quarantined"
+    ],
+    "output": [
+     "Hospitalised"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "Hospitalised"
+    ],
+    "output": [
+     "Deceased"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "Hospitalised"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Susceptible*beta*c_0*q1*(Asymptomatic*xi + Infected)*exp(-21.0*delta)/(Asymptomatic + Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Susceptible</ci><ci>beta</ci><ci>c_0</ci><ci>q1</ci><apply><plus/><apply><times/><ci>Asymptomatic</ci><ci>xi</ci></apply><ci>Infected</ci></apply></apply><apply><times/><apply><plus/><ci>Asymptomatic</ci><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply><apply><exp/><apply><times/><cn>21.0</cn><ci>delta</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Susceptible*q3*(Infected*q2 + Quarantined*eta)/(Asymptomatic + Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Susceptible</ci><ci>q3</ci><apply><plus/><apply><times/><ci>Infected</ci><ci>q2</ci></apply><apply><times/><ci>Quarantined</ci><ci>eta</ci></apply></apply></apply><apply><plus/><ci>Asymptomatic</ci><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Susceptible_isolated*mu",
+     "expression_mathml": "<apply><times/><ci>Susceptible_isolated</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Exposed*phi*theta",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>phi</ci><ci>theta</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Exposed*phi*(1.0 - theta)",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>phi</ci><apply><minus/><cn>1.0</cn><ci>theta</ci></apply></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "Exposed*q3*(Infected*q2 + Quarantined*eta)/(Asymptomatic + Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Exposed</ci><ci>q3</ci><apply><plus/><apply><times/><ci>Infected</ci><ci>q2</ci></apply><apply><times/><ci>Quarantined</ci><ci>eta</ci></apply></apply></apply><apply><plus/><ci>Asymptomatic</ci><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Infected*q2",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>q2</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "Infected*d",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>d</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "Infected*gamma_I",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>gamma_I</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "Infected*q3*(Infected*q2 + Quarantined*eta)/(Asymptomatic + Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Infected</ci><ci>q3</ci><apply><plus/><apply><times/><ci>Infected</ci><ci>q2</ci></apply><apply><times/><ci>Quarantined</ci><ci>eta</ci></apply></apply></apply><apply><plus/><ci>Asymptomatic</ci><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "Asymptomatic*gamma_A",
+     "expression_mathml": "<apply><times/><ci>Asymptomatic</ci><ci>gamma_A</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "Asymptomatic*q3*(Infected*q2 + Quarantined*eta)/(Asymptomatic + Exposed + Infected + Recovered + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Asymptomatic</ci><ci>q3</ci><apply><plus/><apply><times/><ci>Infected</ci><ci>q2</ci></apply><apply><times/><ci>Quarantined</ci><ci>eta</ci></apply></apply></apply><apply><plus/><ci>Asymptomatic</ci><ci>Exposed</ci><ci>Infected</ci><ci>Recovered</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "Quarantined*eta",
+     "expression_mathml": "<apply><times/><ci>Quarantined</ci><ci>eta</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "Hospitalised*d",
+     "expression_mathml": "<apply><times/><ci>Hospitalised</ci><ci>d</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "Hospitalised*gamma_H",
+     "expression_mathml": "<apply><times/><ci>Hospitalised</ci><ci>gamma_H</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "1336210000.00000",
+     "expression_mathml": "<cn>1336210000.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "0.228390000000000",
+     "expression_mathml": "<cn>0.22839000000000001</cn>"
+    },
+    {
+     "target": "Asymptomatic",
+     "expression": "991.290000000000",
+     "expression_mathml": "<cn>991.28999999999996</cn>"
+    },
+    {
+     "target": "Exposed",
+     "expression": "501.230000000000",
+     "expression_mathml": "<cn>501.23000000000002</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "240.760000000000",
+     "expression_mathml": "<cn>240.75999999999999</cn>"
+    },
+    {
+     "target": "Quarantined",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Susceptible_isolated",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Hospitalised",
+     "expression": "2.00000000000000",
+     "expression_mathml": "<cn>2.0</cn>"
+    },
+    {
+     "target": "Deceased",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "beta",
+     "value": 0.054043
+    },
+    {
+     "id": "c_0",
+     "value": 40.319
+    },
+    {
+     "id": "delta",
+     "value": 0.00028286
+    },
+    {
+     "id": "q1",
+     "value": 1.0
+    },
+    {
+     "id": "xi",
+     "value": 0.80987
+    },
+    {
+     "id": "eta",
+     "value": 17.379
+    },
+    {
+     "id": "q2",
+     "value": 0.47218
+    },
+    {
+     "id": "q3",
+     "value": 2.6954
+    },
+    {
+     "id": "mu",
+     "value": 0.07142857
+    },
+    {
+     "id": "phi",
+     "value": 0.19231
+    },
+    {
+     "id": "theta",
+     "value": 0.6628
+    },
+    {
+     "id": "d",
+     "value": 0.00055888
+    },
+    {
+     "id": "gamma_I",
+     "value": 0.15796
+    },
+    {
+     "id": "gamma_A",
+     "value": 0.55671
+    },
+    {
+     "id": "gamma_H",
+     "value": 0.035352
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32831142"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

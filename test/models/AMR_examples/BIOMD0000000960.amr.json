@@ -1,0 +1,658 @@
+{
+ "name": "BIOMD0000000960",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000960 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infectious",
+    "name": "Infectious",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C25269",
+      "hospitalization": "ncit:C68851"
+     }
+    }
+   },
+   {
+    "id": "Exposed",
+    "name": "Exposed",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "00000154"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Asymptomatic",
+    "name": "Asymptomatic",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C3833",
+      "hospitalization": "ncit:C68851"
+     }
+    }
+   },
+   {
+    "id": "Hospitalized",
+    "name": "Hospitalized",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "hospitalization": "ncit:C25179",
+      "disease_severity": "ncit:C25269"
+     }
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Deceased",
+    "name": "Deceased",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Cumulative_Cases",
+    "name": "Cumulative_Cases",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000480"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infectious",
+     "Susceptible"
+    ],
+    "output": [
+     "Infectious",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Asymptomatic",
+     "Susceptible"
+    ],
+    "output": [
+     "Asymptomatic",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Hospitalized",
+     "Susceptible"
+    ],
+    "output": [
+     "Hospitalized",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Infectious"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Asymptomatic"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Hospitalized"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Deceased"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "Asymptomatic"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "Asymptomatic"
+    ],
+    "output": [
+     "Deceased"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "Hospitalized"
+    ],
+    "output": [
+     "Deceased"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "Hospitalized"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Exposed",
+     "Cumulative_Cases"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Infectious*Susceptible*(ModelValue_0*beta_1_China + ModelValue_1*beta_1_Italy + ModelValue_2*beta_1_Spain + ModelValue_3*beta_1_France + ModelValue_4*beta_1_Germany + ModelValue_5*beta_1_USA)/(ModelValue_0*ModelValue_130 + ModelValue_1*ModelValue_131 + ModelValue_132*ModelValue_2 + ModelValue_133*ModelValue_3 + ModelValue_134*ModelValue_4 + ModelValue_135*ModelValue_5)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Infectious</ci><ci>Susceptible</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>beta_1_China</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>beta_1_Italy</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>beta_1_Spain</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>beta_1_France</ci></apply><apply><times/><ci>ModelValue_4</ci><ci>beta_1_Germany</ci></apply><apply><times/><ci>ModelValue_5</ci><ci>beta_1_USA</ci></apply></apply></apply><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_130</ci></apply><apply><times/><ci>ModelValue_131</ci><ci>ModelValue_1</ci></apply><apply><times/><ci>ModelValue_132</ci><ci>ModelValue_2</ci></apply><apply><times/><ci>ModelValue_133</ci><ci>ModelValue_3</ci></apply><apply><times/><ci>ModelValue_134</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_135</ci><ci>ModelValue_5</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Asymptomatic*Susceptible*(ModelValue_0*beta_1_China + ModelValue_1*beta_1_Italy + ModelValue_2*beta_1_Spain + ModelValue_3*beta_1_France + ModelValue_4*beta_1_Germany + ModelValue_5*beta_1_USA)*(ModelValue_0*l_a_1_China + ModelValue_1*l_a_1_Italy + ModelValue_2*ModelValue_64 + ModelValue_3*l_a_1_France + ModelValue_4*l_a_1_Germany + ModelValue_5*l_a_1_USA)/(ModelValue_0*ModelValue_130 + ModelValue_1*ModelValue_131 + ModelValue_132*ModelValue_2 + ModelValue_133*ModelValue_3 + ModelValue_134*ModelValue_4 + ModelValue_135*ModelValue_5)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Asymptomatic</ci><ci>Susceptible</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>beta_1_China</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>beta_1_Italy</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>beta_1_Spain</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>beta_1_France</ci></apply><apply><times/><ci>ModelValue_4</ci><ci>beta_1_Germany</ci></apply><apply><times/><ci>ModelValue_5</ci><ci>beta_1_USA</ci></apply></apply><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>l_a_1_China</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>l_a_1_Italy</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_64</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>l_a_1_France</ci></apply><apply><times/><ci>ModelValue_4</ci><ci>l_a_1_Germany</ci></apply><apply><times/><ci>ModelValue_5</ci><ci>l_a_1_USA</ci></apply></apply></apply><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_130</ci></apply><apply><times/><ci>ModelValue_131</ci><ci>ModelValue_1</ci></apply><apply><times/><ci>ModelValue_132</ci><ci>ModelValue_2</ci></apply><apply><times/><ci>ModelValue_133</ci><ci>ModelValue_3</ci></apply><apply><times/><ci>ModelValue_134</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_135</ci><ci>ModelValue_5</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Hospitalized*Susceptible*(ModelValue_0*beta_1_China + ModelValue_1*beta_1_Italy + ModelValue_2*beta_1_Spain + ModelValue_3*beta_1_France + ModelValue_4*beta_1_Germany + ModelValue_5*beta_1_USA)*(ModelValue_0*l_1_China + ModelValue_1*l_1_Italy + ModelValue_2*l_1_Spain + ModelValue_3*l_1_France + ModelValue_4*l_1_Germany + ModelValue_5*l_1_USA)/(ModelValue_0*ModelValue_130 + ModelValue_1*ModelValue_131 + ModelValue_132*ModelValue_2 + ModelValue_133*ModelValue_3 + ModelValue_134*ModelValue_4 + ModelValue_135*ModelValue_5)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Hospitalized</ci><ci>Susceptible</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>beta_1_China</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>beta_1_Italy</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>beta_1_Spain</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>beta_1_France</ci></apply><apply><times/><ci>ModelValue_4</ci><ci>beta_1_Germany</ci></apply><apply><times/><ci>ModelValue_5</ci><ci>beta_1_USA</ci></apply></apply><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>l_1_China</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>l_1_Italy</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>l_1_Spain</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>l_1_France</ci></apply><apply><times/><ci>ModelValue_4</ci><ci>l_1_Germany</ci></apply><apply><times/><ci>ModelValue_5</ci><ci>l_1_USA</ci></apply></apply></apply><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_130</ci></apply><apply><times/><ci>ModelValue_131</ci><ci>ModelValue_1</ci></apply><apply><times/><ci>ModelValue_132</ci><ci>ModelValue_2</ci></apply><apply><times/><ci>ModelValue_133</ci><ci>ModelValue_3</ci></apply><apply><times/><ci>ModelValue_134</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_135</ci><ci>ModelValue_5</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Exposed*ModelValue_12*ModelValue_13",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>ModelValue_12</ci><ci>ModelValue_13</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Exposed*ModelValue_12*(1 - ModelValue_13)",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>ModelValue_12</ci><apply><minus/><cn>1</cn><ci>ModelValue_13</ci></apply></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "Infectious*(ModelValue_0*ModelValue_30 + ModelValue_1*ModelValue_52 + ModelValue_102*ModelValue_4 + ModelValue_119*ModelValue_5 + ModelValue_2*ModelValue_68 + ModelValue_3*ModelValue_85)",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_30</ci></apply><apply><times/><ci>ModelValue_102</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_119</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_52</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_68</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>ModelValue_85</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Infectious*(ModelValue_0*ModelValue_29 + ModelValue_1*ModelValue_53 + ModelValue_103*ModelValue_4 + ModelValue_120*ModelValue_5 + ModelValue_2*ModelValue_69 + ModelValue_3*ModelValue_86)",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_29</ci></apply><apply><times/><ci>ModelValue_103</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_120</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_53</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_69</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>ModelValue_86</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "Infectious*(ModelValue_0*ModelValue_41 + ModelValue_1*ModelValue_57 + ModelValue_108*ModelValue_4 + ModelValue_125*ModelValue_5 + ModelValue_2*ModelValue_74 + ModelValue_3*ModelValue_91)",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_41</ci></apply><apply><times/><ci>ModelValue_108</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_125</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_57</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_74</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>ModelValue_91</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "Asymptomatic*ModelValue_17*(1 - ModelValue_18)",
+     "expression_mathml": "<apply><times/><ci>Asymptomatic</ci><ci>ModelValue_17</ci><apply><minus/><cn>1</cn><ci>ModelValue_18</ci></apply></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "Asymptomatic*ModelValue_17*ModelValue_18",
+     "expression_mathml": "<apply><times/><ci>Asymptomatic</ci><ci>ModelValue_17</ci><ci>ModelValue_18</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "Hospitalized*(ModelValue_0*ModelValue_40 + ModelValue_1*ModelValue_56 + ModelValue_107*ModelValue_4 + ModelValue_124*ModelValue_5 + ModelValue_2*ModelValue_73 + ModelValue_3*ModelValue_90)",
+     "expression_mathml": "<apply><times/><ci>Hospitalized</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_40</ci></apply><apply><times/><ci>ModelValue_107</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_124</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_56</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_73</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>ModelValue_90</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "Hospitalized*(ModelValue_0*ModelValue_28 + ModelValue_1*ModelValue_128 + ModelValue_104*ModelValue_4 + ModelValue_121*ModelValue_5 + ModelValue_2*ModelValue_70 + ModelValue_3*ModelValue_87)",
+     "expression_mathml": "<apply><times/><ci>Hospitalized</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_28</ci></apply><apply><times/><ci>ModelValue_104</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_121</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_128</ci><ci>ModelValue_1</ci></apply><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_70</ci></apply><apply><times/><ci>ModelValue_3</ci><ci>ModelValue_87</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "Exposed*ModelValue_12*ModelValue_13",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>ModelValue_12</ci><ci>ModelValue_13</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "9900000.00000000",
+     "expression_mathml": "<cn>9900000.0</cn>"
+    },
+    {
+     "target": "Infectious",
+     "expression": "732.000000000000",
+     "expression_mathml": "<cn>732.0</cn>"
+    },
+    {
+     "target": "Exposed",
+     "expression": "36600.0000000000",
+     "expression_mathml": "<cn>36600.0</cn>"
+    },
+    {
+     "target": "Asymptomatic",
+     "expression": "2196.00000000000",
+     "expression_mathml": "<cn>2196.0</cn>"
+    },
+    {
+     "target": "Hospitalized",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Deceased",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Cumulative_Cases",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "ModelValue_0",
+     "value": 1.0
+    },
+    {
+     "id": "ModelValue_1"
+    },
+    {
+     "id": "ModelValue_130",
+     "value": 11000000.0
+    },
+    {
+     "id": "ModelValue_131",
+     "value": 60400000.0
+    },
+    {
+     "id": "ModelValue_132",
+     "value": 46900000.0
+    },
+    {
+     "id": "ModelValue_133",
+     "value": 67000000.0
+    },
+    {
+     "id": "ModelValue_134",
+     "value": 83000000.0
+    },
+    {
+     "id": "ModelValue_135",
+     "value": 328200000.0
+    },
+    {
+     "id": "ModelValue_2"
+    },
+    {
+     "id": "ModelValue_3"
+    },
+    {
+     "id": "ModelValue_4"
+    },
+    {
+     "id": "ModelValue_5"
+    },
+    {
+     "id": "beta_1_China",
+     "value": 0.334
+    },
+    {
+     "id": "beta_1_France",
+     "value": 0.298
+    },
+    {
+     "id": "beta_1_Germany",
+     "value": 0.135
+    },
+    {
+     "id": "beta_1_Italy",
+     "value": 0.189
+    },
+    {
+     "id": "beta_1_Spain",
+     "value": 0.382
+    },
+    {
+     "id": "beta_1_USA",
+     "value": 0.303
+    },
+    {
+     "id": "ModelValue_64",
+     "value": 3.9
+    },
+    {
+     "id": "l_a_1_China",
+     "value": 8.0
+    },
+    {
+     "id": "l_a_1_France",
+     "value": 8.0
+    },
+    {
+     "id": "l_a_1_Germany",
+     "value": 4.9
+    },
+    {
+     "id": "l_a_1_Italy",
+     "value": 0.649
+    },
+    {
+     "id": "l_a_1_USA",
+     "value": 4.09
+    },
+    {
+     "id": "l_1_China",
+     "value": 0.673
+    },
+    {
+     "id": "l_1_France",
+     "value": 8.0
+    },
+    {
+     "id": "l_1_Germany",
+     "value": 4.8
+    },
+    {
+     "id": "l_1_Italy",
+     "value": 8.0
+    },
+    {
+     "id": "l_1_Spain",
+     "value": 7.69
+    },
+    {
+     "id": "l_1_USA",
+     "value": 0.851
+    },
+    {
+     "id": "ModelValue_12",
+     "value": 0.44
+    },
+    {
+     "id": "ModelValue_13",
+     "value": 0.053
+    },
+    {
+     "id": "ModelValue_102",
+     "value": 0.542
+    },
+    {
+     "id": "ModelValue_119",
+     "value": 0.055
+    },
+    {
+     "id": "ModelValue_30",
+     "value": 0.503
+    },
+    {
+     "id": "ModelValue_52",
+     "value": 0.224
+    },
+    {
+     "id": "ModelValue_68",
+     "value": 0.116
+    },
+    {
+     "id": "ModelValue_85",
+     "value": 0.3
+    },
+    {
+     "id": "ModelValue_103",
+     "value": 0.05
+    },
+    {
+     "id": "ModelValue_120",
+     "value": 0.296
+    },
+    {
+     "id": "ModelValue_29",
+     "value": 0.263
+    },
+    {
+     "id": "ModelValue_53",
+     "value": 0.04
+    },
+    {
+     "id": "ModelValue_69",
+     "value": 0.063
+    },
+    {
+     "id": "ModelValue_86",
+     "value": 0.02
+    },
+    {
+     "id": "ModelValue_108",
+     "value": 0.002
+    },
+    {
+     "id": "ModelValue_125",
+     "value": 0.023
+    },
+    {
+     "id": "ModelValue_41",
+     "value": 0.003
+    },
+    {
+     "id": "ModelValue_57",
+     "value": 0.023
+    },
+    {
+     "id": "ModelValue_74",
+     "value": 0.016
+    },
+    {
+     "id": "ModelValue_91",
+     "value": 0.018
+    },
+    {
+     "id": "ModelValue_17",
+     "value": 1.64
+    },
+    {
+     "id": "ModelValue_18"
+    },
+    {
+     "id": "ModelValue_107",
+     "value": 0.003
+    },
+    {
+     "id": "ModelValue_124",
+     "value": 0.00029
+    },
+    {
+     "id": "ModelValue_40",
+     "value": 0.008
+    },
+    {
+     "id": "ModelValue_56",
+     "value": 0.023
+    },
+    {
+     "id": "ModelValue_73",
+     "value": 0.019
+    },
+    {
+     "id": "ModelValue_90",
+     "value": 0.029
+    },
+    {
+     "id": "ModelValue_104",
+     "value": 0.036
+    },
+    {
+     "id": "ModelValue_121",
+     "value": 0.018
+    },
+    {
+     "id": "ModelValue_128",
+     "value": 0.24
+    },
+    {
+     "id": "ModelValue_28",
+     "value": 0.141
+    },
+    {
+     "id": "ModelValue_70",
+     "value": 0.281
+    },
+    {
+     "id": "ModelValue_87",
+     "value": 0.131
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32735581"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

@@ -1,0 +1,527 @@
+{
+ "name": "BIOMD0000000958",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000958 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infectious",
+    "name": "Infectious",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "transmissibility": "ncit:C25376"
+     }
+    }
+   },
+   {
+    "id": "Exposed",
+    "name": "Exposed",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "00000154"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Hospitalised",
+    "name": "Hospitalised",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "hospitalization": "ncit:C25179"
+     }
+    }
+   },
+   {
+    "id": "Super_spreaders",
+    "name": "Super_spreaders",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "transmissibility": "ncit:C49508"
+     }
+    }
+   },
+   {
+    "id": "Asymptomatic",
+    "name": "Asymptomatic",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C3833"
+     }
+    }
+   },
+   {
+    "id": "Fatalities",
+    "name": "Fatalities",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infectious",
+     "Susceptible"
+    ],
+    "output": [
+     "Infectious",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Hospitalised",
+     "Susceptible"
+    ],
+    "output": [
+     "Hospitalised",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Super_spreaders",
+     "Susceptible"
+    ],
+    "output": [
+     "Super_spreaders",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Asymptomatic"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Super_spreaders"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Infectious"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Super_spreaders"
+    ],
+    "output": [
+     "Fatalities"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "Super_spreaders"
+    ],
+    "output": [
+     "Hospitalised"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "Super_spreaders"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Fatalities"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Hospitalised"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "Infectious"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "Hospitalised"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "Hospitalised"
+    ],
+    "output": [
+     "Fatalities"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Infectious*Susceptible*beta/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Infectious</ci><ci>Susceptible</ci><ci>beta</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Hospitalised*Susceptible*beta*l/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Hospitalised</ci><ci>Susceptible</ci><ci>beta</ci><ci>l</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Super_spreaders*Susceptible*beta_prime/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Super_spreaders</ci><ci>Susceptible</ci><ci>beta_prime</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Exposed*kappa*(-rho1 - rho2 + 1.0)",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>kappa</ci><apply><plus/><apply><minus/><apply><minus/><ci>rho1</ci></apply><ci>rho2</ci></apply><cn>1.0</cn></apply></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Exposed*kappa*rho2",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>kappa</ci><ci>rho2</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "Exposed*kappa*rho1",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>kappa</ci><ci>rho1</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Super_spreaders*delta_p",
+     "expression_mathml": "<apply><times/><ci>Super_spreaders</ci><ci>delta_p</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "Super_spreaders*gamma_a",
+     "expression_mathml": "<apply><times/><ci>Super_spreaders</ci><ci>gamma_a</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "Super_spreaders*gamma_i",
+     "expression_mathml": "<apply><times/><ci>Super_spreaders</ci><ci>gamma_i</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "Infectious*delta_i",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><ci>delta_i</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "Infectious*gamma_a",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><ci>gamma_a</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "Infectious*gamma_i",
+     "expression_mathml": "<apply><times/><ci>Infectious</ci><ci>gamma_i</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "Hospitalised*gamma_r",
+     "expression_mathml": "<apply><times/><ci>Hospitalised</ci><ci>gamma_r</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "Hospitalised*delta_h",
+     "expression_mathml": "<apply><times/><ci>Hospitalised</ci><ci>delta_h</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "43994.0000000000",
+     "expression_mathml": "<cn>43994.0</cn>"
+    },
+    {
+     "target": "Infectious",
+     "expression": "1.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "Exposed",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Hospitalised",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Super_spreaders",
+     "expression": "5.00000000000000",
+     "expression_mathml": "<cn>5.0</cn>"
+    },
+    {
+     "target": "Asymptomatic",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Fatalities",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 44000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 2.8,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "l",
+     "value": 1.56,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "beta_prime",
+     "value": 7.65,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "kappa",
+     "value": 0.25,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "rho1",
+     "value": 0.58,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "rho2",
+     "value": 0.001,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "delta_p",
+     "value": 1.0,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma_a",
+     "value": 0.94,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma_i",
+     "value": 0.27,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "delta_i",
+     "value": 0.035,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma_r",
+     "value": 0.5,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "delta_h",
+     "value": 0.085,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32341628"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

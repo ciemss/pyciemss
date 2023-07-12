@@ -1,0 +1,157 @@
+{
+ "name": "BIOMD0000000956",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000956 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infected",
+     "Susceptible"
+    ],
+    "output": [
+     "Infected",
+     "Infected"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Infected*Susceptible*(ModelValue_2*ModelValue_5 + ModelValue_6*ModelValue_9)*(ModelValue_5*Ro_CA + ModelValue_6*Ro_NY)",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>Susceptible</ci><apply><plus/><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_6</ci><ci>ModelValue_9</ci></apply></apply><apply><plus/><apply><times/><ci>ModelValue_5</ci><ci>Ro_CA</ci></apply><apply><times/><ci>ModelValue_6</ci><ci>Ro_NY</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Infected*(ModelValue_2*ModelValue_5 + ModelValue_6*ModelValue_9)",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><apply><plus/><apply><times/><ci>ModelValue_2</ci><ci>ModelValue_5</ci></apply><apply><times/><ci>ModelValue_6</ci><ci>ModelValue_9</ci></apply></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "0.999999999999997",
+     "expression_mathml": "<cn>0.999999999999997</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "1.26390293225480e-7",
+     "expression_mathml": "<cn>1.2639029322548e-7</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "ModelValue_2",
+     "value": 0.14
+    },
+    {
+     "id": "ModelValue_5",
+     "value": 1.0
+    },
+    {
+     "id": "ModelValue_6"
+    },
+    {
+     "id": "ModelValue_9",
+     "value": 0.1
+    },
+    {
+     "id": "Ro_CA",
+     "value": 2.7
+    },
+    {
+     "id": "Ro_NY",
+     "value": 4.1
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32616574"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [
+    "doid:0080600"
+   ],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

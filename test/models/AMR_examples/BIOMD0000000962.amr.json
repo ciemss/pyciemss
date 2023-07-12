@@ -1,0 +1,245 @@
+{
+ "name": "BIOMD0000000962",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000962 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Unquarantined_Infected",
+    "name": "Unquarantined_Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "quarantined": "ncit:C68851"
+     }
+    }
+   },
+   {
+    "id": "Quarantined_Infected",
+    "name": "Quarantined_Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "quarantined": "ncit:C71902"
+     }
+    }
+   },
+   {
+    "id": "Confirmed_Infected",
+    "name": "Confirmed_Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "diagnosis": "ncit:C15220"
+     }
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Unquarantined_Infected",
+     "Susceptible"
+    ],
+    "output": [
+     "Unquarantined_Infected",
+     "Unquarantined_Infected"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Unquarantined_Infected"
+    ],
+    "output": [
+     "Quarantined_Infected"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Quarantined_Infected"
+    ],
+    "output": [
+     "Confirmed_Infected"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "ModelValue_6*ModelValue_7*Susceptible*Unquarantined_Infected/(ModelValue_13*ModelValue_3 + ModelValue_14*ModelValue_4 + ModelValue_15*ModelValue_5)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>ModelValue_6</ci><ci>ModelValue_7</ci><ci>Susceptible</ci><ci>Unquarantined_Infected</ci></apply><apply><plus/><apply><times/><ci>ModelValue_13</ci><ci>ModelValue_3</ci></apply><apply><times/><ci>ModelValue_14</ci><ci>ModelValue_4</ci></apply><apply><times/><ci>ModelValue_15</ci><ci>ModelValue_5</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Unquarantined_Infected*(ModelValue_3*(ModelValue_0*ModelValue_17 + ModelValue_1*ModelValue_20 + ModelValue_2*ModelValue_23) + ModelValue_4*(ModelValue_0*ModelValue_26 + ModelValue_1*ModelValue_29) + ModelValue_5*(ModelValue_0*ModelValue_32 + ModelValue_1*ModelValue_35))",
+     "expression_mathml": "<apply><times/><ci>Unquarantined_Infected</ci><apply><plus/><apply><times/><ci>ModelValue_3</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_17</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_20</ci></apply><apply><times/><ci>ModelValue_23</ci><ci>ModelValue_2</ci></apply></apply></apply><apply><times/><ci>ModelValue_4</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_26</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_29</ci></apply></apply></apply><apply><times/><ci>ModelValue_5</ci><apply><plus/><apply><times/><ci>ModelValue_0</ci><ci>ModelValue_32</ci></apply><apply><times/><ci>ModelValue_1</ci><ci>ModelValue_35</ci></apply></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Quarantined_Infected*(ModelValue_8 + ModelValue_9*(1 - ModelValue_8))",
+     "expression_mathml": "<apply><times/><ci>Quarantined_Infected</ci><apply><plus/><ci>ModelValue_8</ci><apply><times/><ci>ModelValue_9</ci><apply><minus/><cn>1</cn><ci>ModelValue_8</ci></apply></apply></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "9010000.00000000",
+     "expression_mathml": "<cn>9010000.0</cn>"
+    },
+    {
+     "target": "Unquarantined_Infected",
+     "expression": "258.000000000000",
+     "expression_mathml": "<cn>258.0</cn>"
+    },
+    {
+     "target": "Quarantined_Infected",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Confirmed_Infected",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "ModelValue_13",
+     "value": 9010000.0
+    },
+    {
+     "id": "ModelValue_14",
+     "value": 48000000.0
+    },
+    {
+     "id": "ModelValue_15",
+     "value": 1335000000.0
+    },
+    {
+     "id": "ModelValue_3",
+     "value": 1.0
+    },
+    {
+     "id": "ModelValue_4"
+    },
+    {
+     "id": "ModelValue_5"
+    },
+    {
+     "id": "ModelValue_6",
+     "value": 4.7092
+    },
+    {
+     "id": "ModelValue_7",
+     "value": 0.063
+    },
+    {
+     "id": "ModelValue_0",
+     "value": 1.0
+    },
+    {
+     "id": "ModelValue_1"
+    },
+    {
+     "id": "ModelValue_17",
+     "value": 0.063
+    },
+    {
+     "id": "ModelValue_2"
+    },
+    {
+     "id": "ModelValue_20",
+     "value": 0.3917
+    },
+    {
+     "id": "ModelValue_23",
+     "value": 0.6185
+    },
+    {
+     "id": "ModelValue_26",
+     "value": 0.05
+    },
+    {
+     "id": "ModelValue_29",
+     "value": 0.488
+    },
+    {
+     "id": "ModelValue_32",
+     "value": 0.1941
+    },
+    {
+     "id": "ModelValue_35",
+     "value": 0.5157
+    },
+    {
+     "id": "ModelValue_8",
+     "value": 0.05
+    },
+    {
+     "id": "ModelValue_9"
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32219006"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

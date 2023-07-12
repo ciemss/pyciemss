@@ -1,0 +1,912 @@
+{
+ "name": "MODEL2111170001",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.4/petrinet/petrinet_schema.json",
+ "description": "BioModels model MODEL2111170001 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "A2",
+    "name": "A2",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A2+",
+    "name": "A2+",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A1",
+    "name": "A1",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "T",
+    "name": "T",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "AT",
+    "name": "AT",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A2-",
+    "name": "A2-",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A2+act",
+    "name": "A2+act",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A2-act",
+    "name": "A2-act",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "I_act",
+    "name": "I_act",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "F",
+    "name": "F",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "M",
+    "name": "M",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "M_act",
+    "name": "M_act",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "V",
+    "name": "V",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "A2act",
+    "name": "A2act",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   },
+   {
+    "id": "X",
+    "name": "X",
+    "grounding": {
+     "identifiers": {},
+     "context": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "A2",
+     "A2+"
+    ],
+    "output": [
+     "A2",
+     "A2+",
+     "A1"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "T",
+     "A1"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "AT",
+     "A2-",
+     "A2+act",
+     "A1",
+     "A2+",
+     "A2-act",
+     "I",
+     "I_act"
+    ],
+    "output": [
+     "AT",
+     "A2-",
+     "A2+act",
+     "A1",
+     "A2+",
+     "A2-act",
+     "I",
+     "I_act",
+     "A2+"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "T",
+     "A2+act"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "T",
+     "A2-act"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "T",
+     "I"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "F",
+     "I"
+    ],
+    "output": [
+     "F",
+     "I_act"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "T",
+     "I_act"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "I",
+     "I_act",
+     "T"
+    ],
+    "output": [
+     "I",
+     "I_act",
+     "T",
+     "D"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "M",
+     "M_act",
+     "D"
+    ],
+    "output": [
+     "M",
+     "M_act"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "I",
+     "I_act",
+     "M_act"
+    ],
+    "output": [
+     "I",
+     "I_act",
+     "M_act",
+     "F"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "T",
+     "A2+"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "F",
+     "A2+"
+    ],
+    "output": [
+     "F",
+     "A2+act"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "V",
+     "A2+"
+    ],
+    "output": [
+     "V",
+     "I"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "AT",
+     "A2+",
+     "A2-act",
+     "A1",
+     "A2-",
+     "A2+act",
+     "I",
+     "I_act"
+    ],
+    "output": [
+     "AT",
+     "A2+",
+     "A2-act",
+     "A1",
+     "A2-",
+     "A2+act",
+     "I",
+     "I_act",
+     "A2-"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "T",
+     "A2-"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "F",
+     "A2-"
+    ],
+    "output": [
+     "F",
+     "A2-act"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "F"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "I",
+     "I_act",
+     "A2act",
+     "M_act",
+     "A2+act",
+     "A2-act"
+    ],
+    "output": [
+     "I",
+     "I_act",
+     "A2act",
+     "M_act",
+     "A2+act",
+     "A2-act",
+     "X"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "X"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "M_act"
+    ],
+    "output": [
+     "M_act",
+     "T"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "M",
+     "M_act",
+     "T"
+    ],
+    "output": [
+     "M",
+     "M_act"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "X"
+    ],
+    "output": [
+     "X",
+     "M"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "V",
+     "M"
+    ],
+    "output": [
+     "V",
+     "M_act"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "T",
+     "M"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "T",
+     "M_act"
+    ],
+    "output": [
+     "T"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "I_act",
+     "I",
+     "M",
+     "M_act",
+     "V"
+    ],
+    "output": [
+     "I_act",
+     "I",
+     "M",
+     "M_act",
+     "V",
+     "V"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "V"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t28"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "A2*alpha",
+     "expression_mathml": "<apply><times/><ci>A2</ci><ci>alpha</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "A1*muA - A1*rg",
+     "expression_mathml": "<apply><minus/><apply><times/><ci>A1</ci><ci>muA</ci></apply><apply><times/><ci>A1</ci><ci>rg</ci></apply></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "A2*r2*(1.0 - (A1 + A2 + A2_1 + A2_act + A2_act_0 + I + I_act)/KA) + A2_1*a2_0 + A2_act*u",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2_1</ci><ci>a2_0</ci></apply><apply><times/><ci>A2_act</ci><ci>u</ci></apply><apply><times/><ci>A2</ci><ci>r2</ci><apply><minus/><cn>1.0</cn><apply><divide/><apply><plus/><ci>A1</ci><ci>A2_1</ci><ci>A2_act_0</ci><ci>A2_act</ci><ci>A2</ci><ci>I_act</ci><ci>I</ci></apply><ci>KA</ci></apply></apply></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "A2_act*rg + A2_act*(alpha + muA + u)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2_act</ci><ci>rg</ci></apply><apply><times/><ci>A2_act</ci><apply><plus/><ci>alpha</ci><ci>muA</ci><ci>u</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "A2_act_0*rg + A2_act_0*(alpha + muA + u)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2_act_0</ci><ci>rg</ci></apply><apply><times/><ci>A2_act_0</ci><apply><plus/><ci>alpha</ci><ci>muA</ci><ci>u</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I*rg + I*(mu1 + muA)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>I</ci><ci>rg</ci></apply><apply><times/><ci>I</ci><apply><plus/><ci>mu1</ci><ci>muA</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I*alpha*f",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>alpha</ci><ci>f</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I_act*rg + I_act*(mu1 + muA)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>I_act</ci><ci>rg</ci></apply><apply><times/><ci>I_act</ci><apply><plus/><ci>mu1</ci><ci>muA</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "rg*(I + I_act) + (I + I_act)*(mu1 + muA)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>rg</ci><apply><plus/><ci>I_act</ci><ci>I</ci></apply></apply><apply><times/><apply><plus/><ci>I_act</ci><ci>I</ci></apply><apply><plus/><ci>mu1</ci><ci>muA</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "M*kM0/C1 + M_act*kM/C1",
+     "expression_mathml": "<apply><plus/><apply><divide/><apply><times/><ci>M_act</ci><ci>kM</ci></apply><ci>C1</ci></apply><apply><divide/><apply><times/><ci>M</ci><ci>kM0</ci></apply><ci>C1</ci></apply></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "1.0*(I*pf2 + I_act*pf2 + M_act*pf1)/C2",
+     "expression_mathml": "<apply><divide/><apply><plus/><apply><times/><cn>1.0</cn><ci>I_act</ci><ci>pf2</ci></apply><apply><times/><cn>1.0</cn><ci>I</ci><ci>pf2</ci></apply><apply><times/><cn>1.0</cn><ci>M_act</ci><ci>pf1</ci></apply></apply><ci>C2</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "A2*rg + A2*(a2 + alpha + muA)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2</ci><ci>rg</ci></apply><apply><times/><ci>A2</ci><apply><plus/><ci>a2</ci><ci>alpha</ci><ci>muA</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "32900000000.0*alpha*f",
+     "expression_mathml": "<apply><times/><cn>32900000000.0</cn><ci>alpha</ci><ci>f</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "A2*beta*f",
+     "expression_mathml": "<apply><times/><ci>A2</ci><ci>beta</ci><ci>f</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "A2*a2 + A2_1*r2*(1.0 - (A1 + A2 + A2_1 + A2_act + A2_act_0 + I + I_act)/KA) + A2_act_0*u",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2_1</ci><ci>r2</ci><apply><minus/><cn>1.0</cn><apply><divide/><apply><plus/><ci>A1</ci><ci>A2_1</ci><ci>A2_act_0</ci><ci>A2_act</ci><ci>A2</ci><ci>I_act</ci><ci>I</ci></apply><ci>KA</ci></apply></apply></apply><apply><times/><ci>A2_act_0</ci><ci>u</ci></apply><apply><times/><ci>A2</ci><ci>a2</ci></apply></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "A2_1*rg + A2_1*(a2_0 + alpha + muA)",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>A2_1</ci><ci>rg</ci></apply><apply><times/><ci>A2_1</ci><apply><plus/><ci>a2_0</ci><ci>alpha</ci><ci>muA</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "A2_1*alpha*f",
+     "expression_mathml": "<apply><times/><ci>A2_1</ci><ci>alpha</ci><ci>f</ci></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "F*muF",
+     "expression_mathml": "<apply><times/><ci>F</ci><ci>muF</ci></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "pX*(A2_act + A2_act_0 + I + I_act + M_act)/C2",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>pX</ci><apply><plus/><ci>A2_act_0</ci><ci>A2_act</ci><ci>I_act</ci><ci>I</ci><ci>M_act</ci></apply></apply><ci>C2</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "X*muX",
+     "expression_mathml": "<apply><times/><ci>X</ci><ci>muX</ci></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "M_act*pT",
+     "expression_mathml": "<apply><times/><ci>M_act</ci><ci>pT</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "M*T*kM0 + M_act*T*kM",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>M_act</ci><ci>T</ci><ci>kM</ci></apply><apply><times/><ci>M</ci><ci>T</ci><ci>kM0</ci></apply></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "g*rM_0 + rM",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>g</ci><ci>rM_0</ci></apply><ci>rM</ci></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "M*kM0*(V + D/C1)",
+     "expression_mathml": "<apply><times/><ci>M</ci><ci>kM0</ci><apply><plus/><ci>V</ci><apply><divide/><ci>D</ci><ci>C1</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "M*T*kM0 + M*muM",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>M</ci><ci>T</ci><ci>kM0</ci></apply><apply><times/><ci>M</ci><ci>muM</ci></apply></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "M_act*T*kM + M_act*mu_M + M_act*pT",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>M_act</ci><ci>T</ci><ci>kM</ci></apply><apply><times/><ci>M_act</ci><ci>mu_M</ci></apply><apply><times/><ci>M_act</ci><ci>pT</ci></apply></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "1.0*(I*pV + I_act*pV_0 - M*kM0 - M_act*V*kM)/C1",
+     "expression_mathml": "<apply><divide/><apply><plus/><apply><times/><cn>1.0</cn><ci>I_act</ci><ci>pV_0</ci></apply><apply><minus/><apply><minus/><apply><times/><cn>1.0</cn><ci>I</ci><ci>pV</ci></apply><apply><times/><cn>1.0</cn><ci>M_act</ci><ci>V</ci><ci>kM</ci></apply></apply><apply><times/><cn>1.0</cn><ci>M</ci><ci>kM0</ci></apply></apply></apply><ci>C1</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "V*muV",
+     "expression_mathml": "<apply><times/><ci>V</ci><ci>muV</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "A2",
+     "expression": "32900000000.0000",
+     "expression_mathml": "<cn>32900000000.0</cn>"
+    },
+    {
+     "target": "A2+",
+     "expression": "1645000000.00000",
+     "expression_mathml": "<cn>1645000000.0</cn>"
+    },
+    {
+     "target": "A1",
+     "expression": "19600000000.0000",
+     "expression_mathml": "<cn>19600000000.0</cn>"
+    },
+    {
+     "target": "T",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "AT",
+     "expression": "52500000000.0000",
+     "expression_mathml": "<cn>52500000000.0</cn>"
+    },
+    {
+     "target": "A2-",
+     "expression": "31255000000.0000",
+     "expression_mathml": "<cn>31255000000.0</cn>"
+    },
+    {
+     "target": "A2+act",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "A2-act",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "I_act",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "F",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "M",
+     "expression": "5990000000.00000",
+     "expression_mathml": "<cn>5990000000.0</cn>"
+    },
+    {
+     "target": "M_act",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "V",
+     "expression": "200.000000000000",
+     "expression_mathml": "<cn>200.0</cn>"
+    },
+    {
+     "target": "A2act",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "X",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "A2",
+     "value": 32900000000.0
+    },
+    {
+     "id": "alpha",
+     "value": 0.6
+    },
+    {
+     "id": "muA",
+     "value": 0.00035
+    },
+    {
+     "id": "u",
+     "value": 0.005
+    },
+    {
+     "id": "a2_0",
+     "value": 2.8e-05
+    },
+    {
+     "id": "KA",
+     "value": 53000.0
+    },
+    {
+     "id": "r2",
+     "value": 0.055
+    },
+    {
+     "id": "mu1",
+     "value": 0.013888
+    },
+    {
+     "id": "kM0",
+     "value": 0.0001
+    },
+    {
+     "id": "C1",
+     "value": 20.0
+    },
+    {
+     "id": "kM",
+     "value": 0.0003
+    },
+    {
+     "id": "pf1",
+     "value": 0.01
+    },
+    {
+     "id": "pf2"
+    },
+    {
+     "id": "C2",
+     "value": 0.25
+    },
+    {
+     "id": "a2",
+     "value": 0.0005
+    },
+    {
+     "id": "beta",
+     "value": 0.16666
+    },
+    {
+     "id": "muF",
+     "value": 0.35
+    },
+    {
+     "id": "pX",
+     "value": 0.006
+    },
+    {
+     "id": "muX",
+     "value": 1.0
+    },
+    {
+     "id": "pT",
+     "value": 0.12
+    },
+    {
+     "id": "rM",
+     "value": 3.0
+    },
+    {
+     "id": "rM_0",
+     "value": 350.0
+    },
+    {
+     "id": "muM",
+     "value": 0.0005
+    },
+    {
+     "id": "mu_M",
+     "value": 0.02
+    },
+    {
+     "id": "pV_0",
+     "value": 0.0318
+    },
+    {
+     "id": "pV",
+     "value": 3.18
+    },
+    {
+     "id": "muV",
+     "value": 0.3333
+    }
+   ]
+  }
+ },
+ "metadata": {}
+}

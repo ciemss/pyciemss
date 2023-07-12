@@ -1,0 +1,160 @@
+{
+ "name": "BIOMD0000000982",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000982 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Removed",
+    "name": "Removed",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infected",
+     "Removed",
+     "Susceptible"
+    ],
+    "output": [
+     "Infected",
+     "Removed",
+     "Infected"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Removed"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Infected*Susceptible*beta_0*(0.4374*Trigger_Stage_1 + 0.3914*Trigger_Stage_2 + 0.4047*Trigger_Stage_3)*(-0.0784*Trigger_Stage_1 - 0.045*Trigger_Stage_2 - 0.0466*Trigger_Stage_3 + 1)**time/(Infected + Removed + Susceptible)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>Infected</ci><ci>Susceptible</ci><ci>beta_0</ci><apply><plus/><apply><times/><cn>0.43740000000000001</cn><ci>Trigger_Stage_1</ci></apply><apply><times/><cn>0.39140000000000003</cn><ci>Trigger_Stage_2</ci></apply><apply><times/><cn>0.4047</cn><ci>Trigger_Stage_3</ci></apply></apply><apply><power/><apply><plus/><apply><minus/><apply><minus/><apply><minus/><apply><times/><cn>0.078399999999999997</cn><ci>Trigger_Stage_1</ci></apply></apply><apply><times/><cn>0.044999999999999998</cn><ci>Trigger_Stage_2</ci></apply></apply><apply><times/><cn>0.046600000000000003</cn><ci>Trigger_Stage_3</ci></apply></apply><cn>1</cn></apply><ci>time</ci></apply></apply><apply><plus/><ci>Infected</ci><ci>Removed</ci><ci>Susceptible</ci></apply></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Infected*(0.025*Trigger_Stage_1 + 0.042*Trigger_Stage_2 + 0.05*Trigger_Stage_3)",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><apply><plus/><apply><times/><cn>0.025000000000000001</cn><ci>Trigger_Stage_1</ci></apply><apply><times/><cn>0.042000000000000003</cn><ci>Trigger_Stage_2</ci></apply><apply><times/><cn>0.050000000000000003</cn><ci>Trigger_Stage_3</ci></apply></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "32680000.0000000",
+     "expression_mathml": "<cn>32680000.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "728.000000000000",
+     "expression_mathml": "<cn>728.0</cn>"
+    },
+    {
+     "target": "Removed",
+     "expression": "62.0000000000001",
+     "expression_mathml": "<cn>62.000000000000099</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "Trigger_Stage_1"
+    },
+    {
+     "id": "Trigger_Stage_2"
+    },
+    {
+     "id": "Trigger_Stage_3",
+     "value": 1.0
+    },
+    {
+     "id": "beta_0",
+     "value": 0.4114
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:33303925"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

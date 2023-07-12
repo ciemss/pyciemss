@@ -1,0 +1,348 @@
+{
+ "name": "MODEL1008060002",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model MODEL1008060002 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Removed",
+    "name": "Removed",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Zombie",
+    "name": "Zombie",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Quarantined",
+    "name": "Quarantined",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [],
+    "output": [
+     "Susceptible"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Susceptible"
+    ],
+    "output": [
+     "Removed"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Zombie",
+     "Susceptible"
+    ],
+    "output": [
+     "Zombie",
+     "Infected"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Quarantined"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Zombie"
+    ],
+    "output": [
+     "Quarantined"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Quarantined"
+    ],
+    "output": [
+     "Removed"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Removed"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Zombie"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "Removed"
+    ],
+    "output": [
+     "Zombie"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "Susceptible",
+     "Zombie"
+    ],
+    "output": [
+     "Susceptible",
+     "Removed"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Susceptible*delta",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Susceptible*delta",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Susceptible*Zombie*beta",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><ci>Zombie</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Infected*kappa",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>kappa</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Zombie*sigma",
+     "expression_mathml": "<apply><times/><ci>Zombie</ci><ci>sigma</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "Quarantined*gamma",
+     "expression_mathml": "<apply><times/><ci>Quarantined</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "Infected*delta",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "Infected*rho",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>rho</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "Removed*zeta",
+     "expression_mathml": "<apply><times/><ci>Removed</ci><ci>zeta</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "Susceptible*Zombie*alpha",
+     "expression_mathml": "<apply><times/><ci>Susceptible</ci><ci>Zombie</ci><ci>alpha</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Removed",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Zombie",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Quarantined",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "delta",
+     "value": 0.0001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.0095,
+     "units": {
+      "expression": "0.0115740740740741/(person*second)",
+      "expression_mathml": "<apply><divide/><cn>0.011574074074074073</cn><apply><times/><ci>person</ci><ci>second</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "kappa",
+     "value": 0.0001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "sigma",
+     "value": 0.0001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.0001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "rho",
+     "value": 0.05,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "zeta",
+     "value": 0.0001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "alpha",
+     "value": 0.005,
+     "units": {
+      "expression": "0.0115740740740741/(person*second)",
+      "expression_mathml": "<apply><divide/><cn>0.011574074074074073</cn><apply><times/><ci>person</ci><ci>second</ci></apply></apply>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [
+    "isbn:ISBN:1607413477"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": []
+  }
+ }
+}

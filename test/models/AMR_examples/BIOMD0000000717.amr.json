@@ -1,0 +1,231 @@
+{
+ "name": "BIOMD0000000717",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000717 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S_b",
+    "name": "S_b",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I_b",
+    "name": "I_b",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "S_h",
+    "name": "S_h",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I_a",
+    "name": "I_a",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [],
+    "output": [
+     "S_b"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "S_b"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I_b",
+     "S_b"
+    ],
+    "output": [
+     "I_b",
+     "I_b"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I_b"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [],
+    "output": [
+     "S_h"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "S_h"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I_b",
+     "S_h"
+    ],
+    "output": [
+     "I_b",
+     "I_a"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I_a"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t8"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "412/73",
+     "expression_mathml": "<apply><divide/><cn>412</cn><cn>73</cn></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "S_b/730",
+     "expression_mathml": "<apply><divide/><ci>S_b</ci><cn>730</cn></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "9137*I_b*S_b/(2635182*(H_b + I_b))",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>9137</cn><ci>I_b</ci><ci>S_b</ci></apply><apply><plus/><apply><times/><cn>2635182</cn><ci>H_b</ci></apply><apply><times/><cn>2635182</cn><ci>I_b</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "22841*I_b/6587955",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>22841</cn><ci>I_b</ci></apply><cn>6587955</cn></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "6.49315068493151e-5*ModelValue_1",
+     "expression_mathml": "<apply><times/><cn>6.4931506849315074e-5</cn><ci>ModelValue_1</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "3.95914165808853e-5*S_h",
+     "expression_mathml": "<apply><times/><cn>3.9591416580885267e-5</cn><ci>S_h</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "1.62354134956875e-10*I_b*S_h/(H_bh + I_b)",
+     "expression_mathml": "<apply><divide/><apply><times/><cn>1.6235413495687468e-10</cn><ci>I_b</ci><ci>S_h</ci></apply><apply><plus/><ci>H_bh</ci><ci>I_b</ci></apply></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "6.0882800608828e-11*I_a",
+     "expression_mathml": "<apply><times/><cn>6.0882800608828003e-11</cn><ci>I_a</ci></apply>"
+    }
+   ],
+   "initials": [],
+   "parameters": [
+    {
+     "id": "H_b",
+     "value": 180000.0
+    },
+    {
+     "id": "ModelValue_1",
+     "value": 171977.0
+    },
+    {
+     "id": "H_bh",
+     "value": 120000.0
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:8782",
+    "ncbitaxon:329376"
+   ],
+   "diseases": [
+    "efo:0005222"
+   ],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000046"
+   ]
+  }
+ }
+}

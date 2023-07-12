@@ -1,0 +1,223 @@
+{
+ "name": "BIOMD0000000970",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000970 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Susceptible",
+    "name": "Susceptible",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Infected",
+    "name": "Infected",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Exposed",
+    "name": "Exposed",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "00000154"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Recovered",
+    "name": "Recovered",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Infected",
+     "Susceptible"
+    ],
+    "output": [
+     "Infected",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Exposed",
+     "Susceptible"
+    ],
+    "output": [
+     "Exposed",
+     "Exposed"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Exposed"
+    ],
+    "output": [
+     "Infected"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Infected"
+    ],
+    "output": [
+     "Recovered"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "9.02445627650934e-8*Infected*Susceptible*beta_1*r_1",
+     "expression_mathml": "<apply><times/><cn>9.02445627650934e-8</cn><ci>Infected</ci><ci>Susceptible</ci><ci>beta_1</ci><ci>r_1</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "9.02445627650934e-8*Exposed*Susceptible*beta_2*r_2",
+     "expression_mathml": "<apply><times/><cn>9.02445627650934e-8</cn><ci>Exposed</ci><ci>Susceptible</ci><ci>beta_2</ci><ci>r_2</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Exposed*alpha",
+     "expression_mathml": "<apply><times/><ci>Exposed</ci><ci>alpha</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Infected*gamma",
+     "expression_mathml": "<apply><times/><ci>Infected</ci><ci>gamma</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Susceptible",
+     "expression": "11080778.0000000",
+     "expression_mathml": "<cn>11080778.0</cn>"
+    },
+    {
+     "target": "Infected",
+     "expression": "27.0000000000000",
+     "expression_mathml": "<cn>27.0</cn>"
+    },
+    {
+     "target": "Exposed",
+     "expression": "193.000000000000",
+     "expression_mathml": "<cn>193.0</cn>"
+    },
+    {
+     "target": "Recovered",
+     "expression": "2.00000000000000",
+     "expression_mathml": "<cn>2.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "beta_1",
+     "value": 0.04
+    },
+    {
+     "id": "r_1",
+     "value": 6.0
+    },
+    {
+     "id": "beta_2",
+     "value": 0.02
+    },
+    {
+     "id": "r_2",
+     "value": 18.0
+    },
+    {
+     "id": "alpha",
+     "value": 0.14
+    },
+    {
+     "id": "gamma",
+     "value": 0.048
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [
+    "pubmed:32243599"
+   ],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [
+    "ncbitaxon:2697049"
+   ],
+   "diseases": [],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000028"
+   ]
+  }
+ }
+}

@@ -1,0 +1,316 @@
+{
+ "name": "BIOMD0000000715",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "BioModels model BIOMD0000000715 processed using MIRA.",
+ "model_version": "1.0",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "M",
+    "name": "M",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C62608"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "E",
+    "name": "E",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C71551"
+     },
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I",
+     "M",
+     "S"
+    ],
+    "output": [
+     "I",
+     "M",
+     "E"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "S"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "E"
+    ],
+    "output": [
+     "I"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "E"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "S"
+    ],
+    "output": [
+     "S",
+     "M"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "E"
+    ],
+    "output": [
+     "E",
+     "M"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "I",
+     "M"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "M"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t11"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "A",
+     "expression_mathml": "<ci>A</ci>"
+    },
+    {
+     "target": "t2",
+     "expression": "I*gamma",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*S*beta*exp(-M*alpha)",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><apply><exp/><apply><times/><ci>M</ci><ci>alpha</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "S*alpha1",
+     "expression_mathml": "<apply><times/><ci>S</ci><ci>alpha1</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "E*rho",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>rho</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "E*alpha1",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>alpha1</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I*(alpha1 + alpha2)",
+     "expression_mathml": "<apply><times/><ci>I</ci><apply><plus/><ci>alpha1</ci><ci>alpha2</ci></apply></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "S*mu1",
+     "expression_mathml": "<apply><times/><ci>S</ci><ci>mu1</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "E*mu2",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>mu2</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "I*mu3",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>mu3</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "M*tau",
+     "expression_mathml": "<apply><times/><ci>M</ci><ci>tau</ci></apply>"
+    }
+   ],
+   "initials": [],
+   "parameters": [
+    {
+     "id": "A",
+     "value": 0.8
+    },
+    {
+     "id": "gamma",
+     "value": 0.7
+    },
+    {
+     "id": "alpha",
+     "value": 0.08
+    },
+    {
+     "id": "beta",
+     "value": 0.8
+    },
+    {
+     "id": "alpha1",
+     "value": 0.6
+    },
+    {
+     "id": "rho",
+     "value": 0.09
+    },
+    {
+     "id": "alpha2",
+     "value": 0.02
+    },
+    {
+     "id": "mu1",
+     "value": 0.99
+    },
+    {
+     "id": "mu2",
+     "value": 0.4
+    },
+    {
+     "id": "mu3",
+     "value": 0.8
+    },
+    {
+     "id": "tau",
+     "value": 0.6
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": "CC0",
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [
+    "efo:0005741"
+   ],
+   "hosts": [
+    "ncbitaxon:9606"
+   ],
+   "model_types": [
+    "mamo:0000046"
+   ]
+  }
+ }
+}
