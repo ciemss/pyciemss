@@ -340,7 +340,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         """Compile the deriv function during initialization."""
 
         # compute the symbolic derivatives
-        symbolic_derivs = {get_name(var): 0 for var in self.var_order.values()}
+        symbolic_derivs = {get_name(var): sympy.sympify(0.0) for var in self.var_order.values()}
         for t in self.G.transitions.values():
             flux = self.extract_sympy(t.template.rate_law)
             for c in t.consumed:

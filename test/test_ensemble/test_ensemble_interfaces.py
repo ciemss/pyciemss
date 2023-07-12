@@ -21,7 +21,7 @@ class Test_Samples_Format(unittest.TestCase):
     # Setup for the tests
     def setUp(self):
         DEMO_PATH = "notebook/integration_demo/"
-        ASKENET_PATH_1 = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        ASKENET_PATH_1 = "test/models//sir_typed.json"
         ASKENET_PATH_2 = "test/models/AMR_examples/SIDARTHE.amr.json"
 
         ASKENET_PATHS = [ASKENET_PATH_1, ASKENET_PATH_2]
