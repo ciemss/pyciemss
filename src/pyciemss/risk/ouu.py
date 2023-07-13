@@ -5,6 +5,7 @@ import pyro
 # TODO: generalize to other models also
 from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
+from typing import Iterable, Optional, Tuple, Union
 
 class RandomDisplacementBounds():
     '''
@@ -25,7 +26,7 @@ class computeRisk():
     '''
     def __init__(self,
                  model: callable,
-                 interventions: list,
+                 interventions: Iterable[Tuple[float, str]],
                  qoi: callable,
                  tspan: np.ndarray,
                  risk_measure: callable = alpha_superquantile,
@@ -63,7 +64,7 @@ class computeRisk():
         interventions = []
         count=0
         for k in self.interventions:
-            interventions.append(StaticParameterInterventionEvent(self.interventions[k][0], self.interventions[k][1], x[count]))
+            interventions.append(StaticParameterInterventionEvent(k[0], k[1], x[count]))
             count=count+1
         # Apply intervention to model
         self.model.load_events(interventions)
