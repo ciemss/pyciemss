@@ -1,0 +1,364 @@
+[
+   {
+      "id": "BIOMD0000000962",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000962/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000991",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000991/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1808280006",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1808280006/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000955",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000955/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1008060000",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1008060000/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000964",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000964/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000963",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000963/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000294",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000294/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000979",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000979/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000970",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000970/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000984",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000984/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000983",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000983/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000977",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000977/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1805230001",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1805230001/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000976",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000976/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000982",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000982/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000949",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000949/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000971",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000971/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000978",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000978/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1805220001",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1805220001/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000715",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000715/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1008060002",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1008060002/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000957",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000957/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000950",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000950/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000969",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000969/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000956",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000956/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000001045",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000001045/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000960",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000960/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000958",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000958/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "MODEL2111170001",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL2111170001/model_askenet.json",
+      "tests_pass": [],
+      "tests_fail": [
+         "load_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000249",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000249/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000717",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000717/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000980",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000980/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000974",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000974/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000726",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000726/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000972",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000972/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000981",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000981/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model",
+         "load_and_sample_petri_model"
+      ],
+      "tests_fail": []
+   },
+   {
+      "id": "BIOMD0000000716",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000716/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "BIOMD0000000988",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000988/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   },
+   {
+      "id": "MODEL1808280011",
+      "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/MODEL1808280011/model_askenet.json",
+      "tests_pass": [
+         "load_petri_model"
+      ],
+      "tests_fail": [
+         "load_and_sample_petri_model"
+      ]
+   }
+]
