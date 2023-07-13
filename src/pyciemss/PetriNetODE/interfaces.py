@@ -46,6 +46,7 @@ from pyciemss.custom_decorators import pyciemss_logging_wrappper
 import logging
 import pika
 import os
+import json
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
