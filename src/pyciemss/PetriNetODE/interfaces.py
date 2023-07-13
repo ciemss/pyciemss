@@ -48,7 +48,9 @@ from pyciemss.custom_decorators import pyciemss_logging_wrappper
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
-
+import pika
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
 
 @pyciemss_logging_wrappper
 def load_and_sample_petri_model(
@@ -102,6 +104,7 @@ def load_and_sample_petri_model(
             - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
             - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
+    
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
@@ -668,7 +671,6 @@ def intervene_petri_model(
     new_petri.load_events(interventions)
     return new_petri
 
-
 @calibrate.register
 @pyciemss_logging_wrappper
 def calibrate_petri(
@@ -684,6 +686,10 @@ def calibrate_petri(
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     """
+    channel.basic_publish(exchange='',
+                      routing_key='terarium',
+                      body=f'{"progress":0}'
+                      )
     new_petri = copy.deepcopy(petri)
     observations = [
         ObservationEvent(timepoint, observation) for timepoint, observation in data
@@ -705,6 +711,10 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        channel.basic_publish(exchange='',
+                      routing_key='terarium',
+                      body=f'{"progress":{i/num_iterations}}'
+                      )
         loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:
