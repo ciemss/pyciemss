@@ -38,6 +38,10 @@ def _calibrate_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "calibrate_chart.vg.json"))
 
 
+def _lineplot_schema() -> VegaSchema:
+    return json.loads(pkgutil.get_data(__name__, "lineplot.vg.json"))
+
+
 # General Utilities ---------------
 def partition(
     pred: Callable[[Any], bool], iterable: Iterable[Any]
@@ -490,6 +494,69 @@ def calibration(datasource: pd.DataFrame):
     return schema
 
 
+def lineplot(
+    datasource: pd.DataFrame,
+    *,
+    x: Union[str, int] = None,
+    y: Union[str, int] = None,
+    color: Union[str, int] = None,
+):
+    """Create a contour plot from the passed datasource.
+
+    The datasource should have at least two columns (for x & y) and MAY have more.
+
+    The x/y/color parameters control how x/y/color are determined and use the following rules:
+    - If a string, uses the column of that name.
+    - If an int, uses that column number
+    - If None AND an x/y/color column exists -- uses that column
+    - If None and x/y/color columns do not exist -- uses the index, 1st, 2nd columns
+
+    If a mixture of methods are used, no attempt is made to avoid using the same column for multiple things.
+
+    datasource --  A dataframe with at least two columns
+    x/y/color -- See rules above
+    """
+    schema = _lineplot_schema()
+    datasource = datasource.reset_index()
+
+    def select_column(set_as, name, idx, options):
+        if isinstance(set_as, str):
+            if set_as not in options:
+                raise ValueError(f"Selected column for {name} ({set_as}) not found")
+            return set_as
+        if isinstance(set_as, int):
+            if idx >= len(options):
+                raise ValueError(f"Selected column index ({idx}) not valid")
+            return options[set_as]
+
+        if name in options:
+            return name
+
+        try:
+            return options[idx]
+        except Exception:
+            return None
+
+    x = select_column(x, "x", 0, datasource.columns)
+    y = select_column(y, "y", 1, datasource.columns)
+    color = select_column(color, "c", 2, datasource.columns)
+
+    if x is None or y is None:
+        raise ValueError("Could not determine x or y column")
+    if color is None:
+        # TODO: Unique name
+        color = "c"
+        datasource = datasource.assign(**{color: ""})
+
+    # TODO: Figure out how to preserve names (then minimal is not required)
+    subset = datasource.rename(columns={x: "x", y: "y", color: "c"})[["x", "y", "c"]]
+
+    data = find_named(schema["data"], "table")
+    data["values"] = subset.to_dict(orient="records")
+
+    return schema
+
+
 def triangle_contour(data, *, title=None, contour=True):
     """Create a contour plot from the passed datasource.
 
@@ -519,7 +586,7 @@ def triangle_contour(data, *, title=None, contour=True):
         schema = set_title(schema, title)
 
     if not contour:
-        contours = find_keyed(schema["marks"], "name", "_contours")
+        contours = find_named(schema["marks"], "_contours")
         contours["encode"]["enter"]["stroke"] = {
             "scale": "color",
             "field": "contour.value",
@@ -602,10 +669,10 @@ def set_title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
     if target is None:
         schema["title"] = title
     elif target == "x":
-        axis = find_keyed(schema["axes"], "name", "x_axis")
+        axis = find_named(schema["axes"], "x_axis")
         axis["title"] = title
     elif target == "y":
-        axis = find_keyed(schema["axes"], "name", "y_axis")
+        axis = find_named(schema["axes"], "y_axis")
         axis["title"] = title
 
     return schema
