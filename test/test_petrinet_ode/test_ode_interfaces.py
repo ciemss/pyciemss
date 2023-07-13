@@ -83,6 +83,7 @@ class Test_Samples_Format(unittest.TestCase):
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
+            method="euler",
         )
 
         (
@@ -103,6 +104,7 @@ class Test_Samples_Format(unittest.TestCase):
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
+            method="euler",
         )
 
     def test_samples_type(self):

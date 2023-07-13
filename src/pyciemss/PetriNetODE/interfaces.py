@@ -441,6 +441,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
+    compile_rate_law_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
 ) -> Tuple[pd.DataFrame, dict]:
