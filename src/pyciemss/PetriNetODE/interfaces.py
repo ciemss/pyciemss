@@ -687,10 +687,7 @@ def calibrate_petri(
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     """
-    channel.basic_publish(exchange='',
-                      routing_key='terarium',
-                      body=f'{"progress":0}'
-                      )
+    
     new_petri = copy.deepcopy(petri)
     observations = [
         ObservationEvent(timepoint, observation) for timepoint, observation in data
@@ -712,9 +709,11 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        progress_value = i/num_iterations
+        body = json.dumps({"progress":progress_value})
         channel.basic_publish(exchange='',
                       routing_key='terarium',
-                      body=f'{"progress":{i/num_iterations}}'
+                      body=body
                       )
         loss = svi.step(method=method)
         if verbose:
