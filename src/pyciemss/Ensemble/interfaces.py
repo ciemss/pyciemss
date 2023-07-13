@@ -54,6 +54,8 @@ def load_and_sample_petri_ensemble(
     method="dopri5",
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -102,11 +104,16 @@ def load_and_sample_petri_ensemble(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         samples:
             - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
-            - dict{data: <samples>, visual: <visual>}: The PetriSolution and a visualization (for truthy visual_options)
+            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
     """
     models = [
         load_petri_model(
@@ -141,16 +148,17 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
-    processed_samples = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, time_unit=time_unit,
+        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples
+        return processed_samples, q_ensemble
 
 
 def load_and_calibrate_and_sample_ensemble_model(
@@ -177,6 +185,8 @@ def load_and_calibrate_and_sample_ensemble_model(
     method="dopri5",
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> pd.DataFrame:
     """
     Load a collection petri net from a file, compile them into an ensemble probabilistic program, calibrate it on data,
@@ -246,11 +256,16 @@ def load_and_calibrate_and_sample_ensemble_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         samples:
             - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
-            - dict{data: <samples>, visual: <visual>}: The PetriSolution and a visualization (for truthy visual_options)
+            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
     """
 
     data = csv_to_list(data_path)
@@ -302,16 +317,17 @@ def load_and_calibrate_and_sample_ensemble_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, time_unit=time_unit,
+        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples
+        return processed_samples, q_ensemble
 
 
 ##############################################################################
