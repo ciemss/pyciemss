@@ -139,7 +139,7 @@ class TestEnsembleInterfaces(unittest.TestCase):
         self.solution_mappings = [self.solution_mapping1, self.solution_mapping2]
         self.total_population = 1.0
         self.dirichlet_concentration = 1.0
-        self.noise_pseudocount = 1.0
+        self.noise_scale = 1.0
 
     def test_solution_mapping(self):
         """Test the solution_mapping function."""
@@ -165,7 +165,7 @@ class TestEnsembleInterfaces(unittest.TestCase):
             self.initial_time,
             [self.start_state1, self.start_state2],
             self.total_population,
-            self.noise_pseudocount,
+            self.noise_scale,
             self.dirichlet_concentration,
         )
 
@@ -203,7 +203,7 @@ class TestEnsembleInterfaces(unittest.TestCase):
             self.initial_time,
             [self.start_state1, self.start_state2],
             self.total_population,
-            self.noise_pseudocount,
+            self.noise_scale,
             self.dirichlet_concentration,
         )
 
@@ -221,7 +221,7 @@ class TestEnsembleInterfaces(unittest.TestCase):
             self.initial_time,
             [self.start_state1, self.start_state2],
             self.total_population,
-            self.noise_pseudocount,
+            self.noise_scale,
             self.dirichlet_concentration,
         )
 
