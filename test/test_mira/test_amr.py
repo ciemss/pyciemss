@@ -2,6 +2,7 @@ import json
 import unittest
 from pathlib import Path
 import json
+import warnings
 import dataclasses
 from urllib.request import urlopen
 
@@ -27,7 +28,6 @@ class JSONEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-# ---------------------------
 @dataclasses.dataclass(init=False)
 class Configuration:
     id: str
@@ -118,8 +118,6 @@ class TestAMR(unittest.TestCase):
 
             try_loading_biomodel(result, self)
 
-            # self.assertEqual(ref, result)
-
             results.append(result)
             if set(result.tests_fail) != set(ref.tests_fail):
                 failures.append(result)
@@ -128,3 +126,72 @@ class TestAMR(unittest.TestCase):
             json.dump(results, f, cls=JSONEncoder, indent=3)
 
         self.assertIs(len(failures), 0, "Unexpected failures detected")
+
+
+if __name__ == "__main__":
+    import argparse
+
+    class FakeTestContext:
+        def assertIsNotNone(self, model):
+            if model is None:
+                raise AssertionError("Value is None")
+
+        def assertIsInstance(self, model, type):
+            if not isinstance(model, type):
+                raise AssertionError("Value not of expected type")
+
+    parser = argparse.ArgumentParser(description="Generate expected results JSON file.")
+    parser.add_argument(
+        "-t",
+        "--target",
+        help="Where to write the expectations to. WILL NOT OVERWRITE.",
+        default=Path(".") / ".." / "test_mira" / "AMR_expectations.json",
+        required=False,
+        type=Path,
+    )
+    parser.add_argument(
+        "-r",
+        "--reference",
+        help="Prepare a diff against this file.",
+        default=None,
+        required=False,
+        type=Path,
+    )
+    parser.add_argument(
+        "--test",
+        help="Only process <test> models, skips early file test",
+        default=None,
+        required=False,
+        type=int,
+    )
+    parser.add_argument("--quiet", help="Suppress warning output", action="store_true")
+
+    args = parser.parse_args()
+
+    if not args.test and args.target.exists():
+        raise ValueError(
+            "Target file exists before run. Move/rename/delete before executing."
+        )
+
+    biomodels = [f.name for f in AMR_ROOT.glob("*")]
+
+    tests = [Configuration(model_id) for model_id in biomodels][: args.test]
+
+    for config in tests:
+        with warnings.catch_warnings():
+            if args.quiet:
+                warnings.simplefilter("ignore")
+            try_loading_biomodel(config, FakeTestContext())
+
+    try:
+        with open(args.target, "x") as f:
+            json.dump(tests, f, cls=JSONEncoder, indent=3)
+    except FileExistsError:
+        print("\n\nTarget file already exists. NOT OVERWRITTING.  Output below:")
+        print(f"\tTarget file: {args.target}\n")
+        print(json.dumps(tests, cls=JSONEncoder, indent=3))
+        sys.exit(-1)
+
+    if args.reference is not None:
+        pass
+        # TODO: Prepare diff report
