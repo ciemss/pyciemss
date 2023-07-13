@@ -48,10 +48,10 @@ def load_and_sample_petri_ensemble(
     *,
     start_states: Optional[Iterable[dict[str, float]]] = None,
     total_population: float = 1.0,
-    pseudocount: float = 1.0,
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
@@ -110,10 +110,10 @@ def load_and_sample_petri_ensemble(
     """
     models = [
         load_petri_model(
-            petri_model_or_path=pmop,
-            add_uncertainty=True,
-            pseudocount=pseudocount,
-        )
+        petri_model_or_path=pmop,
+        add_uncertainty=True,
+        compile_rate_law_p=compile_rate_law_p,
+    )
         for pmop in petri_model_or_paths
     ]
 
@@ -131,7 +131,6 @@ def load_and_sample_petri_ensemble(
         start_time,
         start_states,
         total_population,
-        pseudocount,
         dirichlet_concentration,
     )
 
@@ -174,6 +173,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     verbose_every: int = 25,
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    compile_rate_law_p: bool = True,
     method="dopri5",
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
@@ -259,7 +259,7 @@ def load_and_calibrate_and_sample_ensemble_model(
         load_petri_model(
             petri_model_or_path=pmop,
             add_uncertainty=True,
-            pseudocount=pseudocount,
+            compile_rate_law_p=compile_rate_law_p,
         )
         for pmop in petri_model_or_paths
     ]
