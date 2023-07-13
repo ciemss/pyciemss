@@ -23,6 +23,7 @@ import mira.sources.petri
 import mira.sources.askenet.petrinet as petrinet
 import mira.sources.askenet.regnet as regnet
 from pyciemss.utils.distributions import ScaledBeta, mira_distribution_to_pyro
+from pyro.distributions import Normal
 from mira.metamodel.ops import aggregate_parameters
 
 import bisect
@@ -524,10 +525,29 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
         return f"{self.__class__.__name__}(\n\t{par_string})"
 
+class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
+    '''
+    This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
+    '''
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 1, compile_rate_law_p: bool = False):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+        self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
+
+    def __repr__(self):
+        par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
+        noise_string = f"noise_scale = {self.noise_scale}"
+        return f"{self.__class__.__name__}(\n\t{par_string},\n\t{noise_string}\n)"
+    
+    @pyro.nn.pyro_method
+    def observation_model(self, solution: Solution, var_name: str) -> None:
+        mean = solution[var_name]
+        # Scale the std dev by the population size
+        scale = self.noise_scale * self.total_population
+        pyro.sample(var_name, Normal(mean, scale).to_event(1))
+
 class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
-    Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
     def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False):
         super().__init__(G, compile_rate_law_p=compile_rate_law_p)
