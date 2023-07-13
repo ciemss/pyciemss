@@ -267,7 +267,7 @@ def load_and_calibrate_and_sample_petri_model(
     else:
         return processed_samples
 
-
+@pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
