@@ -1,5 +1,16 @@
+import logging
+import pika
+import os
+import json
 import pyro
 import torch
+import time
+import numpy as np
+from math import ceil
+import pandas as pd
+from typing import Iterable, Optional, Tuple, Union
+import copy
+
 from pyro.infer import Predictive
 
 from pyciemss.PetriNetODE.base import (
@@ -13,16 +24,6 @@ from pyciemss.risk.risk_measures import alpha_superquantile
 import pyciemss.risk.qoi
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 from pyciemss.visuals import plots
-
-import time
-import numpy as np
-from math import ceil
-
-import pandas as pd
-
-from typing import Iterable, Optional, Tuple, Union
-
-import copy
 
 import mira
 
@@ -44,10 +45,7 @@ from pyciemss.PetriNetODE.events import (
 )
 
 from pyciemss.custom_decorators import pyciemss_logging_wrappper
-import logging
-import pika
-import os
-import json
+
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
