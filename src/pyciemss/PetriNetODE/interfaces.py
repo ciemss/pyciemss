@@ -286,6 +286,7 @@ def load_and_optimize_and_sample_petri_model(
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
     method="dopri5",
+    compile_rate_law_p: bool = True,
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
