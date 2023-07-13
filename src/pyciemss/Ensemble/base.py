@@ -7,6 +7,7 @@ from pyro.contrib.autoname import scope, name_count
 from typing import Dict, List, Optional, Union, OrderedDict, Callable
 
 from pyciemss.utils.distributions import ScaledBeta
+from pyro.distributions import Normal
 
 # TODO: refactor this to use a more general event class
 from pyciemss.PetriNetODE.events import Event
@@ -102,6 +103,29 @@ class EnsembleSystem(DynamicalSystem):
     def __repr__(self) -> str:
         return f'Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models}'
     
+class ScaledNormalNoiseEnsembleSystem(EnsembleSystem):
+    '''
+    This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
+    '''
+    def __init__(self, 
+                 models: List[DynamicalSystem], 
+                 dirichlet_alpha: torch.tensor,
+                 solution_mappings: Callable,
+                 total_population: float,
+                 ensemble_noise_scale: float = 1.):
+        super().__init__(models, dirichlet_alpha, solution_mappings)
+        self.total_population = total_population
+        self.ensemble_noise_scale = torch.as_tensor(ensemble_noise_scale)
+    
+    @pyro.nn.pyro_method
+    def observation_model(self, solution, var_name: str) -> None:
+        mean = solution[var_name]
+        # Scale the std dev by the population size
+        scale = self.ensemble_noise_scale * self.total_population
+        pyro.sample(var_name, Normal(mean, scale).to_event(1))
+
+    def __rep__(self) -> str:
+        return f'Scaled Normal Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tNoise Scale: {self.ensemble_noise_scale}'
 
 class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
     '''
@@ -112,10 +136,10 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
                  dirichlet_alpha: torch.tensor,
                  solution_mappings: Callable,
                  total_population: float,
-                 pseudocount: float = 1.) -> None:
+                 ensemble_pseudocount: float = 1.) -> None:
         super().__init__(models, dirichlet_alpha, solution_mappings)
         self.total_population = total_population
-        self.pseudocount = pseudocount
+        self.ensemble_pseudocount =  torch.as_tensor(ensemble_pseudocount)
 
     @pyro.nn.pyro_method
     def observation_model(self, solution, var_name: str):
@@ -123,8 +147,8 @@ class ScaledBetaNoiseEnsembleSystem(EnsembleSystem):
         Observation model for the ensemble.
         '''
         mean = solution[var_name]
-        pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.pseudocount).to_event(1))
+        pyro.sample(var_name, ScaledBeta(mean, self.total_population, self.ensemble_pseudocount).to_event(1))
 
     def __rep__(self) -> str:
-        return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.pseudocount}'
+        return f'Scaled Beta Noise Ensemble of {len(self.models)} models. \n\n \tDirichlet Alpha: {self.dirichlet_alpha}. \n\n \tModels: {self.models} \n\n \tPseudocount: {self.ensemble_pseudocount}'
 
