@@ -87,8 +87,8 @@ def get_case_hosp_death_data(US_region, infectious_period, make_csv=True):
     covid_data_df = covid_data_df.set_index("date")
 
     # Add hosp and death data to covid_data_df
-    covid_data_df = pd.merge(covid_data_df, regional_hosp, how="inner", left_index=True, right_index=True)
-    covid_data_df = pd.merge(covid_data_df, regional_deaths, how="inner", left_index=True, right_index=True)
+    covid_data_df = pd.merge(covid_data_df, regional_hosp, how="outer", left_index=True, right_index=True)
+    covid_data_df = pd.merge(covid_data_df, regional_deaths, how="outer", left_index=True, right_index=True)
 
     if make_csv:
         filename = US_region + "_case_hospital_death.csv"
