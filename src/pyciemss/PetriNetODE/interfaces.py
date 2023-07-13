@@ -175,6 +175,7 @@ def load_and_calibrate_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    job_id=None
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -259,6 +260,7 @@ def load_and_calibrate_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
+        job_id=job_id
     )
     samples = sample(
         model,
@@ -691,6 +693,7 @@ def calibrate_petri(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    job_id=None
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
@@ -721,7 +724,7 @@ def calibrate_petri(
             logging.error('Made it in the loop')
             channel.basic_publish(exchange='',
                         routing_key='terarium',
-                        body=json.dumps({"progress":i/num_iterations})
+                        body=json.dumps({"job_id":job_id, "progress":i/num_iterations})
                         )
         loss = svi.step(method=method)
         if verbose:
