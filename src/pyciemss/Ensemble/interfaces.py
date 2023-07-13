@@ -112,7 +112,7 @@ def load_and_sample_petri_ensemble(
 
     Returns:
         samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
+            - PetriSolution, quantiles: The samples from the model and quantiles for ensemble score as a pandas DataFrames. (for falsy visual_options)
             - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
     """
     models = [
