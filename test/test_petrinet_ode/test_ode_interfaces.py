@@ -195,7 +195,7 @@ class TestODEInterfaces(unittest.TestCase):
         """Test the setup_model function."""
         for model in [
             load_petri_model(self.filename),
-            load_petri_model(self.filename, pseudocount=2.0),
+            load_petri_model(self.filename, noise_scale=0.5),
         ]:
             new_model = setup_model(model, self.initial_time, self.initial_state)
 
