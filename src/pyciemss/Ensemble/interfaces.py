@@ -54,6 +54,8 @@ def load_and_sample_petri_ensemble(
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -92,6 +94,11 @@ def load_and_sample_petri_ensemble(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         samples: PetriSolution
@@ -130,7 +137,7 @@ def load_and_sample_petri_ensemble(
         num_samples,
         method=method,
     )
-    processed_samples, q_ensemble = convert_to_output_format(samples, timepoints, ensemble_quantiles=True, num_ensemble_quantiles=23)
+    processed_samples, q_ensemble = convert_to_output_format(samples, timepoints, ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order)
 
     return processed_samples, q_ensemble
 
@@ -156,6 +163,8 @@ def load_and_calibrate_and_sample_ensemble_model(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> pd.DataFrame:
     """
     Load a collection petri net from a file, compile them into an ensemble probabilistic program, calibrate it on data,
@@ -211,6 +220,12 @@ def load_and_calibrate_and_sample_ensemble_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
+
     Returns:
         samples: pd.DataFrame
             - A dataframe containing the samples from the calibrated model.
@@ -267,9 +282,9 @@ def load_and_calibrate_and_sample_ensemble_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(samples, timepoints)
+    processed_samples, q_ensemble = convert_to_output_format(samples, timepoints, ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order)
 
-    return processed_samples
+    return processed_samples, q_ensemble
     
 
 ##############################################################################
