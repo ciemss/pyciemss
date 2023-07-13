@@ -1,0 +1,41 @@
+biomodels_id	name	author	year	pubmed	doi
+BIOMD0000001045	The SIR model for the spread of HongKong Flu	Smith&Moore	2004		
+BIOMD0000000249	Whooping cough	Restif	2006	16615206	
+BIOMD0000000294	Vaccination invasion	Restif	2007	17210532	
+BIOMD0000000949	Mathematical model of malaria transmission	Chitnis	2008	18293044	
+MODEL1805230001	Model for HIV-Malaria co-infection	Mukandavire	2009	19364156	
+MODEL1008060000	Zombi Impulsive Killing	Munz	2009		
+MODEL1008060002	Zombie SIZRQ	Munz	2009		
+BIOMD0000000950	Model Rift Valley Fever transmission between cattle and mosquitoes (Model 1)	Chitnis	2012	23098257	
+MODEL1805220001	Human/Mosquito SEIR/SEI Model	Turner	2015		10.1109/SECON.2015.7132968
+MODEL1808280006	SIRWS model with immune boosting and cross-immunity between two pathogens	Leung	2016	27575466	
+BIOMD0000000715	SEIS epidemic model with the impact of media	Huo	2017		10.1016/j.physa.2017.08.139
+MODEL1808280011	A mumps model with seasonal fluctuations in China	Qu	2017	29928725	
+BIOMD0000000726	Transmission dynamics and control of rabies in China	Ruan	2017	28188732	
+BIOMD0000000716	Avian human bilinear incidence (BI) model	Lee	2018	30839942	
+BIOMD0000000717	Avian human half-saturated incidence (HSI) model	Lee	2018	30839942	
+BIOMD0000000956	SIR model of scenarios of COVID-19 spread in CA and NY	Bertozzi	2020	32616574	
+BIOMD0000000974	Deterministic SEIR simulation of a COVID-19 outbreak	Carcione	2020	32574303	
+BIOMD0000000969	SIHRD spatiotemporal model of COVID-19 transmission in Ohio	Cuadros	2020	32736312	
+BIOMD0000000984	SEIR model of COVID-19 transmission considering government interventions in Wuhan	Fang	2020	32141624	
+BIOMD0000000976	forecasting the second wave of COVID-19 in Iran	Ghanbari	2020	32834656	
+BIOMD0000000955	SIDARTHE model of COVID-19 spread in Italy	Giordano	2020	32322102	
+BIOMD0000000970	SEIR model of COVID-19 transmission in Wuhan	Hou	2020	32243599	
+BIOMD0000000982	SIR model of COVID-19 transmission in Malyasia with time-varying parameters	Law	2020	33303925	
+BIOMD0000000979	SEIRS model of COVID-19 transmission with reinfection	Malkov	2020	32982082	
+BIOMD0000000980	SEIRS model of COVID-19 transmission with time-varying R values and reinfection	Malkov	2020	32982082	
+BIOMD0000000978	SEIR model of early COVID-19 transmission in South Africa	Mukandavire	2020	32706790	
+BIOMD0000000964	SEIR model of COVID-19 transmission and environmental pathogen prevalence	Mwalili	2020	32703315	
+BIOMD0000000958	early-stage transmission dynamics of COVID-19 in Wuhan	Ndairou	2020	32341628	
+BIOMD0000000991	SEAIR model of COVID-19 transmission in Lagos, Nigeria	Okuonghae	2020	32834593	
+BIOMD0000000960	SEIAHRD model of transmission dynamics of COVID-19	Paiva	2020	32735581	
+BIOMD0000000957	SIR model of COVID-19 spread in Wuhan	Roda	2020	32289100	
+BIOMD0000000977	SAIR model of COVID-19 transmission with quarantine measures in India	Sarkar	2020	32834603	
+BIOMD0000000971	Estimation of transmission risk of COVID-19 and impact of public health interventions	Tang	2020	32046137	
+BIOMD0000000972	Estimation of transmission risk of COVID-19 and impact of public health interventions - update	Tang	2020	32099934	
+BIOMD0000000981	risk estimation and prediction of the transmission of COVID-19 in maninland China excluding Hubei province	Wan	2020	32831142	
+BIOMD0000000963	SIR model of COVID-19 transmission with shielding	Weitz	2020	32382154	
+BIOMD0000000988	systems biology model of the coronavirus pandemic 2020	Westerhoff	2020	32532983	
+BIOMD0000000962	SUQC model of COVID-19 transmission dynamics in Wuhan, Hubei, and China	Zhao	2020	32219006	
+BIOMD0000000983	model of COVID-19 transmission dynamics under containment measures in France	Zongo	2020	32958091	
+MODEL2111170001	innate immune response to SARS-CoV-2 in the alveolar epithelium	Leander	2021	34430043	
