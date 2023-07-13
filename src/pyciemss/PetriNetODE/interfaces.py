@@ -45,13 +45,17 @@ from pyciemss.PetriNetODE.events import (
 from pyciemss.custom_decorators import pyciemss_logging_wrappper
 
 import pika
-
+import os
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='pika.pyciemss'))
-channel = connection.channel()
+ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
+PIKA_HOST = os.getenv("PIKA_HOST")
+if ASKEM_PYCIEMSS_SERVICE:
+    logging.error(f'The serice is true {PIKA_HOST}')
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
+    channel = connection.channel()
 
 @pyciemss_logging_wrappper
 def load_and_sample_petri_model(
@@ -687,10 +691,7 @@ def calibrate_petri(
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     """
-    channel.basic_publish(exchange='',
-                      routing_key='terarium',
-                      body=f'{"progress":0}'
-                      )
+    
     new_petri = copy.deepcopy(petri)
     observations = [
         ObservationEvent(timepoint, observation) for timepoint, observation in data
@@ -712,10 +713,12 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
-        channel.basic_publish(exchange='',
-                      routing_key='terarium',
-                      body=f'{"progress":{i/num_iterations}}'
-                      )
+        if ASKEM_PYCIEMSS_SERVICE:
+            logging.error('Made it in the loop')
+            channel.basic_publish(exchange='',
+                        routing_key='terarium',
+                        body=json.dumps({"progress":i/num_iterations})
+                        )
         loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:
