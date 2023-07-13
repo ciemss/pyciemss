@@ -43,15 +43,17 @@ from pyciemss.PetriNetODE.events import (
 )
 
 from pyciemss.custom_decorators import pyciemss_logging_wrappper
-
+import logging
 import pika
 import os
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
+
 ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
 PIKA_HOST = os.getenv("PIKA_HOST")
+
 if ASKEM_PYCIEMSS_SERVICE:
     logging.error(f'The serice is true {PIKA_HOST}')
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
