@@ -55,7 +55,6 @@ ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
 PIKA_HOST = os.getenv("PIKA_HOST")
 
 if ASKEM_PYCIEMSS_SERVICE:
-    logging.error(f'The serice is true {PIKA_HOST}')
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
     channel = connection.channel()
 
@@ -719,7 +718,6 @@ def calibrate_petri(
 
     for i in range(num_iterations):
         if ASKEM_PYCIEMSS_SERVICE:
-            logging.error('Made it in the loop')
             channel.basic_publish(exchange='',
                         routing_key='terarium',
                         body=json.dumps({"job_id":job_id, "progress":i/num_iterations})
