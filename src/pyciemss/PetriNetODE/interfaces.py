@@ -44,12 +44,13 @@ from pyciemss.PetriNetODE.events import (
 
 from pyciemss.custom_decorators import pyciemss_logging_wrappper
 
+import pika
+
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
-import pika
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='pika.pyciemss'))
 channel = connection.channel()
 
 @pyciemss_logging_wrappper
