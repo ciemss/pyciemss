@@ -141,6 +141,18 @@ class TestEnsembleInterfaces(unittest.TestCase):
         self.dirichlet_concentration = 1.0
         self.noise_scale = 1.0
 
+        self.ensemble_collection = [setup_model(
+            self.models,
+            self.weights,
+            self.solution_mappings,
+            self.initial_time,
+            [self.start_state1, self.start_state2],
+            total_population = self.total_population,
+            noise_model=noise_model,
+            noise_scale=self.noise_scale,
+            dirichlet_concentration=self.dirichlet_concentration,
+        ) for noise_model in ["scaled_beta", "scaled_normal"]]
+
     def test_solution_mapping(self):
         """Test the solution_mapping function."""
 
@@ -158,96 +170,68 @@ class TestEnsembleInterfaces(unittest.TestCase):
 
     def test_setup_model(self):
         """Test the setup_model function."""
-        ensemble = setup_model(
-            self.models,
-            self.weights,
-            self.solution_mappings,
-            self.initial_time,
-            [self.start_state1, self.start_state2],
-            self.total_population,
-            self.noise_scale,
-            self.dirichlet_concentration,
-        )
+        for ensemble in self.ensemble_collection:
+            # Test that the model is an EnsembleSystem
+            self.assertIsInstance(ensemble, EnsembleSystem)
 
-        # Test that the model is an EnsembleSystem
-        self.assertIsInstance(ensemble, EnsembleSystem)
+            # Test that the model has the correct number of models
+            self.assertEqual(len(ensemble.models), len(self.models))
 
-        # Test that the model has the correct number of models
-        self.assertEqual(len(ensemble.models), len(self.models))
+            # Test that the model has the correct number of weights
+            self.assertEqual(len(ensemble.dirichlet_alpha), len(self.weights))
 
-        # Test that the model has the correct number of weights
-        self.assertEqual(len(ensemble.dirichlet_alpha), len(self.weights))
-
-        # Test that the model had the correct weight values
-        self.assertTrue(
-            torch.all(
-                ensemble.dirichlet_alpha
-                == torch.as_tensor(self.weights) * self.dirichlet_concentration
+            # Test that the model had the correct weight values
+            self.assertTrue(
+                torch.all(
+                    ensemble.dirichlet_alpha
+                    == torch.as_tensor(self.weights) * self.dirichlet_concentration
+                )
             )
-        )
-        self.assertTrue(torch.all(ensemble.dirichlet_alpha == torch.tensor([0.5, 0.5])))
+            self.assertTrue(torch.all(ensemble.dirichlet_alpha == torch.tensor([0.5, 0.5])))
 
-        # Test that the model has the correct number of solution_mappings
-        self.assertEqual(len(ensemble.solution_mappings), len(self.solution_mappings))
+            # Test that the model has the correct number of solution_mappings
+            self.assertEqual(len(ensemble.solution_mappings), len(self.solution_mappings))
 
-        # Test that models, weights, and solution_mappings have the same length
-        self.assertEqual(len(ensemble.models), len(ensemble.dirichlet_alpha))
-        self.assertEqual(len(ensemble.models), len(ensemble.solution_mappings))
+            # Test that models, weights, and solution_mappings have the same length
+            self.assertEqual(len(ensemble.models), len(ensemble.dirichlet_alpha))
+            self.assertEqual(len(ensemble.models), len(ensemble.solution_mappings))
 
     def test_calibrate(self):
         """Test the calibrate function."""
-        ensemble = setup_model(
-            self.models,
-            self.weights,
-            self.solution_mappings,
-            self.initial_time,
-            [self.start_state1, self.start_state2],
-            self.total_population,
-            self.noise_scale,
-            self.dirichlet_concentration,
-        )
+        for ensemble in self.ensemble_collection:
 
-        data = [(1.1, {"Infected": 0.003}), (1.2, {"Infected": 0.005})]
-        parameters = calibrate(ensemble, data, num_iterations=2)
+            data = [(1.1, {"Infected": 0.003}), (1.2, {"Infected": 0.005})]
+            parameters = calibrate(ensemble, data, num_iterations=2)
 
-        self.assertIsNotNone(parameters)
+            self.assertIsNotNone(parameters)
 
     def test_sample(self):
         """Test the sample function."""
-        ensemble = setup_model(
-            self.models,
-            self.weights,
-            self.solution_mappings,
-            self.initial_time,
-            [self.start_state1, self.start_state2],
-            self.total_population,
-            self.noise_scale,
-            self.dirichlet_concentration,
-        )
+        for ensemble in self.ensemble_collection:
 
-        timepoints = [1.0, 5.0, 10.0]
-        num_samples = 10
-        # Test that sample works without inferred parameters
-        simulation = sample(ensemble, timepoints, num_samples)
+            timepoints = [1.0, 5.0, 10.0]
+            num_samples = 10
+            # Test that sample works without inferred parameters
+            simulation = sample(ensemble, timepoints, num_samples)
 
-        self.assertEqual(simulation["Infected_sol"].shape[0], num_samples)
-        self.assertEqual(simulation["Infected_sol"].shape[1], len(timepoints))
+            self.assertEqual(simulation["Infected_sol"].shape[0], num_samples)
+            self.assertEqual(simulation["Infected_sol"].shape[1], len(timepoints))
 
-        data = [
-            (0.2, {"Infected": 0.1}),
-            (0.4, {"Infected": 0.2}),
-            (0.6, {"Infected": 0.3}),
-        ]
-        parameters = calibrate(ensemble, data, num_iterations=2)
-        # Test that sample works with inferred parameters
-        simulation = sample(ensemble, timepoints, num_samples, parameters)
+            data = [
+                (0.2, {"Infected": 0.1}),
+                (0.4, {"Infected": 0.2}),
+                (0.6, {"Infected": 0.3}),
+            ]
+            parameters = calibrate(ensemble, data, num_iterations=2)
+            # Test that sample works with inferred parameters
+            simulation = sample(ensemble, timepoints, num_samples, parameters)
 
-        self.assertEqual(simulation["Infected_sol"].shape[0], num_samples)
-        self.assertEqual(simulation["Infected_sol"].shape[1], len(timepoints))
+            self.assertEqual(simulation["Infected_sol"].shape[0], num_samples)
+            self.assertEqual(simulation["Infected_sol"].shape[1], len(timepoints))
 
-        # Test that samples are different when num_samples > 1
-        self.assertTrue(
-            torch.all(
-                simulation["Infected_sol"][0, :] != simulation["Infected_sol"][1, :]
+            # Test that samples are different when num_samples > 1
+            self.assertTrue(
+                torch.all(
+                    simulation["Infected_sol"][0, :] != simulation["Infected_sol"][1, :]
+                )
             )
-        )
