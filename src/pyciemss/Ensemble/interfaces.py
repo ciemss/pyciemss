@@ -19,7 +19,7 @@ from pyciemss.interfaces import (
 from pyciemss.PetriNetODE.base import get_name
 from pyciemss.PetriNetODE.interfaces import load_petri_model
 
-from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
+from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem, ScaledNormalNoiseEnsembleSystem
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 from typing import Iterable, Optional, Tuple, Callable, Union
@@ -137,8 +137,8 @@ def load_and_sample_petri_ensemble(
         solution_mappings,
         start_time,
         start_states,
-        total_population,
-        dirichlet_concentration,
+        total_population=total_population,
+        dirichlet_concentration=dirichlet_concentration,
     )
 
     samples = sample(
@@ -172,7 +172,8 @@ def load_and_calibrate_and_sample_ensemble_model(
     *,
     start_states: Optional[Iterable[dict[str, float]]] = None,
     total_population: float = 1.0,
-    pseudocount: float = 1.0,
+    noise_model: str = "scaled_beta",
+    noise_scale: float = 1.0,
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
@@ -292,9 +293,10 @@ def load_and_calibrate_and_sample_ensemble_model(
         solution_mappings,
         start_time,
         start_states,
-        total_population,
-        pseudocount,
-        dirichlet_concentration,
+        total_population=total_population,
+        noise_model=noise_model,
+        noise_scale=noise_scale,
+        dirichlet_concentration=dirichlet_concentration,
     )
 
     inferred_parameters = calibrate(
@@ -342,22 +344,40 @@ def setup_ensemble_model(
     solution_mappings: Iterable[Callable],
     start_time: float,
     start_states: Iterable[dict[str, float]],
+    *,
     total_population: float = 1.0,
-    noise_pseudocount: float = 1.0,
+    noise_model: str = "scaled_beta",
+    noise_scale: float = 1.0,
     dirichlet_concentration: float = 1.0,
 ) -> EnsembleSystem:
     """
     Instatiate a model for a particular configuration of initial conditions
     """
-    ensemble_model = copy.deepcopy(
-        ScaledBetaNoiseEnsembleSystem(
-            models,
-            torch.as_tensor(weights) * dirichlet_concentration,
-            solution_mappings,
-            total_population,
-            noise_pseudocount,
+    if noise_model == "scaled_beta":
+        noise_pseudocount = torch.as_tensor(1/noise_scale)
+        ensemble_model = copy.deepcopy(
+            ScaledBetaNoiseEnsembleSystem(
+                models,
+                torch.as_tensor(weights) * dirichlet_concentration,
+                solution_mappings,
+                total_population,
+                noise_pseudocount,
+            )
         )
-    )
+    elif noise_model == "scaled_normal":
+        ensemble_model = copy.deepcopy(
+            ScaledNormalNoiseEnsembleSystem(
+                models,
+                torch.as_tensor(weights) * dirichlet_concentration,
+                solution_mappings,
+                total_population,
+                noise_scale,
+            )
+        )
+    else:
+        raise ValueError(f"noise_model {noise_model} not recognized")
+
+
     for i, m in enumerate(ensemble_model.models):
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
