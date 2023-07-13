@@ -1,5 +1,16 @@
+import logging
+import pika
+import os
+import json
 import pyro
 import torch
+import time
+import numpy as np
+from math import ceil
+import pandas as pd
+from typing import Iterable, Optional, Tuple, Union
+import copy
+
 from pyro.infer import Predictive
 
 from pyciemss.PetriNetODE.base import (
@@ -14,15 +25,6 @@ from pyciemss.risk.risk_measures import alpha_superquantile
 import pyciemss.risk.qoi
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 from pyciemss.visuals import plots
-
-import time
-import numpy as np
-from math import ceil
-
-import pandas as pd
-
-from typing import Iterable, Optional, Tuple, Union
-import copy
 
 import mira
 
@@ -50,6 +52,12 @@ from pyciemss.custom_decorators import pyciemss_logging_wrappper
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
+ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
+PIKA_HOST = os.getenv("PIKA_HOST")
+
+if ASKEM_PYCIEMSS_SERVICE:
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
+    channel = connection.channel()
 
 @pyciemss_logging_wrappper
 def load_and_sample_petri_model(
@@ -101,7 +109,6 @@ def load_and_sample_petri_model(
     """
 
     # Load the model
-
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
@@ -163,6 +170,7 @@ def load_and_calibrate_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    job_id=None
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -251,6 +259,7 @@ def load_and_calibrate_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
+        job_id=job_id
     )
     samples = sample(
         model,
@@ -271,7 +280,7 @@ def load_and_calibrate_and_sample_petri_model(
     else:
         return processed_samples
 
-
+@pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -417,7 +426,7 @@ def load_and_optimize_and_sample_petri_model(
 
     return processed_samples, ouu_policy
 
-
+@pyciemss_logging_wrappper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -678,7 +687,6 @@ def intervene_petri_model(
     new_petri.load_events(interventions)
     return new_petri
 
-
 @calibrate.register
 @pyciemss_logging_wrappper
 def calibrate_petri(
@@ -690,10 +698,12 @@ def calibrate_petri(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    job_id=None
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     """
+    
     new_petri = copy.deepcopy(petri)
     observations = [
         ObservationEvent(timepoint, observation) for timepoint, observation in data
@@ -715,6 +725,11 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        if ASKEM_PYCIEMSS_SERVICE:
+            channel.basic_publish(exchange='',
+                        routing_key='terarium',
+                        body=json.dumps({"job_id":job_id, "progress":i/num_iterations})
+                        )
         loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:

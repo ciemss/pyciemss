@@ -59,13 +59,13 @@ class Test_Samples_Format(unittest.TestCase):
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
 
-        self.samples = load_and_sample_petri_ensemble(
+        self.samples, self.q_ensemble = load_and_sample_petri_ensemble(
             ASKENET_PATHS, weights, solution_mappings, self.num_samples, timepoints
         )
 
         data_path = os.path.join(DEMO_PATH, "data.csv")
 
-        self.calibrated_samples = load_and_calibrate_and_sample_ensemble_model(
+        self.calibrated_samples, self.calibrated_q_ensemble = load_and_calibrate_and_sample_ensemble_model(
             ASKENET_PATHS,
             data_path,
             weights,
@@ -78,7 +78,7 @@ class Test_Samples_Format(unittest.TestCase):
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        for s in [self.samples, self.calibrated_samples]:
+        for s in [self.samples, self.q_ensemble, self.calibrated_samples, self.calibrated_q_ensemble]:
             self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
