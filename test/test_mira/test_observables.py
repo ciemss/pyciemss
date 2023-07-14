@@ -59,5 +59,8 @@ class TestObservables(unittest.TestCase):
         with self.assertRaises(KeyError):
             inferred_parameters = calibrate(sir, unobserved_data, num_iterations=10)
 
+    def test_observables_actually_calibrate(self):
+        """Test the observables of the MiraPetriNetODESystem class actually generate a posterior."""
+        sidarthe_amr = load_and_calibrate_and_sample_petri_model('test/models/AMR_examples/SIDAETHE.amr.json', 0.0, dict(S=1000.0, I=1.0, R=0.0), 2, 10)
     
         

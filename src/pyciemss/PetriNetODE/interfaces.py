@@ -70,6 +70,7 @@ def load_and_sample_petri_model(
     start_time: float = -1e-10,
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
 ) -> pd.DataFrame:
@@ -95,6 +96,10 @@ def load_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         time_unit: str
             - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
@@ -113,6 +118,7 @@ def load_and_sample_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -168,6 +174,7 @@ def load_and_calibrate_and_sample_petri_model(
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
     job_id=None
@@ -213,6 +220,10 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         time_unit: str
             - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
@@ -233,6 +244,7 @@ def load_and_calibrate_and_sample_petri_model(
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -296,6 +308,7 @@ def load_and_optimize_and_sample_petri_model(
     start_time: float = -1e-10,
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p: bool = True,
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
@@ -336,6 +349,10 @@ def load_and_optimize_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         verbose: bool
             - Whether to print out the optimization under uncertainty progress.
         n_samples_ouu: int
@@ -361,6 +378,7 @@ def load_and_optimize_and_sample_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -451,6 +469,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     compile_rate_law_p: bool = True,
+    compile_observables_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
 ) -> Tuple[pd.DataFrame, dict]:
@@ -504,6 +523,10 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.    
         n_samples_ouu: int
             - The number of samples to draw from the model for each optimization iteration.
         maxiter: int >= 0
@@ -532,6 +555,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
