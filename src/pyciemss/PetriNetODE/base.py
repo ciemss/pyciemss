@@ -506,7 +506,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             param_name = get_name(param_info)
             param_value = param_info.value
             if isinstance(param_value, torch.nn.Parameter):
-                setattr(self, param_name, pyro.nn.PyroParam(param_value))
+                setattr(self, param_name, pyro.nn.PyroParam(param_value, constraint=pyro.distributions.constraints.real))
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
