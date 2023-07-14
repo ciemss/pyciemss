@@ -299,6 +299,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
         self.G = G
+        if compile_rate_law_p:
+            self.G.parameters = {param: value for param, value in self.G.parameters.items()
+            if value and value.placeholder == False}
         super().__init__()
         self.compile_rate_law_p = compile_rate_law_p
         if self.compile_rate_law_p:
