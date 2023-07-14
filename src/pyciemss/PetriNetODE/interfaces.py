@@ -157,7 +157,7 @@ def load_and_calibrate_and_sample_petri_model(
     timepoints: Iterable[float],
     *,
     noise_model: str = "scaled_normal",
-    noise_scale: float = 1.0,
+    noise_scale: float = 0.1,
     interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
@@ -440,7 +440,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
     noise_model: str = "scaled_normal",
-    noise_scale: float = 1.0,
+    noise_scale: float = 0.1,
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
@@ -618,7 +618,7 @@ def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     add_uncertainty: bool = True,
     noise_model: str = "scaled_normal",
-    noise_scale: float = 1.0,
+    noise_scale: float = 0.1,
     compile_rate_law_p: bool = False) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.

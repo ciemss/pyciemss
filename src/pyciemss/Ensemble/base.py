@@ -116,12 +116,14 @@ class ScaledNormalNoiseEnsembleSystem(EnsembleSystem):
         super().__init__(models, dirichlet_alpha, solution_mappings)
         self.total_population = total_population
         self.ensemble_noise_scale = torch.as_tensor(ensemble_noise_scale)
+        assert self.ensemble_noise_scale > 0, "Noise scale must be positive"
+        assert self.ensemble_noise_scale <= 1, "Noise scale must be less than 1"
     
     @pyro.nn.pyro_method
     def observation_model(self, solution, var_name: str) -> None:
         mean = solution[var_name]
-        # Scale the std dev by the population size
-        scale = self.ensemble_noise_scale * self.total_population
+        # Scale the std dev by the mean, with some minimum
+        scale = self.ensemble_noise_scale * torch.maximum(mean, torch.as_tensor(0.005 * self.total_population))
         pyro.sample(var_name, Normal(mean, scale).to_event(1))
 
     def __rep__(self) -> str:

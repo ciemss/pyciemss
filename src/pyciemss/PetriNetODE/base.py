@@ -529,9 +529,11 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 1, compile_rate_law_p: bool = False):
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False):
         super().__init__(G, compile_rate_law_p=compile_rate_law_p)
         self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
+        assert self.noise_scale > 0, "Noise scale must be positive"
+        assert self.noise_scale <= 1, "Noise scale must be less than 1"
 
     def __repr__(self):
         par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
@@ -541,8 +543,8 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         mean = solution[var_name]
-        # Scale the std dev by the population size
-        scale = self.noise_scale * self.total_population
+        # Scale the std dev by the mean, with some minimum
+        scale = self.noise_scale * torch.maximum(mean, torch.as_tensor(0.005 * self.total_population))
         pyro.sample(var_name, Normal(mean, scale).to_event(1))
 
 class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
