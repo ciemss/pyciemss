@@ -263,7 +263,9 @@ if __name__ == "__main__":
         ref_passes = pd.Series(successes).rename("Prior Passes")
 
         ref_stats = pd.concat([ref_fails, ref_passes], axis="columns").fillna(0)
-        stats = stats.join(ref_stats)
+        stats = stats.join(ref_stats)[
+            ["Fails", "Prior Fails", "Passes", "Prior Passes"]
+        ]
 
         def find_named(name, collection):
             for e in collection:
