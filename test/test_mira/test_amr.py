@@ -215,6 +215,7 @@ if __name__ == "__main__":
     new_fails = pd.Series(failures).rename("Fails")
     new_passes = pd.Series(successes).rename("Passes")
     stats = pd.concat([new_fails, new_passes], axis="columns").fillna(0)
+    changes = ""
 
     if args.reference is not None:
         with open(args.reference) as f:
@@ -229,7 +230,36 @@ if __name__ == "__main__":
         ref_stats = pd.concat([ref_fails, ref_passes], axis="columns").fillna(0)
         stats = stats.join(ref_stats)
 
+        def find_named(name, collection):
+            for e in collection:
+                if e.id == name:
+                    return e
+            return None
+
+        def diff(old_result, new_result):
+            if new_result is None:
+                return "Not present in new"
+
+            old_pass = set(old_result.tests_pass)
+            old_fail = set(old_result.tests_fail)
+            # new_pass = set(new_result.tests_pass)
+            new_fail = set(new_result.tests_fail)
+
+            result = {
+                "old-pass/new-fail": [*old_pass.intersection(new_fail)],  # Regression
+                # "old-fail/new-pass": [*old_fail.intersection(new_pass)],  # Imrpoved
+                # "old-pass/new-pass": [*old_pass.intersection(new_pass)],  # Stayed at passing
+                "old-fail/new-fail": [*old_fail.intersection(new_fail)],  # Stayed bad
+            }
+
+            return {k: v for k, v in result.items() if len(v) > 0}
+
+        changes = {old.id: diff(old, find_named(old.id, tests)) for old in refs}
+        changes = {k: v for k, v in changes.items() if len(v) > 0}
+        print("\n\n -- Detail regressions ---------------------------------- ")
+        print(json.dumps(changes, indent=3))
+
         # TODO: List exact changes
 
-    print("\n\n ------------------------------------ ")
+    print("\n\n -- Summary Stats ---------------------------------- ")
     print(stats)
