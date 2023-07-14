@@ -486,8 +486,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
+            - The pseudocount to use for adding uncertainty to the observations.
+            - Larger values of pseudocount correspond to more certainty about the observations.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
             - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.

@@ -85,8 +85,8 @@ def load_and_sample_petri_ensemble(
         total_population: float > 0.0
             - The total population of the model. This is used to scale the model to the correct population.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
+            - The pseudocount to use for adding uncertainty to the observations.
+            - Larger values of pseudocount correspond to more certainty about the observations.
         dirichlet_concentration: float > 0.0
             - The concentration parameter for the dirichlet distribution used to sample the ensemble mixture weights.
             - Larger values of dirichlet_concentration correspond to more certainty about the weights.
@@ -224,8 +224,8 @@ def load_and_calibrate_and_sample_ensemble_model(
         total_population: float > 0.0
             - The total population of the model. This is used to scale the model to the correct population.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
+            - The pseudocount to use for adding uncertainty to the observations.
+            - Larger values of pseudocount correspond to more certainty about the observations.
         dirichlet_concentration: float > 0.0
             - The concentration parameter for the dirichlet distribution used to sample the ensemble mixture weights.
             - Larger values of dirichlet_concentration correspond to more certainty about the weights.
