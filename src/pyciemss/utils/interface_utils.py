@@ -131,8 +131,8 @@ def csv_to_list(filename):
             # zip function pairs header elements and row elements together
             # it will ignore extra values in either the header or the row
             data_dict = dict(zip(header[1:], row[1:]))
-            # use float for the timestep, and convert the values in the dictionary to float
-            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items()}))
+            # use float for the timestep, and convert the values in the dictionary to float only if not NaN or NA
+            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items() if not(v=='' or v=='NaN')}))
     return result
 
 
