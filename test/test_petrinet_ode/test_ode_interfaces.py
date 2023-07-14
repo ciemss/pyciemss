@@ -176,9 +176,9 @@ class TestAMRDistribution(unittest.TestCase):
         beta_nc = samples["beta_nc_param"].values
         beta_s = samples["beta_s_param"].values
 
-        self.assertNotEqual(k_2[0], k_2[1])
-        self.assertNotEqual(beta_nc[0], beta_nc[1])
-        self.assertEqual(beta_s[0], beta_s[1])
+        self.assertNotEqual(k_2[0], k_2[1], "k_2 is drawn from a distribution and should produce different samples")
+        self.assertNotEqual(beta_nc[0], beta_nc[1], "beta_nc is drawn from a distribution and should produce different samples")
+        self.assertEqual(beta_s[0], beta_s[1], "beta_s is not drawn from a distribution and should produce the same samples")
 
 
 
