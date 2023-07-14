@@ -1,19 +1,26 @@
+import sys
 import json
 import unittest
+
 from pathlib import Path
-import json
 import warnings
 import dataclasses
 from urllib.request import urlopen
+import traceback
 
 from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
     load_and_sample_petri_model,
     load_and_calibrate_and_sample_petri_model,
 )
-from pyciemss.PetriNetODE.base import ScaledBetaNoisePetriNetODESystem
+from pyciemss.PetriNetODE.base import MiraPetriNetODESystem
 import pandas as pd
-from pathlib import Path
+
+
+# ####  IMPORTANT USAGE NOTE #######
+# This test suite uses an generated file as its "ground truth".
+# To re-generate this file, this test can be run as a python script.
+
 
 _config_file = Path(__file__).parent / "AMR_expectations.json"
 _report_file = Path(__file__).parent / "AMR_expectations_report.json"
@@ -59,9 +66,13 @@ def try_loading_biomodel(config: Configuration, context: any):
     try:
         model = load_petri_model(str(source_file), compile_rate_law_p=True)
         context.assertIsNotNone(model)
-        context.assertIsInstance(model, ScaledBetaNoisePetriNetODESystem)
+        context.assertIsInstance(model, MiraPetriNetODESystem)
+
         config.tests_pass.append("load_petri_model")
-    except KeyError:
+    except Exception as e:
+        warnings.warn(f"{config.id} {str(e)}")
+        tb = traceback.format_exc()
+        warnings.warn(tb)
         config.tests_fail.append("load_petri_model")
         return
 
@@ -75,7 +86,10 @@ def try_loading_biomodel(config: Configuration, context: any):
         context.assertIsNotNone(model)
         context.assertIsInstance(model, pd.DataFrame)
         config.tests_pass.append("load_and_sample_petri_model")
-    except Exception:
+    except Exception as e:
+        warnings.warn(f"{config.id} {str(e)}")
+        tb = traceback.format_exc()
+        warnings.warn(tb)
         config.tests_fail.append("load_and_sample_petri_model")
         return
 
@@ -192,6 +206,30 @@ if __name__ == "__main__":
         print(json.dumps(tests, cls=JSONEncoder, indent=3))
         sys.exit(-1)
 
+    # Compute summary stats
+    from collections import Counter
+    from itertools import chain
+
+    failures = Counter(chain.from_iterable(t.tests_fail for t in tests))
+    successes = Counter(chain.from_iterable(t.tests_pass for t in tests))
+    new_fails = pd.Series(failures).rename("Fails")
+    new_passes = pd.Series(successes).rename("Passes")
+    stats = pd.concat([new_fails, new_passes], axis="columns").fillna(0)
+
     if args.reference is not None:
-        pass
-        # TODO: Prepare diff report
+        with open(args.reference) as f:
+            reference = json.load(f)
+
+        refs = [Configuration.from_json(config) for config in reference]
+        failures = Counter(chain.from_iterable(t.tests_fail for t in refs))
+        successes = Counter(chain.from_iterable(t.tests_pass for t in refs))
+        ref_fails = pd.Series(failures).rename("Prior Fails")
+        ref_passes = pd.Series(successes).rename("Prior Passes")
+
+        ref_stats = pd.concat([ref_fails, ref_passes], axis="columns").fillna(0)
+        stats = stats.join(ref_stats)
+
+        # TODO: List exact changes
+
+    print("\n\n ------------------------------------ ")
+    print(stats)
