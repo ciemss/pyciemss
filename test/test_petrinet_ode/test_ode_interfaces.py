@@ -27,51 +27,54 @@ from pyciemss.PetriNetODE.interfaces import (
 )
 
 
-class Test_Samples_Format(unittest.TestCase):
+class TestSamplesFormat(unittest.TestCase):
 
     """Tests for the output of PetriNetODE.interfaces.load_*_sample_petri_net_model."""
 
     # Setup for the tests
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         # Should be using AMR model instead
         DEMO_PATH = "notebook/integration_demo/"
 
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        self.num_samples = 2
+        cls.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
-        self.num_timepoints = len(timepoints)
+        cls.num_timepoints = len(timepoints)
 
-        self.samples = load_and_sample_petri_model(
+        cls.samples = load_and_sample_petri_model(
             ASKENET_PATH,
-            self.num_samples,
+            cls.num_samples,
             timepoints=timepoints,
+            method="euler",
         )
 
         data_path = os.path.join(DEMO_PATH, "data.csv")
 
-        self.calibrated_samples = load_and_calibrate_and_sample_petri_model(
+        cls.calibrated_samples = load_and_calibrate_and_sample_petri_model(
             ASKENET_PATH,
             data_path,
-            self.num_samples,
+            cls.num_samples,
             timepoints=timepoints,
             verbose=True,
             num_iterations=2,
+            method="euler",
         )
-        self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
-        self.intervened_samples = load_and_sample_petri_model(
+        cls.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        cls.intervened_samples = load_and_sample_petri_model(
             ASKENET_PATH,
-            self.num_samples,
+            cls.num_samples,
             timepoints=timepoints,
-            interventions=self.interventions,
+            interventions=cls.interventions,
         )
 
         OBJFUN = lambda x: np.abs(x)
         INTERVENTION = [(0.1, "beta")]
         QOI = ("scenario2dec_nday_average", "I_sol", 2)
 
-        self.ouu_samples, _ = load_and_optimize_and_sample_petri_model(
+        cls.ouu_samples, _ = load_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
-            self.num_samples,
+            cls.num_samples,
             timepoints=timepoints,
             interventions=INTERVENTION,
             qoi=QOI,
@@ -83,15 +86,16 @@ class Test_Samples_Format(unittest.TestCase):
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
+            method="euler",
         )
 
         (
-            self.ouu_cal_samples,
+            cls.ouu_cal_samples,
             _,
         ) = load_and_calibrate_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
             data_path,
-            self.num_samples,
+            cls.num_samples,
             timepoints=timepoints,
             interventions=INTERVENTION,
             qoi=QOI,
@@ -103,6 +107,7 @@ class Test_Samples_Format(unittest.TestCase):
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
+            method="euler",
         )
 
     def test_samples_type(self):
@@ -155,6 +160,34 @@ class Test_Samples_Format(unittest.TestCase):
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
+class TestProblematicCalibration(unittest.TestCase):
+    """Tests for the calibration of problematic models."""
+    def test_normal_noise_fix(self):
+        filepath = "test/test_petrinet_ode/problematic_example/BIOMD0000000955_askenet.json"
+        data_path = "test/test_petrinet_ode/problematic_example/ciemss-dataset-input.csv"
+        calibrated_samples = load_and_calibrate_and_sample_petri_model(
+                filepath,
+                data_path,
+                5,
+                timepoints=[1., 10.],
+                num_iterations=10,
+                noise_model="scaled_normal",
+            )
+        self.assertIsNotNone(calibrated_samples) 
+
+        try:
+            load_and_calibrate_and_sample_petri_model(
+                    filepath,
+                    data_path,
+                    5,
+                    timepoints=[1., 10.],
+                    num_iterations=10,
+                    noise_model="scaled_beta",
+                )
+        except Exception as e:
+            self.assertIn("Expected parameter concentration", str(e))
+            
+    
 
 class TestODEInterfaces(unittest.TestCase):
     """Tests for the ODE interfaces."""
@@ -195,7 +228,7 @@ class TestODEInterfaces(unittest.TestCase):
         """Test the setup_model function."""
         for model in [
             load_petri_model(self.filename),
-            load_petri_model(self.filename, pseudocount=2.0),
+            load_petri_model(self.filename, noise_scale=0.5),
         ]:
             new_model = setup_model(model, self.initial_time, self.initial_state)
 
