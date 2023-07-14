@@ -109,6 +109,11 @@ class TestSamplesFormat(unittest.TestCase):
             maxfeval=2,
             method="euler",
         )
+        cls.samples = cls.samples["data"]
+        cls.calibrated_samples = cls.calibrated_samples["data"]
+        cls.intervened_samples = cls.intervened_samples["data"]
+        cls.ouu_samples = cls.ouu_samples["data"]
+        cls.ouu_cal_samples = cls.ouu_cal_samples["data"]
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
@@ -173,7 +178,7 @@ class TestProblematicCalibration(unittest.TestCase):
                 num_iterations=10,
                 noise_model="scaled_normal",
             )
-        self.assertIsNotNone(calibrated_samples) 
+        self.assertIsNotNone(calibrated_samples["data"]) 
 
         try:
             load_and_calibrate_and_sample_petri_model(
@@ -410,7 +415,7 @@ class TestODEInterfaces(unittest.TestCase):
         )
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples,
+            actual_intervened_samples["data"],
             check_exact=False,
             atol=1e-5,
         )
@@ -419,11 +424,11 @@ class TestODEInterfaces(unittest.TestCase):
         scenario1a_output = load_and_sample_petri_model(
             SCENARIO_1a_H2, num_samples, timepoints
         )
-        self.assertIsInstance(scenario1a_output, pd.DataFrame, "Dataframe not returned")
+        self.assertIsInstance(scenario1a_output["data"], pd.DataFrame, "Dataframe not returned")
 
         SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
-        self.assertIsInstance(sidarthe_output, pd.DataFrame, "Dataframe not returned")
+        self.assertIsInstance(sidarthe_output["data"], pd.DataFrame, "Dataframe not returned")
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''
