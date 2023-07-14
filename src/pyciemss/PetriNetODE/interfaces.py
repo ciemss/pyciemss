@@ -11,6 +11,8 @@ import pandas as pd
 from typing import Iterable, Optional, Tuple, Union
 import copy
 
+import random as rand
+
 from pyro.infer import Predictive
 
 from pyciemss.PetriNetODE.base import (
@@ -124,11 +126,7 @@ def load_and_sample_petri_model(
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
     if interventions is not None:
-        intervention_events = [
-            StaticParameterInterventionEvent(timepoint, parameter, value)
-            for timepoint, parameter, value in interventions
-        ]
-        model.load_events(intervention_events)
+        model = intervene(model, interventions)
 
     samples = sample(
         model,
@@ -244,11 +242,7 @@ def load_and_calibrate_and_sample_petri_model(
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
     if interventions is not None:
-        intervention_events = [
-            StaticParameterInterventionEvent(timepoint, parameter, value)
-            for timepoint, parameter, value in interventions
-        ]
-        model.load_events(intervention_events)
+        model = intervene(model, interventions)
 
     inferred_parameters = calibrate(
         model,
@@ -672,14 +666,14 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 @intervene.register
 @pyciemss_logging_wrappper
 def intervene_petri_model(
-    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]]
+    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-6
 ) -> PetriNetODESystem:
     """
     Intervene on a model.
     """
     # Note: this will have to change if we want to add more sophisticated interventions.
     interventions = [
-        StaticParameterInterventionEvent(timepoint, parameter, value)
+        StaticParameterInterventionEvent(timepoint + rand.random()*jostle_scale, parameter, value)
         for timepoint, parameter, value in interventions
     ]
     new_petri = copy.deepcopy(petri)
@@ -697,7 +691,8 @@ def calibrate_petri(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-    job_id=None
+    job_id=None,
+    jostle_scale: float = 1e-6,
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
@@ -705,7 +700,7 @@ def calibrate_petri(
     
     new_petri = copy.deepcopy(petri)
     observations = [
-        ObservationEvent(timepoint, observation) for timepoint, observation in data
+        ObservationEvent(timepoint + rand.random() * jostle_scale, observation) for timepoint, observation in data
     ]
 
     for obs in observations:
