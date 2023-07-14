@@ -157,3 +157,22 @@ def assign_interventions_to_timepoints(
                 i = bisect.bisect(intervals, (t,)) - 1
                 result[param].append(values[i])
     return result
+
+
+def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[pd.DataFrame]:
+    """Convert pyciemss outputs to data observations."""
+    # Use groupby to create separate DataFrames
+    grouped = df.groupby(level=1)
+
+    # Create a dictionary of dataframes
+    outputs = {level: group for level, group in grouped}
+    observations = dict()
+    for idx, observation in outputs.items():
+        observation = observation.drop([k for k in observation.columns if '_sol' != k[-4:]],
+                                      axis=1)
+        observation = observation.rename(columns={k: k[:-4] for k in observation.columns})
+        observation['Timestep'] = timepoints
+
+        observations[idx] = observation[['Timestep'] + [c for c in observation.columns[:-1]]]
+    return observations
+      

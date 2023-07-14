@@ -73,8 +73,8 @@
       "rates": [
         {
           "target": "inf",
-          "expression": "S*I*beta",
-          "expression_mathml": "<apply><times/><ci>S</ci><ci>I</ci><ci>beta</ci></apply>"
+            "expression": "S*I*beta/(S+I+R)",
+          "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><apply><plus/><ci>I</ci><ci>R</ci><ci>S</ci></apply></apply>"
         },
         {
           "target": "rec",
