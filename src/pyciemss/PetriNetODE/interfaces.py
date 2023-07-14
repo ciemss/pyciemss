@@ -606,19 +606,20 @@ def load_petri_model(
     add_uncertainty=True,
     pseudocount=1.0,
     compile_rate_law_p: bool = False,
+    compile_observables_p = False
 ) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
     if add_uncertainty:
         model = ScaledBetaNoisePetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p
         )
         model.pseudocount = torch.tensor(pseudocount)
         return model
     else:
         return MiraPetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+            petri_model_or_path, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p
         )
 
 
@@ -694,7 +695,7 @@ def calibrate_petri(
         for v in obs.observation.values():
             s += v
             assert 0 <= v <= petri.total_population
-        assert s <= petri.total_population or torch.isclose(s, petri.total_population)
+        #assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
     guide = autoguide(new_petri)

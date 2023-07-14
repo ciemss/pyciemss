@@ -159,7 +159,7 @@ def assign_interventions_to_timepoints(
     return result
 
 
-def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[pd.DataFrame]:
+def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     """Convert pyciemss outputs to data observations."""
     # Use groupby to create separate DataFrames
     grouped = df.groupby(level=1)

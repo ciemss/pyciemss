@@ -245,6 +245,8 @@ class PetriNetODESystem(DynamicalSystem):
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
+            for observable in self.compiled_observables:
+                filtered_solution[observable] = torch.squeeze(self.compiled_observables[observable](**filtered_solution), dim=-1)
             with pyro.condition(data={var_name: observation_values}):
                 observation_model(filtered_solution, var_name)
 
@@ -296,12 +298,15 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, compile_observables_p=True):
         self.G = G
         super().__init__()
         self.compile_rate_law_p = compile_rate_law_p
+        self.compile_observables_p = compile_observables_p
         if self.compile_rate_law_p:
             self.compiled_rate_law = self.compile_rate_law()
+        if self.compile_observables_p:
+            self.compiled_observables = self.compile_observables()
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
             for var in self.var_order.values():
                 self.register_buffer(
@@ -336,6 +341,15 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 elif isinstance(param_value, (int, float)):
                     param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
 
+    def compile_observables(self) -> Dict[str, SymPyModule]:
+        """Compile the observables during initialization."""
+
+        # compute the symbolic observables
+        return {
+            observable_id: SymPyModule(expressions=[self.extract_sympy(symbolic_observable.observable.expression)])
+            for observable_id, symbolic_observable in self.G.observables.items()
+        }
+        
     def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
 
@@ -529,8 +543,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     Additionally, this wrapper adds a uniform prior on the model parameters.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False, compile_observables_p: bool = False):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p)
         self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
 
     def __repr__(self):
@@ -541,5 +555,6 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         mean = torch.maximum(solution[var_name], torch.tensor(1e-9))
+        print(f"{var_name}, {mean.shape}")
         pseudocount = self.pseudocount
         pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
