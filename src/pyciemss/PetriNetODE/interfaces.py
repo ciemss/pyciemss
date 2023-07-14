@@ -617,21 +617,16 @@ def load_petri_model(
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
-    if add_uncertainty:
-        if noise_model == "scaled_beta":
-            return ScaledBetaNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        elif noise_model == "scaled_normal":
-            return ScaledNormalNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        else:
-            raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
-    else:
-        return MiraPetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+    if noise_model == "scaled_beta":
+        return ScaledBetaNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, add_uncertainty=add_uncertainty
         )
+    elif noise_model == "scaled_normal":
+        return ScaledNormalNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, add_uncertainty=add_uncertainty
+        )
+    else:
+        raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
 
 
 @setup_model.register
