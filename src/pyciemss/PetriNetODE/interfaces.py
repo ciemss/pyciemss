@@ -1,9 +1,21 @@
+import logging
+import pika
+import os
+import json
 import pyro
 import torch
+import time
+import numpy as np
+from math import ceil
+import pandas as pd
+from typing import Iterable, Optional, Tuple, Union
+import copy
+
 from pyro.infer import Predictive
 
 from pyciemss.PetriNetODE.base import (
     PetriNetODESystem,
+    ScaledNormalNoisePetriNetODESystem,
     ScaledBetaNoisePetriNetODESystem,
     MiraPetriNetODESystem,
     get_name,
@@ -13,15 +25,6 @@ from pyciemss.risk.risk_measures import alpha_superquantile
 import pyciemss.risk.qoi
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 from pyciemss.visuals import plots
-
-import time
-import numpy as np
-from math import ceil
-
-import pandas as pd
-
-from typing import Iterable, Optional, Tuple, Union
-import copy
 
 import mira
 
@@ -49,6 +52,12 @@ from pyciemss.custom_decorators import pyciemss_logging_wrappper
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
 
+ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
+PIKA_HOST = os.getenv("PIKA_HOST")
+
+if ASKEM_PYCIEMSS_SERVICE:
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
+    channel = connection.channel()
 
 @pyciemss_logging_wrappper
 def load_and_sample_petri_model(
@@ -58,7 +67,6 @@ def load_and_sample_petri_model(
     *,
     interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
-    pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
     compile_rate_law_p: bool = True,
@@ -81,9 +89,6 @@ def load_and_sample_petri_model(
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
-        pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
             - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
@@ -102,10 +107,11 @@ def load_and_sample_petri_model(
             - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
             - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
     """
+
+    # Load the model
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
-        pseudocount=pseudocount,
         compile_rate_law_p=compile_rate_law_p,
     )
 
@@ -150,9 +156,10 @@ def load_and_calibrate_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     *,
+    noise_model: str = "scaled_normal",
+    noise_scale: float = 0.1,
     interventions: Optional[Iterable[Tuple[float, str, float]]] = None,
     start_state: Optional[dict[str, float]] = None,
-    pseudocount: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
     lr: float = 0.03,
@@ -163,6 +170,7 @@ def load_and_calibrate_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    job_id=None
 ) -> pd.DataFrame:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -179,13 +187,16 @@ def load_and_calibrate_and_sample_petri_model(
             - The number of samples to draw from the model.
         timepoints: [Iterable[float]]
             - The timepoints to simulate the model from. Backcasting and/or forecasting is reflected in the choice of timepoints.
+        noise_model: str
+            - The noise model to use for the model.
+            - Options are "scaled_beta" and "scaled_normal".
+        noise_scale: float > 0.0
+            - A scaling parameter for the noise model.
+            - Larger values of noise_scale correspond to more certainty about the model parameters.
         interventions: Optional[Iterable[Tuple[float, str, float]]]
             - A list of interventions to apply to the model. Each intervention is a tuple of the form (time, parameter_name, value).
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
-        pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
             - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
@@ -219,8 +230,9 @@ def load_and_calibrate_and_sample_petri_model(
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
+        noise_model=noise_model,
+        noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
-        pseudocount=pseudocount,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -247,6 +259,7 @@ def load_and_calibrate_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
+        job_id=job_id
     )
     samples = sample(
         model,
@@ -267,7 +280,7 @@ def load_and_calibrate_and_sample_petri_model(
     else:
         return processed_samples
 
-
+@pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -280,9 +293,9 @@ def load_and_optimize_and_sample_petri_model(
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
     start_state: Optional[dict[str, float]] = None,
-    pseudocount: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    compile_rate_law_p: bool = True,
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
@@ -317,9 +330,6 @@ def load_and_optimize_and_sample_petri_model(
             - The lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
-        pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
             - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
@@ -350,7 +360,7 @@ def load_and_optimize_and_sample_petri_model(
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
-        pseudocount=pseudocount,
+        compile_rate_law_p=compile_rate_law_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -416,7 +426,7 @@ def load_and_optimize_and_sample_petri_model(
 
     return processed_samples, ouu_policy
 
-
+@pyciemss_logging_wrappper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -429,8 +439,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
+    noise_model: str = "scaled_normal",
+    noise_scale: float = 0.1,
     start_state: Optional[dict[str, float]] = None,
-    pseudocount: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
     lr: float = 0.03,
@@ -439,6 +450,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
+    compile_rate_law_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
 ) -> Tuple[pd.DataFrame, dict]:
@@ -474,8 +486,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
         pseudocount: float > 0.0
-            - The pseudocount to use for adding uncertainty to the model parameters.
-            - Larger values of pseudocount correspond to more certainty about the model parameters.
+            - The pseudocount to use for adding uncertainty to the observations.
+            - Larger values of pseudocount correspond to more certainty about the observations.
         start_time: float
             - The start time of the model. This is used to align the `start_state` with the `timepoints`.
             - By default we set the `start_time` to be a small negative number to avoid numerical issues w/ collision with the `timepoints` which typically start at 0.
@@ -517,7 +529,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
         add_uncertainty=True,
-        pseudocount=pseudocount,
+        noise_model=noise_model,
+        noise_scale=noise_scale,
+        compile_rate_law_p=compile_rate_law_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -600,23 +614,27 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 ##############################################################################
 # Internal Interfaces Below - TA4 above
 
-
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
-    add_uncertainty=True,
-    pseudocount=1.0,
-    compile_rate_law_p: bool = False,
-    compile_observables_p = False
-) -> PetriNetODESystem:
+    add_uncertainty: bool = True,
+    noise_model: str = "scaled_normal",
+    noise_scale: float = 0.1,
+    compile_observables_p = False,
+    compile_rate_law_p: bool = False) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
     if add_uncertainty:
-        model = ScaledBetaNoisePetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p
-        )
-        model.pseudocount = torch.tensor(pseudocount)
-        return model
+        if noise_model == "scaled_beta":
+            return ScaledBetaNoisePetriNetODESystem.from_askenet(
+                petri_model_or_path, noise_scale=noise_scale, compile_observables_p=compile_observables_p, compile_rate_law_p=compile_rate_law_p
+            )
+        elif noise_model == "scaled_normal":
+            return ScaledNormalNoisePetriNetODESystem.from_askenet(
+                petri_model_or_path, noise_scale=noise_scale, compile_observables_p=compile_observables_p, compile_rate_law_p=compile_rate_law_p
+            )
+        else:
+            raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
     else:
         return MiraPetriNetODESystem.from_askenet(
             petri_model_or_path, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p
@@ -669,7 +687,6 @@ def intervene_petri_model(
     new_petri.load_events(interventions)
     return new_petri
 
-
 @calibrate.register
 @pyciemss_logging_wrappper
 def calibrate_petri(
@@ -681,10 +698,12 @@ def calibrate_petri(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
+    job_id=None
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
     """
+    
     new_petri = copy.deepcopy(petri)
     observations = [
         ObservationEvent(timepoint, observation) for timepoint, observation in data
@@ -706,6 +725,11 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        if ASKEM_PYCIEMSS_SERVICE:
+            channel.basic_publish(exchange='',
+                        routing_key='terarium',
+                        body=json.dumps({"job_id":job_id, "progress":i/num_iterations})
+                        )
         loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:

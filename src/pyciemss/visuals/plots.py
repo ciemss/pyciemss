@@ -531,7 +531,7 @@ def triangle_contour(data, *, title=None, contour=True):
 # -------- Utlity functions for working with Vega plots
 
 
-def ipy_display(spec: Dict[str, Any], *, lite=False):
+def ipy_display(spec: Dict[str, Any], *, lite=False, force_clear=False):
     """Wrap for dispaly in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
     """
@@ -540,7 +540,11 @@ def ipy_display(spec: Dict[str, Any], *, lite=False):
     else:
         bundle = {"application/vnd.vega.v5+json": spec}
 
-    return IPython.display.display(bundle, raw=True)
+    print("", end=None)
+    if force_clear:
+        IPython.display.clear_output(wait=True)
+
+    IPython.display.display(bundle, raw=True)
 
 
 def save_schema(schema: Dict[str, Any], path: str):

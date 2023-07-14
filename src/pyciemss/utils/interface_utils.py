@@ -13,6 +13,10 @@ def convert_to_output_format(
     interventions: Optional[Dict[str, torch.Tensor]] = None,
     *,
     time_unit: Optional[str] = "(unknown)",
+    ensemble_quantiles: Optional[bool] = False,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    num_ensemble_quantiles: Optional[int] = 0,
+    stacking_order: Optional[str] = "timepoints",
 ) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
@@ -79,7 +83,43 @@ def convert_to_output_format(
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
         result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
 
-    return result
+    if ensemble_quantiles:
+        key_list = ["timepoint_id", "target", "type", "quantile", "value"]
+        q = {k: [] for k in key_list}
+        if alpha_qs is None:
+            alpha_qs = np.linspace(0, 1, num_ensemble_quantiles)
+            alpha_qs[0] = 0.01
+            alpha_qs[-1] = 0.99
+        else:
+            num_ensemble_quantiles = len(alpha_qs)
+        
+        # Solution (state variables)
+        for k, v in pyciemss_results["states"].items():
+            q_vals = np.quantile(v, alpha_qs, axis=0)
+            k = k.replace("_sol","")
+            if stacking_order == "timepoints":
+                # Keeping timepoints together
+                q["timepoint_id"].extend(list(np.repeat(np.array(range(num_timepoints)), num_ensemble_quantiles)))
+                q["target"].extend([k]*num_timepoints*num_ensemble_quantiles)
+                q["type"].extend(["quantile"]*num_timepoints*num_ensemble_quantiles)
+                q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
+                q["value"].extend(list(np.squeeze(q_vals.T.reshape((num_timepoints * num_ensemble_quantiles, 1)))))
+            elif stacking_order == "quantiles":
+                # Keeping quantiles together
+                q["timepoint_id"].extend(list(np.tile(np.array(range(num_timepoints)), num_ensemble_quantiles)))
+                q["target"].extend([k]*num_timepoints*num_ensemble_quantiles)
+                q["type"].extend(["quantile"]*num_timepoints*num_ensemble_quantiles)
+                q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
+                q["value"].extend(list(np.squeeze(q_vals.reshape((num_timepoints * num_ensemble_quantiles, 1)))))
+            else:
+                raise Exception("Incorrect input for stacking_order.")
+        result_q = pd.DataFrame(q)
+        if time_unit is not None:
+            all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v])
+            result_q = result_q.assign(**{f"timepoint_{time_unit}": all_timepoints})            
+        return result, result_q
+    else:
+        return result
 
 
 def csv_to_list(filename):
@@ -91,8 +131,8 @@ def csv_to_list(filename):
             # zip function pairs header elements and row elements together
             # it will ignore extra values in either the header or the row
             data_dict = dict(zip(header[1:], row[1:]))
-            # use float for the timestep, and convert the values in the dictionary to float
-            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items()}))
+            # use float for the timestep, and convert the values in the dictionary to float only if not NaN or NA
+            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items() if not(v=='' or v=='NaN')}))
     return result
 
 

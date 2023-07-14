@@ -337,3 +337,4 @@ venv/
 .*
 .DS_Store
 *~
+*_schema.json

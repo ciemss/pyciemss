@@ -24,13 +24,19 @@ class ScaledBeta(TransformedDistribution):
     # We really want 0 <= mean <= max and support = [0, max]. Can we express that?
     has_rsample = True
 
-    def __init__(self, _mean, _max, pseudocount, validate_args=None):
-        self._mean = _mean
+    def __init__(self, _mean, _max, pseudocount=1.0, scale=None, validate_args=None):
         self._max = _max
-        self._pseudocount = pseudocount
-        scaled_mean = self._mean / self._max
-        self._scaled_mean = scaled_mean
-        base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
+        scaled_mean = _mean / self._max
+
+        if scale is None:
+            base_dist = Beta( scaled_mean * pseudocount, (1 - scaled_mean) * pseudocount, validate_args=validate_args)
+        else:
+            scaled_scale = scale / self._max
+            alpha = (((1-scaled_mean)/scaled_scale**2 - 1/scaled_mean) * scaled_mean**2)
+            beta = alpha * (1/scaled_mean - 1)
+            base_dist = Beta( alpha, beta, validate_args=validate_args)
+            if (alpha <= 0.01).any().item() or (beta <= 0.01).any().item():
+                print("here")
         super().__init__(base_dist, AffineTransform(0, _max), validate_args=validate_args)
 
     @property
