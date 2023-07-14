@@ -3,6 +3,7 @@ from pyciemss.utils.interface_utils import (
     convert_to_output_format,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
+    csv_to_list
 )
 from torch import tensor
 import pandas as pd
@@ -51,6 +52,14 @@ class Test_Interface_Utils(unittest.TestCase):
             "beta_param": [0.2, 0.25, 0.15],
             "gamma_param": [0.3, 0.25, 0.35],
         }
+        self.df_filename = 'test/data/data_with_missing_entries.csv'
+        self.df = pd.DataFrame({
+            'timepoints': list(range(5)),
+            'X': [11,np.NaN,13,np.NaN,15],
+            'Y': [21,22,np.NaN,np.NaN,25],
+            'Z': 5*[np.NaN]
+        })
+
 
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
@@ -161,3 +170,22 @@ class Test_Interface_Utils(unittest.TestCase):
                 self.interventions, self.timepoints, self.sampled_params
             ),
         )
+
+    def test_csv_to_list(self):
+        """Test csv_to_list."""
+        self.df.to_csv(self.df_filename, index=False)
+        expected_list = [
+            (0.0, {'X': 11.0, 'Y': 21.0}),
+            (1.0, {'Y': 22.0}),
+            (2.0, {'X': 13.0}),
+            (3.0, {}),
+            (4.0, {'X': 15.0, 'Y': 25.0}),
+        ]
+        self.assertEqual(
+            expected_list,
+            csv_to_list(self.df_filename)
+        )
+
+
+
+
