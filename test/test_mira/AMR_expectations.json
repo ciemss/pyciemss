@@ -42,7 +42,9 @@
          "load_petri_model",
          "load_and_sample_petri_model"
       ],
-      "tests_fail": []
+      "tests_fail": [
+         "load_and_calibrate_and_sample_petri_model"
+      ]
    },
    {
       "id": "BIOMD0000000964",
@@ -77,7 +79,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000979/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -86,7 +89,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000970/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -95,7 +99,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000984/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -130,7 +135,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000976/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -193,14 +199,17 @@
          "load_petri_model",
          "load_and_sample_petri_model"
       ],
-      "tests_fail": []
+      "tests_fail": [
+         "load_and_calibrate_and_sample_petri_model"
+      ]
    },
    {
       "id": "BIOMD0000000957",
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000957/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -235,7 +244,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000001045/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -252,7 +262,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000958/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -289,7 +300,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000980/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -298,7 +310,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000974/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },
@@ -327,7 +340,8 @@
       "source_url": "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/BIOMD0000000981/model_askenet.json",
       "tests_pass": [
          "load_petri_model",
-         "load_and_sample_petri_model"
+         "load_and_sample_petri_model",
+         "load_and_calibrate_and_sample_petri_model"
       ],
       "tests_fail": []
    },

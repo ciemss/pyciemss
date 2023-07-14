@@ -8,6 +8,7 @@ import dataclasses
 from urllib.request import urlopen
 import traceback
 
+from pyciemss.utils.interface_utils import solutions_to_observations
 from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
     load_and_sample_petri_model,
@@ -26,6 +27,7 @@ _config_file = Path(__file__).parent / "AMR_expectations.json"
 _report_file = Path(__file__).parent / "AMR_expectations_report.json"
 AMR_URL_TEMPLATE = "https://raw.githubusercontent.com/DARPA-ASKEM/experiments/main/thin-thread-examples/mira_v2/biomodels/{biomodel_id}/model_askenet.json"
 AMR_ROOT = Path(__file__).parent / ".." / "models" / "AMR_examples" / "biomodels"
+SYN_SAMPLE_DATA_TEMP = Path(__file__).parent / "__sample_data.csv"
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -58,6 +60,9 @@ class Configuration:
 
 
 def try_loading_biomodel(config: Configuration, context: any):
+    """Loads; Loads & Samples; Loads, Calibrates & Samples a model,
+    Runs assertion tests against those to determine if they are passing minimum viability.
+    """
     source_file = (AMR_ROOT / config.id / "model_askenet.json").absolute()
     if not Path(source_file).exists():
         config.tests_fail.append("File not found")
@@ -77,20 +82,44 @@ def try_loading_biomodel(config: Configuration, context: any):
         return
 
     try:
-        model = load_and_sample_petri_model(
+        sample_timepoints = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+        samples = load_and_sample_petri_model(
             str(source_file),
             compile_rate_law_p=True,
             num_samples=2,
-            timepoints=[0.0, 0.1, 0.2, 0.3],
+            timepoints=sample_timepoints,
         )
-        context.assertIsNotNone(model)
-        context.assertIsInstance(model, pd.DataFrame)
+        context.assertIsNotNone(samples)
+        context.assertIsInstance(samples, pd.DataFrame)
         config.tests_pass.append("load_and_sample_petri_model")
     except Exception as e:
         warnings.warn(f"{config.id} {str(e)}")
         tb = traceback.format_exc()
         warnings.warn(tb)
         config.tests_fail.append("load_and_sample_petri_model")
+        return
+
+    try:
+        synthetic_obs_data = solutions_to_observations(sample_timepoints, samples)
+        synthetic_obs_data[0].to_csv(SYN_SAMPLE_DATA_TEMP, index=False)
+
+        calib_sample_timepoints = sample_timepoints + [0.9, 1.0, 1.1, 1.2]
+        calibrated_samples = load_and_calibrate_and_sample_petri_model(
+            str(source_file),
+            SYN_SAMPLE_DATA_TEMP,
+            num_samples=5,
+            timepoints=calib_sample_timepoints,
+            num_iterations=2,
+        )
+
+        context.assertIsNotNone(calibrated_samples)
+        context.assertIsInstance(calibrated_samples, pd.DataFrame)
+        config.tests_pass.append("load_and_calibrate_and_sample_petri_model")
+    except Exception as e:
+        warnings.warn(f"{config.id} {str(e)}")
+        tb = traceback.format_exc()
+        warnings.warn(tb)
+        config.tests_fail.append("load_and_calibrate_and_sample_petri_model")
         return
 
 
@@ -178,7 +207,13 @@ if __name__ == "__main__":
         required=False,
         type=int,
     )
-    parser.add_argument("--quiet", help="Suppress warning output", action="store_true")
+
+    parser.add_argument(
+        "--diff-details",
+        help="Print out all differences from the reference (default only prints regressions; aka, old-pass/new-fail and missing)",
+        action="store_true",
+    )
+    parser.add_argument("--nowarn", help="Suppress warning output", action="store_true")
 
     args = parser.parse_args()
 
@@ -193,7 +228,7 @@ if __name__ == "__main__":
 
     for config in tests:
         with warnings.catch_warnings():
-            if args.quiet:
+            if args.nowarn:
                 warnings.simplefilter("ignore")
             try_loading_biomodel(config, FakeTestContext())
 
@@ -214,7 +249,7 @@ if __name__ == "__main__":
     successes = Counter(chain.from_iterable(t.tests_pass for t in tests))
     new_fails = pd.Series(failures).rename("Fails")
     new_passes = pd.Series(successes).rename("Passes")
-    stats = pd.concat([new_fails, new_passes], axis="columns").fillna(0)
+    stats = pd.concat([new_fails, new_passes], axis="columns")
     changes = ""
 
     if args.reference is not None:
@@ -242,15 +277,28 @@ if __name__ == "__main__":
 
             old_pass = set(old_result.tests_pass)
             old_fail = set(old_result.tests_fail)
-            # new_pass = set(new_result.tests_pass)
+            new_pass = set(new_result.tests_pass)
             new_fail = set(new_result.tests_fail)
 
             result = {
-                "old-pass/new-fail": [*old_pass.intersection(new_fail)],  # Regression
-                # "old-fail/new-pass": [*old_fail.intersection(new_pass)],  # Imrpoved
-                # "old-pass/new-pass": [*old_pass.intersection(new_pass)],  # Stayed at passing
-                "old-fail/new-fail": [*old_fail.intersection(new_fail)],  # Stayed bad
-            }
+                "old-pass/new-fail": [*old_pass.intersection(new_fail)]
+            }  # Regression
+
+            if args.diff_details:
+                result = {
+                    **result,
+                    **{
+                        "old-fail/new-pass": [
+                            *old_fail.intersection(new_pass)
+                        ],  # Imrpoved
+                        "old-pass/new-pass": [
+                            *old_pass.intersection(new_pass)
+                        ],  # Stayed at passing
+                        "old-fail/new-fail": [
+                            *old_fail.intersection(new_fail)
+                        ],  # Stayed bad
+                    },
+                }
 
             return {k: v for k, v in result.items() if len(v) > 0}
 
@@ -262,4 +310,4 @@ if __name__ == "__main__":
         # TODO: List exact changes
 
     print("\n\n -- Summary Stats ---------------------------------- ")
-    print(stats)
+    print(stats.fillna(0))
