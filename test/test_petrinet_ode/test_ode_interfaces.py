@@ -384,13 +384,13 @@ class TestODEInterfaces(unittest.TestCase):
         )
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples,
+            actual_intervened_samples["data"],
             check_exact=False,
             atol=1e-5,
         )
 
     def test_load_and_calibrate_and_sample_petri_model(self):
-        """Test the load_and_sample_petri_model function with and without interventions."""
+        """Test the load_and_calibrate_and_sample_petri_model function with and without interventions."""
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
         interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
