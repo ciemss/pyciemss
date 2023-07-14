@@ -74,7 +74,7 @@ def load_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
@@ -105,9 +105,10 @@ def load_and_sample_petri_model(
             - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
-            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+                * visual: Visualization. (If visual_options is truthy)
     """
 
     # Load the model
@@ -144,7 +145,7 @@ def load_and_sample_petri_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples}
 
 
 @pyciemss_logging_wrappper
