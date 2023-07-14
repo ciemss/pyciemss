@@ -34,6 +34,8 @@ from pyciemss.interfaces import DynamicalSystem
 from pyciemss.PetriNetODE.events import (Event, StaticEvent, StartEvent, ObservationEvent,
                                          LoggingEvent, StaticParameterInterventionEvent)
 
+pyro.settings.set(module_local_params=True)
+
 Time = Union[float, torch.tensor]
 State = tuple[torch.tensor]
 StateDeriv = tuple[torch.tensor]
