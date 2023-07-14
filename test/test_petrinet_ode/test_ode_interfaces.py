@@ -185,7 +185,7 @@ class TestProblematicCalibration(unittest.TestCase):
                     noise_model="scaled_beta",
                 )
         except Exception as e:
-            self.assertIn("linalg.cholesky: The factorization could not be completed because the input is not positive-definite (the leading minor of order 1 is not positive-definite).", str(e))
+            self.assertIn("Expected parameter concentration", str(e))
             
     
 

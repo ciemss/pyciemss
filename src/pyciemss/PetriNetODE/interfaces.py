@@ -625,9 +625,8 @@ def load_petri_model(
     """
     if add_uncertainty:
         if noise_model == "scaled_beta":
-            pseudocount = torch.as_tensor(1/noise_scale)
             return ScaledBetaNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, pseudocount=pseudocount, compile_rate_law_p=compile_rate_law_p
+                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
             )
         elif noise_model == "scaled_normal":
             return ScaledNormalNoisePetriNetODESystem.from_askenet(

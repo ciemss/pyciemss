@@ -551,9 +551,13 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False):
         super().__init__(G, compile_rate_law_p=compile_rate_law_p)
-        self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
+        self.parameterized_by_pseudocount = noise_scale is None
+        if self.parameterized_by_pseudocount:
+            self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
+        else:
+            self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
 
     def __repr__(self):
         par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
@@ -563,5 +567,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         mean = torch.maximum(solution[var_name], torch.tensor(1e-9))
-        pseudocount = self.pseudocount
-        pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
+        if self.parameterized_by_pseudocount:
+            pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount=self.pseudocount).to_event(1))
+        else:
+            scale = self.noise_scale * torch.maximum(mean, torch.as_tensor(0.005 * self.total_population))
+            pyro.sample(var_name, ScaledBeta(mean, self.total_population, scale=scale).to_event(1))

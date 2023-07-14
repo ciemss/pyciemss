@@ -354,6 +354,7 @@ def setup_ensemble_model(
     Instatiate a model for a particular configuration of initial conditions
     """
     if noise_model == "scaled_beta":
+        # TODO
         noise_pseudocount = torch.as_tensor(1/noise_scale)
         ensemble_model = copy.deepcopy(
             ScaledBetaNoiseEnsembleSystem(
