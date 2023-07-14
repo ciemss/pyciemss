@@ -19,7 +19,7 @@ from pyciemss.interfaces import (
 from pyciemss.PetriNetODE.base import get_name
 from pyciemss.PetriNetODE.interfaces import load_petri_model
 
-from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem
+from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem, ScaledNormalNoiseEnsembleSystem
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 
 from typing import Iterable, Optional, Tuple, Callable, Union
@@ -48,10 +48,10 @@ def load_and_sample_petri_ensemble(
     *,
     start_states: Optional[Iterable[dict[str, float]]] = None,
     total_population: float = 1.0,
-    pseudocount: float = 1.0,
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     method="dopri5",
+    compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
@@ -117,10 +117,10 @@ def load_and_sample_petri_ensemble(
     """
     models = [
         load_petri_model(
-            petri_model_or_path=pmop,
-            add_uncertainty=True,
-            pseudocount=pseudocount,
-        )
+        petri_model_or_path=pmop,
+        add_uncertainty=True,
+        compile_rate_law_p=compile_rate_law_p,
+    )
         for pmop in petri_model_or_paths
     ]
 
@@ -137,9 +137,8 @@ def load_and_sample_petri_ensemble(
         solution_mappings,
         start_time,
         start_states,
-        total_population,
-        pseudocount,
-        dirichlet_concentration,
+        total_population=total_population,
+        dirichlet_concentration=dirichlet_concentration,
     )
 
     samples = sample(
@@ -173,7 +172,8 @@ def load_and_calibrate_and_sample_ensemble_model(
     *,
     start_states: Optional[Iterable[dict[str, float]]] = None,
     total_population: float = 1.0,
-    pseudocount: float = 1.0,
+    noise_model: str = "scaled_normal",
+    noise_scale: float = 0.1,
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
     num_iterations: int = 1000,
@@ -182,6 +182,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     verbose_every: int = 25,
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    compile_rate_law_p: bool = True,
     method="dopri5",
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
@@ -274,7 +275,7 @@ def load_and_calibrate_and_sample_ensemble_model(
         load_petri_model(
             petri_model_or_path=pmop,
             add_uncertainty=True,
-            pseudocount=pseudocount,
+            compile_rate_law_p=compile_rate_law_p,
         )
         for pmop in petri_model_or_paths
     ]
@@ -292,9 +293,10 @@ def load_and_calibrate_and_sample_ensemble_model(
         solution_mappings,
         start_time,
         start_states,
-        total_population,
-        pseudocount,
-        dirichlet_concentration,
+        total_population=total_population,
+        noise_model=noise_model,
+        noise_scale=noise_scale,
+        dirichlet_concentration=dirichlet_concentration,
     )
 
     inferred_parameters = calibrate(
@@ -342,22 +344,41 @@ def setup_ensemble_model(
     solution_mappings: Iterable[Callable],
     start_time: float,
     start_states: Iterable[dict[str, float]],
+    *,
     total_population: float = 1.0,
-    noise_pseudocount: float = 1.0,
+    noise_model: str = "scaled_normal",
+    noise_scale: float = 0.1,
     dirichlet_concentration: float = 1.0,
 ) -> EnsembleSystem:
     """
     Instatiate a model for a particular configuration of initial conditions
     """
-    ensemble_model = copy.deepcopy(
-        ScaledBetaNoiseEnsembleSystem(
-            models,
-            torch.as_tensor(weights) * dirichlet_concentration,
-            solution_mappings,
-            total_population,
-            noise_pseudocount,
+    if noise_model == "scaled_beta":
+        # TODO
+        noise_pseudocount = torch.as_tensor(1/noise_scale)
+        ensemble_model = copy.deepcopy(
+            ScaledBetaNoiseEnsembleSystem(
+                models,
+                torch.as_tensor(weights) * dirichlet_concentration,
+                solution_mappings,
+                total_population,
+                noise_pseudocount,
+            )
         )
-    )
+    elif noise_model == "scaled_normal":
+        ensemble_model = copy.deepcopy(
+            ScaledNormalNoiseEnsembleSystem(
+                models,
+                torch.as_tensor(weights) * dirichlet_concentration,
+                solution_mappings,
+                total_population,
+                noise_scale,
+            )
+        )
+    else:
+        raise ValueError(f"noise_model {noise_model} not recognized")
+
+
     for i, m in enumerate(ensemble_model.models):
         start_event = StartEvent(start_time, start_states[i])
         m.load_event(start_event)
