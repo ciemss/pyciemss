@@ -555,6 +555,5 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     @pyro.nn.pyro_method
     def observation_model(self, solution: Solution, var_name: str) -> None:
         mean = torch.maximum(solution[var_name], torch.tensor(1e-9))
-        print(f"{var_name}, {mean.shape}")
         pseudocount = self.pseudocount
         pyro.sample(var_name, ScaledBeta(mean, self.total_population, pseudocount).to_event(1))
