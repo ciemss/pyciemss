@@ -113,7 +113,7 @@ def load_and_sample_petri_model(
     # Load the model
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
     )
 
@@ -227,7 +227,7 @@ def load_and_calibrate_and_sample_petri_model(
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
@@ -353,7 +353,7 @@ def load_and_optimize_and_sample_petri_model(
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
     )
 
@@ -522,7 +522,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
