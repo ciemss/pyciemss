@@ -335,8 +335,12 @@ class MiraPetriNetODESystem(PetriNetODESystem):
                 elif param_value <= 0:
                     warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0. This is likely to be an error."
                     warnings.warn(warnings_string)
-                elif isinstance(param_value, (int, float)) and self.add_uncertainty:
-                    param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                elif isinstance(param_value, (int, float)):
+                    if self.add_uncertainty:
+                        param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                else:
+                    raise ValueError(f"Parameter {get_name(param_info)} has value {param_value} of type {type(param_value)} which is not supported.")
+
     def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
 
@@ -509,7 +513,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
+                self.register_buffer(param_name, pyro.deterministic(param_name, torch.as_tensor(param_value)))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
