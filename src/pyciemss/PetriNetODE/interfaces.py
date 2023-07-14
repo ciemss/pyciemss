@@ -169,7 +169,7 @@ def load_and_calibrate_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id=None
+    job_id: Optional[str] = None
 ) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -218,11 +218,13 @@ def load_and_calibrate_and_sample_petri_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        job_id: Optional[str]
+            - Used to display progress of current job
 
     Returns:
         result: dict
             - Dictionary of outputs with following attribute:
-                * data: PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+                * data: PetriSolution: The samples from the calibrated model as a pandas DataFrame. (If visual_options is falsy)
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
