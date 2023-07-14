@@ -72,7 +72,7 @@ class TestSamplesFormat(unittest.TestCase):
         INTERVENTION = [(0.1, "beta")]
         QOI = ("scenario2dec_nday_average", "I_sol", 2)
 
-        cls.ouu_samples, _ = load_and_optimize_and_sample_petri_model(
+        cls.ouu_samples = load_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
             timepoints=timepoints,
@@ -89,10 +89,7 @@ class TestSamplesFormat(unittest.TestCase):
             method="euler",
         )
 
-        (
-            cls.ouu_cal_samples,
-            _,
-        ) = load_and_calibrate_and_optimize_and_sample_petri_model(
+        cls.ouu_cal_samples = load_and_calibrate_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
             data_path,
             cls.num_samples,
