@@ -101,6 +101,7 @@ class TestSamplesFormat(unittest.TestCase):
             initial_guess=0.02,
             bounds=[[0.0], [3.0]],
             verbose=True,
+            num_iterations=2,
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
