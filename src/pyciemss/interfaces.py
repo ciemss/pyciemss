@@ -3,6 +3,9 @@ import pyro
 from typing import TypeVar, Optional
 import functools
 
+# Prevent global parameter store state collison across PyroModules
+pyro.settings.set(module_local_params=True)
+
 # Declare types
 # Note: this doesn't really do anything. More of a placeholder for how derived classes should be declared.
 Data = TypeVar("Data")
