@@ -172,7 +172,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     *,
     start_states: Optional[Iterable[dict[str, float]]] = None,
     total_population: float = 1.0,
-    noise_model: str = "scaled_beta",
+    noise_model: str = "scaled_normal",
     noise_scale: float = 1.0,
     dirichlet_concentration: float = 1.0,
     start_time: float = -1e-10,
@@ -346,7 +346,7 @@ def setup_ensemble_model(
     start_states: Iterable[dict[str, float]],
     *,
     total_population: float = 1.0,
-    noise_model: str = "scaled_beta",
+    noise_model: str = "scaled_normal",
     noise_scale: float = 1.0,
     dirichlet_concentration: float = 1.0,
 ) -> EnsembleSystem:
