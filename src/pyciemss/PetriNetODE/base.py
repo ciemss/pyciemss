@@ -246,8 +246,9 @@ class PetriNetODESystem(DynamicalSystem):
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
-            for observable in self.compiled_observables:
-                filtered_solution[observable] = torch.squeeze(self.compiled_observables[observable](**filtered_solution), dim=-1)
+            if hasattr(self, 'compile_observables_p') and self.compile_observables_p:
+                for observable in self.compiled_observables:
+                    filtered_solution[observable] = torch.squeeze(self.compiled_observables[observable](**filtered_solution), dim=-1)
             with pyro.condition(data={var_name: observation_values}):
                 observation_model(filtered_solution, var_name)
 
@@ -546,8 +547,8 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, compile_observables_p: bool = False):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p)
         self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
         assert self.noise_scale > 0, "Noise scale must be positive"
         assert self.noise_scale <= 1, "Noise scale must be less than 1"
@@ -564,23 +565,18 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
         scale = self.noise_scale * torch.maximum(mean, torch.as_tensor(0.005 * self.total_population))
         pyro.sample(var_name, Normal(mean, scale).to_event(1))
 
+        
 class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     '''
-<<<<<<< HEAD
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, compile_rate_law_p: bool = False, compile_observables_p: bool = False):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1, *, noise_scale=None, compile_rate_law_p: bool = False, compile_observables_p: bool = False):        
         super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p)
-        self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
-=======
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
         self.parameterized_by_pseudocount = noise_scale is None
         if self.parameterized_by_pseudocount:
             self.register_buffer("pseudocount", torch.as_tensor(pseudocount))
         else:
             self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
->>>>>>> main
 
     def __repr__(self):
         par_string = ",\n\t".join([f"{get_name(p)} = {p.value}" for p in self.G.parameters.values()])
