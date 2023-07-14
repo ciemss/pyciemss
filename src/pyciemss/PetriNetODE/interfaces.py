@@ -74,7 +74,7 @@ def load_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
@@ -105,9 +105,10 @@ def load_and_sample_petri_model(
             - dict output a visual with the dictionary passed to the visualization as kwargs
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
-            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+                * visual: Visualization. (If visual_options is truthy)
     """
 
     # Load the model
@@ -144,7 +145,7 @@ def load_and_sample_petri_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples}
 
 
 @pyciemss_logging_wrappper
@@ -168,8 +169,8 @@ def load_and_calibrate_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id=None
-) -> pd.DataFrame:
+    job_id: Optional[str] = None
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
     and sample from the calibrated model.
@@ -217,11 +218,14 @@ def load_and_calibrate_and_sample_petri_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        job_id: Optional[str]
+            - Used to display progress of current job
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
-            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: PetriSolution: The samples from the calibrated model as a pandas DataFrame. (If visual_options is falsy)
+                * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
@@ -272,7 +276,7 @@ def load_and_calibrate_and_sample_petri_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples}
 
 @pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
@@ -294,7 +298,7 @@ def load_and_optimize_and_sample_petri_model(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25,
-) -> Tuple[pd.DataFrame, dict]:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty,
     sample for the optimal intervention, and estinate risk.
@@ -341,15 +345,17 @@ def load_and_optimize_and_sample_petri_model(
             - The maximum number of function evaluations for each start of the local optimizer.
 
     Returns:
-        samples: pd.DataFrame
-            - The samples from the model using the optimal policy under uncertainty returned as a pandas DataFrame.
-        optimal_policy: dict
-            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
-                * policy: Optimal intervention
-                * OptResults: Optimization results as scipy optimization object
-                * risk: Estimated alpha-superquantile risk with alpha=0.95
-                * samples: Samples from the model at the optimal intervention
-                * qoi: Samples of quantity of interest
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: pd.DataFrame
+                    - The samples from the model using the optimal policy under uncertainty returned as a pandas DataFrame.
+                * policy: dict
+                    - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                        * policy: Optimal intervention
+                        * OptResults: Optimization results as scipy optimization object
+                        * risk: Estimated alpha-superquantile risk with alpha=0.95
+                        * samples: Samples from the model at the optimal intervention
+                        * qoi: Samples of quantity of interest
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
@@ -418,7 +424,7 @@ def load_and_optimize_and_sample_petri_model(
         samples, timepoints, interventions=interventions_opt
     )
 
-    return processed_samples, ouu_policy
+    return {"data": processed_samples, "policy": ouu_policy}
 
 @pyciemss_logging_wrappper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
@@ -447,7 +453,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     compile_rate_law_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
-) -> Tuple[pd.DataFrame, dict]:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty,
     sample for the optimal policy, and estinate risk for the optimal policy.
@@ -508,15 +514,17 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
 
     Returns:
-        samples: pd.DataFrame
-            - The samples from the model using the optimal policy under uncertainty after calibrating on given data returned as a pandas DataFrame.
-        optimal_policy: dict
-            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
-                * policy: Optimal intervention
-                * OptResults: Optimization results as scipy optimization object
-                * risk: Estimated alpha-superquantile risk with alpha=0.95
-                * samples: Samples from the model at the optimal intervention
-                * qoi: Samples of quantity of interest
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: pd.DataFrame
+                    - The samples from the model using the optimal policy under uncertainty after calibrating on given data returned as a pandas DataFrame.
+                * policy: dict
+                    - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                        * policy: Optimal intervention
+                        * OptResults: Optimization results as scipy optimization object
+                        * risk: Estimated alpha-superquantile risk with alpha=0.95
+                        * samples: Samples from the model at the optimal intervention
+                        * qoi: Samples of quantity of interest
     """
     data = csv_to_list(data_path)
 
@@ -602,7 +610,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         samples, timepoints, interventions=interventions_opt
     )
 
-    return processed_samples, ouu_policy
+    return {"data": processed_samples, "policy": ouu_policy}
 
 
 ##############################################################################

@@ -59,13 +59,13 @@ class Test_Samples_Format(unittest.TestCase):
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
 
-        self.samples, self.q_ensemble = load_and_sample_petri_ensemble(
+        result_ensemble = load_and_sample_petri_ensemble(
             ASKENET_PATHS, weights, solution_mappings, self.num_samples, timepoints
         )
 
         data_path = os.path.join(DEMO_PATH, "data.csv")
 
-        self.calibrated_samples, self.calibrated_q_ensemble = load_and_calibrate_and_sample_ensemble_model(
+        result_cal_ensemble = load_and_calibrate_and_sample_ensemble_model(
             ASKENET_PATHS,
             data_path,
             weights,
@@ -75,6 +75,10 @@ class Test_Samples_Format(unittest.TestCase):
             total_population=1000,
             num_iterations=5,
         )
+        self.samples = result_ensemble["data"]
+        self.q_ensemble = result_ensemble["quantiles"] 
+        self.calibrated_samples = result_cal_ensemble["data"] 
+        self.calibrated_q_ensemble = result_cal_ensemble["quantiles"]
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
