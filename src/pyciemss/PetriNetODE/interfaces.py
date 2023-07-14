@@ -273,7 +273,7 @@ def load_and_calibrate_and_sample_petri_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples}
 
 @pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
