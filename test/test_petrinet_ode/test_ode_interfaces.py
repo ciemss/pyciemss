@@ -60,7 +60,7 @@ class TestSamplesFormat(unittest.TestCase):
             num_iterations=2,
             method="euler",
         )
-        cls.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         cls.intervened_samples = load_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
@@ -204,7 +204,7 @@ class TestODEInterfaces(unittest.TestCase):
             "infected_population": 0.01,
             "immune_population": 0.0,
         }
-        self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        self.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         self.num_samples = 2
         self.timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
 
@@ -275,7 +275,7 @@ class TestODEInterfaces(unittest.TestCase):
         data = [
             (0.2, {"infected_population": 0.1}),
             (0.4, {"infected_population": 0.2}),
-            (0.6, {"infected_population": 0.3}),
+            (1., {"infected_population": 0.3}),
         ]
         parameters = calibrate(model, data, num_iterations=2)
 
