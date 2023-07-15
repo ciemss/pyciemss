@@ -14,7 +14,7 @@ from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
 import sympy
 from copy import deepcopy as _d
 from mira.metamodel import Observable, SympyExprStr
-
+from mira.sources.askenet import model_from_json_file
 from mira.examples.sir import sir_parameterized
 
 class TestObservables(unittest.TestCase):
@@ -59,8 +59,16 @@ class TestObservables(unittest.TestCase):
         with self.assertRaises(KeyError):
             inferred_parameters = calibrate(sir, unobserved_data, num_iterations=10)
 
+        
     def test_observables_actually_calibrate(self):
         """Test the observables of the MiraPetriNetODESystem class actually generate a posterior."""
-        sidarthe_amr = load_and_calibrate_and_sample_petri_model('test/models/AMR_examples/SIDAETHE.amr.json', 0.0, dict(S=1000.0, I=1.0, R=0.0), 2, 10)
+        sidarthe_data_path = 'test/test_mira/sidarthe_data.csv'
+        sidarthe_model_path = 'test/models/AMR_examples/SIDARTHE.amr.json'
+        sidarthe_mira = model_from_file(sidarthe_model_path)
+        sidarthe_samples = load_and_sample_petri_model(sidarthe_mira, sidarthe_data_path, num_samples=1, interventions=[(0.01, 'beta', sidarthe)
+        sidarthe_amr = load_and_calibrate_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json', sidarthe_data_path, num_samples=100
+                                                                 , timepoints=[0.1, 0.2, 0.3])
+        self.assertTrue(isinstance(sidarthe_amr, pd.DataFrame))
+        
     
         
