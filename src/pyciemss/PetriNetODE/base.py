@@ -531,7 +531,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, pyro.deterministic(param_name, torch.as_tensor(param_value)))
+                setattr(self, param_name, pyro.deterministic(param_name, torch.as_tensor(param_value)))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
