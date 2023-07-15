@@ -48,6 +48,8 @@ class EnsembleSystem(DynamicalSystem):
             observation_model = self.observation_model
 
         for var_name in self._observation_var_names[0]:
+            # As each constinutuent model is collecting its own collection of (identical) observation indices and values,
+            # we can simply extract the indices and values from the first one arbitrarily.
             observation_indices = self._observation_indices[0][var_name]
             observation_values = self._observation_values[0][var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
