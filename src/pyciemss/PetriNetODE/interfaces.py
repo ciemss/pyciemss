@@ -669,7 +669,7 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 @intervene.register
 @pyciemss_logging_wrappper
 def intervene_petri_model(
-    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-6
+    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-5
 ) -> PetriNetODESystem:
     """
     Intervene on a model.
@@ -695,7 +695,7 @@ def calibrate_petri(
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     job_id=None,
-    jostle_scale: float = 1e-6,
+    jostle_scale: float = 1e-5,
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
