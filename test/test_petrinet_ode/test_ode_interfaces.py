@@ -163,6 +163,26 @@ class TestSamplesFormat(unittest.TestCase):
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
+class TestAMRDistribution(unittest.TestCase):
+    """Tests for the distribution of the AMR model."""
+    def test_distribution(self):
+        filepath = "test/models/AMR_examples/scenario1_c_with_distributions.json"
+        samples = load_and_sample_petri_model(
+            filepath,
+            2,
+            timepoints=[1.],
+            method="euler",
+        )["data"]
+        self.assertIsNotNone(samples)
+        
+        k_2 = samples["k_2_param"].values
+        beta_nc = samples["beta_nc_param"].values
+        beta_s = samples["beta_s_param"].values
+
+        self.assertNotEqual(k_2[0], k_2[1], "k_2 is drawn from a distribution and should produce different samples")
+        self.assertNotEqual(beta_nc[0], beta_nc[1], "beta_nc is drawn from a distribution and should produce different samples")
+        self.assertEqual(beta_s[0], beta_s[1], "beta_s is not drawn from a distribution and should produce the same samples")
+
 class TestProblematicCalibration(unittest.TestCase):
     """Tests for the calibration of problematic models."""
     def test_normal_noise_fix(self):
@@ -447,3 +467,6 @@ class TestODEInterfaces(unittest.TestCase):
     #                     maxfeval=1)
 
     #     self.assertIsNotNone(ouu_policy)
+
+if __name__ == "__main__":
+    unittest.main()

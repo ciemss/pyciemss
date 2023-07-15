@@ -297,13 +297,14 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, add_uncertainty=True):
         self.G = G
+        self.compile_rate_law_p = compile_rate_law_p
+        self.add_uncertainty = add_uncertainty
         if compile_rate_law_p:
             self.G.parameters = {param: value for param, value in self.G.parameters.items()
             if value and value.placeholder == False}
         super().__init__()
-        self.compile_rate_law_p = compile_rate_law_p
         if self.compile_rate_law_p:
             self.compiled_rate_law = self.compile_rate_law()
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
@@ -323,22 +324,22 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
             param_distribution = param_info.distribution
 
-            # TODO: We still need to distinguish between fixed deterministic, trainable deterministic, and uncertain parameters.
-
             if param_distribution is not None:
                 param_info.value = mira_distribution_to_pyro(param_distribution)
             else:
                 param_value = param_info.value
                 if param_value is None:
-                    warnings_string = f"Parameter {get_name(param_info)} has value None and will be set to Uniform(0, 1)"
+                    warnings_string = f"Parameter {get_name(param_info)} has value None and will be set to Uniform(0, 1). This is likely to be an error."
                     warnings.warn(warnings_string)
                     param_info.value = pyro.distributions.Uniform(0.0, 1.0)
                 elif param_value <= 0:
-                    warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                    warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0. This is likely to be an error."
                     warnings.warn(warnings_string)
-                    param_info.value = pyro.distributions.Uniform(0.0, 0.1)
                 elif isinstance(param_value, (int, float)):
-                    param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                    if self.add_uncertainty:
+                        param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                else:
+                    raise ValueError(f"Parameter {get_name(param_info)} has value {param_value} of type {type(param_value)} which is not supported.")
 
     def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
@@ -512,7 +513,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
+                self.register_buffer(param_name, pyro.deterministic(param_name, torch.as_tensor(param_value)))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
@@ -532,8 +533,8 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, **kwargs):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, **kwargs)
         self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
         assert self.noise_scale > 0, "Noise scale must be positive"
         assert self.noise_scale <= 1, "Noise scale must be less than 1"
@@ -554,8 +555,8 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False, **kwargs):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, **kwargs)
         self.parameterized_by_pseudocount = noise_scale is None
         if self.parameterized_by_pseudocount:
             self.register_buffer("pseudocount", torch.as_tensor(pseudocount))

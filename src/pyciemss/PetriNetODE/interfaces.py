@@ -114,7 +114,7 @@ def load_and_sample_petri_model(
     # Load the model
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
     )
 
@@ -231,7 +231,7 @@ def load_and_calibrate_and_sample_petri_model(
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
@@ -359,7 +359,7 @@ def load_and_optimize_and_sample_petri_model(
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
     )
 
@@ -530,7 +530,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
@@ -625,21 +625,16 @@ def load_petri_model(
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
-    if add_uncertainty:
-        if noise_model == "scaled_beta":
-            return ScaledBetaNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        elif noise_model == "scaled_normal":
-            return ScaledNormalNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        else:
-            raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
-    else:
-        return MiraPetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+    if noise_model == "scaled_beta":
+        return ScaledBetaNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, add_uncertainty=add_uncertainty
         )
+    elif noise_model == "scaled_normal":
+        return ScaledNormalNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, add_uncertainty=add_uncertainty
+        )
+    else:
+        raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
 
 
 @setup_model.register
@@ -674,7 +669,7 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 @intervene.register
 @pyciemss_logging_wrappper
 def intervene_petri_model(
-    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-6
+    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-5
 ) -> PetriNetODESystem:
     """
     Intervene on a model.
@@ -700,7 +695,7 @@ def calibrate_petri(
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     job_id=None,
-    jostle_scale: float = 1e-6,
+    jostle_scale: float = 1e-5,
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
