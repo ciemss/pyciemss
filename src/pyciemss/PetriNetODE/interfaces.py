@@ -170,7 +170,7 @@ def load_and_calibrate_and_sample_petri_model(
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
-    inference_type: str = "probabilistic",
+    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     compile_rate_law_p: bool = True,
     compile_observables_p = True,
@@ -238,15 +238,6 @@ def load_and_calibrate_and_sample_petri_model(
                 * data: PetriSolution: The samples from the calibrated model as a pandas DataFrame. (If visual_options is falsy)
                 * visual: Visualization. (If visual_options is truthy)
     """
-    if inference_type == "probabilistic":
-        autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal
-    elif inference_type == "deterministic":
-        autoguide = pyro.infer.autoguide.AutoDelta
-    else:
-        raise ValueError(
-            f"Invalid inference_type {inference_type}. Must be one of 'probabilistic' or 'deterministic'."
-        )
-
     data = csv_to_list(data_path)
 
     model = load_petri_model(
@@ -473,7 +464,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_iterations: int = 1000,
     lr: float = 0.03,
     num_particles: int = 1,
-    inference_type: str = "probabilistic",
+    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
@@ -558,15 +549,6 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
                         * samples: Samples from the model at the optimal intervention
                         * qoi: Samples of quantity of interest
     """
-    if inference_type == "probabilistic":
-        autoguide = pyro.infer.autoguide.AutoLowRankMultivariateNormal
-    elif inference_type == "deterministic":
-        autoguide = pyro.infer.autoguide.AutoDelta
-    else:
-        raise ValueError(
-            f"Invalid inference_type {inference_type}. Must be one of 'probabilistic' or 'deterministic'."
-        )
-
     data = csv_to_list(data_path)
 
     model = load_petri_model(
