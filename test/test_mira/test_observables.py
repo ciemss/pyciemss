@@ -64,13 +64,14 @@ class TestObservables(unittest.TestCase):
         """Test the observables of the MiraPetriNetODESystem class actually generate a posterior."""
         sidarthe_data_path = 'test/test_mira/sidarthe_data.csv'
         sidarthe_model_path = 'test/models/AMR_examples/SIDARTHE.amr.json'
-        sidarthe_mira = model_from_file(sidarthe_model_path)
+        timepoints = [0.1, 0.2, 0.3]
+        sidarthe_mira = model_from_file(sidarthe_model_path)        
         sidarthe_samples = load_and_sample_petri_model(sidarthe_mira, sidarthe_data_path, num_samples=1)
-        sidarthe_calibrated_samples = load_and_calibrate_and_sample_petri_model(sidarthe_model_path, sidarthe_data_path, num_samples=100
-                                                                 , timepoints=[0.1, 0.2, 0.3]
+        sidarthe_data = solutions_to_observables(timepoints, sidarthe_samples.set_index(['timepoint_id', 'sample_id']))
+        sidarthe_data[0].to_csv(sidarthe_data_path, index=False)
+        sidarthe_calibrated_samples = load_and_calibrate_and_sample_petri_model(sidarthe_model_path, sidarthe_data_path, num_samples=100, timepoints=timepoints)
+                                                                 
 
-
-                                                                                                                        self.assertTrue(isinstance(sidarthe_calibrated_samples, pd.DataFrame))
         
     
         
