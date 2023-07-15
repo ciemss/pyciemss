@@ -2,9 +2,8 @@ import pandas as pd
 import numpy as np
 import bisect
 import torch
-
 import csv
-from typing import Dict, Optional, Iterable
+from typing import Dict, Optional, Iterable, Callable
 
 
 def convert_to_output_format(
@@ -17,6 +16,7 @@ def convert_to_output_format(
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     num_ensemble_quantiles: Optional[int] = 0,
     stacking_order: Optional[str] = "timepoints",
+    observables: Optional[Dict[str, Callable]] = None,
 ) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
@@ -78,6 +78,18 @@ def convert_to_output_format(
         },
     }
 
+    if observables is not None:
+        expression_vars = {
+            k.replace('_sol', ''): torch.squeeze( torch.tensor(d[k]), dim=-1)
+            for k in pyciemss_results["states"].keys()
+        }
+        d = {
+            **d,
+            **{
+                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars))
+                for observable_id, expression in observables.items()
+            },
+        }
     result = pd.DataFrame(d)
     if time_unit is not None:
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
@@ -197,3 +209,22 @@ def assign_interventions_to_timepoints(
                 i = bisect.bisect(intervals, (t,)) - 1
                 result[param].append(values[i])
     return result
+
+
+def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
+    """Convert pyciemss outputs to data observations."""
+    # Use groupby to create separate DataFrames
+    grouped = df.groupby(level=1)
+
+    # Create a dictionary of dataframes
+    outputs = {level: group for level, group in grouped}
+    observations = dict()
+    for idx, observation in outputs.items():
+        observation = observation.drop([k for k in observation.columns if '_sol' != k[-4:]],
+                                      axis=1)
+        observation = observation.rename(columns={k: k[:-4] for k in observation.columns})
+        observation['Timestep'] = timepoints
+
+        observations[idx] = observation[['Timestep'] + [c for c in observation.columns[:-1]]]
+    return observations
+      
