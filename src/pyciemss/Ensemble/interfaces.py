@@ -20,7 +20,7 @@ from pyciemss.PetriNetODE.base import get_name
 from pyciemss.PetriNetODE.interfaces import load_petri_model
 
 from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem, ScaledNormalNoiseEnsembleSystem
-from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
+from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list, create_mapping_function_from_observables
 
 from typing import Iterable, Optional, Tuple, Callable, Union
 import copy
@@ -120,11 +120,18 @@ def load_and_sample_petri_ensemble(
     models = [
         load_petri_model(
         petri_model_or_path=pmop,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=True,
     )
         for pmop in petri_model_or_paths
     ]
+
+    solution_mapping_fs = []
+
+    for i, model in enumerate(models):
+        solution_mapping_f = create_mapping_function_from_observables(model, solution_mappings[i])
+        solution_mapping_fs.append(solution_mapping_f)
 
     # If the user doesn't override the start state, use the initial values from the model.
     if start_states is None:
@@ -136,7 +143,7 @@ def load_and_sample_petri_ensemble(
     models = setup_model(
         models,
         weights,
-        solution_mappings,
+        solution_mapping_fs,
         start_time,
         start_states,
         total_population=total_population,
@@ -278,7 +285,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     models = [
         load_petri_model(
             petri_model_or_path=pmop,
-            add_uncertainty=True,
+            add_uncertainty=False,
             compile_rate_law_p=compile_rate_law_p,
             compile_observables_p=True,
         )
@@ -295,23 +302,13 @@ def load_and_calibrate_and_sample_ensemble_model(
     solution_mapping_fs = []
 
     for i, model in enumerate(models):
-        def solution_mapping_f(solution):
-            result_dict = {}
-            for observable in model.compiled_observables:
-                result_dict[observable] = torch.squeeze(model.compiled_observables[observable](**solution), dim=-1)
-            
-            mapped_result_dict = {}
-            for mapped_to_key, mapped_from_key in solution_mappings[i]:
-                mapped_result_dict[mapped_to_key] = result_dict[mapped_from_key]
-
-            return mapped_result_dict
-        
+        solution_mapping_f = create_mapping_function_from_observables(model, solution_mappings[i])
         solution_mapping_fs.append(solution_mapping_f)
 
     models = setup_model(
         models,
         weights,
-        solution_mappings,
+        solution_mapping_fs,
         start_time,
         start_states,
         total_population=total_population,
