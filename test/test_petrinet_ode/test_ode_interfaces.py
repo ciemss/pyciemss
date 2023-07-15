@@ -41,6 +41,7 @@ class TestSamplesFormat(unittest.TestCase):
         cls.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         cls.num_timepoints = len(timepoints)
+        data_path = os.path.join(DEMO_PATH, "data.csv")
 
         cls.samples = load_and_sample_petri_model(
             ASKENET_PATH,
@@ -48,8 +49,6 @@ class TestSamplesFormat(unittest.TestCase):
             timepoints=timepoints,
             method="euler",
         )["data"]
-
-        data_path = os.path.join(DEMO_PATH, "data.csv")
 
         cls.calibrated_samples = load_and_calibrate_and_sample_petri_model(
             ASKENET_PATH,
@@ -117,6 +116,13 @@ class TestSamplesFormat(unittest.TestCase):
 
         cls.all_samples = [cls.samples, cls.calibrated_samples, cls.calibrated_samples_deterministic, cls.intervened_samples, cls.ouu_samples, cls.ouu_cal_samples]
 
+    def test_deterministic_calibrated_samples(self):
+        # Add additional test that checks that the deterministic parameters are actually deterministic
+        beta = self.calibrated_samples_deterministic["beta_param"].values
+        gamma = self.calibrated_samples_deterministic["gamma_param"].values
+        self.assertEqual(beta[:self.num_timepoints].tolist(), beta[self.num_timepoints:].tolist(), "beta is deterministic during calibration")
+        self.assertNotEqual(gamma[:self.num_timepoints].tolist(), gamma[self.num_timepoints:].tolist(), "gamma is not deterministic during calibration")
+
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
         for s in self.all_samples:
@@ -145,6 +151,7 @@ class TestSamplesFormat(unittest.TestCase):
 
 class TestAMRDistribution(unittest.TestCase):
     """Tests for the distribution of the AMR model."""
+    
     def test_distribution(self):
         filepath = "test/models/AMR_examples/scenario1_c_with_distributions.json"
         samples = load_and_sample_petri_model(
