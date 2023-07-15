@@ -66,9 +66,8 @@ class TestSamplesFormat(unittest.TestCase):
             cls.num_samples,
             timepoints=timepoints,
             num_iterations=2,
-            inference_type="deterministic",
+            deterministic_parameters=["beta"],
         )["data"]
-
 
         cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         cls.intervened_samples = load_and_sample_petri_model(
