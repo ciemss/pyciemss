@@ -230,7 +230,7 @@ def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[st
       
 def create_mapping_function_from_observables(model, solution_mapping):
     def solution_mapping_f(solution):
-        result_dict = {}
+        result_dict = solution
         for observable in model.compiled_observables:
             result_dict[observable] = torch.squeeze(model.compiled_observables[observable](**solution), dim=-1)
         
