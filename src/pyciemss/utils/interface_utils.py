@@ -228,3 +228,25 @@ def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[st
         observations[idx] = observation[['Timestep'] + [c for c in observation.columns[:-1]]]
     return observations
       
+def create_mapping_function_from_observables(model, solution_mapping: dict[str, str]) -> Callable[[dict[str, torch.Tensor]], dict[str, torch.Tensor]]:
+    '''
+    Higher order function that takes as input a model and a dictionary of solution mappings and returns a 
+    function that maps a solution dictionary to a dictionary of ensemble outputs.
+
+    This implementation works by first applying the constinuent model observables to the solution dictionary
+    and then mapping the resulting dictionary to the desired output dictionary.
+
+    :param model: The model to use for the mapping
+    :param solution_mapping: A dictionary of solution mappings of the form {output_key: input_key}
+    '''
+    def solution_mapping_f(solution: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
+        result_dict = solution
+        for observable in model.compiled_observables:
+            result_dict[observable] = torch.squeeze(model.compiled_observables[observable](**solution), dim=-1)
+        
+        mapped_result_dict = {}
+        for mapped_to_key, mapped_from_key in solution_mapping.items():
+            mapped_result_dict[mapped_to_key] = result_dict[mapped_from_key]
+
+        return mapped_result_dict
+    return solution_mapping_f
