@@ -143,7 +143,7 @@ def load_and_sample_petri_model(
     )
 
     processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit
+        samples, timepoints, interventions=interventions, time_unit=time_unit, observables=model.compiled_observables
     )
 
     if visual_options:
@@ -280,7 +280,7 @@ def load_and_calibrate_and_sample_petri_model(
     )
 
     processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit
+        samples, timepoints, interventions=interventions, time_unit=time_unit, observables=model.compiled_observables
     )
 
     if visual_options:
@@ -439,7 +439,7 @@ def load_and_optimize_and_sample_petri_model(
     samples = ouu_policy["samples"]
 
     processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt
+        samples, timepoints, interventions=interventions_opt, observables=model.compiled_observables
     )
 
     return {"data": processed_samples, "policy": ouu_policy}
@@ -631,7 +631,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     samples = ouu_policy["samples"]
 
     processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt
+        samples, timepoints, interventions=interventions_opt, observables=model.compiled_observables
     )
 
     return {"data": processed_samples, "policy": ouu_policy}

@@ -300,23 +300,18 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-<<<<<<< HEAD
-    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, compile_observables_p=True):
-=======
-    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, add_uncertainty=True):
->>>>>>> main
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, compile_observables_p=True, add_uncertainty=True):
         self.G = G
         self.compile_rate_law_p = compile_rate_law_p
         self.add_uncertainty = add_uncertainty
         if compile_rate_law_p:
-            self.G.parameters = {param: value for param, value in self.G.parameters.items()
-            if value and value.placeholder == False}
+            self.G.parameters = {
+                param: value for param, value in self.G.parameters.items()
+                if value and value.placeholder == False
+            }
         super().__init__()
-<<<<<<< HEAD
         self.compile_rate_law_p = compile_rate_law_p
         self.compile_observables_p = compile_observables_p
-=======
->>>>>>> main
         if self.compile_rate_law_p:
             self.compiled_rate_law = self.compile_rate_law()
         if self.compile_observables_p:
@@ -556,13 +551,8 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
     '''
-<<<<<<< HEAD
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, compile_observables_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p)
-=======
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, **kwargs):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p, **kwargs)
->>>>>>> main
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, compile_observables_p: bool = False,  **kwargs):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, **kwargs)
         self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
         assert self.noise_scale > 0, "Noise scale must be positive"
         assert self.noise_scale <= 1, "Noise scale must be less than 1"
@@ -584,7 +574,7 @@ class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False, **kwargs):
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool=False, compile_observables_p: bool=False, **kwargs):
         super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, **kwargs)
         self.parameterized_by_pseudocount = noise_scale is None
         if self.parameterized_by_pseudocount:

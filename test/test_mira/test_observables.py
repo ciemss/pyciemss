@@ -5,6 +5,7 @@ from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
     setup_petri_model,
     sample_petri,
+    load_and_sample_petri_model,
     calibrate,
     load_and_calibrate_and_sample_petri_model,
     )
@@ -65,13 +66,16 @@ class TestObservables(unittest.TestCase):
         sidarthe_data_path = 'test/test_mira/sidarthe_data.csv'
         sidarthe_model_path = 'test/models/AMR_examples/SIDARTHE.amr.json'
         timepoints = [0.1, 0.2, 0.3]
-        sidarthe_mira = model_from_file(sidarthe_model_path)        
-        sidarthe_samples = load_and_sample_petri_model(sidarthe_mira, sidarthe_data_path, num_samples=1)
-        sidarthe_data = solutions_to_observables(timepoints, sidarthe_samples.set_index(['timepoint_id', 'sample_id']))
-        sidarthe_data[0].to_csv(sidarthe_data_path, index=False)
-        sidarthe_calibrated_samples = load_and_calibrate_and_sample_petri_model(sidarthe_model_path, sidarthe_data_path, num_samples=100, timepoints=timepoints)
-                                                                 
+        idx = ['timepoint_id', 'sample_id']
+        sidarthe_mira = model_from_json_file(sidarthe_model_path)
+        sidarthe_samples = load_and_sample_petri_model(sidarthe_mira, 1, timepoints)['data'].set_index(idx)
+        sidarthe_data = solutions_to_observations(timepoints, sidarthe_samples)
+   
 
+        sidarthe_data[0].to_csv(sidarthe_data_path, index=False)
+        sidarthe_calibrated_samples = load_and_calibrate_and_sample_petri_model(sidarthe_model_path, sidarthe_data_path, num_samples=10, timepoints=timepoints, num_iterations=10)['data'].set_index(idx).groupby(level='timepoint_id').mean()
+        self.assertTrue(isinstance(sidarthe_calibrated_samples, pd.DataFrame))
+        
         
     
         
