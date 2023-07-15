@@ -56,7 +56,7 @@ def load_and_sample_petri_ensemble(
     visual_options: Union[None, bool, dict[str, any]] = None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
@@ -111,9 +111,11 @@ def load_and_sample_petri_ensemble(
             - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution, quantiles: The samples from the model and quantiles for ensemble score as a pandas DataFrames. (for falsy visual_options)
-            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     models = [
         load_petri_model(
@@ -157,7 +159,7 @@ def load_and_sample_petri_ensemble(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples, q_ensemble
+        return {"data": processed_samples, "quantiles": q_ensemble}
 
 
 def load_and_calibrate_and_sample_ensemble_model(
@@ -188,7 +190,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     visual_options: Union[None, bool, dict[str, any]] = None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a collection petri net from a file, compile them into an ensemble probabilistic program, calibrate it on data,
     and sample from the calibrated model.
@@ -264,9 +266,11 @@ def load_and_calibrate_and_sample_ensemble_model(
             - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
-            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the calibrated model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
 
     data = csv_to_list(data_path)
@@ -329,7 +333,7 @@ def load_and_calibrate_and_sample_ensemble_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples, q_ensemble
+        return {"data": processed_samples, "quantiles": q_ensemble}
 
 
 ##############################################################################

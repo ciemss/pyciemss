@@ -60,7 +60,7 @@ class TestSamplesFormat(unittest.TestCase):
             num_iterations=2,
             method="euler",
         )
-        cls.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         cls.intervened_samples = load_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
@@ -72,7 +72,7 @@ class TestSamplesFormat(unittest.TestCase):
         INTERVENTION = [(0.1, "beta")]
         QOI = ("scenario2dec_nday_average", "I_sol", 2)
 
-        cls.ouu_samples, _ = load_and_optimize_and_sample_petri_model(
+        cls.ouu_samples = load_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
             timepoints=timepoints,
@@ -89,10 +89,7 @@ class TestSamplesFormat(unittest.TestCase):
             method="euler",
         )
 
-        (
-            cls.ouu_cal_samples,
-            _,
-        ) = load_and_calibrate_and_optimize_and_sample_petri_model(
+        cls.ouu_cal_samples = load_and_calibrate_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
             data_path,
             cls.num_samples,
@@ -104,11 +101,17 @@ class TestSamplesFormat(unittest.TestCase):
             initial_guess=0.02,
             bounds=[[0.0], [3.0]],
             verbose=True,
+            num_iterations=2,
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
             method="euler",
         )
+        cls.samples = cls.samples["data"]
+        cls.calibrated_samples = cls.calibrated_samples["data"]
+        cls.intervened_samples = cls.intervened_samples["data"]
+        cls.ouu_samples = cls.ouu_samples["data"]
+        cls.ouu_cal_samples = cls.ouu_cal_samples["data"]
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
@@ -160,6 +163,26 @@ class TestSamplesFormat(unittest.TestCase):
             for col_name in s.columns[2:]:
                 self.assertEqual(s[col_name].dtype, np.float64)
 
+class TestAMRDistribution(unittest.TestCase):
+    """Tests for the distribution of the AMR model."""
+    def test_distribution(self):
+        filepath = "test/models/AMR_examples/scenario1_c_with_distributions.json"
+        samples = load_and_sample_petri_model(
+            filepath,
+            2,
+            timepoints=[1.],
+            method="euler",
+        )["data"]
+        self.assertIsNotNone(samples)
+        
+        k_2 = samples["k_2_param"].values
+        beta_nc = samples["beta_nc_param"].values
+        beta_s = samples["beta_s_param"].values
+
+        self.assertNotEqual(k_2[0], k_2[1], "k_2 is drawn from a distribution and should produce different samples")
+        self.assertNotEqual(beta_nc[0], beta_nc[1], "beta_nc is drawn from a distribution and should produce different samples")
+        self.assertEqual(beta_s[0], beta_s[1], "beta_s is not drawn from a distribution and should produce the same samples")
+
 class TestProblematicCalibration(unittest.TestCase):
     """Tests for the calibration of problematic models."""
     def test_normal_noise_fix(self):
@@ -173,7 +196,7 @@ class TestProblematicCalibration(unittest.TestCase):
                 num_iterations=10,
                 noise_model="scaled_normal",
             )
-        self.assertIsNotNone(calibrated_samples) 
+        self.assertIsNotNone(calibrated_samples["data"]) 
 
         try:
             load_and_calibrate_and_sample_petri_model(
@@ -204,7 +227,7 @@ class TestODEInterfaces(unittest.TestCase):
             "infected_population": 0.01,
             "immune_population": 0.0,
         }
-        self.interventions = [(1.1, "beta", 1.0), (2.1, "gamma", 0.1)]
+        self.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         self.num_samples = 2
         self.timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
 
@@ -275,7 +298,7 @@ class TestODEInterfaces(unittest.TestCase):
         data = [
             (0.2, {"infected_population": 0.1}),
             (0.4, {"infected_population": 0.2}),
-            (0.6, {"infected_population": 0.3}),
+            (1., {"infected_population": 0.3}),
         ]
         parameters = calibrate(model, data, num_iterations=2)
 
@@ -379,13 +402,13 @@ class TestODEInterfaces(unittest.TestCase):
         )
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples,
+            actual_intervened_samples["data"],
             check_exact=False,
             atol=1e-5,
         )
 
     def test_load_and_calibrate_and_sample_petri_model(self):
-        """Test the load_and_sample_petri_model function with and without interventions."""
+        """Test the load_and_calibrate_and_sample_petri_model function with and without interventions."""
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
         interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
@@ -410,7 +433,7 @@ class TestODEInterfaces(unittest.TestCase):
         )
         assert_frame_equal(
             expected_intervened_samples,
-            actual_intervened_samples,
+            actual_intervened_samples["data"],
             check_exact=False,
             atol=1e-5,
         )
@@ -419,11 +442,11 @@ class TestODEInterfaces(unittest.TestCase):
         scenario1a_output = load_and_sample_petri_model(
             SCENARIO_1a_H2, num_samples, timepoints
         )
-        self.assertIsInstance(scenario1a_output, pd.DataFrame, "Dataframe not returned")
+        self.assertIsInstance(scenario1a_output["data"], pd.DataFrame, "Dataframe not returned")
 
         SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
-        self.assertIsInstance(sidarthe_output, pd.DataFrame, "Dataframe not returned")
+        self.assertIsInstance(sidarthe_output["data"], pd.DataFrame, "Dataframe not returned")
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''
@@ -444,3 +467,6 @@ class TestODEInterfaces(unittest.TestCase):
     #                     maxfeval=1)
 
     #     self.assertIsNotNone(ouu_policy)
+
+if __name__ == "__main__":
+    unittest.main()
