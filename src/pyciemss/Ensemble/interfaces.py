@@ -42,7 +42,7 @@ def load_and_sample_petri_ensemble(
         Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
     ],
     weights: Iterable[float],
-    solution_mappings: Iterable[Callable],
+    solution_mappings: Iterable[dict[str, str]],
     num_samples: int,
     timepoints: Iterable[float],
     *,
