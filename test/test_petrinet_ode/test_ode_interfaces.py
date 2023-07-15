@@ -41,32 +41,40 @@ class TestSamplesFormat(unittest.TestCase):
         cls.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         cls.num_timepoints = len(timepoints)
+        data_path = os.path.join(DEMO_PATH, "data.csv")
 
         cls.samples = load_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
             timepoints=timepoints,
             method="euler",
-        )
-
-        data_path = os.path.join(DEMO_PATH, "data.csv")
+        )["data"]
 
         cls.calibrated_samples = load_and_calibrate_and_sample_petri_model(
             ASKENET_PATH,
             data_path,
             cls.num_samples,
             timepoints=timepoints,
-            verbose=True,
             num_iterations=2,
             method="euler",
-        )
+        )["data"]
+
+        cls.calibrated_samples_deterministic = load_and_calibrate_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            cls.num_samples,
+            timepoints=timepoints,
+            num_iterations=2,
+            deterministic_learnable_parameters=["beta"],
+        )["data"]
+
         cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
         cls.intervened_samples = load_and_sample_petri_model(
             ASKENET_PATH,
             cls.num_samples,
             timepoints=timepoints,
             interventions=cls.interventions,
-        )
+        )["data"]
 
         OBJFUN = lambda x: np.abs(x)
         INTERVENTION = [(0.1, "beta")]
@@ -82,12 +90,11 @@ class TestSamplesFormat(unittest.TestCase):
             objfun=OBJFUN,
             initial_guess=0.02,
             bounds=[[0.0], [3.0]],
-            verbose=True,
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
             method="euler",
-        )
+        )["data"]
 
         cls.ouu_cal_samples = load_and_calibrate_and_optimize_and_sample_petri_model(
             ASKENET_PATH,
@@ -100,64 +107,43 @@ class TestSamplesFormat(unittest.TestCase):
             objfun=OBJFUN,
             initial_guess=0.02,
             bounds=[[0.0], [3.0]],
-            verbose=True,
             num_iterations=2,
             n_samples_ouu=int(1),
             maxiter=0,
             maxfeval=2,
             method="euler",
-        )
-        cls.samples = cls.samples["data"]
-        cls.calibrated_samples = cls.calibrated_samples["data"]
-        cls.intervened_samples = cls.intervened_samples["data"]
-        cls.ouu_samples = cls.ouu_samples["data"]
-        cls.ouu_cal_samples = cls.ouu_cal_samples["data"]
+        )["data"]
+
+        cls.all_samples = [cls.samples, cls.calibrated_samples, cls.calibrated_samples_deterministic, cls.intervened_samples, cls.ouu_samples, cls.ouu_cal_samples]
+
+    def test_deterministic_calibrated_samples(self):
+        # Add additional test that checks that the deterministic parameters are actually deterministic
+        beta = self.calibrated_samples_deterministic["beta_param"].values
+        gamma = self.calibrated_samples_deterministic["gamma_param"].values
+        self.assertEqual(beta[:self.num_timepoints].tolist(), beta[self.num_timepoints:].tolist(), "beta is deterministic during calibration")
+        self.assertNotEqual(gamma[:self.num_timepoints].tolist(), gamma[self.num_timepoints:].tolist(), "gamma is not deterministic during calibration")
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        for s in [
-            self.samples,
-            self.calibrated_samples,
-            self.intervened_samples,
-            self.ouu_samples,
-            self.ouu_cal_samples,
-        ]:
+        for s in self.all_samples:
             self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
         """Test that `samples` has the correct number of rows and columns"""
-        for s in [
-            self.samples,
-            self.calibrated_samples,
-            self.intervened_samples,
-            self.ouu_samples,
-            self.ouu_cal_samples,
-        ]:
+        for s in self.all_samples:
             self.assertEqual(s.shape[0], self.num_timepoints * self.num_samples)
             self.assertGreaterEqual(s.shape[1], 2)
 
     def test_samples_column_names(self):
         """Test that `samples` has required column names"""
-        for s in [
-            self.samples,
-            self.calibrated_samples,
-            self.intervened_samples,
-            self.ouu_samples,
-            self.ouu_cal_samples,
-        ]:
+        for s in self.all_samples:
             self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
             for col_name in s.columns[2:]:
                 self.assertIn(col_name.split("_")[-1], ("param", "sol", "(unknown)"))
 
     def test_samples_dtype(self):
         """Test that `samples` has the required data types"""
-        for s in [
-            self.samples,
-            self.calibrated_samples,
-            self.intervened_samples,
-            self.ouu_samples,
-            self.ouu_cal_samples,
-        ]:
+        for s in self.all_samples:
             self.assertEqual(s["timepoint_id"].dtype, np.int64)
             self.assertEqual(s["sample_id"].dtype, np.int64)
             for col_name in s.columns[2:]:
@@ -165,6 +151,7 @@ class TestSamplesFormat(unittest.TestCase):
 
 class TestAMRDistribution(unittest.TestCase):
     """Tests for the distribution of the AMR model."""
+    
     def test_distribution(self):
         filepath = "test/models/AMR_examples/scenario1_c_with_distributions.json"
         samples = load_and_sample_petri_model(

@@ -14,6 +14,7 @@ import copy
 import random as rand
 
 from pyro.infer import Predictive
+from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
 from pyciemss.PetriNetODE.base import (
     PetriNetODESystem,
@@ -170,7 +171,7 @@ def load_and_calibrate_and_sample_petri_model(
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
-    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     compile_rate_law_p: bool = True,
     compile_observables_p = True,
@@ -259,6 +260,12 @@ def load_and_calibrate_and_sample_petri_model(
 
     if interventions is not None:
         model = intervene(model, interventions)
+
+    def autoguide(model):
+        guide = AutoGuideList(model)
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
+        return guide
 
     inferred_parameters = calibrate(
         model,
@@ -464,7 +471,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_iterations: int = 1000,
     lr: float = 0.03,
     num_particles: int = 1,
-    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
@@ -567,6 +574,12 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         }
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
+
+    def autoguide(model):
+        guide = AutoGuideList(model)
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
+        return guide
 
     inferred_parameters = calibrate(
         model,
