@@ -168,7 +168,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     ],
     data_path: str,
     weights: Iterable[float],
-    solution_mappings: Iterable[Callable],
+    solution_mappings: Iterable[dict[str, str]],
     num_samples: int,
     timepoints: Iterable[float],
     *,
@@ -280,6 +280,7 @@ def load_and_calibrate_and_sample_ensemble_model(
             petri_model_or_path=pmop,
             add_uncertainty=True,
             compile_rate_law_p=compile_rate_law_p,
+            compile_observables_p=True,
         )
         for pmop in petri_model_or_paths
     ]
@@ -290,6 +291,22 @@ def load_and_calibrate_and_sample_ensemble_model(
             {get_name(v): v.data["initial_value"] for v in model.G.variables.values()}
             for model in models
         ]
+
+    solution_mapping_fs = []
+
+    for i, model in enumerate(models):
+        def solution_mapping_f(solution):
+            result_dict = {}
+            for observable in model.compiled_observables:
+                result_dict[observable] = torch.squeeze(model.compiled_observables[observable](**solution), dim=-1)
+            
+            mapped_result_dict = {}
+            for mapped_to_key, mapped_from_key in solution_mappings[i]:
+                mapped_result_dict[mapped_to_key] = result_dict[mapped_from_key]
+
+            return mapped_result_dict
+        
+        solution_mapping_fs.append(solution_mapping_f)
 
     models = setup_model(
         models,
