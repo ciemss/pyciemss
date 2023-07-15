@@ -65,7 +65,7 @@ class TestSamplesFormat(unittest.TestCase):
             cls.num_samples,
             timepoints=timepoints,
             num_iterations=2,
-            deterministically_inferred_parameters=["beta"],
+            deterministic_learnable_parameters=["beta"],
         )["data"]
 
         cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
