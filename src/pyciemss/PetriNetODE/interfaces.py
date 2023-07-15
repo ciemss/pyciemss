@@ -165,7 +165,7 @@ def load_and_calibrate_and_sample_petri_model(
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
-    deterministically_inferred_parameters: Iterable[str] = [],
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     compile_rate_law_p: bool = True,
     time_unit: Optional[str] = None,
@@ -251,8 +251,8 @@ def load_and_calibrate_and_sample_petri_model(
 
     def autoguide(model):
         guide = AutoGuideList(model)
-        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministically_inferred_parameters)))
-        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministically_inferred_parameters)))
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
         return guide
 
     inferred_parameters = calibrate(
@@ -453,7 +453,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_iterations: int = 1000,
     lr: float = 0.03,
     num_particles: int = 1,
-    deterministically_inferred_parameters: Iterable[str] = [],
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
@@ -553,8 +553,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     def autoguide(model):
         guide = AutoGuideList(model)
-        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministically_inferred_parameters)))
-        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministically_inferred_parameters)))
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
         return guide
 
     inferred_parameters = calibrate(
