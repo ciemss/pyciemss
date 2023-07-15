@@ -22,48 +22,25 @@ class Test_Samples_Format(unittest.TestCase):
 
     # Setup for the tests
     def setUp(self):
-        DEMO_PATH = "notebook/integration_demo/"
-        ASKENET_PATH_1 = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        ASKENET_PATH_2 = "test/models/AMR_examples/SIDARTHE.amr.json"
+        DEMO_PATH = "notebook/integration_demo/"        
+        ASKENET_PATH_1 = "test/models/AMR_examples/ensemble/SEIARHDS_AMR.json"
+        ASKENET_PATH_2 = "test/models/AMR_examples/ensemble/SIRHD_AMR.json"
 
         ASKENET_PATHS = [ASKENET_PATH_1, ASKENET_PATH_2]
-
-        def solution_mapping1(model1_solution: dict) -> dict:
-            return model1_solution
-
-        def solution_mapping2(model2_solution: dict) -> dict:
-            mapped_solution = {}
-            mapped_solution["S"] = (
-                model2_solution["Susceptible"]
-                + model2_solution["Recognized"]
-                + model2_solution["Threatened"]
-            )
-
-            mapped_solution["I"] = (
-                model2_solution["Infected"]
-                + model2_solution["Ailing"]
-                + model2_solution["Diagnosed"]
-            )
-
-            # Model 1 doesn't include dead people, and implicitly assumes that everyone who is infected will recover.
-            mapped_solution["R"] = (
-                model2_solution["Healed"] + model2_solution["Extinct"]
-            )
-
-            return mapped_solution
-
-        solution_mappings = [solution_mapping1, solution_mapping2]
 
         weights = [0.5, 0.5]
         self.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
+        solution_mappings = [{"Infected": "Cases", "Hospitalizations": "hospitalized_population"}, # model 1 mappings
+                            {"Infected": "Infections", "Hospitalizations": "hospitalized_population"} # model 2 mappings
+                            ]
 
         result_ensemble = load_and_sample_petri_ensemble(
             ASKENET_PATHS, weights, solution_mappings, self.num_samples, timepoints
         )
 
-        data_path = os.path.join(DEMO_PATH, "data.csv")
+        data_path = os.path.join(DEMO_PATH, "results_petri_ensemble/ensemble_data.csv")
 
         result_cal_ensemble = load_and_calibrate_and_sample_ensemble_model(
             ASKENET_PATHS,
@@ -74,6 +51,7 @@ class Test_Samples_Format(unittest.TestCase):
             timepoints,
             total_population=1000,
             num_iterations=5,
+            visual_options={"title": "Calibrated Ensemble", "subset":".*_sol"}
         )
         self.samples = result_ensemble["data"]
         self.q_ensemble = result_ensemble["quantiles"] 
