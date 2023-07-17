@@ -122,6 +122,9 @@ def load_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
     """
 
@@ -162,7 +165,7 @@ def load_and_sample_petri_model(
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
     processed_samples, q_ensemble = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit,
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
@@ -264,6 +267,9 @@ def load_and_calibrate_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the calibrated model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -324,7 +330,7 @@ def load_and_calibrate_and_sample_petri_model(
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
             
     processed_samples, q_ensemble = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit,
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
@@ -501,7 +507,7 @@ def load_and_optimize_and_sample_petri_model(
     samples = ouu_policy["samples"]
 
     processed_samples, q_ensemble = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit,
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
@@ -725,7 +731,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     samples = ouu_policy["samples"]
 
     processed_samples, q_ensemble = convert_to_output_format(
-        samples, timepoints, time_unit=time_unit,
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
