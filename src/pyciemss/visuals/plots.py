@@ -148,7 +148,8 @@ def trajectories(
     *,
     traces: Optional[pd.DataFrame] = None,
     points: Optional[pd.DataFrame] = None,
-    subset: Union[str, list] = all,
+    keep: Union[str, list, Literal[all]] = all,
+    drop: Union[str, list, None] = None,
     markers: Optional[dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[dict] = None,
@@ -170,11 +171,16 @@ def trajectories(
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
         markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
-        subset (any, optional): Subset the 'observations' based on keys/values.
-           - Default is the 'all' function, and it keeps all keys
-           - If a string is present, it is treated as a regex and matched against the key
-           - Otherwise, assumed tob e a list-like of keys to keep
+        keep (str, list, all): Subset the 'observations' based on keys/values.
+           - Default is the 'all' function, and it keeps all columns
+           - If a string is present, it is treated as a regex and matched against the columns. Matches are kept.
+           - Otherwise, assumed to be a list-like of columns to keep
            If subset is specified, the color scale ordering follows the subset order.
+        drop (str, list, None): Drop specific columns (applied AFTER keep)
+          - Defaul is 'None', keeping all columns
+          - If a string is present, it is treated as a regex and matched against the columns. Matches are dropped.
+          - Otherwise, assumed to be a list-like of columns to drop
+          Drop will not error if a name specified is not present at drop time.
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after key subsetting.
         colors: Use the specified colors as a post-relable keyed dictionary to vega-valid color.
@@ -193,14 +199,25 @@ def trajectories(
     if points is not None:
         points = nice_df(points)
 
-    if subset == all:
+    if keep == all:
         keep = distributions.columns
-    elif isinstance(subset, str):
-        keep = [k for k in distributions.columns if re.match(subset, k)]
+    elif isinstance(keep, str):
+        keep = [k for k in distributions.columns if re.match(keep, k)]
     else:
-        keep = subset
+        keep = keep
 
-    distributions = distributions.filter(items=keep).rename(columns=relabel)
+    if drop is None:
+        drop = []
+    elif isinstance(drop, str):
+        drop = [k for k in distributions.columns if re.match(drop, k)]
+    else:
+        drop = drop
+
+    distributions = (
+        distributions.filter(items=keep)
+        .drop(columns=drop, errors="ignore")
+        .rename(columns=relabel)
+    )
 
     if colors:
         keep = [k for k in distributions.columns if colors.get(k, None) is not None]

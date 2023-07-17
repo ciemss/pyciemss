@@ -75,8 +75,8 @@ class TestTrajectory(unittest.TestCase):
         self.assertNotIn("Rabbits_sol", df["trajectory"].unique())
         self.assertNotIn("Wolves_sol", df["trajectory"].unique())
 
-    def test_subset(self):
-        schema = plots.trajectories(self.dists, subset=".*_sol")
+    def test_keep(self):
+        schema = plots.trajectories(self.dists, keep=".*_sol")
         df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
@@ -84,7 +84,7 @@ class TestTrajectory(unittest.TestCase):
             "Subsetting by regex",
         )
 
-        schema = plots.trajectories(self.dists, subset=["Rabbits_sol", "Wolves_sol"])
+        schema = plots.trajectories(self.dists, keep=["Rabbits_sol", "Wolves_sol"])
         df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
@@ -93,7 +93,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
         schema = plots.trajectories(
-            self.dists, relabel=self.nice_labels, subset=["Rabbits_sol", "Wolves_sol"]
+            self.dists, relabel=self.nice_labels, keep=["Rabbits_sol", "Wolves_sol"]
         )
         df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
@@ -102,10 +102,91 @@ class TestTrajectory(unittest.TestCase):
             "Rename after subsetting",
         )
 
+    def test_keep_drop(self):
+        self.assertIn(
+            "Rabbits_sol",
+            self.dists.columns,
+            "Exepected trajectory not found in pre-test",
+        )
+
+        should_drop = [p for p in self.dists.columns if "_param" in p]
+        self.assertGreater(
+            len(should_drop), 0, "Exepected trajectory not found in pre-test"
+        )
+
+        schema = plots.trajectories(self.dists, keep=".*_.*", drop=".*_param")
+        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+
+        self.assertIn(
+            "Rabbits_sol",
+            df["trajectory"].unique(),
+            "Exepected trajectory not retained from list",
+        )
+
+        kept = [t for t in df["trajectory"].unique() if "_param" in t]
+        self.assertEqual(0, len(kept), "Kept unexpexted columns in keep & drop case")
+
+    def test_drop(self):
+        self.assertIn(
+            "Rabbits_sol",
+            self.dists.columns,
+            "Exepected trajectory not found in pre-test",
+        )
+
+        print(self.dists.columns)
+        should_drop = [p for p in self.dists.columns if "_param" in p]
+        self.assertGreater(
+            len(should_drop), 0, "Exepected trajectory not found in pre-test"
+        )
+
+        schema = plots.trajectories(self.dists, drop=should_drop)
+        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+
+        self.assertIn(
+            "Rabbits_sol",
+            df["trajectory"].unique(),
+            "Exepected trajectory not retained from list",
+        )
+        self.assertIn(
+            "Wolves_sol",
+            df["trajectory"].unique(),
+            "Exepected trajectory not retained from list",
+        )
+
+        for t in should_drop:
+            self.assertNotIn(
+                t,
+                df["trajectory"].unique(),
+                "Trajectory still present after drop from list",
+            )
+
+        try:
+            schema = plots.trajectories(self.dists, drop="THIS IS NOT HERE")
+        except Exception:
+            self.fail("Error dropping non-existent trajectory")
+
+        schema = plots.trajectories(self.dists, drop="gam.*")
+        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        self.assertIn(
+            "Rabbits_sol",
+            df["trajectory"].unique(),
+            "Exepected trajectory not retained from pattern",
+        )
+        self.assertIn(
+            "Wolves_sol",
+            df["trajectory"].unique(),
+            "Exepected trajectory not retained from pattern",
+        )
+        self.assertNotIn(
+            "gamma_param",
+            df["trajectory"].unique(),
+            "Trajectory still present after drop from pattern",
+        )
+
     def test_points(self):
         schema = plots.trajectories(
             self.dists,
-            subset=".*_sol",
+            keep=".*_sol",
             relabel=self.nice_labels,
             points=self.observed_points,
         )
@@ -125,7 +206,7 @@ class TestTrajectory(unittest.TestCase):
     def test_traces(self):
         schema = plots.trajectories(
             self.dists,
-            subset=".*_sol",
+            keep=".*_sol",
             relabel=self.nice_labels,
             traces=self.traces,
         )
