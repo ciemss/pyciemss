@@ -158,7 +158,7 @@ def load_and_sample_petri_ensemble(
     )
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
-        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
@@ -339,7 +339,7 @@ def load_and_calibrate_and_sample_ensemble_model(
 
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
-        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
