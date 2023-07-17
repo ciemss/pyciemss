@@ -81,7 +81,7 @@ class TestTrajectory(unittest.TestCase):
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
             sorted(df["trajectory"].unique()),
-            "Subsetting by regex",
+            "Keeping by regex",
         )
 
         schema = plots.trajectories(self.dists, keep=["Rabbits_sol", "Wolves_sol"])
@@ -89,7 +89,7 @@ class TestTrajectory(unittest.TestCase):
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
             sorted(df["trajectory"].unique()),
-            "Subsetting by list",
+            "Keeping by list",
         )
 
         schema = plots.trajectories(
@@ -99,7 +99,7 @@ class TestTrajectory(unittest.TestCase):
         self.assertEqual(
             ["Rabbits", "Wolves"],
             sorted(df["trajectory"].unique()),
-            "Rename after subsetting",
+            "Rename after Keeping",
         )
 
     def test_keep_drop(self):
