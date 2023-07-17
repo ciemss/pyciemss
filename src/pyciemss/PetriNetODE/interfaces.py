@@ -150,6 +150,16 @@ def load_and_sample_petri_model(
         num_samples,
         method=method,
     )
+    
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
@@ -159,9 +169,9 @@ def load_and_sample_petri_model(
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return {"data": processed_samples, "quantiles": q_ensemble}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 
 @pyciemss_logging_wrappper
@@ -303,6 +313,16 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
+            
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
@@ -311,9 +331,9 @@ def load_and_calibrate_and_sample_petri_model(
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return {"data": processed_samples, "quantiles": q_ensemble}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 @pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
@@ -321,9 +341,9 @@ def load_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Iterable[Tuple[str, str, float]] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
@@ -499,9 +519,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Iterable[Tuple[str, str, float]] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
