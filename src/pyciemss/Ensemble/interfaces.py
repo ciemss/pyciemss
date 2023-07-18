@@ -339,7 +339,8 @@ def load_and_calibrate_and_sample_ensemble_model(
 
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
     if visual_options:
