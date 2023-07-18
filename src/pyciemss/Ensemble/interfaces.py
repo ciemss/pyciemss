@@ -361,6 +361,7 @@ def load_and_calibrate_and_sample_ensemble_model(
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
 @setup_model.register(list)
+@pyciemss_logging_wrapper
 def setup_ensemble_model(
     models: list[DynamicalSystem],
     weights: Iterable[float],
@@ -409,6 +410,7 @@ def setup_ensemble_model(
 
 
 @reset_model.register
+@pyciemss_logging_wrapper
 def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
     """
     Reset a model to its initial state.
@@ -418,6 +420,7 @@ def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
 
 
 @intervene.register
+@pyciemss_logging_wrapper
 def intervene_ensemble_model(
     ensemble: EnsembleSystem, interventions: Iterable[Tuple[float, str, float]]
 ) -> EnsembleSystem:
@@ -428,6 +431,7 @@ def intervene_ensemble_model(
 
 
 @calibrate.register
+@pyciemss_logging_wrapper
 def calibrate_ensemble_model(
     ensemble: EnsembleSystem,
     data: Iterable[Tuple[float, dict[str, float]]],
@@ -482,6 +486,7 @@ def calibrate_ensemble_model(
 
 
 @sample.register
+@pyciemss_logging_wrapper
 def sample_ensemble_model(
     ensemble: EnsembleSystem,
     timepoints: Iterable[float],
