@@ -1,0 +1,57 @@
+Deliverable,Description,Phase,Start,End
+DI.1.1.H1,Implementation of query API for defining unconditional marginal and interventional queries,I,1,6
+DI.1.2.H1,Sample converts unconditional probabilisitic and expectation queries to a simulation execution plan,I,1,6
+DI.1.2.H2,Intervene converts interventional queries to a probabilistic simulation plan,I,1,12
+DI.1.2.H2,Convert probabilistic simulation representations with only Sample nodes into probabilistic simulation representations without any Sample nodes,I,1,12
+DI.1.2.H3,Convert probabilistic simulation representations with Sample and Intervene nodes into probabilistic simulation representations without Intervene nodes,I,1,18
+DI.1.3.H1,Convert marginal queries to probabilistic simulation representations,I,1,6
+DI.1.3.H2,Convert interventional queries to probabilistic simulation representations,I,1,12
+DI.1.5.H2,Convert acyclic probabilistic simulation representations to directed acyclic graphs,I,1,12
+DI.1.5.H3,Convert cyclic probabilistic simulation representations to directed graphs,I,1,18
+DI.3.1.H1,Prepare canned queries for epidemiology use case,I,1,6
+DI.3.1.H2,Prepare canned queries for space weather use case,I,1,12
+DI.3.1.H3,Query templates for epidemiology use cases based on model properties,I,1,18
+DI.3.2.H1,"Ilustrate causal validation for causal queries over DAG models, e.g. average treatment effect,",I,1,6
+DI.3.2.H2,"Illustrate causal validation for causal queries over cyclic models, ",I,1,12
+DI.3.2.H3,Illustrate causal validation for causal queries over probabilistic programs.,I,1,18
+DI.3.3.H1,Simulation distribution visualization for prior predictive checks,I,1,6
+DI.3.3.H2,Distribution comparison visualization between simulations,I,1,12
+DI.3.3.H3,Distribution comparison visualization supporting external dataset import,I,1,18
+DI.3.4.H1,Visualization of multi-model epidemiology simulation configurations,I,1,6
+DI.3.4.H2,Visualization of space weather simulation configurations,I,1,12
+DI.3.4.H3,Visualization of CDC ensemble model simulation,I,1,18
+DI.3.5.H1,Monitoring tools for prior predictive simulations on epidemiology use cases,I,1,6
+DI.3.5.H2,Monitoring tools for prior predictive simulations on space weather use cases,I,1,12
+DI.3.5.H3,"Extend Hackathon 1, 2 monitoring tools for interventional simulations",I,1,18
+DI.3.6.H2,"Visualization of original query answers and process bottlenecks, respectively",I,1,12
+DI.3.6.H3,"Tools that display current and previous runs,",I,1,18
+DI.4.1.H1,Map CDC metadata to variables and parameters of at least 1 viral epidemic model at population-scale,I,1,6
+DI.4.1.H2,Map metadata from space weather databases to variables and parameters of at least 1 space weather model,I,1,12
+DI.4.1.H3,Map CDC metadata to composite epidemic models and space weather data to composite space weather models.,I,1,18
+DI.4.2.H2,"Convert probabilistic simulation representations without Sample, Observe or Intervene nodes into simulation execution plans that can be evaluated by externally provided TA3 simulation engines",I,1,12
+DI.4.3.H1,Interface standard to associate causal validation rankings with results and configurations,I,1,6
+DI.4.3.H2,Interface standard to associate statistical validation rankings with results.,I,1,12
+DI.4.3.H3,Display widget or interface standard to communicate a nested Vivarium configuration suitable for interactive exploration (browsing and drill-down). Interface standard to display interactive query builder within the HMI tool,I,1,18
+DII.1.1.H4,Implementation of query API for defining conditional causal queries,II,22,32
+DII.1.2.H4,Implementation of Observe primitive in probabilistic simulation representation,II,22,41
+DII.1.4.H4,Convert conditional queries to conditional probabilistic simulation representation,II,22,32
+DII.1.4.H5,Convert counterfactual queries to augmented conditional probabilistic simulation representation,II,22,41
+DII.1.5.H4-5,Convert conditional probabilistic simulation representations to directed graphs,II,22,41
+DII.1.6.H4,Implement conversion of conditional probabilistic representation to unconditional importance sampling probabilistic simulation representation,II,22,32
+DII.1.7.H4-5,Exploratory implementation of one advanced simulation-based inference algorithm for one program use case,II,22,41
+DII.1.7.H5,Technical report on overall Task 1 approach to causal probabilistic reasoning with simulation-based inference,II,22,41
+DII.3.1.H4,Enable customization of pre-defined query templates derived from datasets,II,22,32
+DII.3.1.H5," Enable free-form queries that use underlying model variables, parameters and data.",II,22,41
+DII.3.2.H4,Illustrate causal validation for conditional causal queries over DAG models,II,22,32
+DII.3.2.H5,Illustrate causal validation for conditional causal  queries over directed models,II,22,41
+DII.3.3.H4,Visualize posterior predictive checks,II,22,32
+DII.3.3.H5,Causal consistency visualization supporting external dataset import,II,22,41
+DII.3.4.H4,Visualization of probabilistic simulation-based inference configurations,II,22,32
+DII.3.4.H5,Visualization of counterfactual simulation-based inference configurations.,II,22,41
+DII.3.5.H4,Monitoring tools for probabilistic simulation-based inference of epidemiology and space weather scenarios and inverse modeling of parameters.,II,22,32
+DII.3.5.H5,Monitoring tools for counterfactual simulation-based inference of epidemiology and space weather scenarios,II,22,41
+DII.3.6.H5," Tools that compare performance and results from multiple executions, and explore dynamic reconfigurations, respectively",II,22,41
+DII.4.1.H5," Map metadata to model parameters and variables for Hackathon 4 and 5 use cases, respectively",II,22,41
+DII.4.2.H4,"Convert weighted batched probabilistic simulation representations without Sample, Observe or Intervene nodes into simulation execution plans that can be evaluated by externally provided TA3 simulation engines",II,22,32
+DII.4.3.H4,Interface standard to associate current running progress with associated configuration: components.,II,22,32
+DII.4.3.H5,Interface standard to associate execution results with vivarium configuration results or display widget interface for post-execution exploration.,II,22,41

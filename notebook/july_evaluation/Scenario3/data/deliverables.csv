@@ -1,0 +1,60 @@
+,Name,Description,Milestone or Deliverable,Phase,Task,SubTask,Hackathon,End,Start,Duration
+1,DI.1.1.H1," Probabilistic query language capable of expressing unconditional, interventional, conditional, and counterfactual expectation and probability queries respectively",D,I,1,1,1,6,1,5
+3,DI.1.2.H1, Sample converts unconditional queries to a simulation execution plan,D,I,1,2,1,6,1,5
+4,DI.1.2.H2, Intervene converts interventional queries to a probabilistic simulation plan,D,I,1,2,2,12,1,11
+6,DI.1.3.H1," Documentation, tests and code for simulation-based inference API.",D,I,1,3,1,6,1,5
+7,DI.1.3.H2, Convert interventional queries to a probabilistic simulation plan,D,I,1,3,2,12,1,11
+9,DI.1.4.H1," Methods in vivarium_probabilistic.sbi.algorithm: abc, posterior, likelihood_ratio, likelihood respectively",D,I,1,4,1,6,1,5
+11,DI.2.1.H1, A demonstration of the programmatic approach to simulator configuration. We will survey ASKEM teams about requirements for the standardized simulator protocol.,D,I,2,1,1,6,1,5
+12,DI.2.1.H2, An early version of port annotations.,D,I,2,1,2,12,1,11
+13,DI.2.1.H3, Updated annotations based on feedback obtained at Hackathons 1 and 2,D,I,2,1,3,18,1,17
+15,DI.2.2.H1," Basic process wrapper, which reads the variables and parameters, and provides probabilistic representations of these.",D,I,2,2,1,6,1,5
+16,DI.2.2.H2, (software) vivarium_probabilistic.sbi.inference_quantities,D,I,2,2,2,12,1,11
+18,DI.2.3.H3, Containerized process API,D,I,2,3,3,18,1,17
+20,DI.3.1.H1-2, Prepare canned queries for epidemiology and space weather use cases respectively,D,I,3,1,1-2,12,1,11
+21,DI.3.1.H3, Query templates for multiple use cases based on model properties,D,I,3,1,3,18,1,17
+23,DI.3.2.H1-3," Demonstrate causal validation for causal queries over DAG models, e.g. average treatment effect, over cyclic models, and over probabilistic programs respectively.",D,I,3,2,1-3,18,1,17
+25,DI.3.3.H1, Simulation distribution visualization,D,I,3,3,1,6,1,5
+26,DI.3.3.H2, Distribution comparison visualization,D,I,3,3,2,12,1,11
+27,DI.3.3.H3, Distribution comparison visualization supporting external dataset import,D,I,3,3,3,18,1,17
+29,DI.3.4.H1, Visualization of multi-model epidemiology simulation configurations,D,I,3,4,1,6,1,5
+30,DI.3.4.H2, Visualization of space weather simulation configurations,D,I,3,4,2,12,1,11
+31,DI.3.4.H3, Visualization of CDC ensemble model simulation,D,I,3,4,3,18,1,17
+33,DI.3.5.H1, Monitoring tools for prior predictive simulations on epidemiology use cases,D,I,3,5,1,6,1,5
+34,DI.3.5.H2, Monitoring tools for prior predictive simulations on space weather use cases,D,I,3,5,2,12,1,11
+35,DI.3.5.H3," Extend Hackathon 1,2 monitoring tools for interventional simulations",D,I,3,5,3,18,1,17
+37,DI.3.6.H1-2," Visualization of original query answers and process bottlenecks, respectively",D,I,3,6,1-2,12,1,11
+38,DI.3.6.H3," Tools that display current and previous runs,",D,I,3,6,3,18,1,17
+40,DI.4.1.H1, Map CDC metadata to variables and parameters of at least 1 viral epidemic model at population-scale,D,I,4,1,1,6,1,5
+41,DI.4.1.H2, Map metadata from space weather databases to variables and parameters of at least 1 space weather model,D,I,4,1,2,12,1,11
+42,DI.4.1.H3, Map CDC metadata to composite epidemic models and space weather data to composite space weather models.,D,I,4,1,3,18,1,17
+44,DI.4.2.H1, wrap simulators that support viral epidemic models at population-scale,D,I,4,2,1,6,1,5
+45,DI.4.2.H2, wrap simulators that support cellular/genetic scale models of COVID-19 and simulators that support initial space weather models,D,I,4,2,2,12,1,11
+46,DI.4.2.H3," wrap space weather simulators that support models such as Global Ionosphere-Thermosphere Model (GITM), and the Thermosphere-Ionosphere-Electrodynamics General Circulation Model (TIEGCM)",D,I,4,2,3,18,1,17
+48,DI.4.3.H1, Interface standard to associate causal validation rankings with results and configurations,D,I,4,3,1,6,1,5
+49,DI.4.3.H2, Interface standard to associate statistical validation rankings with results.,D,I,4,3,2,12,1,11
+50,DI.4.3.H3, Display widget or interface standard to communicate a nested Vivarium configuration suitable for interactive exploration (browsing and drill-down). Interface standard to display interactive query builder within the HMI tool,D,I,4,3,3,18,1,17
+53,DII.1.1.H4, Observe converts conditional queries to a simulation execution plan,D,II,1,1,4,32,22,10
+55,DII.1.2.H4-5," Probabilistic query language capable of expressing conditional, and counterfactual expectation and probability queries respectively",D,II,1,2,4-5,41,22,19
+57,DII.1.5.H4," Methods in vivarium_probabilistic.sbi.algorithm: bigraph, vivarium_probabilistic.sbi.algorithm: bigraph.multifidelity",D,II,1,5,4,32,22,10
+58,DII.1.5.H5, Paper or technical report describing bigraph-structure-exploiting simulation-based inference algorithms with vivarium implementation,D,II,1,5,5,41,22,19
+60,DII.1.6.H4, vivarium_probabilistic.sbi.algorithm.epidemiology.multifidelity,D,II,1,6,4,32,22,10
+61,DII.1.6.H5, vivarium_probabilistic.sbi.algorithm.spaceweather.multifidelity,D,II,1,6,5,41,22,19
+63,DII.2.1.H4, (software) Vivarium Core 2.0 with completed annotation methods.,D,II,2,1,4,32,22,10
+64,DII.2.1.H5," (paper) The standardized simulator protocol, along with an online registry for simulation configurations.",D,II,2,1,5,41,22,19
+66,DII.2.3.H4," Documentation, tests and configuration scripts to deploying simulation pipelines on Kubernetes or high-performance computing facilities.",D,II,2,3,4,32,22,10
+68,DII.3.1.H4, Enable customization of pre-defined query templates derived from datasets,D,II,3,1,4,32,22,10
+69,DII.3.1.H5," Enable free-form queries that use underlying model variables, parameters and data.",D,II,3,1,5,41,22,19
+71,DII.3.2.H5, Demonstrate causal validation for counterfactual queries over DAG models and cyclic models,D,II,3,2,5,41,22,19
+73,DII.3.3.H4, Causal consistency visualization,D,II,3,3,4,32,22,10
+74,DII.3.3.H5, Causal consistency visualization supporting external dataset import,D,II,3,3,5,41,22,19
+76,DII.3.4.H4, Visualization of probabilistic simulation-based inference configurations,D,II,3,4,4,32,22,10
+77,DII.3.4.H5, Visualization of counterfactual simulation-based inference configurations.,D,II,3,4,5,41,22,19
+79,DII.3.5.H4, Monitoring tools for probabilistic simulation-based inference of epidemiology and space weather scenarios and inverse modeling of parameters.,D,II,3,5,4,32,22,10
+80,DII.3.5.H5, Monitoring tools for counterfactual simulation-based inference of epidemiology and space weather scenarios,D,II,3,5,5,41,22,19
+82,DII.3.6.H4-5," Tools that compare performance and results from multiple executions, and explore dynamic reconfigurations, respectively",D,II,3,6,4-5,41,22,19
+84,DII.4.1.H4-5," Map metadata to model parameters and variables for Hackathon 4 and 5 use cases, respectively",D,II,4,1,4-5,41,22,19
+86,DII.4.2.H4, wrap Hackathon 4 coupled models such as magnetosphere-ionosphere coupled models,D,II,4,2,4,32,22,10
+87,DII.4.2.H5, wrap Hackathon 5 models such as space weather prediction center models,D,II,4,2,5,41,22,19
+89,DII.4.3.H4, Interface standard to associate current running progress with associated configuration: components.,D,II,4,3,4,32,22,10
+90,DII.4.3.H5, Interface standard to associate execution results with vivarium configuration results or display widget interface for post-execution exploration.,D,II,4,3,5,41,22,19
