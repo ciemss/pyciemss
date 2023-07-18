@@ -33,10 +33,13 @@ from pyciemss.PetriNetODE.events import (
     LoggingEvent,
 )
 
+from pyciemss.custom_decorators import pyciemss_logging_wrapper
+
 EnsembleSolution = Iterable[dict[str, torch.Tensor]]
 EnsembleInferredParameters = pyro.nn.PyroModule
 
 
+@pyciemss_logging_wrapper
 def load_and_sample_petri_ensemble(
     petri_model_or_paths: Iterable[
         Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
@@ -169,6 +172,7 @@ def load_and_sample_petri_ensemble(
         return {"data": processed_samples, "quantiles": q_ensemble}
 
 
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_sample_ensemble_model(
     petri_model_or_paths: Iterable[
         Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
