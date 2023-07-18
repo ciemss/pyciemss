@@ -328,10 +328,11 @@ def load_and_calibrate_and_sample_petri_model(
             qois_sq = qoi_fn(samples)
             sq_est = alpha_superquantile(qois_sq, alpha=0.95)
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
-            
+
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
     if visual_options:
@@ -732,7 +733,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
     if visual_options:
