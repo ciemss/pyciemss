@@ -12,9 +12,9 @@ def convert_to_output_format(
     interventions: Optional[Dict[str, torch.Tensor]] = None,
     *,
     time_unit: Optional[str] = "(unknown)",
-    ensemble_quantiles: Optional[bool] = False,
+    quantiles: Optional[bool] = False,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
-    num_ensemble_quantiles: Optional[int] = 0,
+    num_quantiles: Optional[int] = 0,
     stacking_order: Optional[str] = "timepoints",
     observables: Optional[Dict[str, Callable]] = None,
 ) -> pd.DataFrame:
@@ -95,15 +95,15 @@ def convert_to_output_format(
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
         result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
 
-    if ensemble_quantiles:
+    if quantiles:
         key_list = ["timepoint_id", "target", "type", "quantile", "value"]
         q = {k: [] for k in key_list}
         if alpha_qs is None:
-            alpha_qs = np.linspace(0, 1, num_ensemble_quantiles)
+            alpha_qs = np.linspace(0, 1, num_quantiles)
             alpha_qs[0] = 0.01
             alpha_qs[-1] = 0.99
         else:
-            num_ensemble_quantiles = len(alpha_qs)
+            num_quantiles = len(alpha_qs)
         
         # Solution (state variables)
         for k, v in pyciemss_results["states"].items():
@@ -111,18 +111,18 @@ def convert_to_output_format(
             k = k.replace("_sol","")
             if stacking_order == "timepoints":
                 # Keeping timepoints together
-                q["timepoint_id"].extend(list(np.repeat(np.array(range(num_timepoints)), num_ensemble_quantiles)))
-                q["target"].extend([k]*num_timepoints*num_ensemble_quantiles)
-                q["type"].extend(["quantile"]*num_timepoints*num_ensemble_quantiles)
+                q["timepoint_id"].extend(list(np.repeat(np.array(range(num_timepoints)), num_quantiles)))
+                q["target"].extend([k]*num_timepoints*num_quantiles)
+                q["type"].extend(["quantile"]*num_timepoints*num_quantiles)
                 q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
-                q["value"].extend(list(np.squeeze(q_vals.T.reshape((num_timepoints * num_ensemble_quantiles, 1)))))
+                q["value"].extend(list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1)))))
             elif stacking_order == "quantiles":
                 # Keeping quantiles together
-                q["timepoint_id"].extend(list(np.tile(np.array(range(num_timepoints)), num_ensemble_quantiles)))
-                q["target"].extend([k]*num_timepoints*num_ensemble_quantiles)
-                q["type"].extend(["quantile"]*num_timepoints*num_ensemble_quantiles)
+                q["timepoint_id"].extend(list(np.tile(np.array(range(num_timepoints)), num_quantiles)))
+                q["target"].extend([k]*num_timepoints*num_quantiles)
+                q["type"].extend(["quantile"]*num_timepoints*num_quantiles)
                 q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
-                q["value"].extend(list(np.squeeze(q_vals.reshape((num_timepoints * num_ensemble_quantiles, 1)))))
+                q["value"].extend(list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1)))))
             else:
                 raise Exception("Incorrect input for stacking_order.")
         result_q = pd.DataFrame(q)

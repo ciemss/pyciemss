@@ -76,6 +76,8 @@ def load_and_sample_petri_model(
     compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
@@ -109,11 +111,20 @@ def load_and_sample_petri_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         result: dict
             - Dictionary of outputs with following attribute:
-                * data: PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
+                * data: The samples from the model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
     """
 
@@ -142,17 +153,28 @@ def load_and_sample_petri_model(
         num_samples,
         method=method,
     )
+    
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit, observables=model.compiled_observables
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return {"data": processed_samples}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 
 @pyciemss_logging_wrappper
@@ -177,7 +199,9 @@ def load_and_calibrate_and_sample_petri_model(
     compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id: Optional[str] = None
+    job_id: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
@@ -232,11 +256,20 @@ def load_and_calibrate_and_sample_petri_model(
             - dict output a visual with the dictionary passed to the visualization as kwargs
         job_id: Optional[str]
             - Used to display progress of current job
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         result: dict
             - Dictionary of outputs with following attribute:
-                * data: PetriSolution: The samples from the calibrated model as a pandas DataFrame. (If visual_options is falsy)
+                * data: The samples from the calibrated model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -286,16 +319,27 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit, observables=model.compiled_observables
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
+            
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return {"data": processed_samples}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 @pyciemss_logging_wrappper
 def load_and_optimize_and_sample_petri_model(
@@ -303,9 +347,9 @@ def load_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
@@ -318,6 +362,10 @@ def load_and_optimize_and_sample_petri_model(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty,
@@ -367,6 +415,17 @@ def load_and_optimize_and_sample_petri_model(
             - maxiter = 0: leads to a single-start local optimization
         maxfeval: int > 0
             - The maximum number of function evaluations for each start of the local optimizer.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         result: dict
@@ -380,6 +439,8 @@ def load_and_optimize_and_sample_petri_model(
                         * risk: Estimated alpha-superquantile risk with alpha=0.95
                         * samples: Samples from the model at the optimal intervention
                         * qoi: Samples of quantity of interest
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
@@ -445,11 +506,17 @@ def load_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt, observables=model.compiled_observables
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
-    return {"data": processed_samples, "policy": ouu_policy}
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
+    else:
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
 
 @pyciemss_logging_wrappper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
@@ -458,9 +525,9 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
@@ -479,6 +546,11 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     compile_observables_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    job_id: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
 ) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty,
@@ -541,7 +613,19 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - maxiter = 0: leads to a single-start local optimization
         maxfeval: int > 0
             - The maximum number of function evaluations for each start of the local optimizer.
-
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
+        job_id: Optional[str]
+            - Used to display progress of current job
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
         result: dict
@@ -555,6 +639,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
                         * risk: Estimated alpha-superquantile risk with alpha=0.95
                         * samples: Samples from the model at the optimal intervention
                         * qoi: Samples of quantity of interest
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
@@ -590,6 +676,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
+        job_id=job_id
     )
 
     def qoi_fn(y):
@@ -643,11 +730,17 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt, observables=model.compiled_observables
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
-    return {"data": processed_samples, "policy": ouu_policy}
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
+    else:
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
 
 
 ##############################################################################
