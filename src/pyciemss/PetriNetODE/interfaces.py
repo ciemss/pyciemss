@@ -10,6 +10,7 @@ from math import ceil
 import pandas as pd
 from typing import Iterable, Optional, Tuple, Union
 import copy
+import warnings
 
 import random as rand
 
@@ -748,7 +749,8 @@ def calibrate_petri(
         s = 0.0
         for v in obs.observation.values():
             s += v
-            assert 0 <= v <= petri.total_population
+            if not 0 <= v <= petri.total_population:
+                warnings.warn(f"Observation {obs} is not in the range [0, {petri.total_population}]. This may be an error!")
         #assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
