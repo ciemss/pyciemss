@@ -10,6 +10,7 @@ from math import ceil
 import pandas as pd
 from typing import Iterable, Optional, Tuple, Union
 import copy
+import warnings
 
 import random as rand
 
@@ -809,7 +810,7 @@ def intervene_petri_model(
     """
     # Note: this will have to change if we want to add more sophisticated interventions.
     interventions = [
-        StaticParameterInterventionEvent(timepoint + rand.random()*jostle_scale, parameter, value)
+        StaticParameterInterventionEvent(timepoint + (0.1+rand.random())*jostle_scale, parameter, value)
         for timepoint, parameter, value in interventions
     ]
     new_petri = copy.deepcopy(petri)
@@ -836,14 +837,15 @@ def calibrate_petri(
     
     new_petri = copy.deepcopy(petri)
     observations = [
-        ObservationEvent(timepoint + rand.random() * jostle_scale, observation) for timepoint, observation in data
+        ObservationEvent(timepoint + (0.1+rand.random()) * jostle_scale, observation) for timepoint, observation in data
     ]
 
     for obs in observations:
         s = 0.0
         for v in obs.observation.values():
             s += v
-            assert 0 <= v <= petri.total_population
+            if not 0 <= v <= petri.total_population:
+                warnings.warn(f"Observation {obs} is not in the range [0, {petri.total_population}]. This may be an error!")
         #assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
