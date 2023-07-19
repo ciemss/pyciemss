@@ -715,7 +715,7 @@ def intervene_petri_model(
     """
     # Note: this will have to change if we want to add more sophisticated interventions.
     interventions = [
-        StaticParameterInterventionEvent(timepoint + rand.random()*jostle_scale, parameter, value)
+        StaticParameterInterventionEvent(timepoint + (0.1+rand.random())*jostle_scale, parameter, value)
         for timepoint, parameter, value in interventions
     ]
     new_petri = copy.deepcopy(petri)
@@ -742,7 +742,7 @@ def calibrate_petri(
     
     new_petri = copy.deepcopy(petri)
     observations = [
-        ObservationEvent(timepoint + rand.random() * jostle_scale, observation) for timepoint, observation in data
+        ObservationEvent(timepoint + (0.1+rand.random()) * jostle_scale, observation) for timepoint, observation in data
     ]
 
     for obs in observations:
