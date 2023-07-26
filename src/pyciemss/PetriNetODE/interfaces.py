@@ -10,6 +10,7 @@ from math import ceil
 import pandas as pd
 from typing import Iterable, Optional, Tuple, Union
 import copy
+import warnings
 
 import random as rand
 
@@ -48,7 +49,7 @@ from pyciemss.PetriNetODE.events import (
     StaticParameterInterventionEvent,
 )
 
-from pyciemss.custom_decorators import pyciemss_logging_wrappper
+from pyciemss.custom_decorators import pyciemss_logging_wrapper
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
@@ -62,7 +63,7 @@ if ASKEM_PYCIEMSS_SERVICE:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
     channel = connection.channel()
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -177,7 +178,7 @@ def load_and_sample_petri_model(
         return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -342,7 +343,7 @@ def load_and_calibrate_and_sample_petri_model(
     else:
         return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -519,7 +520,7 @@ def load_and_optimize_and_sample_petri_model(
     else:
         return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -771,7 +772,7 @@ def load_petri_model(
 
 
 @setup_model.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def setup_petri_model(
     petri: PetriNetODESystem,
     start_time: float,
@@ -788,7 +789,7 @@ def setup_petri_model(
 
 
 @reset_model.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
     """
     Reset a model to its initial state.
@@ -800,7 +801,7 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 
 
 @intervene.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def intervene_petri_model(
     petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-5
 ) -> PetriNetODESystem:
@@ -809,7 +810,7 @@ def intervene_petri_model(
     """
     # Note: this will have to change if we want to add more sophisticated interventions.
     interventions = [
-        StaticParameterInterventionEvent(timepoint + rand.random()*jostle_scale, parameter, value)
+        StaticParameterInterventionEvent(timepoint + (0.1+rand.random())*jostle_scale, parameter, value)
         for timepoint, parameter, value in interventions
     ]
     new_petri = copy.deepcopy(petri)
@@ -817,7 +818,7 @@ def intervene_petri_model(
     return new_petri
 
 @calibrate.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def calibrate_petri(
     petri: PetriNetODESystem,
     data: Iterable[Tuple[float, dict[str, float]]],
@@ -836,14 +837,15 @@ def calibrate_petri(
     
     new_petri = copy.deepcopy(petri)
     observations = [
-        ObservationEvent(timepoint + rand.random() * jostle_scale, observation) for timepoint, observation in data
+        ObservationEvent(timepoint + (0.1+rand.random()) * jostle_scale, observation) for timepoint, observation in data
     ]
 
     for obs in observations:
         s = 0.0
         for v in obs.observation.values():
             s += v
-            assert 0 <= v <= petri.total_population
+            if not 0 <= v <= petri.total_population:
+                warnings.warn(f"Observation {obs} is not in the range [0, {petri.total_population}]. This may be an error!")
         #assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
@@ -869,7 +871,7 @@ def calibrate_petri(
 
 
 @sample.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def sample_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable[float],
@@ -896,7 +898,7 @@ def sample_petri(
 
 
 @optimize.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def optimize_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable,
