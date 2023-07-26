@@ -1,0 +1,125 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "description": "A node-link diagram with force-directed layout, depicting character co-occurrence in the novel Les Misérables.",
+    "width": 100,
+    "height": 100,
+    "padding": 0,
+    "autosize": "none",
+  
+    "signals": [
+      { "name": "cx", "update": "width / 2" },
+      { "name": "cy", "update": "height / 2" },
+      { "name": "nodeRadius", "value": 8},
+      { "name": "nodeCharge", "value": -30},
+      { "name": "linkDistance", "value": 30}
+    ],
+  
+    "scales": [
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": {"data": "node-data", "field": "group"},
+        "range": {"scheme": "category20c"}
+      }
+    ],
+  
+    "marks": [
+      {
+        "name": "nodes",
+        "type": "symbol",
+        "zindex": 1,
+  
+        "from": {"data": "node-data"},
+        "encode": {
+          "enter": {
+            "fill": {"scale": "color", "field": "group"},
+            "stroke": {"value": "white"}
+          },
+          "update": {
+            "size": {"signal": "2 * nodeRadius * nodeRadius"}
+          }
+        },
+  
+        "transform": [
+          {
+            "type": "force",
+            "iterations": 300,
+            "signal": "force",
+            "forces": [
+              {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
+              {"force": "collide", "radius": {"signal": "nodeRadius"}},
+              {"force": "nbody", "strength": {"signal": "nodeCharge"}},
+              {"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
+            ]
+          }
+        ]
+      },
+      {
+        "type": "path",
+        "from": {"data": "link-data"},
+        "interactive": false,
+        "encode": {
+          "update": {
+            "stroke": {"value": "#ccc"},
+            "strokeWidth": {"value": 0.5}
+          }
+        },
+        "transform": [
+          {
+            "type": "linkpath",
+            "require": {"signal": "force"},
+            "shape": "line",
+            "sourceX": "datum.source.x", "sourceY": "datum.source.y",
+            "targetX": "datum.target.x", "targetY": "datum.target.y"
+          }
+        ]
+      }
+    ],
+   
+    "data": [
+        {
+          "name": "node-data",
+          "values": [
+            {"id": 0},
+            {"id": 1},
+            {"id": 2},
+            {"id": 3}
+          ]
+        },
+        {
+            "name": "node-attributions",
+            "values": [
+                {"node": 0, "item": "A"},
+                {"node": 0, "item": "B"},
+                {"node": 1, "item": "B"},
+                {"node": 1, "item": "C"},
+                {"node": 2, "item": "A"}
+            ]
+        },
+        {
+          "name": "link-data",
+          "values": [
+            {"id": 1, "source": 0, "target": 1},
+            {"id": 2, "source": 0, "target": 2},
+            {"id": 3, "source": 0, "target": 3},
+            {"id": 4, "source": 0, "target": 4},
+            {"id": 5, "source": 0, "target": 5},
+            {"id": 6, "source": 0, "target": 6}
+          ]
+        },
+        {
+            "name": "link-attributions",
+            "values": [
+                {"link": 0, "item": "A"},
+                {"link": 0, "item": "B"},
+                {"link": 1, "item": "B"},
+                {"link": 1, "item": "C"},
+                {"link": 3, "item": "A"},
+                {"link": 4, "item": "B"},
+                {"link": 5, "item": "C"},
+                {"link": 6, "item": "D"}
+            ]
+        }
+      ] 
+  }
+  
