@@ -10,10 +10,12 @@ from math import ceil
 import pandas as pd
 from typing import Iterable, Optional, Tuple, Union
 import copy
+import warnings
 
 import random as rand
 
 from pyro.infer import Predictive
+from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
 from pyciemss.PetriNetODE.base import (
     PetriNetODESystem,
@@ -47,7 +49,7 @@ from pyciemss.PetriNetODE.events import (
     StaticParameterInterventionEvent,
 )
 
-from pyciemss.custom_decorators import pyciemss_logging_wrappper
+from pyciemss.custom_decorators import pyciemss_logging_wrapper
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
@@ -61,7 +63,7 @@ if ASKEM_PYCIEMSS_SERVICE:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
     channel = connection.channel()
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
@@ -72,9 +74,12 @@ def load_and_sample_petri_model(
     start_time: float = -1e-10,
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-) -> pd.DataFrame:
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
@@ -97,24 +102,39 @@ def load_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         time_unit: str
             - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
-            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
+                * visual: Visualization. (If visual_options is truthy)
     """
 
     # Load the model
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -134,20 +154,31 @@ def load_and_sample_petri_model(
         num_samples,
         method=method,
     )
+    
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
@@ -163,13 +194,16 @@ def load_and_calibrate_and_sample_petri_model(
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
-    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id=None
-) -> pd.DataFrame:
+    job_id: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate it on data,
     and sample from the calibrated model.
@@ -211,26 +245,43 @@ def load_and_calibrate_and_sample_petri_model(
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         time_unit: str
             - Time unit (used for labeling outputs)
         visual_options: None, bool, dict[str, any]
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
+        job_id: Optional[str]
+            - Used to display progress of current job
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (If visual_options is falsy)
-            - dict {data: <samples>, visual: <visual>}: The PetriSolution and a visualization. (If visual_options is truthy)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the calibrated model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * state: Risk estimates for each state as 2-day average at the final timepoint
+                    * risk: Estimated alpha-superquantile risk with alpha=0.95
+                    * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
+                * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -243,6 +294,12 @@ def load_and_calibrate_and_sample_petri_model(
 
     if interventions is not None:
         model = intervene(model, interventions)
+
+    def autoguide(model):
+        guide = AutoGuideList(model)
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
+        return guide
 
     inferred_parameters = calibrate(
         model,
@@ -263,26 +320,38 @@ def load_and_calibrate_and_sample_petri_model(
         method=method,
     )
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions, time_unit=time_unit
+    def qoi_fn(y):
+        return getattr(pyciemss.risk.qoi, qoi[0])(y, [qoi[1]], *qoi[2:])    
+    risk_results = {}
+    for k, vals in samples.items():
+        if "_sol" in k:
+            qoi = ("scenario2dec_nday_average", k, 2)
+            qois_sq = qoi_fn(samples)
+            sq_est = alpha_superquantile(qois_sq, alpha=0.95)
+            risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
+
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "visual": schema}
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
     else:
-        return processed_samples
+        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
@@ -290,11 +359,16 @@ def load_and_optimize_and_sample_petri_model(
     start_time: float = -1e-10,
     method="dopri5",
     compile_rate_law_p: bool = True,
+    compile_observables_p: bool = True,
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25,
-) -> Tuple[pd.DataFrame, dict]:
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, optimize under uncertainty,
     sample for the optimal intervention, and estinate risk.
@@ -330,6 +404,10 @@ def load_and_optimize_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.
         verbose: bool
             - Whether to print out the optimization under uncertainty progress.
         n_samples_ouu: int
@@ -339,22 +417,38 @@ def load_and_optimize_and_sample_petri_model(
             - maxiter = 0: leads to a single-start local optimization
         maxfeval: int > 0
             - The maximum number of function evaluations for each start of the local optimizer.
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples: pd.DataFrame
-            - The samples from the model using the optimal policy under uncertainty returned as a pandas DataFrame.
-        optimal_policy: dict
-            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
-                * policy: Optimal intervention
-                * OptResults: Optimization results as scipy optimization object
-                * risk: Estimated alpha-superquantile risk with alpha=0.95
-                * samples: Samples from the model at the optimal intervention
-                * qoi: Samples of quantity of interest
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: pd.DataFrame
+                    - The samples from the model using the optimal policy under uncertainty returned as a pandas DataFrame.
+                * policy: dict
+                    - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                        * policy: Optimal intervention
+                        * OptResults: Optimization results as scipy optimization object
+                        * risk: Estimated alpha-superquantile risk with alpha=0.95
+                        * samples: Samples from the model at the optimal intervention
+                        * qoi: Samples of quantity of interest
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -414,22 +508,28 @@ def load_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
-    return processed_samples, ouu_policy
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
+    else:
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
 
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
     data_path: str,
     num_samples: int,
     timepoints: Iterable[float],
     interventions: Iterable[Tuple[float, str]],
-    qoi: Iterable[Tuple[str, str, float]],
-    risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
+    qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
+    risk_bound: float = 1.0,
+    objfun: callable = lambda x: np.sum(np.abs(x)),
     initial_guess: Iterable[float] = 0.5,
     bounds: Iterable[float] = [[0.0], [1.0]],
     *,
@@ -440,14 +540,20 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     num_iterations: int = 1000,
     lr: float = 0.03,
     num_particles: int = 1,
-    autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
+    deterministic_learnable_parameters: Iterable[str] = [],
     method="dopri5",
     verbose: bool = False,
     n_samples_ouu: int = int(1e2),
     compile_rate_law_p: bool = True,
+    compile_observables_p: bool = True,
     maxiter: int = 2,
     maxfeval: int = 25,
-) -> Tuple[pd.DataFrame, dict]:
+    time_unit: Optional[str] = None,
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    job_id: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    stacking_order: Optional[str] = "timepoints",
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, calibrate on data, optimize under uncertainty,
     sample for the optimal policy, and estinate risk for the optimal policy.
@@ -498,6 +604,10 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        compile_rate_law_p: bool
+            - Whether or not to compile the rate law from the AMR rate expression. default True.  False is useful for debugging.
+        compile_observables_p: bool
+            - Whether or not to compile the observables from the AMR observable expression. default True.  False is useful for debugging.    
         n_samples_ouu: int
             - The number of samples to draw from the model for each optimization iteration.
         maxiter: int >= 0
@@ -505,27 +615,44 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - maxiter = 0: leads to a single-start local optimization
         maxfeval: int > 0
             - The maximum number of function evaluations for each start of the local optimizer.
-
+        time_unit: str
+            - Time unit (used for labeling outputs)
+        visual_options: None, bool, dict[str, any]
+            - True output a visual
+            - False do not output a visual
+            - dict output a visual with the dictionary passed to the visualization as kwargs
+        job_id: Optional[str]
+            - Used to display progress of current job
+        alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+        stacking_order: Optional[str]
+            - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+            - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples: pd.DataFrame
-            - The samples from the model using the optimal policy under uncertainty after calibrating on given data returned as a pandas DataFrame.
-        optimal_policy: dict
-            - Optimal policy under uncertainty returned as a dictionary with the following attributes:
-                * policy: Optimal intervention
-                * OptResults: Optimization results as scipy optimization object
-                * risk: Estimated alpha-superquantile risk with alpha=0.95
-                * samples: Samples from the model at the optimal intervention
-                * qoi: Samples of quantity of interest
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: pd.DataFrame
+                    - The samples from the model using the optimal policy under uncertainty after calibrating on given data returned as a pandas DataFrame.
+                * policy: dict
+                    - Optimal policy under uncertainty returned as a dictionary with the following attributes:
+                        * policy: Optimal intervention
+                        * OptResults: Optimization results as scipy optimization object
+                        * risk: Estimated alpha-superquantile risk with alpha=0.95
+                        * samples: Samples from the model at the optimal intervention
+                        * qoi: Samples of quantity of interest
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
 
     model = load_petri_model(
         petri_model_or_path=petri_model_or_path,
-        add_uncertainty=True,
+        add_uncertainty=False,
         noise_model=noise_model,
         noise_scale=noise_scale,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=compile_observables_p,
     )
 
     # If the user doesn't override the start state, use the initial values from the model.
@@ -536,6 +663,12 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     model = setup_model(model, start_time=start_time, start_state=start_state)
 
+    def autoguide(model):
+        guide = AutoGuideList(model)
+        guide.append(AutoDelta(pyro.poutine.block(model, expose=deterministic_learnable_parameters)))
+        guide.append(AutoLowRankMultivariateNormal(pyro.poutine.block(model, hide=deterministic_learnable_parameters)))
+        return guide
+
     inferred_parameters = calibrate(
         model,
         data,
@@ -545,6 +678,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
+        job_id=job_id
     )
 
     def qoi_fn(y):
@@ -598,11 +732,18 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
-    processed_samples = convert_to_output_format(
-        samples, timepoints, interventions=interventions_opt
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
-    return processed_samples, ouu_policy
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
+    else:
+        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
 
 
 ##############################################################################
@@ -613,29 +754,25 @@ def load_petri_model(
     add_uncertainty: bool = True,
     noise_model: str = "scaled_normal",
     noise_scale: float = 0.1,
+    compile_observables_p = False,
     compile_rate_law_p: bool = False) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
-    if add_uncertainty:
-        if noise_model == "scaled_beta":
-            return ScaledBetaNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        elif noise_model == "scaled_normal":
-            return ScaledNormalNoisePetriNetODESystem.from_askenet(
-                petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p
-            )
-        else:
-            raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
-    else:
-        return MiraPetriNetODESystem.from_askenet(
-            petri_model_or_path, compile_rate_law_p=compile_rate_law_p
+    if noise_model == "scaled_beta":
+        return ScaledBetaNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, add_uncertainty=add_uncertainty
         )
+    elif noise_model == "scaled_normal":
+        return ScaledNormalNoisePetriNetODESystem.from_askenet(
+            petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, add_uncertainty=add_uncertainty
+        )
+    else:
+        raise ValueError(f"Unknown noise model {noise_model}. Please select from either 'scaled_beta' or 'scaled_normal'.")
 
 
 @setup_model.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def setup_petri_model(
     petri: PetriNetODESystem,
     start_time: float,
@@ -652,7 +789,7 @@ def setup_petri_model(
 
 
 @reset_model.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
     """
     Reset a model to its initial state.
@@ -664,16 +801,16 @@ def reset_petri_model(petri: PetriNetODESystem) -> PetriNetODESystem:
 
 
 @intervene.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def intervene_petri_model(
-    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-6
+    petri: PetriNetODESystem, interventions: Iterable[Tuple[float, str, float]], jostle_scale: float = 1e-5
 ) -> PetriNetODESystem:
     """
     Intervene on a model.
     """
     # Note: this will have to change if we want to add more sophisticated interventions.
     interventions = [
-        StaticParameterInterventionEvent(timepoint + rand.random()*jostle_scale, parameter, value)
+        StaticParameterInterventionEvent(timepoint + (0.1+rand.random())*jostle_scale, parameter, value)
         for timepoint, parameter, value in interventions
     ]
     new_petri = copy.deepcopy(petri)
@@ -681,7 +818,7 @@ def intervene_petri_model(
     return new_petri
 
 @calibrate.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def calibrate_petri(
     petri: PetriNetODESystem,
     data: Iterable[Tuple[float, dict[str, float]]],
@@ -692,7 +829,7 @@ def calibrate_petri(
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
     job_id=None,
-    jostle_scale: float = 1e-6,
+    jostle_scale: float = 1e-5,
 ) -> PetriInferredParameters:
     """
     Use variational inference with a mean-field variational family to infer the parameters of the model.
@@ -700,15 +837,16 @@ def calibrate_petri(
     
     new_petri = copy.deepcopy(petri)
     observations = [
-        ObservationEvent(timepoint + rand.random() * jostle_scale, observation) for timepoint, observation in data
+        ObservationEvent(timepoint + (0.1+rand.random()) * jostle_scale, observation) for timepoint, observation in data
     ]
 
     for obs in observations:
         s = 0.0
         for v in obs.observation.values():
             s += v
-            assert 0 <= v <= petri.total_population
-        assert s <= petri.total_population or torch.isclose(s, petri.total_population)
+            if not 0 <= v <= petri.total_population:
+                warnings.warn(f"Observation {obs} is not in the range [0, {petri.total_population}]. This may be an error!")
+        #assert s <= petri.total_population or torch.isclose(s, petri.total_population)
     new_petri.load_events(observations)
 
     guide = autoguide(new_petri)
@@ -733,7 +871,7 @@ def calibrate_petri(
 
 
 @sample.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def sample_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable[float],
@@ -760,7 +898,7 @@ def sample_petri(
 
 
 @optimize.register
-@pyciemss_logging_wrappper
+@pyciemss_logging_wrapper
 def optimize_petri(
     petri: PetriNetODESystem,
     timepoints: Iterable,

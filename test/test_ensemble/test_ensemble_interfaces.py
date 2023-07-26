@@ -23,49 +23,33 @@ class Test_Samples_Format(unittest.TestCase):
     # Setup for the tests
     def setUp(self):
         DEMO_PATH = "notebook/integration_demo/"
-        ASKENET_PATH_1 = "test/models//sir_typed.json"
-        ASKENET_PATH_2 = "test/models/AMR_examples/SIDARTHE.amr.json"
+        ASKENET_PATH_1 = "test/models/AMR_examples/ensemble/SEIARHDS_AMR.json"
+        ASKENET_PATH_2 = "test/models/AMR_examples/ensemble/SIRHD_AMR.json"
 
         ASKENET_PATHS = [ASKENET_PATH_1, ASKENET_PATH_2]
-
-        def solution_mapping1(model1_solution: dict) -> dict:
-            return model1_solution
-
-        def solution_mapping2(model2_solution: dict) -> dict:
-            mapped_solution = {}
-            mapped_solution["S"] = (
-                model2_solution["Susceptible"]
-                + model2_solution["Recognized"]
-                + model2_solution["Threatened"]
-            )
-
-            mapped_solution["I"] = (
-                model2_solution["Infected"]
-                + model2_solution["Ailing"]
-                + model2_solution["Diagnosed"]
-            )
-
-            # Model 1 doesn't include dead people, and implicitly assumes that everyone who is infected will recover.
-            mapped_solution["R"] = (
-                model2_solution["Healed"] + model2_solution["Extinct"]
-            )
-
-            return mapped_solution
-
-        solution_mappings = [solution_mapping1, solution_mapping2]
 
         weights = [0.5, 0.5]
         self.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         self.num_timepoints = len(timepoints)
+        solution_mappings = [
+            {
+                "Infected": "Cases",
+                "Hospitalizations": "hospitalized_population",
+            },  # model 1 mappings
+            {
+                "Infected": "Infections",
+                "Hospitalizations": "hospitalized_population",
+            },  # model 2 mappings
+        ]
 
-        self.samples, self.q_ensemble = load_and_sample_petri_ensemble(
+        result_ensemble = load_and_sample_petri_ensemble(
             ASKENET_PATHS, weights, solution_mappings, self.num_samples, timepoints
         )
 
-        data_path = os.path.join(DEMO_PATH, "data.csv")
+        data_path = os.path.join(DEMO_PATH, "results_petri_ensemble/ensemble_data.csv")
 
-        self.calibrated_samples, self.calibrated_q_ensemble = load_and_calibrate_and_sample_ensemble_model(
+        result_cal_ensemble = load_and_calibrate_and_sample_ensemble_model(
             ASKENET_PATHS,
             data_path,
             weights,
@@ -74,11 +58,21 @@ class Test_Samples_Format(unittest.TestCase):
             timepoints,
             total_population=1000,
             num_iterations=5,
+            visual_options={"title": "Calibrated Ensemble", "subset": ".*_sol"},
         )
+        self.samples = result_ensemble["data"]
+        self.q_ensemble = result_ensemble["quantiles"]
+        self.calibrated_samples = result_cal_ensemble["data"]
+        self.calibrated_q_ensemble = result_cal_ensemble["quantiles"]
 
     def test_samples_type(self):
         """Test that `samples` is a Pandas DataFrame"""
-        for s in [self.samples, self.q_ensemble, self.calibrated_samples, self.calibrated_q_ensemble]:
+        for s in [
+            self.samples,
+            self.q_ensemble,
+            self.calibrated_samples,
+            self.calibrated_q_ensemble,
+        ]:
             self.assertIsInstance(s, pd.DataFrame)
 
     def test_samples_shape(self):
@@ -141,17 +135,20 @@ class TestEnsembleInterfaces(unittest.TestCase):
         self.dirichlet_concentration = 1.0
         self.noise_scale = 1.0
 
-        self.ensemble_collection = [setup_model(
-            self.models,
-            self.weights,
-            self.solution_mappings,
-            self.initial_time,
-            [self.start_state1, self.start_state2],
-            total_population = self.total_population,
-            noise_model=noise_model,
-            noise_scale=self.noise_scale,
-            dirichlet_concentration=self.dirichlet_concentration,
-        ) for noise_model in ["scaled_beta", "scaled_normal"]]
+        self.ensemble_collection = [
+            setup_model(
+                self.models,
+                self.weights,
+                self.solution_mappings,
+                self.initial_time,
+                [self.start_state1, self.start_state2],
+                total_population=self.total_population,
+                noise_model=noise_model,
+                noise_scale=self.noise_scale,
+                dirichlet_concentration=self.dirichlet_concentration,
+            )
+            for noise_model in ["scaled_beta", "scaled_normal"]
+        ]
 
     def test_solution_mapping(self):
         """Test the solution_mapping function."""
@@ -187,10 +184,14 @@ class TestEnsembleInterfaces(unittest.TestCase):
                     == torch.as_tensor(self.weights) * self.dirichlet_concentration
                 )
             )
-            self.assertTrue(torch.all(ensemble.dirichlet_alpha == torch.tensor([0.5, 0.5])))
+            self.assertTrue(
+                torch.all(ensemble.dirichlet_alpha == torch.tensor([0.5, 0.5]))
+            )
 
             # Test that the model has the correct number of solution_mappings
-            self.assertEqual(len(ensemble.solution_mappings), len(self.solution_mappings))
+            self.assertEqual(
+                len(ensemble.solution_mappings), len(self.solution_mappings)
+            )
 
             # Test that models, weights, and solution_mappings have the same length
             self.assertEqual(len(ensemble.models), len(ensemble.dirichlet_alpha))
@@ -199,7 +200,6 @@ class TestEnsembleInterfaces(unittest.TestCase):
     def test_calibrate(self):
         """Test the calibrate function."""
         for ensemble in self.ensemble_collection:
-
             data = [(1.1, {"Infected": 0.003}), (1.2, {"Infected": 0.005})]
             parameters = calibrate(ensemble, data, num_iterations=2)
 
@@ -208,7 +208,6 @@ class TestEnsembleInterfaces(unittest.TestCase):
     def test_sample(self):
         """Test the sample function."""
         for ensemble in self.ensemble_collection:
-
             timepoints = [1.0, 5.0, 10.0]
             num_samples = 10
             # Test that sample works without inferred parameters

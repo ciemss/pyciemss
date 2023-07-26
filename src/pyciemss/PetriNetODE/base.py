@@ -246,6 +246,9 @@ class PetriNetODESystem(DynamicalSystem):
             observation_indices = self._observation_indices[var_name]
             observation_values = self._observation_values[var_name]
             filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
+            if hasattr(self, 'compile_observables_p') and self.compile_observables_p:
+                for observable in self.compiled_observables:
+                    filtered_solution[observable] = torch.squeeze(self.compiled_observables[observable](**filtered_solution), dim=-1)
             with pyro.condition(data={var_name: observation_values}):
                 observation_model(filtered_solution, var_name)
 
@@ -297,15 +300,22 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     """
     Create an ODE system from a petri-net specification.
     """
-    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True):
+    def __init__(self, G: mira.modeling.Model, compile_rate_law_p=True, compile_observables_p=True, add_uncertainty=True):
         self.G = G
+        self.compile_rate_law_p = compile_rate_law_p
+        self.add_uncertainty = add_uncertainty
         if compile_rate_law_p:
-            self.G.parameters = {param: value for param, value in self.G.parameters.items()
-            if value and value.placeholder == False}
+            self.G.parameters = {
+                param: value for param, value in self.G.parameters.items()
+                if value and value.placeholder == False
+            }
         super().__init__()
         self.compile_rate_law_p = compile_rate_law_p
+        self.compile_observables_p = compile_observables_p
         if self.compile_rate_law_p:
             self.compiled_rate_law = self.compile_rate_law()
+        if self.compile_observables_p:
+            self.compiled_observables = self.compile_observables()
         if all(var.data.get("initial_value", None) is not None for var in self.var_order.values()):
             for var in self.var_order.values():
                 self.register_buffer(
@@ -323,23 +333,32 @@ class MiraPetriNetODESystem(PetriNetODESystem):
 
             param_distribution = param_info.distribution
 
-            # TODO: We still need to distinguish between fixed deterministic, trainable deterministic, and uncertain parameters.
-
             if param_distribution is not None:
                 param_info.value = mira_distribution_to_pyro(param_distribution)
             else:
                 param_value = param_info.value
                 if param_value is None:
-                    warnings_string = f"Parameter {get_name(param_info)} has value None and will be set to Uniform(0, 1)"
+                    warnings_string = f"Parameter {get_name(param_info)} has value None and will be set to Uniform(0, 1). This is likely to be an error."
                     warnings.warn(warnings_string)
                     param_info.value = pyro.distributions.Uniform(0.0, 1.0)
                 elif param_value <= 0:
-                    warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0 and will be set to Uniform(0, 0.1)"
+                    warnings_string = f"Parameter {get_name(param_info)} has value {param_value} <= 0.0. This is likely to be an error."
                     warnings.warn(warnings_string)
-                    param_info.value = pyro.distributions.Uniform(0.0, 0.1)
                 elif isinstance(param_value, (int, float)):
-                    param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                    if self.add_uncertainty:
+                        param_info.value = pyro.distributions.Uniform(max(0.9 * param_value, 0.0), 1.1 * param_value)
+                else:
+                    raise ValueError(f"Parameter {get_name(param_info)} has value {param_value} of type {type(param_value)} which is not supported.")
 
+    def compile_observables(self) -> Dict[str, SymPyModule]:
+        """Compile the observables during initialization."""
+
+        # compute the symbolic observables
+        return {
+            observable_id: SymPyModule(expressions=[self.extract_sympy(symbolic_observable.observable.expression)])
+            for observable_id, symbolic_observable in self.G.observables.items()
+        }
+        
     def compile_rate_law(self) -> Callable[[float, Tuple[torch.Tensor]], Tuple[torch.Tensor]]:
         """Compile the deriv function during initialization."""
 
@@ -512,7 +531,7 @@ class MiraPetriNetODESystem(PetriNetODESystem):
             elif isinstance(param_value, pyro.distributions.Distribution):
                 setattr(self, param_name, pyro.sample(param_name, param_value))
             elif isinstance(param_value, (int, float, numpy.ndarray, torch.Tensor)):
-                self.register_buffer(param_name, torch.as_tensor(param_value))
+                setattr(self, param_name, pyro.deterministic(param_name, torch.as_tensor(param_value)))
             else:
                 raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
@@ -532,8 +551,8 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Gaussian noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, noise_scale: float = 0.1, compile_rate_law_p: bool = False, compile_observables_p: bool = False,  **kwargs):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, **kwargs)
         self.register_buffer("noise_scale", torch.as_tensor(noise_scale))
         assert self.noise_scale > 0, "Noise scale must be positive"
         assert self.noise_scale <= 1, "Noise scale must be less than 1"
@@ -550,12 +569,13 @@ class ScaledNormalNoisePetriNetODESystem(MiraPetriNetODESystem):
         scale = self.noise_scale * torch.maximum(mean, torch.as_tensor(0.005 * self.total_population))
         pyro.sample(var_name, Normal(mean, scale).to_event(1))
 
+        
 class ScaledBetaNoisePetriNetODESystem(MiraPetriNetODESystem):
     '''
     This is a wrapper around PetriNetODESystem that adds Beta noise to the ODE system.
     '''
-    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool = False):
-        super().__init__(G, compile_rate_law_p=compile_rate_law_p)
+    def __init__(self, G: mira.modeling.Model, pseudocount: float = 1., *, noise_scale=None, compile_rate_law_p: bool=False, compile_observables_p: bool=False, **kwargs):
+        super().__init__(G, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, **kwargs)
         self.parameterized_by_pseudocount = noise_scale is None
         if self.parameterized_by_pseudocount:
             self.register_buffer("pseudocount", torch.as_tensor(pseudocount))

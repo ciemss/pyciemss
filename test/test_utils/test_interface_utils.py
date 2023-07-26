@@ -9,7 +9,9 @@ from torch import tensor
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
-
+from mira.metamodel.template_model import Observable
+from sympy import lambdify, symbols
+from sympytorch import SymPyModule
 
 class Test_Interface_Utils(unittest.TestCase):
     """Test interface_utils.py"""
@@ -59,8 +61,9 @@ class Test_Interface_Utils(unittest.TestCase):
             'Y': [21,22,np.NaN,np.NaN,25],
             'Z': 5*[np.NaN]
         })
-
-
+        S, I =  symbols('Susceptible Infected')
+        self.observable_function = {'S+I': SymPyModule(expressions=[S+I])}
+        
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
@@ -104,6 +107,17 @@ class Test_Interface_Utils(unittest.TestCase):
             rtol=1e-5,
         )
 
+        result2 = convert_to_output_format(
+            self.intervened_samples,
+            self.timepoints,
+            self.interventions,
+            time_unit="days",
+            observables=self.observable_function
+        )
+        self.assertTrue(
+            "S+I_obs" in result2.columns, "Observables are added to the output"
+        )
+            
     def test_intervention_to_interval(self):
         """Test intervention_to_interval."""
         expected_intervals = {

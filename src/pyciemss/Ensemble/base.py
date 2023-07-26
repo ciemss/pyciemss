@@ -38,8 +38,23 @@ class EnsembleSystem(DynamicalSystem):
         # Set the method for adding observation likelihoods to be the same as one of the models in the ensemble.
         # Note: that self.models[j].__class__ is constant for all j, therefore we can use self.models[0].__class__ arbitrarily.
         # TODO: This will need a test.
-    def add_observation_likelihoods(self, solution):
-        return self.models[0].add_observation_likelihoods(solution, self.observation_model)
+    
+    @pyro.nn.pyro_method
+    def add_observation_likelihoods(self, solution, observation_model=None) -> None:
+        '''
+        Compute likelihoods for observations.
+        '''
+        if observation_model is None:
+            observation_model = self.observation_model
+
+        for var_name in self._observation_var_names[0]:
+            # As each constinutuent model is collecting its own collection of (identical) observation indices and values,
+            # we can simply extract the indices and values from the first one arbitrarily.
+            observation_indices = self._observation_indices[0][var_name]
+            observation_values = self._observation_values[0][var_name]
+            filtered_solution = {v: solution[observation_indices] for v, solution in solution.items()}
+            with pyro.condition(data={var_name: observation_values}):
+                observation_model(filtered_solution, var_name)
     
     def reset(self) -> None:
         # It's unclear why we need this given __getattr__ below, but it seems necessary...
