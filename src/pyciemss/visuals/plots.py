@@ -5,6 +5,7 @@ from numbers import Integral, Number
 
 import pandas as pd
 import numpy as np
+import networkx as nx
 import torch
 import pkgutil
 import json
@@ -36,6 +37,10 @@ def _barycenter_triangle_schema() -> VegaSchema:
 
 def _calibrate_schema() -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, "calibrate_chart.vg.json"))
+
+
+def _multigraph_schema() -> VegaSchema:
+    return json.loads(pkgutil.get_data(__name__, "multigraph.vg.json"))
 
 
 # General Utilities ---------------
@@ -110,6 +115,38 @@ def clean_nans(
             entries = [maybe_replace(e, replace) for e in entries]
 
     return entries
+
+
+# Mulitgraph Visualization
+
+
+def attributed_graph(graph: nx.Graph) -> VegaSchema:
+    """Draw a graph with node/edge attributions color-coded.
+
+    graph (networkx graph): A networkX graph with attributes on nodes/edges as follows.
+       label -- Node attribute used to label the nodes.  Can be anything that vega can interpret as a string.
+       attribution -- Node attribute.  List of values used to color portions of the node border.
+       attribution -- Edge attribute.  list of values used to color the edge.
+
+       NOTE: The attribution property for nodes or edges MUST be a list (even if there is only one value)
+       NOTE: Other properties will be propogated through.
+
+       TODO: Make layout in the vega schema optional
+       TODO: Add interaction to the vega schema
+       The color coding of attribution will be shared between nodes and edges.
+
+    """
+    gjson = nx.json_graph.node_link_data(graph)
+    schema = _multigraph_schema()
+
+    schema["data"] = replace_named_with(
+        schema["data"], "node-data", ["values"], gjson["nodes"]
+    )
+    schema["data"] = replace_named_with(
+        schema["data"], "link-data", ["values"], gjson["links"]
+    )
+
+    return schema
 
 
 # Trajectory Visualizations ------------------
