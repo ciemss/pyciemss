@@ -18,11 +18,11 @@
     {
       "name": "color",
       "type": "ordinal",
-      "domain": {"data": "node-attributions", "field": "attributions"},
+      "domain": {"data": "node-attributions", "field": "attribution"},
       "range": {"scheme": "category20"}
     }
   ],
-
+  
   "marks": [
     {
       "name": "nodes",
@@ -35,7 +35,7 @@
           }
       },
       "data": [
-        {"name": "arcs",
+        {"name": "attribution-arcs",
          "source": "node-facets",
          "transform": [
             {
@@ -51,14 +51,12 @@
       "marks": [
           {
             "type": "arc",
-            "from": {
-              "data": "arcs"
-            },
+            "from": {"data": "attribution-arcs"},
             "encode": {
               "enter": {
                 "x": {"field": "x"},
                 "y": {"field": "y"},
-                "fill": {"scale": "color", "field": "attributions"},
+                "fill": {"scale": "color", "field": "attribution"},
                 "startAngle": {"field": "startAngle"},
                 "endAngle": {"field": "endAngle"},
                 "innerRadius": {"value": 10},
@@ -69,25 +67,36 @@
         ]
     },
     {
-      "type": "path",
-      "interactive": false,
-      "from": {"data": "link-data"},
-      "transform": [
+      "name": "links",
+      "type": "group",
+      "from": {
+        "facet": {
+          "data": "link-attributions",
+          "name": "link-facets",
+          "groupby": "id"
+        }
+      },
+      "data": [{
+          "name": "linky-data",
+          "source": "link-facets"
+      }],
+      "marks": [
         {
-          "type": "linkpath",
-          "require": {"signal": "position"},
-          "shape": "line",
-          "sourceX": "datum.source.x", "sourceY": "datum.source.y",
-          "targetX": "datum.target.x", "targetY": "datum.target.y"
+          "type": "rule",
+          "name": "lines",
+          "from": {"data": "linky-data"},
+          "encode": {
+            "enter": {
+              "x": {"field": "x"},
+              "y": {"field": "y"},
+              "x2": {"field": "x2"},
+              "y2": {"field": "y2"},
+              "stroke": {"value": "black"},
+              "strokeWidth": {"value": 3}
+            }
+          }
         }
-      ],
-      "name": "paths",
-      "encode": {
-        "update": {
-          "stroke": {"value": "#ccc"},
-          "strokeWidth": {"value": 0.5}
-        }
-      }
+      ]
     }
   ],
  
@@ -95,24 +104,24 @@
       {
         "name": "node-data",
         "values": [
-          {"id": 0, "attributions": ["A", "B","D"]},
-          {"id": 1, "attributions": ["B", "C"]},
-          {"id": 2, "attributions": ["C"]},
-          {"id": 3, "attributions": ["C"]}, 
-          {"id": 4, "attributions": ["C"]},
-          {"id": 5, "attributions": ["C"]},
-          {"id": 6, "attributions": ["D"]}
+          {"id": 0, "attribution": ["A", "B","D"]},
+          {"id": 1, "attribution": ["B", "C"]},
+          {"id": 2, "attribution": ["C"]},
+          {"id": 3, "attribution": ["C"]}, 
+          {"id": 4, "attribution": ["C"]},
+          {"id": 5, "attribution": ["C"]},
+          {"id": 6, "attribution": ["D"]}
         ]
       },
       {
         "name": "link-data",
         "values": [
-          {"id": 1, "source": 0, "target": 1, "attributions": ["A", "B"]},
-          {"id": 2, "source": 0, "target": 2, "attributions": ["B", "C"]},
-          {"id": 3, "source": 0, "target": 3, "attributions": ["A", "C"]},
-          {"id": 4, "source": 0, "target": 4, "attributions": ["D"]},
-          {"id": 5, "source": 0, "target": 5, "attributions": ["D"]},
-          {"id": 6, "source": 0, "target": 6, "attributions": ["D"]}
+          {"id": 1, "source": 0, "target": 1, "attribution": ["A", "B"]},
+          {"id": 2, "source": 0, "target": 2, "attribution": ["B", "C"]},
+          {"id": 3, "source": 0, "target": 3, "attribution": ["A", "C"]},
+          {"id": 4, "source": 0, "target": 4, "attribution": ["D"]},
+          {"id": 5, "source": 0, "target": 5, "attribution": ["D"]},
+          {"id": 6, "source": 0, "target": 6, "attribution": ["D"]}
         ]
       },
       {
@@ -122,7 +131,7 @@
           {
             "type": "force",
             "iterations": 300,
-            "signal": "position",
+            "signal": "position-tick",
             "forces": [
               {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
               {"force": "collide", "radius": {"signal": "nodeRadius"}},
@@ -136,14 +145,20 @@
         "name": "node-attributions",
         "source": "position",
         "transform": [
-          {"type": "flatten", 
-          "fields": ["attributions"]
-          },
-          {
-            "type": "formula",
-            "as": "weight",
-            "expr": "1"
-          }
+          {"type": "flatten", "fields": ["attribution"]},
+          {"type": "formula", "as": "weight", "expr": "1"}
+        ]
+      },
+      {
+        "name": "link-attributions",
+        "source": "link-data",
+        "transform": [
+          {"type": "flatten", "fields": ["attribution"]},
+          {"type": "formula", "as": "weight", "expr": "1"},
+          {"type": "formula", "as": "x", "expr": "datum.source.x"},
+          {"type": "formula", "as": "y", "expr": "datum.source.y"},
+          {"type": "formula", "as": "x2", "expr": "datum.target.x"},
+          {"type": "formula", "as": "y2", "expr": "datum.target.y"}
         ]
       }
     ] 
