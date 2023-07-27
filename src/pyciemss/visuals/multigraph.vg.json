@@ -4,7 +4,6 @@
   "width": 300,
   "height": 300,
   "padding": 0,
-  "autosize": "none",
 
   "signals": [
     {"name": "cx", "update": "width / 2" },
@@ -19,11 +18,24 @@
     {
       "name": "color",
       "type": "ordinal",
-      "domain": {"data": "node-attributions", "field": "attribution"},
-      "range": {"scheme": "category20"}
+      "range": {"scheme": "category20"},
+      "domain": {
+        "fields": [
+          {"data": "node-attributions", "field": "attribution"},
+          {"data": "link-attributions", "field": "attribution"}
+        ]
+      }
     }
   ],
   
+  "legends": [
+    {
+      "title": "Attributions",
+      "stroke": "color", 
+      "symbolType": "stroke"
+    }
+  ],
+
   "marks": [
     {
       "name": "links",
