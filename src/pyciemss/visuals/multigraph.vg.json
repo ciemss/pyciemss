@@ -50,12 +50,14 @@
           "from": {"data": "linky-data"},
           "encode": {
             "enter": {
+              "stroke": {"scale": "color", "field": "attribution"},
+              "strokeWidth": {"value": 3}
+            },
+            "update": {
               "x": {"field": "x"},
               "y": {"field": "y"},
               "x2": {"field": "x2"},
-              "y2": {"field": "y2"},
-              "stroke": {"scale": "color", "field": "attribution"},
-              "strokeWidth": {"value": 3}
+              "y2": {"field": "y2"}
             }
           }
         }
@@ -91,10 +93,12 @@
           "from": {"data": "attribution-arcs"},
           "encode": {
             "enter": {
-              "x": {"field": "x"},
-              "y": {"field": "y"},
               "fill": {"value": "white"},
               "size": {"signal": "2 * (innerRadius+bandWidth+1) * (innerRadius+bandWidth+1)"}
+            },
+            "update": {
+              "x": {"field": "x"},
+              "y": {"field": "y"}
             }
           }
         },
@@ -103,17 +107,36 @@
           "from": {"data": "attribution-arcs"},
           "encode": {
             "enter": {
-              "x": {"field": "x"},
-              "y": {"field": "y"},
               "fill": {"scale": "color", "field": "attribution"},
               "startAngle": {"field": "startAngle"},
               "endAngle": {"field": "endAngle"},
               "innerRadius": {"signal": "innerRadius"},
               "outerRadius": {"signal": "innerRadius+bandWidth"}
+            },
+            "update": {
+              "x": {"field": "x"},
+              "y": {"field": "y"}
             }
           }
         }
       ]
+    },
+    {
+      "type": "text",
+      "name": "labels",
+      "from": {"data": "position"},
+      "encode": {
+        "enter": {
+          "fill": {"value": "black"},
+          "text": {"field": "label"},
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"}
+        }
+      }
     }
   ],
  
@@ -121,13 +144,13 @@
       {
         "name": "node-data",
         "values": [
-          {"id": 0, "attribution": ["A", "B","D"]},
-          {"id": 1, "attribution": ["B", "C"]},
-          {"id": 2, "attribution": ["C", "D"]},
-          {"id": 3, "attribution": ["A", "C"]}, 
-          {"id": 4, "attribution": ["C"]},
-          {"id": 5, "attribution": ["C"]},
-          {"id": 6, "attribution": ["D"]}
+          {"id": 0, "label": "Zero", "attribution": ["A", "B","D"]},
+          {"id": 1, "label": "One", "attribution": ["B", "C"]},
+          {"id": 2, "label": "Two", "attribution": ["C", "D"]},
+          {"id": 3, "label": "Three", "attribution": ["A", "C"]}, 
+          {"id": 4, "label": "Four", "attribution": ["C"]},
+          {"id": 5, "label": "Five", "attribution": ["C"]},
+          {"id": 6, "label": "Six", "attribution": ["D"]}
         ]
       },
       {
