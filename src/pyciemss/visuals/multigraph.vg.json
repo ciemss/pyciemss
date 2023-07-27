@@ -9,9 +9,10 @@
   "signals": [
     {"name": "cx", "update": "width / 2" },
     {"name": "cy", "update": "height / 2" },
-    {"name": "nodeRadius", "value": 40},
-    {"name": "nodeCharge", "value": -30},
-    {"name": "linkDistance", "value": 30}
+    {"name": "innerRadius", "value": 15},
+    {"name": "bandWidth", "value": 5},
+    {"name": "nodeCharge", "value": -80},
+    {"name": "linkDistance", "value": 80}
   ],
 
   "scales": [
@@ -24,48 +25,6 @@
   ],
   
   "marks": [
-    {
-      "name": "nodes",
-      "type": "group",
-      "from": {
-          "facet": {
-              "data": "node-attributions",
-              "name": "node-facets",
-              "groupby": "id"
-          }
-      },
-      "data": [
-        {"name": "attribution-arcs",
-         "source": "node-facets",
-         "transform": [
-            {
-              "type": "pie",
-              "field": "weight",
-              "startAngle": 0,
-              "endAngle": 6.29,
-              "sort": true
-            }
-          ]
-        }
-      ],
-      "marks": [
-          {
-            "type": "arc",
-            "from": {"data": "attribution-arcs"},
-            "encode": {
-              "enter": {
-                "x": {"field": "x"},
-                "y": {"field": "y"},
-                "fill": {"scale": "color", "field": "attribution"},
-                "startAngle": {"field": "startAngle"},
-                "endAngle": {"field": "endAngle"},
-                "innerRadius": {"value": 10},
-                "outerRadius": {"value": 20}
-              }
-            }
-          }
-        ]
-    },
     {
       "name": "links",
       "type": "group",
@@ -101,6 +60,60 @@
           }
         }
       ]
+    },
+    {
+      "name": "nodes",
+      "type": "group",
+      "from": {
+          "facet": {
+              "data": "node-attributions",
+              "name": "node-facets",
+              "groupby": "id"
+          }
+      },
+      "data": [
+        {"name": "attribution-arcs",
+         "source": "node-facets",
+         "transform": [
+            {
+              "type": "pie",
+              "field": "weight",
+              "startAngle": 0,
+              "endAngle": 6.29,
+              "sort": true
+            }
+          ]
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {"data": "attribution-arcs"},
+          "encode": {
+            "enter": {
+              "x": {"field": "x"},
+              "y": {"field": "y"},
+              "fill": {"value": "white"},
+              "size": {"signal": "2 * (innerRadius+bandWidth+1) * (innerRadius+bandWidth+1)"}
+            }
+          }
+        },
+        {
+          "type": "arc",
+          "from": {"data": "attribution-arcs"},
+          "encode": {
+            "enter": {
+              "x": {"field": "x"},
+              "y": {"field": "y"},
+              "fill": {"scale": "color", "field": "attribution"},
+              "startAngle": {"field": "startAngle"},
+              "endAngle": {"field": "endAngle"},
+              "innerRadius": {"signal": "innerRadius"},
+              "outerRadius": {"signal": "innerRadius+bandWidth"}
+            }
+          }
+        }
+      ]
     }
   ],
  
@@ -110,8 +123,8 @@
         "values": [
           {"id": 0, "attribution": ["A", "B","D"]},
           {"id": 1, "attribution": ["B", "C"]},
-          {"id": 2, "attribution": ["C"]},
-          {"id": 3, "attribution": ["C"]}, 
+          {"id": 2, "attribution": ["C", "D"]},
+          {"id": 3, "attribution": ["A", "C"]}, 
           {"id": 4, "attribution": ["C"]},
           {"id": 5, "attribution": ["C"]},
           {"id": 6, "attribution": ["D"]}
@@ -138,7 +151,7 @@
             "signal": "position-tick",
             "forces": [
               {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
-              {"force": "collide", "radius": {"signal": "nodeRadius"}},
+              {"force": "collide", "radius": {"signal": "innerRadius+bandWidth"}},
               {"force": "nbody", "strength": {"signal": "nodeCharge"}},
               {"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
             ]
