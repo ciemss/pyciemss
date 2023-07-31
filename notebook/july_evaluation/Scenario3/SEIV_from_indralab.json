@@ -121,21 +121,14 @@
         },
         {
           "target": "E",
-          "expression": "1182",
-          "expression_mathml": "<cn>1182</cn>"
+          "expression": "1000.00000000000",
+          "expression_mathml": "<cn>1000.0</cn>"
         }
       ],
       "parameters": [
         {
           "id": "lambda",
           "value": 9.06e-08,
-          "distribution": {
-            "type": "Uniform1",
-            "parameters": {
-              "minimum": 0.0,
-              "maximum": 1.812e-07
-            }
-          },
           "units": {
             "expression": "1/(day*person)",
             "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
