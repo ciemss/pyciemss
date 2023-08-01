@@ -1,6 +1,8 @@
 # Load inital dependencies
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from datetime import date, timedelta, datetime
 
 US_regions = ['US', 'AL', 'AK', 'Skip', 'AZ', 'AR', 'CA', 'Skip 2', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'Skip 3',
               'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE',
@@ -87,8 +89,8 @@ def get_case_hosp_death_data(US_region, infectious_period, make_csv=True):
     covid_data_df = covid_data_df.set_index("date")
 
     # Add hosp and death data to covid_data_df
-    covid_data_df = pd.merge(covid_data_df, regional_hosp, how="inner", left_index=True, right_index=True)
-    covid_data_df = pd.merge(covid_data_df, regional_deaths, how="inner", left_index=True, right_index=True)
+    covid_data_df = pd.merge(covid_data_df, regional_hosp, how="outer", left_index=True, right_index=True)
+    covid_data_df = pd.merge(covid_data_df, regional_deaths, how="outer", left_index=True, right_index=True)
 
     if make_csv:
         filename = US_region + "_case_hospital_death.csv"
@@ -96,3 +98,51 @@ def get_case_hosp_death_data(US_region, infectious_period, make_csv=True):
 
     return covid_data_df
 
+
+def get_train_test_data(data: pd.DataFrame, train_start_date: str, test_start_date: str,
+                        test_end_date: str) -> pd.DataFrame:
+    train_df = data[(data['date'] >= train_start_date) & (data['date'] < test_start_date)]
+    train_data = [0] * train_df.shape[0]
+    start_time = train_df.index[0]
+
+    train_cases = np.array(train_df["case_census"].astype("float"))  # / data_total_population
+    train_timepoints = np.array(train_df.index.astype("float"))
+
+    test_df = data[(data['date'] >= test_start_date) & (data['date'] < test_end_date)]
+    test_cases = np.array(test_df["case_census"].astype("float"))  # / data_total_population
+    test_timepoints = np.array(test_df.index.astype("float"))
+
+    for time, row in train_df.iterrows():
+        row_dict = {}
+        row_dict["Cases"] = row["case_census"]  # / data_total_population
+        row_dict["Deaths"] = row["cumulative_deaths"]  # / data_total_population
+        if row["hosp_census"] > 0:
+            row_dict["Hospitalizations"] = row["hosp_census"]  # / data_total_population
+
+        index = time - start_time
+        train_data[index] = (float(time), row_dict)
+
+    all_timepoints = np.concatenate((train_timepoints, test_timepoints))
+
+    return train_data, train_cases, train_timepoints, test_cases, test_timepoints, all_timepoints
+
+def train_data_to_csv(train_data, data_file_name):
+    # Get training data in the correct form for ensemble model calibration
+    ensemble_data = pd.DataFrame(train_data, columns = ["Timestep", "Data"])
+    case_list = []
+    hosp_list = []
+    death_list = []
+    for i in range(0, len(ensemble_data)):
+        case_list.append(ensemble_data.iloc[i]["Data"]["Cases"])
+        if "Hospitalizations" in ensemble_data.iloc[i]["Data"].keys():
+            hosp_list.append(ensemble_data.iloc[i]["Data"]["Hospitalizations"])
+        else: 
+            hosp_list.append(float("NaN"))
+        death_list.append(ensemble_data.iloc[i]["Data"]["Deaths"])
+    ensemble_data["Cases"] = case_list
+    ensemble_data["Hospitalizations"] = hosp_list
+    ensemble_data["Deaths"] = death_list
+    ensemble_data = ensemble_data.drop(columns=["Data"])
+    ensemble_data.to_csv(data_file_name, index=False, header=True)
+    
+    return None
