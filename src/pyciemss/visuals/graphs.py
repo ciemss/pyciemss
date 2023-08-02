@@ -54,7 +54,6 @@ def spring_force_graph(
     labels -- If it is a string, that field name is used ('label' is the default; 'id' will give the networkx node-id).
               If it is None, no label is drawn.
     """
-
     gjson = nx.json_graph.node_link_data(graph)
 
     schema = vega.load_schema("spring_graph.vg.json")
@@ -70,6 +69,6 @@ def spring_force_graph(
         schema["marks"] = vega.delete_named(schema["marks"], "labels")
     else:
         labels = vega.find_named(schema["marks"], "labels")
-        labels["encode"]["update"]["text"]["field"] = f"datum.{node_labels}"
+        labels["encode"]["enter"]["text"]["field"] = f"datum.{node_labels}"
 
     return schema

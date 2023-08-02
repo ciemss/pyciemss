@@ -92,7 +92,7 @@
 
       "encode": {
         "enter": {
-          "fill": {"value": "blue"},
+          "fill": {"value": "white"},
           "size": {"signal": "2 * (innerRadius+bandWidth+1) * (innerRadius+bandWidth+1)"}
         },
         "update": {
@@ -133,9 +133,10 @@
           "transform": [
             {"type": "flatten", "fields": ["attribution"], "index": "_idx"},
             {"type": "formula", "as": "weight", "expr": "1"},
-            {"type": "formula", "expr": "datum.source.x+(datum._idx*3)", "as": "x"},
-            {"type": "formula", "expr": "datum.target.x+(datum._idx*3)", "as": "x2"},
+            {"type": "formula", "as": "slot", "expr": "if(datum._idx%2==0, datum._idx/2, -(datum._idx+1)/2)"},
+            {"type": "formula", "expr": "datum.source.x+(datum.slot*3)", "as": "x"},
             {"type": "formula", "expr": "datum.source.y", "as": "y"},
+            {"type": "formula", "expr": "datum.target.x+(datum.slot*3)", "as": "x2"},
             {"type": "formula", "expr": "datum.target.y", "as": "y2"}
           ]
       }],
@@ -208,11 +209,12 @@
       "type": "text",
       "name": "labels",
       "zindex": 2,
+      "interactive":false,
       "from": {"data": "nodes"},
       "encode": {
         "enter": {
           "fill": {"value": "black"},
-          "text": {"field": "label"},
+          "text": {"field": "datum.label"},
           "align": {"value": "center"},
           "baseline": {"value": "middle"}
         },
