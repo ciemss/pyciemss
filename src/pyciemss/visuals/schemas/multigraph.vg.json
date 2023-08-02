@@ -11,7 +11,44 @@
     {"name": "innerRadius", "value": 15},
     {"name": "bandWidth", "value": 5},
     {"name": "nodeCharge", "value": -80},
-    {"name": "linkDistance", "value": 80}
+    {"name": "linkDistance", "value": 80},
+    {"name": "static", "value": true, "bind": {"input": "checkbox"} },
+    {
+      "description": "State variable for active node fix status.",
+      "name": "fix", "value": false,
+      "on": [
+        {
+          "events": "symbol:mouseout[!event.buttons], window:mouseup",
+          "update": "false"
+        },
+        {
+          "events": "symbol:mouseover",
+          "update": "fix || true"
+        },
+        {
+          "events": "[symbol:mousedown, window:mouseup] > window:mousemove!",
+          "update": "xy()",
+          "force": true
+        }
+      ]
+    },
+    {
+      "description": "Graph node most recently interacted with.",
+      "name": "node", "value": null,
+      "on": [
+        {
+          "events": "symbol:mouseover",
+          "update": "fix === true ? item() : node"
+        }
+      ]
+    },
+    {
+      "description": "Flag to restart Force simulation upon data changes.",
+      "name": "restart", "value": false,
+      "on": [
+        {"events": {"signal": "fix"}, "update": "fix && fix.length"}
+      ]
+    }    
   ],
 
   "scales": [
@@ -21,8 +58,7 @@
       "range": {"scheme": "category20"},
       "domain": {
         "fields": [
-          {"data": "node-attributions", "field": "attribution"},
-          {"data": "link-attributions", "field": "attribution"}
+          {"data": "node-attributions", "field": "attribution"}
         ]
       }
     }
@@ -38,11 +74,55 @@
 
   "marks": [
     {
+      "name": "nodes",
+      "type": "symbol",
+      "zindex": 1,
+      "from": {"data": "node-data"},
+      "on": [
+        {
+          "trigger": "fix",
+          "modify": "node",
+          "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}"
+        },
+        {
+          "trigger": "!fix",
+          "modify": "node", "values": "{fx: null, fy: null}"
+        }
+      ],
+
+      "encode": {
+        "enter": {
+          "fill": {"value": "blue"},
+          "size": {"signal": "2 * (innerRadius+bandWidth+1) * (innerRadius+bandWidth+1)"}
+        },
+        "update": {
+          "cursor": {"value": "pointer"}
+        }
+      },
+
+      "transform": [
+        {
+          "type": "force",
+          "iterations": 300,
+          "restart": {"signal": "restart"},
+          "static": {"signal": "static"},
+          "signal": "force",
+          "forces": [
+            {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
+            {"force": "collide", "radius": {"signal": "innerRadius+bandWidth"}},
+            {"force": "nbody", "strength": {"signal": "nodeCharge"}},
+            {"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
+          ]
+        }
+      ]
+    },
+    {
       "name": "links",
       "type": "group",
+      "zindex": 0,
       "from": {
         "facet": {
-          "data": "link-attributions",
+          "data": "link-data",
           "name": "link-facets",
           "groupby": "id"
         }
@@ -51,8 +131,12 @@
           "name": "linky-data",
           "source": "link-facets",
           "transform": [
-            {"type": "formula", "expr": "datum.x+(datum._idx*3)", "as": "x"},
-            {"type": "formula", "expr": "datum.x2+(datum._idx*3)", "as": "x2"}
+            {"type": "flatten", "fields": ["attribution"], "index": "_idx"},
+            {"type": "formula", "as": "weight", "expr": "1"},
+            {"type": "formula", "expr": "datum.source.x+(datum._idx*3)", "as": "x"},
+            {"type": "formula", "expr": "datum.target.x+(datum._idx*3)", "as": "x2"},
+            {"type": "formula", "expr": "datum.source.y", "as": "y"},
+            {"type": "formula", "expr": "datum.target.y", "as": "y2"}
           ]
       }],
       "marks": [
@@ -76,7 +160,7 @@
       ]
     },
     {
-      "name": "nodes",
+      "name": "nodeHalos",
       "type": "group",
       "from": {
           "facet": {
@@ -95,25 +179,12 @@
               "startAngle": 0,
               "endAngle": 6.29,
               "sort": true
-            }
+            },
+            {"type": "lookup", "from": "nodes", "key": "datum.id", "fields": ["id"], "values": ["x", "y"]}
           ]
         }
       ],
       "marks": [
-        {
-          "type": "symbol",
-          "from": {"data": "attribution-arcs"},
-          "encode": {
-            "enter": {
-              "fill": {"value": "white"},
-              "size": {"signal": "2 * (innerRadius+bandWidth+1) * (innerRadius+bandWidth+1)"}
-            },
-            "update": {
-              "x": {"field": "x"},
-              "y": {"field": "y"}
-            }
-          }
-        },
         {
           "type": "arc",
           "from": {"data": "attribution-arcs"},
@@ -136,7 +207,8 @@
     {
       "type": "text",
       "name": "labels",
-      "from": {"data": "position"},
+      "zindex": 2,
+      "from": {"data": "nodes"},
       "encode": {
         "enter": {
           "fill": {"value": "black"},
@@ -177,40 +249,11 @@
         ]
       },
       {
-        "name": "position",
-        "source": "node-data",
-        "transform": [
-          {
-            "type": "force",
-            "iterations": 300,
-            "signal": "position-tick",
-            "forces": [
-              {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
-              {"force": "collide", "radius": {"signal": "innerRadius+bandWidth"}},
-              {"force": "nbody", "strength": {"signal": "nodeCharge"}},
-              {"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
-            ]
-          }
-        ]
-      },
-      {
         "name": "node-attributions",
-        "source": "position",
+        "source": "node-data",
         "transform": [
           {"type": "flatten", "fields": ["attribution"]},
           {"type": "formula", "as": "weight", "expr": "1"}
-        ]
-      },
-      {
-        "name": "link-attributions",
-        "source": "link-data",
-        "transform": [
-          {"type": "flatten", "fields": ["attribution"], "index": "_idx"},
-          {"type": "formula", "as": "weight", "expr": "1"},
-          {"type": "project", 
-            "fields": ["id", "weight", "attribution", "_idx", "source.x", "source.y", "target.x", "target.y"], 
-            "as": ["id", "weight", "attribution", "_idx", "x", "y", "x2", "y2"]
-          }
         ]
       }
     ] 
