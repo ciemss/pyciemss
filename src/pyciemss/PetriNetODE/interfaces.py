@@ -157,9 +157,15 @@ def load_and_sample_petri_model(
             sq_est = alpha_superquantile(qois_sq, alpha=0.95)
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+    
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables
     )
 
     if visual_options:
@@ -322,9 +328,15 @@ def load_and_calibrate_and_sample_petri_model(
             sq_est = alpha_superquantile(qois_sq, alpha=0.95)
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables,
         train_end_point = max([d[0] for d in data])
     )
 
@@ -500,9 +512,15 @@ def load_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables
     )
 
     if visual_options:
@@ -724,9 +742,15 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
+    observables = None
+    if compile_observables_p:
+        observables = model.compiled_observables
+
+    
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables,
         train_end_point = max([d[0] for d in data])
     )
 

@@ -3,8 +3,9 @@ from pyciemss.utils.interface_utils import (
     convert_to_output_format,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
-    csv_to_list
+    csv_to_list,
 )
+from pyciemss.PetriNetODE.interfaces import load_and_sample_petri_model
 from torch import tensor
 import pandas as pd
 import numpy as np
@@ -115,8 +116,22 @@ class Test_Interface_Utils(unittest.TestCase):
             observables=self.observable_function
         )
         self.assertTrue(
-            "S+I_obs" in result2.columns, "Observables are added to the output"
+            "S+I_obs" in result2.columns, "S+I observable was added to the output"
         )
+        result3 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
+                                              num_samples=2, timepoints=self.timepoints,
+                                              compile_observables_p=True)['data']
+        self.assertTrue(
+            "Cases_obs" in result3.columns, "Cases observable was not added to the output"
+        )
+        self.assertTrue(
+            "Hospitalizations_obs" in result3.columns, "Hospitalizations observable was not added to the output"
+        )
+
+        self.assertTrue(
+            "Deaths_obs" in result3.columns, "Deaths observable were not added to the output"
+        )
+        
             
     def test_intervention_to_interval(self):
         """Test intervention_to_interval."""
