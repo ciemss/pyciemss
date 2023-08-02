@@ -122,14 +122,28 @@ class Test_Interface_Utils(unittest.TestCase):
                                               num_samples=2, timepoints=self.timepoints,
                                               compile_observables_p=True)['data']
         self.assertTrue(
-            "Cases_obs" in result3.columns, "Cases observable was not added to the output"
+            "Cases_obs" in result3.columns, "Cases observable should have been added to the output"
         )
         self.assertTrue(
-            "Hospitalizations_obs" in result3.columns, "Hospitalizations observable was not added to the output"
+            "Hospitalizations_obs" in result3.columns, "Hospitalizations observable should have been added to the output"
         )
 
         self.assertTrue(
-            "Deaths_obs" in result3.columns, "Deaths observable were not added to the output"
+            "Deaths_obs" in result3.columns, "Deaths observable should have been added to the output"
+        )
+
+        result4 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
+                                              num_samples=2, timepoints=self.timepoints,
+                                              compile_observables_p=False)['data']
+        self.assertFalse(
+            "Cases_obs" in result4.columns, "Cases observable should not have been added to the output"
+        )
+        self.assertFalse(
+            "Hospitalizations_obs" in result4.columns, "Hospitalizations observable should not have been added to the output"
+        )
+
+        self.assertFalse(
+            "Deaths_obs" in result4.columns, "Deaths observable should not have been not added to the output"
         )
         
             
