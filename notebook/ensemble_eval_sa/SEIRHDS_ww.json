@@ -293,7 +293,7 @@
               "type": "Uniform1",
               "parameters": {
                 "minimum": "44900000.0",
-                "maximum": "44900000.1"
+                "maximum": "44900010.0"
               }
             }
           },
@@ -432,7 +432,7 @@
       ],
       "observables": [
         {
-          "id": "",
+          "id": "V_load",
           "name": "V_load",
           "states": [],
           "expression": "a_ww*b_ww*(1 - g_ww)*I",
