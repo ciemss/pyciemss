@@ -458,14 +458,14 @@ def calibrate_ensemble_model(
     # Again, here we assume that all observations are scaled to the first model in the ensemble.
     test_petri = new_ensemble.models[0]
 
-    for obs in observations:
-        s = 0.0
-        for v in obs.observation.values():
-            s += v
-            # assert 0 <= v <= test_petri.total_population
-            # assert s <= test_petri.total_population or torch.isclose(
-            #    s, test_petri.total_population
-        )
+    # for obs in observations:
+    #     s = 0.0
+    #     for v in obs.observation.values():
+    #         s += v
+    #         # assert 0 <= v <= test_petri.total_population
+    #         assert s <= test_petri.total_population or torch.isclose(
+    #             s, test_petri.total_population
+    #         )
 
     new_ensemble.load_events(observations)
 
