@@ -190,6 +190,8 @@
         }
       ]
     },
+    "schema_name": "petrinet",
+    "model_version": "0.1",
     "semantics": {
       "ode": {
         "rates": [
@@ -443,9 +445,5 @@
         "model_types": []
       }
     }
-  },
-  "amr_configuration": null,
-  "calibrated": false,
-  "calibration": null,
-  "calibration_score": null
+  }
 }
