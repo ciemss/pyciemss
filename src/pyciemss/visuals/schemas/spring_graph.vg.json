@@ -107,6 +107,29 @@
         ]
       },
       {
+        "type": "text",
+        "name": "labels",
+        "from": {"data": "nodes"},
+        "zindex": 2,
+        "interactive": false, 
+        "transform" : [
+           {"type": "formula", "as": "y", "expr": "datum.y"}
+        ],
+        "encode": {
+          "enter": {
+            "fill": {"value": "black"},
+            "align": {"value": "center"},
+            "baseline": {"value": "middle"},
+            "fontSize": {"value":15},
+            "text": {"field": "datum.label"}
+          },
+          "update": {
+            "x": {"field": "x"},
+            "y": {"field": "y"}
+          }
+        }
+      },
+      {
         "type": "path",
         "from": {"data": "link-data"},
         "interactive": false,
@@ -125,28 +148,7 @@
             "targetX": "datum.target.x", "targetY": "datum.target.y"
           }
         ]
-      },
-      {
-        "type": "text",
-        "name": "labels",
-        "from": {"data": "nodes"},
-        "transform" : [
-           {"type": "formula", "as": "y", "expr": "datum.y + nodeRadius"}
-        ],
-        "encode": {
-          "enter": {
-            "fill": {"value": "black"},
-            "align": {"value": "center"},
-            "baseline": {"value": "top"},
-            "fontSize": {"value":15}
-          },
-          "update": {
-            "text": {"field": "datum.label"},
-            "x": {"field": "x"},
-            "y": {"field": "y"}
-          }
-        }
-      }      
+      }
     ],
 
     "data": [
