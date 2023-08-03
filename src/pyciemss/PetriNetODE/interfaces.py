@@ -1,5 +1,4 @@
 import logging
-import pika
 import os
 import json
 import pyro
@@ -8,7 +7,7 @@ import time
 import numpy as np
 from math import ceil
 import pandas as pd
-from typing import Iterable, Optional, Tuple, Union
+from typing import Iterable, Optional, Tuple, Union, Callable
 import copy
 import warnings
 
@@ -55,13 +54,6 @@ from pyciemss.custom_decorators import pyciemss_logging_wrapper
 
 PetriSolution = dict[str, torch.Tensor]
 PetriInferredParameters = pyro.nn.PyroModule
-
-ASKEM_PYCIEMSS_SERVICE = os.getenv("ASKEM_PYCIEMSS_SERVICE",False)
-PIKA_HOST = os.getenv("PIKA_HOST")
-
-if ASKEM_PYCIEMSS_SERVICE:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=PIKA_HOST))
-    channel = connection.channel()
 
 @pyciemss_logging_wrapper
 def load_and_sample_petri_model(
@@ -165,9 +157,15 @@ def load_and_sample_petri_model(
             sq_est = alpha_superquantile(qois_sq, alpha=0.95)
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+    
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables
     )
 
     if visual_options:
@@ -200,7 +198,7 @@ def load_and_calibrate_and_sample_petri_model(
     compile_observables_p = True,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id: Optional[str] = None,
+    progress_hook: Callable = lambda _: None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
 ) -> dict:
@@ -255,8 +253,8 @@ def load_and_calibrate_and_sample_petri_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
-        job_id: Optional[str]
-            - Used to display progress of current job
+        progress_hook: Callable
+            - The hook transmitting the current progress of the calibration.
         alpha_qs: Optional[Iterable[float]]
             - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
         stacking_order: Optional[str]
@@ -310,7 +308,7 @@ def load_and_calibrate_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
-        job_id=job_id
+        progress_hook=progress_hook
     )
     samples = sample(
         model,
@@ -330,9 +328,15 @@ def load_and_calibrate_and_sample_petri_model(
             sq_est = alpha_superquantile(qois_sq, alpha=0.95)
             risk_results.update({k: {"risk": [sq_est], "qoi": qois_sq}})
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables,
         train_end_point = max([d[0] for d in data])
     )
 
@@ -508,9 +512,15 @@ def load_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
+    if compile_observables_p:
+        observables = model.compiled_observables
+    else:
+        observables = None
+
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
-        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables
     )
 
     if visual_options:
@@ -550,7 +560,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     maxfeval: int = 25,
     time_unit: Optional[str] = None,
     visual_options: Union[None, bool, dict[str, any]] = None,
-    job_id: Optional[str] = None,
+    progress_hook: Callable = lambda _: None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
 ) -> dict:
@@ -621,8 +631,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - True output a visual
             - False do not output a visual
             - dict output a visual with the dictionary passed to the visualization as kwargs
-        job_id: Optional[str]
-            - Used to display progress of current job
+        progress_hook: Callable
+            - The hook transmitting the current progress of the calibration.
         alpha_qs: Optional[Iterable[float]]
             - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
         stacking_order: Optional[str]
@@ -678,7 +688,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         num_particles,
         autoguide,
         method=method,
-        job_id=job_id
+        progress_hook=progress_hook
     )
 
     def qoi_fn(y):
@@ -732,9 +742,15 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
 
     samples = ouu_policy["samples"]
 
+    observables = None
+    if compile_observables_p:
+        observables = model.compiled_observables
+
+    
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, interventions=interventions_opt, time_unit=time_unit,
         quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        observables=observables,
         train_end_point = max([d[0] for d in data])
     )
 
@@ -828,7 +844,7 @@ def calibrate_petri(
     num_particles: int = 1,
     autoguide=pyro.infer.autoguide.AutoLowRankMultivariateNormal,
     method="dopri5",
-    job_id=None,
+    progress_hook: Callable = lambda _: None,
     jostle_scale: float = 1e-5,
 ) -> PetriInferredParameters:
     """
@@ -857,11 +873,7 @@ def calibrate_petri(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
-        if ASKEM_PYCIEMSS_SERVICE:
-            channel.basic_publish(exchange='',
-                        routing_key='terarium',
-                        body=json.dumps({"job_id":job_id, "progress":i/num_iterations})
-                        )
+        progress_hook(i/num_iterations)
         loss = svi.step(method=method)
         if verbose:
             if i % 25 == 0:
