@@ -12,6 +12,7 @@
     {"name": "bandWidth", "value": 5},
     {"name": "nodeCharge", "value": -80},
     {"name": "linkDistance", "value": 80},
+    {"name": "lineWidth", "value": 3},
     {"name": "static", "value": true, "bind": {"input": "checkbox"} },
     {
       "description": "State variable for active node fix status.",
@@ -134,12 +135,23 @@
             {"type": "flatten", "fields": ["attribution"], "index": "_idx"},
             {"type": "formula", "as": "weight", "expr": "1"},
             {"type": "formula", "as": "slot", "expr": "if(datum._idx%2==0, datum._idx/2, -(datum._idx+1)/2)"},
-            {"type": "formula", "expr": "datum.source.x+(datum.slot*3)", "as": "x"},
-            {"type": "formula", "expr": "datum.source.y", "as": "y"},
-            {"type": "formula", "expr": "datum.target.x+(datum.slot*3)", "as": "x2"},
-            {"type": "formula", "expr": "datum.target.y", "as": "y2"}
+            {"type": "formula", "as": "alpha",  "expr": "atan2(datum.y, datum.x)"},
+            {"type": "formula", "as": "offset", "expr": "datum.slot*lineWidth"},
+            {"type": "formula", "as": "d_intercept", "expr": "datum.offset * sin(datum.alpha)"},
+            {"type": "formula", "as": "slope", "expr": "(datum.target.y - datum.source.y)/(datum.target.x - datum.source.x)"},
+            {"type": "formula", "as": "new_intercept", 
+             "expr": "datum.d_intercept + (datum.source.y-(datum.slope*datum.source.x))"},
+            {"type": "formula", "as": "_dy", "expr": "datum.y-(datum.slope*datum.source.x+datum.new_intercept)"},
+            {"type": "formula", "as": "_dx", "expr": "if(datum.slope !=0, datum.source.x - (datum.source.y-datum.new_intercept)/datum.slope, 0)"},
+            {"type": "formula", "as": "dy", "expr": "if(isFinite(datum._dy), datum._dy, datum.offset)"},
+            {"type": "formula", "as": "dx", "expr": "if(isFinite(datum._dx), datum._dx, datum.offset)"},
+            {"type": "formula", "as": "nx", "expr": "datum.source.x+datum.dx"},
+            {"type": "formula", "as": "nx2", "expr": "datum.target.x+datum.dx"},
+            {"type": "formula", "as": "ny", "expr": "datum.source.y+datum.dy"},
+            {"type": "formula", "as": "ny2", "expr": "datum.target.y+datum.dy"}
           ]
-      }],
+        }
+      ],
       "marks": [
         {
           "type": "rule",
@@ -148,13 +160,13 @@
           "encode": {
             "enter": {
               "stroke": {"scale": "color", "field": "attribution"},
-              "strokeWidth": {"value": 3}
+              "strokeWidth": {"signal": "lineWidth"}
             },
             "update": {
-              "x": {"field": "x"},
-              "y": {"field": "y"},
-              "x2": {"field": "x2"},
-              "y2": {"field": "y2"}
+              "x": {"field": "nx"},
+              "y": {"field": "ny"},
+              "x2": {"field": "nx2"},
+              "y2": {"field": "ny2"}
             }
           }
         }
