@@ -107,6 +107,7 @@
      "I"
     ],
     "output": [
+     "I",
      "V"
     ],
     "properties": {
@@ -157,7 +158,7 @@
     },
     {
      "target": "V",
-     "expression": "4.49e+06",
+     "expression": "0.0",
      "expression_mathml": "<cn>0.0</cn>"
     }
    ],
