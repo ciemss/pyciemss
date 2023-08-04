@@ -1,0 +1,1448 @@
+{
+ "name": "SEIRHD NPI Type 1 Age-Stratified",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "        This model has been stratified into four age groups: (0) for 0-19, (1) for 20-49, (2) for 50-64, and (3) for 65+\n        ",
+ "model_version": "0.1",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S_0",
+    "name": "S_0",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_0",
+    "name": "I_0",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_0",
+    "name": "E_0",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_1",
+    "name": "I_1",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_2",
+    "name": "I_2",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_3",
+    "name": "I_3",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_1",
+    "name": "S_1",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_1",
+    "name": "E_1",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_2",
+    "name": "S_2",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_2",
+    "name": "E_2",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_3",
+    "name": "S_3",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_3",
+    "name": "E_3",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_0",
+    "name": "R_0",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_1",
+    "name": "R_1",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_2",
+    "name": "R_2",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_3",
+    "name": "R_3",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_0",
+    "name": "H_0",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_1",
+    "name": "H_1",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_2",
+    "name": "H_2",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_3",
+    "name": "H_3",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D_0",
+    "name": "D_0",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {
+      "age": "0"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D_1",
+    "name": "D_1",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {
+      "age": "1"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D_2",
+    "name": "D_2",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {
+      "age": "2"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D_3",
+    "name": "D_3",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {
+      "age": "3"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I_0",
+     "S_0"
+    ],
+    "output": [
+     "I_0",
+     "E_0"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I_1",
+     "S_0"
+    ],
+    "output": [
+     "I_1",
+     "E_0"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I_2",
+     "S_0"
+    ],
+    "output": [
+     "I_2",
+     "E_0"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I_3",
+     "S_0"
+    ],
+    "output": [
+     "I_3",
+     "E_0"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "I_0",
+     "S_1"
+    ],
+    "output": [
+     "I_0",
+     "E_1"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "I_1",
+     "S_1"
+    ],
+    "output": [
+     "I_1",
+     "E_1"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I_2",
+     "S_1"
+    ],
+    "output": [
+     "I_2",
+     "E_1"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I_3",
+     "S_1"
+    ],
+    "output": [
+     "I_3",
+     "E_1"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "I_0",
+     "S_2"
+    ],
+    "output": [
+     "I_0",
+     "E_2"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "I_1",
+     "S_2"
+    ],
+    "output": [
+     "I_1",
+     "E_2"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "I_2",
+     "S_2"
+    ],
+    "output": [
+     "I_2",
+     "E_2"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "I_3",
+     "S_2"
+    ],
+    "output": [
+     "I_3",
+     "E_2"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "I_0",
+     "S_3"
+    ],
+    "output": [
+     "I_0",
+     "E_3"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "I_1",
+     "S_3"
+    ],
+    "output": [
+     "I_1",
+     "E_3"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "I_2",
+     "S_3"
+    ],
+    "output": [
+     "I_2",
+     "E_3"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "I_3",
+     "S_3"
+    ],
+    "output": [
+     "I_3",
+     "E_3"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "E_0"
+    ],
+    "output": [
+     "I_0"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "E_1"
+    ],
+    "output": [
+     "I_1"
+    ],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "E_2"
+    ],
+    "output": [
+     "I_2"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "E_3"
+    ],
+    "output": [
+     "I_3"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "I_0"
+    ],
+    "output": [
+     "R_0"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "I_1"
+    ],
+    "output": [
+     "R_1"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "I_2"
+    ],
+    "output": [
+     "R_2"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "I_3"
+    ],
+    "output": [
+     "R_3"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "I_0"
+    ],
+    "output": [
+     "H_0"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "I_1"
+    ],
+    "output": [
+     "H_1"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "I_2"
+    ],
+    "output": [
+     "H_2"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "I_3"
+    ],
+    "output": [
+     "H_3"
+    ],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "H_0"
+    ],
+    "output": [
+     "R_0"
+    ],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "H_1"
+    ],
+    "output": [
+     "R_1"
+    ],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "H_2"
+    ],
+    "output": [
+     "R_2"
+    ],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "H_3"
+    ],
+    "output": [
+     "R_3"
+    ],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "H_0"
+    ],
+    "output": [
+     "D_0"
+    ],
+    "properties": {
+     "name": "t33"
+    }
+   },
+   {
+    "id": "t34",
+    "input": [
+     "H_1"
+    ],
+    "output": [
+     "D_1"
+    ],
+    "properties": {
+     "name": "t34"
+    }
+   },
+   {
+    "id": "t35",
+    "input": [
+     "H_2"
+    ],
+    "output": [
+     "D_2"
+    ],
+    "properties": {
+     "name": "t35"
+    }
+   },
+   {
+    "id": "t36",
+    "input": [
+     "H_3"
+    ],
+    "output": [
+     "D_3"
+    ],
+    "properties": {
+     "name": "t36"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I_0*S_0*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_0</ci><ci>S_0</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I_1*S_0*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_1</ci><ci>S_0</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I_2*S_0*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_2</ci><ci>S_0</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I_3*S_0*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_3</ci><ci>S_0</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "I_0*S_1*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_0</ci><ci>S_1</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I_1*S_1*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_1</ci><ci>S_1</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I_2*S_1*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_2</ci><ci>S_1</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I_3*S_1*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_3</ci><ci>S_1</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "I_0*S_2*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_0</ci><ci>S_2</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "I_1*S_2*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_1</ci><ci>S_2</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "I_2*S_2*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_2</ci><ci>S_2</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "I_3*S_2*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_3</ci><ci>S_2</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "I_0*S_3*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_0</ci><ci>S_3</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "I_1*S_3*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_1</ci><ci>S_3</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "I_2*S_3*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_2</ci><ci>S_3</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "I_3*S_3*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_3</ci><ci>S_3</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "E_0*delta",
+     "expression_mathml": "<apply><times/><ci>E_0</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "E_1*delta",
+     "expression_mathml": "<apply><times/><ci>E_1</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "E_2*delta",
+     "expression_mathml": "<apply><times/><ci>E_2</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "E_3*delta",
+     "expression_mathml": "<apply><times/><ci>E_3</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "I_0*gamma*(1 - eta_0)",
+     "expression_mathml": "<apply><times/><ci>I_0</ci><ci>gamma</ci><apply><minus/><cn>1</cn><ci>eta_0</ci></apply></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "I_1*gamma*(1 - eta_1)",
+     "expression_mathml": "<apply><times/><ci>I_1</ci><ci>gamma</ci><apply><minus/><cn>1</cn><ci>eta_1</ci></apply></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "I_2*gamma*(1 - eta_2)",
+     "expression_mathml": "<apply><times/><ci>I_2</ci><ci>gamma</ci><apply><minus/><cn>1</cn><ci>eta_2</ci></apply></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "I_3*gamma*(1 - eta_3)",
+     "expression_mathml": "<apply><times/><ci>I_3</ci><ci>gamma</ci><apply><minus/><cn>1</cn><ci>eta_3</ci></apply></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "I_0*eta_0*gamma",
+     "expression_mathml": "<apply><times/><ci>I_0</ci><ci>eta_0</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "I_1*eta_1*gamma",
+     "expression_mathml": "<apply><times/><ci>I_1</ci><ci>eta_1</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "I_2*eta_2*gamma",
+     "expression_mathml": "<apply><times/><ci>I_2</ci><ci>eta_2</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "I_3*eta_3*gamma",
+     "expression_mathml": "<apply><times/><ci>I_3</ci><ci>eta_3</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "H_0*(1 - mu_0)/los_0",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_0</ci><apply><minus/><cn>1</cn><ci>mu_0</ci></apply></apply><ci>los_0</ci></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "H_1*(1 - mu_1)/los_1",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_1</ci><apply><minus/><cn>1</cn><ci>mu_1</ci></apply></apply><ci>los_1</ci></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "H_2*(1 - mu_2)/los_2",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_2</ci><apply><minus/><cn>1</cn><ci>mu_2</ci></apply></apply><ci>los_2</ci></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "H_3*(1 - mu_3)/los_3",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_3</ci><apply><minus/><cn>1</cn><ci>mu_3</ci></apply></apply><ci>los_3</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "H_0*mu_0/los_0",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_0</ci><ci>mu_0</ci></apply><ci>los_0</ci></apply>"
+    },
+    {
+     "target": "t34",
+     "expression": "H_1*mu_1/los_1",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_1</ci><ci>mu_1</ci></apply><ci>los_1</ci></apply>"
+    },
+    {
+     "target": "t35",
+     "expression": "H_2*mu_2/los_2",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_2</ci><ci>mu_2</ci></apply><ci>los_2</ci></apply>"
+    },
+    {
+     "target": "t36",
+     "expression": "H_3*mu_3/los_3",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H_3</ci><ci>mu_3</ci></apply><ci>los_3</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S_0",
+     "expression": "4597366.75000000",
+     "expression_mathml": "<cn>4597366.75</cn>"
+    },
+    {
+     "target": "I_0",
+     "expression": "1.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "E_0",
+     "expression": "0.250000000000000",
+     "expression_mathml": "<cn>0.25</cn>"
+    },
+    {
+     "target": "I_1",
+     "expression": "1.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "I_2",
+     "expression": "1.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "I_3",
+     "expression": "1.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "S_1",
+     "expression": "7893557.75000000",
+     "expression_mathml": "<cn>7893557.75</cn>"
+    },
+    {
+     "target": "E_1",
+     "expression": "0.250000000000000",
+     "expression_mathml": "<cn>0.25</cn>"
+    },
+    {
+     "target": "S_2",
+     "expression": "3878807.75000000",
+     "expression_mathml": "<cn>3878807.75</cn>"
+    },
+    {
+     "target": "E_2",
+     "expression": "0.250000000000000",
+     "expression_mathml": "<cn>0.25</cn>"
+    },
+    {
+     "target": "S_3",
+     "expression": "2970262.75000000",
+     "expression_mathml": "<cn>2970262.75</cn>"
+    },
+    {
+     "target": "E_3",
+     "expression": "0.250000000000000",
+     "expression_mathml": "<cn>0.25</cn>"
+    },
+    {
+     "target": "R_0",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "R_1",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "R_2",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "R_3",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "H_0",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "H_1",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "H_2",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "H_3",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D_0",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D_1",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D_2",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D_3",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 19340000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta_c",
+     "value": 0.4,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_s",
+     "value": 1.0,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "k",
+     "value": 5.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "kappa",
+     "value": 0.4,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.05,
+       "maximum": 0.8
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "t_0",
+     "value": 60.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "delta",
+     "value": 0.25,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta_0",
+     "value": 0.001,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.0005,
+       "maximum": 0.01
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.2,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.1,
+       "maximum": 0.5
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta_1",
+     "value": 0.009,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.01
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta_2",
+     "value": 0.1,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.2
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta_3",
+     "value": 0.15,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.2
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "los_0",
+     "value": 3.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "mu_0",
+     "value": 0.009,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.1
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "los_1",
+     "value": 5.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "mu_1",
+     "value": 0.02,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.1
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "los_2",
+     "value": 7.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "mu_2",
+     "value": 0.08,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.001,
+       "maximum": 0.1
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "los_3",
+     "value": 7.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "mu_3",
+     "value": 0.2,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.1,
+       "maximum": 0.25
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I_0 + I_1 + I_2 + I_3",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "hospitalized",
+     "name": "hospitalized",
+     "expression": "H_0 + H_1 + H_2 + H_3",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "dead",
+     "name": "dead",
+     "expression": "D_0 + D_1 + D_2 + D_3",
+     "expression_mathml": "<apply><plus/><ci>D_middle_aged</ci><ci>D_old</ci><ci>D_young</ci></apply>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
