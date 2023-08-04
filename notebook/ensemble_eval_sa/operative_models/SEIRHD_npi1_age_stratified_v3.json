@@ -1185,7 +1185,7 @@
       "type": "Uniform1",
       "parameters": {
        "minimum": 0.05,
-       "maximum": 0.8
+       "maximum": 0.2
       }
      },
      "units": {
@@ -1203,7 +1203,7 @@
     },
     {
      "id": "k",
-     "value": 0.5,
+     "value": 0.3,
      "units": {
       "expression": "1",
       "expression_mathml": "<cn>1</cn>"
