@@ -81,13 +81,13 @@ def convert_to_output_format(
 
     if observables is not None:
         expression_vars = {
-            k.replace('_sol', ''): torch.squeeze( torch.tensor(d[k]), dim=-1)
+            k.replace('_sol', ''): torch.squeeze( torch.tensor(d[k]), dim=-1) #.detach().cpu().numpy().astype(np.float64)
             for k in pyciemss_results["states"].keys()
         }
         d = {
             **d,
             **{
-                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars))
+                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars)).detach().cpu().numpy().astype(np.float64)
                 for observable_id, expression in observables.items()
             },
         }

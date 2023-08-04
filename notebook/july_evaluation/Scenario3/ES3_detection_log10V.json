@@ -1,0 +1,348 @@
+{
+  "id": "b7cb560e-02b3-467d-b3b4-ca4f7efd996c",
+  "timestamp": "2023-07-27 22:16:02",
+  "name": "ES3_detection_log10V",
+  "description": "Scenario 3 base model\nTransformed from model 'Scenario 3 base model' (ada3d20a-cbc8-4bbd-b6b3-76446fb3cfdb) at Wed Jul 19 18:50:57 2023 \nTransformed from model 'ES3_detection' (f5a23011-ec01-4851-93bf-24baa4404fad) at Wed Jul 19 19:04:15 2023 \nTransformed from model 'ES3_detection_obs' (665605d7-9af9-4f82-af5a-1593ae1e7620) at Wed Jul 19 19:37:01 2023 ",
+  "username": null,
+  "model": {
+    "states": [
+      {
+        "id": "S",
+        "name": "S",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000514"
+          },
+          "modifiers": {}
+        },
+        "units": {
+          "expression": "person",
+          "expression_mathml": "<ci>person</ci>"
+        }
+      },
+      {
+        "id": "I",
+        "name": "I",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000511"
+          },
+          "modifiers": {}
+        },
+        "units": {
+          "expression": "person",
+          "expression_mathml": "<ci>person</ci>"
+        }
+      },
+      {
+        "id": "E",
+        "name": "E",
+        "grounding": {
+          "identifiers": {
+            "apollosv": "0000154"
+          },
+          "modifiers": {}
+        },
+        "units": {
+          "expression": "person",
+          "expression_mathml": "<ci>person</ci>"
+        }
+      },
+      {
+        "id": "V",
+        "name": "V",
+        "grounding": {
+          "identifiers": {
+            "vido": "0001331"
+          },
+          "modifiers": {}
+        },
+        "units": {
+          "expression": "person",
+          "expression_mathml": "<ci>person</ci>"
+        }
+      },
+      {
+        "id": "C",
+        "name": "C",
+        "grounding": {
+          "identifiers": {},
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "D",
+        "name": "D",
+        "grounding": {
+          "identifiers": {},
+          "modifiers": {}
+        }
+      },
+      {
+        "id": "U",
+        "name": "U",
+        "grounding": {
+          "identifiers": {},
+          "modifiers": {}
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "id": "t1",
+        "input": [
+          "I",
+          "S"
+        ],
+        "output": [
+          "I",
+          "E"
+        ],
+        "properties": {
+          "name": "t1"
+        }
+      },
+      {
+        "id": "t2",
+        "input": [
+          "E"
+        ],
+        "output": [
+          "I"
+        ],
+        "properties": {
+          "name": "t2"
+        }
+      },
+      {
+        "id": "t3",
+        "input": [
+          "I"
+        ],
+        "output": [],
+        "properties": {
+          "name": "t3"
+        }
+      },
+      {
+        "id": "t4",
+        "input": [
+          "I"
+        ],
+        "output": [
+          "I",
+          "V"
+        ],
+        "properties": {
+          "name": "t4"
+        }
+      },
+      {
+        "id": "t5",
+        "input": [
+          "I",
+          "S"
+        ],
+        "output": [
+          "I",
+          "S",
+          "C"
+        ],
+        "properties": {
+          "name": "t5"
+        }
+      },
+      {
+        "id": "t6",
+        "input": [
+          "I",
+          "S"
+        ],
+        "output": [
+          "I",
+          "S",
+          "D"
+        ],
+        "properties": {
+          "name": "t6"
+        }
+      },
+      {
+        "id": "t7",
+        "input": [
+          "I",
+          "S"
+        ],
+        "output": [
+          "I",
+          "S",
+          "U"
+        ],
+        "properties": {
+          "name": "t7"
+        }
+      }
+    ]
+  },
+  "schema_name": "petrinet",
+  "model_version": "0.1",
+  "semantics": {
+    "ode": {
+      "rates": [
+        {
+          "target": "t1",
+            "expression": "I*S*lambda",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
+        },
+        {
+          "target": "t2",
+          "expression": "E*k",
+          "expression_mathml": "<apply><times/><ci>E</ci><ci>k</ci></apply>"
+        },
+        {
+          "target": "t3",
+          "expression": "I*delta",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>delta</ci></apply>"
+        },
+        {
+          "target": "t4",
+          "expression": "I*alpha*beta*(1 - gamma)",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>alpha</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>gamma</ci></apply></apply>"
+        },
+        {
+          "target": "t5",
+          "expression": "I*S*lambda",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
+        },
+        {
+          "target": "t6",
+          "expression": "I*S*k*lambda",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>k</ci><ci>lambda</ci></apply>"
+        },
+        {
+          "target": "t7",
+          "expression": "I*S*lambda*(1 - k)",
+          "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci><apply><minus/><cn>1</cn><ci>k</ci></apply></apply>"
+        }
+      ],
+      "initials": [
+        {
+          "target": "S",
+          "expression": "2300000.00000000",
+          "expression_mathml": "<cn>2300000.0</cn>"
+        },
+        {
+          "target": "I",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "E",
+          "expression": "1000.00000000000",
+          "expression_mathml": "<cn>1000.0</cn>"
+        },
+        {
+          "target": "V",
+          "expression": "34248644946672.49",
+          "expression_mathml": "<cn>34248644946672.49023</cn>"
+        },
+        {
+          "target": "C",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "D",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        },
+        {
+          "target": "U",
+          "expression": "0.0",
+          "expression_mathml": "<cn>0.0</cn>"
+        }
+      ],
+      "parameters": [
+        {
+          "id": "lambda",
+          "units": {
+            "expression": "1/(day*person)",
+            "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+          }
+        },
+        {
+          "id": "k",
+          "value": 0.5
+        },
+        {
+          "id": "delta",
+          "value": 0.125,
+          "units": {
+            "expression": "1/day",
+            "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+          }
+        },
+        {
+          "id": "alpha",
+          "value": 500,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 51,
+              "maximum": 796
+            }
+          },
+          "units": {
+            "expression": "gram",
+            "expression_mathml": "<ci>gram</ci>"
+          }
+        },
+        {
+          "id": "beta",
+          "units": {
+            "expression": "virus/gram",
+            "expression_mathml": "<apply><divide/><ci>virus</ci><ci>gram</ci></apply>"
+          }
+        },
+        {
+          "id": "gamma",
+          "units": {
+            "expression": "1/day",
+            "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+          }
+        }
+      ],
+      "observables": [
+        {
+          "id": "logV",
+          "name": "logV",
+            "expression": "log(V)*0.43429448190325176",
+          "expression_mathml": "<apply><divide/><apply><ln/><ci>V</ci></apply><apply><ln/><cn>10</cn></apply></apply>"
+        }
+      ],
+      "time": {
+        "id": "t",
+        "units": {
+          "expression": "day",
+          "expression_mathml": "<ci>day</ci>"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "annotations": {
+      "license": null,
+      "authors": [],
+      "references": [],
+      "time_scale": null,
+      "time_start": null,
+      "time_end": null,
+      "locations": [],
+      "pathogens": [],
+      "diseases": [],
+      "hosts": [],
+      "model_types": []
+    }
+  },
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json"
+}
