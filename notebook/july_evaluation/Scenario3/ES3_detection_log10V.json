@@ -191,7 +191,7 @@
       "rates": [
         {
           "target": "t1",
-            "expression": "I*S*lambda",
+            "expression": "I*S*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
         },
         {
@@ -211,17 +211,17 @@
         },
         {
           "target": "t5",
-          "expression": "I*S*lambda",
+            "expression": "I*S*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
         },
         {
           "target": "t6",
-          "expression": "I*S*k*lambda",
+            "expression": "I*S*k*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>k</ci><ci>lambda</ci></apply>"
         },
         {
           "target": "t7",
-          "expression": "I*S*lambda*(1 - k)",
+            "expression": "I*S*lambda*(1 - k)/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci><apply><minus/><cn>1</cn><ci>k</ci></apply></apply>"
         }
       ],
