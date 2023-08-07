@@ -58,7 +58,7 @@ class Test_Samples_Format(unittest.TestCase):
             timepoints,
             total_population=1000,
             num_iterations=5,
-            visual_options={"title": "Calibrated Ensemble", "subset": ".*_sol"},
+            visual_options={"title": "Calibrated Ensemble", "keep": ".*_sol"},
         )
         self.samples = result_ensemble["data"]
         self.q_ensemble = result_ensemble["quantiles"]

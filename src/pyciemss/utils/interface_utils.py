@@ -266,3 +266,42 @@ def create_mapping_function_from_observables(model, solution_mapping: dict[str, 
 
         return mapped_result_dict
     return solution_mapping_f
+
+
+def cdc_reformatcsv(
+        filename: str, 
+        solution_string_mapping: dict = None, 
+        forecast_start_date: str = None, 
+        location: str = None,
+        drop_column_names: Iterable[str] = None,
+        ) -> pd.DataFrame:
+    """ 
+    Reformat the quantiles csv file to CDC ensemble forecast format
+    """
+    q_ensemble_data = pd.read_csv(filename)
+    # Number of days for which data is available
+    number_data_days = max(q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")]["number_days"])
+    # Subtracting number of backast days from number_days
+    q_ensemble_data["number_days"] = q_ensemble_data["number_days"] - number_data_days
+    # Drop rows that are backcasting
+    q_ensemble_data = q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")==False]
+    # Changing name of state according to user provided strings
+    if solution_string_mapping:
+        for k, v in solution_string_mapping.items():
+            q_ensemble_data["output"] = q_ensemble_data["output"].replace(k,v)
+
+    # Creating target column
+    q_ensemble_data["target"] = q_ensemble_data["number_days"].astype("string") + " days ahead " + q_ensemble_data["inc_cum"] + " " + q_ensemble_data["output"]
+    
+    # Add dates
+    if forecast_start_date:
+        q_ensemble_data["forecast_date"] = pd.to_datetime(forecast_start_date, format='%Y-%m-%d', errors='ignore')
+        # q_ensemble_data["target_end_date"] = q_ensemble_data["forecast_date"] + pd.DateOffset(days=q_ensemble_data["number_days"].astype(int))
+        q_ensemble_data["target_end_date"] = q_ensemble_data["forecast_date"].combine(q_ensemble_data["number_days"], lambda x,y: x + pd.DateOffset(days=int(y)))
+    # Add location column
+    if location:
+        q_ensemble_data["location"] = location
+    # Dropping columns specified by user
+    if drop_column_names:
+        q_ensemble_data = q_ensemble_data.drop(columns=drop_column_names)
+    return q_ensemble_data
