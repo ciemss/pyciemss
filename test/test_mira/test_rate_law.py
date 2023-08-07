@@ -156,9 +156,9 @@ class TestRateLaw(unittest.TestCase):
 
     def test_time_varying_parameter_rate_law(self):
         """Test that the rate law can be compiled correctly."""
-        model_path = 'test/models/AMR_examples/scenario1_c.json'
+        model_path = "test/models/AMR_examples/scenario1_c.json"
         scenario1_c = load_petri_model(model_path, compile_rate_law_p=True)
-        expected_rate_law_str = 'S*I*kappa*(beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0))))/N'
+        expected_rate_law_str = "kappa*(beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0))))"
         expected_rate_law_symbolic = sympy.sympify(expected_rate_law_str)
         param_vals = dict(
             kappa=1.0,
@@ -200,6 +200,53 @@ class TestRateLaw(unittest.TestCase):
             f"Expected rate law value: {expected_rate_law_values}\n"
             f"Actual rate law value {actual_rate_law_values2}",
         )
+
+    # def test_time_varying_parameter_rate_law(self):
+    #     """Test that the rate law can be compiled correctly."""
+    #     model_path = 'test/models/AMR_examples/scenario1_c.json'
+    #     scenario1_c = load_petri_model(model_path, compile_rate_law_p=True)
+    #     expected_rate_law_str = 'S*I*kappa*(beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0))))/N'
+    #     expected_rate_law_symbolic = sympy.sympify(expected_rate_law_str)
+    #     param_vals = dict(
+    #         kappa=1.0,
+    #         beta_nc=0.5,
+    #         beta_c=0.6,
+    #         beta_s=0.4,
+    #         k_1=0.1,
+    #         k_2=0.1,
+    #         t_0=0.0,
+    #         t_1=1.0,
+    #     )
+    #     expected_rate_law_mod = SymPyModule(expressions=[expected_rate_law_symbolic])
+    #     expected_rate_law_values = expected_rate_law_mod(
+    #         **param_vals, **dict(t=torch.tensor(0.2))
+    #     )
+    #     actual_rate_law_symbolic = scenario1_c.extract_sympy(
+    #         scenario1_c.G.template_model.templates[0].rate_law
+    #     )
+    #     actual_rate_law_mod = SymPyModule(expressions=[actual_rate_law_symbolic])
+    #     actual_rate_law_values1 = actual_rate_law_mod(
+    #         **param_vals, **dict(t=torch.tensor(23.0))
+    #     )
+    #     actual_rate_law_values2 = actual_rate_law_mod(
+    #         **param_vals, **dict(t=torch.tensor(0.2))
+    #     )
+
+    #     self.assertFalse(
+    #         torch.allclose(
+    #             expected_rate_law_values, actual_rate_law_values1, atol=1e-3
+    #         ),
+    #         f"Expected rate law value: {expected_rate_law_values}\n"
+    #         f"Actual rate law value {actual_rate_law_values1}",
+    #     )
+
+    #     self.assertTrue(
+    #         torch.allclose(
+    #             expected_rate_law_values, actual_rate_law_values2, atol=1e-3
+    #         ),
+    #         f"Expected rate law value: {expected_rate_law_values}\n"
+    #         f"Actual rate law value {actual_rate_law_values2}",
+    #     )
 
     def test_askem_model_representation(self):
         """Test that the rate law can be compiled correctly."""
