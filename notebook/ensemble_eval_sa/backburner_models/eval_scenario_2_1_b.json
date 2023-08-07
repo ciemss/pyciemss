@@ -1,0 +1,6355 @@
+{
+ "name": "Evaluation Scenario 2 Base model",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "Evaluation Scenario 2 Base model",
+ "model_version": "0.1",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S_unvaccinated_masked",
+    "name": "S_unvaccinated_masked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "masked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_unvaccinated_masked",
+    "name": "I_unvaccinated_masked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "masked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_unvaccinated_masked",
+    "name": "E_unvaccinated_masked",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "masked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_unvaccinated_unmasked",
+    "name": "I_unvaccinated_unmasked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "unmasked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_unvaccinated_unmasked",
+    "name": "S_unvaccinated_unmasked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "unmasked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_unvaccinated_unmasked",
+    "name": "E_unvaccinated_unmasked",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "unmasked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_vaccinated_j_and_j",
+    "name": "I_vaccinated_j_and_j",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "j_and_j"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_vaccinated_moderna_1dose",
+    "name": "I_vaccinated_moderna_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_vaccinated_moderna_2dose",
+    "name": "I_vaccinated_moderna_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_vaccinated_pfizer_1dose",
+    "name": "I_vaccinated_pfizer_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_vaccinated_pfizer_2dose",
+    "name": "I_vaccinated_pfizer_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_vaccinated_j_and_j",
+    "name": "S_vaccinated_j_and_j",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "j_and_j"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_vaccinated_j_and_j",
+    "name": "E_vaccinated_j_and_j",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "j_and_j"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_vaccinated_moderna_1dose",
+    "name": "S_vaccinated_moderna_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_vaccinated_moderna_1dose",
+    "name": "E_vaccinated_moderna_1dose",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_vaccinated_moderna_2dose",
+    "name": "S_vaccinated_moderna_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_vaccinated_moderna_2dose",
+    "name": "E_vaccinated_moderna_2dose",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_vaccinated_pfizer_1dose",
+    "name": "S_vaccinated_pfizer_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_vaccinated_pfizer_1dose",
+    "name": "E_vaccinated_pfizer_1dose",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "S_vaccinated_pfizer_2dose",
+    "name": "S_vaccinated_pfizer_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E_vaccinated_pfizer_2dose",
+    "name": "E_vaccinated_pfizer_2dose",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_unvaccinated_masked",
+    "name": "R_unvaccinated_masked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "masked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_unvaccinated_unmasked",
+    "name": "R_unvaccinated_unmasked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "unvaccinated",
+      "masking": "unmasked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_vaccinated_j_and_j",
+    "name": "R_vaccinated_j_and_j",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "j_and_j"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_vaccinated_moderna_1dose",
+    "name": "R_vaccinated_moderna_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_vaccinated_moderna_2dose",
+    "name": "R_vaccinated_moderna_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "moderna",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_vaccinated_pfizer_1dose",
+    "name": "R_vaccinated_pfizer_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R_vaccinated_pfizer_2dose",
+    "name": "R_vaccinated_pfizer_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "vaccinated": "pfizer",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_unvaccinated_masked",
+    "name": "H_unvaccinated_masked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "unvaccinated",
+      "masking": "masked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_unvaccinated_unmasked",
+    "name": "H_unvaccinated_unmasked",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "unvaccinated",
+      "masking": "unmasked"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_vaccinated_j_and_j",
+    "name": "H_vaccinated_j_and_j",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "j_and_j"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_vaccinated_moderna_1dose",
+    "name": "H_vaccinated_moderna_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "moderna",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_vaccinated_moderna_2dose",
+    "name": "H_vaccinated_moderna_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "moderna",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_vaccinated_pfizer_1dose",
+    "name": "H_vaccinated_pfizer_1dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "pfizer",
+      "dose": "1dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H_vaccinated_pfizer_2dose",
+    "name": "H_vaccinated_pfizer_2dose",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179",
+      "vaccinated": "pfizer",
+      "dose": "2dose"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "I_vaccinated_pfizer_2dose",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "I_vaccinated_pfizer_1dose",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t33"
+    }
+   },
+   {
+    "id": "t34",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t34"
+    }
+   },
+   {
+    "id": "t35",
+    "input": [
+     "I_vaccinated_j_and_j",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t35"
+    }
+   },
+   {
+    "id": "t36",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t36"
+    }
+   },
+   {
+    "id": "t37",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t37"
+    }
+   },
+   {
+    "id": "t38",
+    "input": [
+     "I_vaccinated_moderna_2dose",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t38"
+    }
+   },
+   {
+    "id": "t39",
+    "input": [
+     "I_vaccinated_moderna_1dose",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t39"
+    }
+   },
+   {
+    "id": "t40",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t40"
+    }
+   },
+   {
+    "id": "t41",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t41"
+    }
+   },
+   {
+    "id": "t42",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t42"
+    }
+   },
+   {
+    "id": "t43",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t43"
+    }
+   },
+   {
+    "id": "t44",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t44"
+    }
+   },
+   {
+    "id": "t45",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t45"
+    }
+   },
+   {
+    "id": "t46",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t46"
+    }
+   },
+   {
+    "id": "t47",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t47"
+    }
+   },
+   {
+    "id": "t48",
+    "input": [
+     "I_unvaccinated_masked",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_unvaccinated_masked",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t48"
+    }
+   },
+   {
+    "id": "t49",
+    "input": [
+     "I_unvaccinated_unmasked",
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked",
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t49"
+    }
+   },
+   {
+    "id": "t50",
+    "input": [
+     "E_unvaccinated_masked"
+    ],
+    "output": [
+     "I_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t50"
+    }
+   },
+   {
+    "id": "t51",
+    "input": [
+     "E_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t51"
+    }
+   },
+   {
+    "id": "t52",
+    "input": [
+     "E_vaccinated_j_and_j"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t52"
+    }
+   },
+   {
+    "id": "t53",
+    "input": [
+     "E_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t53"
+    }
+   },
+   {
+    "id": "t54",
+    "input": [
+     "E_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t54"
+    }
+   },
+   {
+    "id": "t55",
+    "input": [
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t55"
+    }
+   },
+   {
+    "id": "t56",
+    "input": [
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t56"
+    }
+   },
+   {
+    "id": "t57",
+    "input": [
+     "I_unvaccinated_masked"
+    ],
+    "output": [
+     "R_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t57"
+    }
+   },
+   {
+    "id": "t58",
+    "input": [
+     "I_unvaccinated_unmasked"
+    ],
+    "output": [
+     "R_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t58"
+    }
+   },
+   {
+    "id": "t59",
+    "input": [
+     "I_vaccinated_j_and_j"
+    ],
+    "output": [
+     "R_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t59"
+    }
+   },
+   {
+    "id": "t60",
+    "input": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "R_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t60"
+    }
+   },
+   {
+    "id": "t61",
+    "input": [
+     "I_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "R_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t61"
+    }
+   },
+   {
+    "id": "t62",
+    "input": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t62"
+    }
+   },
+   {
+    "id": "t63",
+    "input": [
+     "I_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t63"
+    }
+   },
+   {
+    "id": "t64",
+    "input": [
+     "I_unvaccinated_masked"
+    ],
+    "output": [
+     "H_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t64"
+    }
+   },
+   {
+    "id": "t65",
+    "input": [
+     "I_unvaccinated_unmasked"
+    ],
+    "output": [
+     "H_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t65"
+    }
+   },
+   {
+    "id": "t66",
+    "input": [
+     "I_vaccinated_j_and_j"
+    ],
+    "output": [
+     "H_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t66"
+    }
+   },
+   {
+    "id": "t67",
+    "input": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t67"
+    }
+   },
+   {
+    "id": "t68",
+    "input": [
+     "I_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "H_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t68"
+    }
+   },
+   {
+    "id": "t69",
+    "input": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t69"
+    }
+   },
+   {
+    "id": "t70",
+    "input": [
+     "I_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "H_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t70"
+    }
+   },
+   {
+    "id": "t71",
+    "input": [
+     "H_unvaccinated_masked"
+    ],
+    "output": [
+     "R_unvaccinated_masked"
+    ],
+    "properties": {
+     "name": "t71"
+    }
+   },
+   {
+    "id": "t72",
+    "input": [
+     "H_unvaccinated_unmasked"
+    ],
+    "output": [
+     "R_unvaccinated_unmasked"
+    ],
+    "properties": {
+     "name": "t72"
+    }
+   },
+   {
+    "id": "t73",
+    "input": [
+     "H_vaccinated_j_and_j"
+    ],
+    "output": [
+     "R_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t73"
+    }
+   },
+   {
+    "id": "t74",
+    "input": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "R_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t74"
+    }
+   },
+   {
+    "id": "t75",
+    "input": [
+     "H_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "R_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t75"
+    }
+   },
+   {
+    "id": "t76",
+    "input": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t76"
+    }
+   },
+   {
+    "id": "t77",
+    "input": [
+     "H_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t77"
+    }
+   },
+   {
+    "id": "t78",
+    "input": [
+     "H_unvaccinated_masked"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t78"
+    }
+   },
+   {
+    "id": "t79",
+    "input": [
+     "H_unvaccinated_unmasked"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t79"
+    }
+   },
+   {
+    "id": "t80",
+    "input": [
+     "H_vaccinated_j_and_j"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t80"
+    }
+   },
+   {
+    "id": "t81",
+    "input": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t81"
+    }
+   },
+   {
+    "id": "t82",
+    "input": [
+     "H_vaccinated_moderna_2dose"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t82"
+    }
+   },
+   {
+    "id": "t83",
+    "input": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t83"
+    }
+   },
+   {
+    "id": "t84",
+    "input": [
+     "H_vaccinated_pfizer_2dose"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t84"
+    }
+   },
+   {
+    "id": "t85",
+    "input": [
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "S_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t85"
+    }
+   },
+   {
+    "id": "t86",
+    "input": [
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "S_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t86"
+    }
+   },
+   {
+    "id": "t87",
+    "input": [
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "S_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t87"
+    }
+   },
+   {
+    "id": "t88",
+    "input": [
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "S_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t88"
+    }
+   },
+   {
+    "id": "t89",
+    "input": [
+     "S_unvaccinated_masked"
+    ],
+    "output": [
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t89"
+    }
+   },
+   {
+    "id": "t90",
+    "input": [
+     "S_unvaccinated_unmasked"
+    ],
+    "output": [
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t90"
+    }
+   },
+   {
+    "id": "t91",
+    "input": [
+     "E_unvaccinated_masked"
+    ],
+    "output": [
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t91"
+    }
+   },
+   {
+    "id": "t92",
+    "input": [
+     "E_unvaccinated_unmasked"
+    ],
+    "output": [
+     "E_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t92"
+    }
+   },
+   {
+    "id": "t93",
+    "input": [
+     "E_unvaccinated_masked"
+    ],
+    "output": [
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t93"
+    }
+   },
+   {
+    "id": "t94",
+    "input": [
+     "E_unvaccinated_unmasked"
+    ],
+    "output": [
+     "E_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t94"
+    }
+   },
+   {
+    "id": "t95",
+    "input": [
+     "E_unvaccinated_masked"
+    ],
+    "output": [
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t95"
+    }
+   },
+   {
+    "id": "t96",
+    "input": [
+     "E_unvaccinated_unmasked"
+    ],
+    "output": [
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t96"
+    }
+   },
+   {
+    "id": "t97",
+    "input": [
+     "I_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t97"
+    }
+   },
+   {
+    "id": "t98",
+    "input": [
+     "I_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t98"
+    }
+   },
+   {
+    "id": "t99",
+    "input": [
+     "I_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t99"
+    }
+   },
+   {
+    "id": "t100",
+    "input": [
+     "I_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t100"
+    }
+   },
+   {
+    "id": "t101",
+    "input": [
+     "I_unvaccinated_masked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t101"
+    }
+   },
+   {
+    "id": "t102",
+    "input": [
+     "I_unvaccinated_unmasked"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t102"
+    }
+   },
+   {
+    "id": "t103",
+    "input": [
+     "R_unvaccinated_masked"
+    ],
+    "output": [
+     "R_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t103"
+    }
+   },
+   {
+    "id": "t104",
+    "input": [
+     "R_unvaccinated_unmasked"
+    ],
+    "output": [
+     "R_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t104"
+    }
+   },
+   {
+    "id": "t105",
+    "input": [
+     "R_unvaccinated_masked"
+    ],
+    "output": [
+     "R_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t105"
+    }
+   },
+   {
+    "id": "t106",
+    "input": [
+     "R_unvaccinated_unmasked"
+    ],
+    "output": [
+     "R_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t106"
+    }
+   },
+   {
+    "id": "t107",
+    "input": [
+     "R_unvaccinated_masked"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t107"
+    }
+   },
+   {
+    "id": "t108",
+    "input": [
+     "R_unvaccinated_unmasked"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t108"
+    }
+   },
+   {
+    "id": "t109",
+    "input": [
+     "H_unvaccinated_masked"
+    ],
+    "output": [
+     "H_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t109"
+    }
+   },
+   {
+    "id": "t110",
+    "input": [
+     "H_unvaccinated_unmasked"
+    ],
+    "output": [
+     "H_vaccinated_j_and_j"
+    ],
+    "properties": {
+     "name": "t110"
+    }
+   },
+   {
+    "id": "t111",
+    "input": [
+     "H_unvaccinated_masked"
+    ],
+    "output": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t111"
+    }
+   },
+   {
+    "id": "t112",
+    "input": [
+     "H_unvaccinated_unmasked"
+    ],
+    "output": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "properties": {
+     "name": "t112"
+    }
+   },
+   {
+    "id": "t113",
+    "input": [
+     "H_unvaccinated_masked"
+    ],
+    "output": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t113"
+    }
+   },
+   {
+    "id": "t114",
+    "input": [
+     "H_unvaccinated_unmasked"
+    ],
+    "output": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "properties": {
+     "name": "t114"
+    }
+   },
+   {
+    "id": "t115",
+    "input": [
+     "I_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "I_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t115"
+    }
+   },
+   {
+    "id": "t116",
+    "input": [
+     "I_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "I_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t116"
+    }
+   },
+   {
+    "id": "t117",
+    "input": [
+     "S_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "S_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t117"
+    }
+   },
+   {
+    "id": "t118",
+    "input": [
+     "E_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "E_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t118"
+    }
+   },
+   {
+    "id": "t119",
+    "input": [
+     "S_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "S_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t119"
+    }
+   },
+   {
+    "id": "t120",
+    "input": [
+     "E_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "E_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t120"
+    }
+   },
+   {
+    "id": "t121",
+    "input": [
+     "R_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "R_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t121"
+    }
+   },
+   {
+    "id": "t122",
+    "input": [
+     "R_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "R_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t122"
+    }
+   },
+   {
+    "id": "t123",
+    "input": [
+     "H_vaccinated_moderna_1dose"
+    ],
+    "output": [
+     "H_vaccinated_moderna_2dose"
+    ],
+    "properties": {
+     "name": "t123"
+    }
+   },
+   {
+    "id": "t124",
+    "input": [
+     "H_vaccinated_pfizer_1dose"
+    ],
+    "output": [
+     "H_vaccinated_pfizer_2dose"
+    ],
+    "properties": {
+     "name": "t124"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I_unvaccinated_masked*S_unvaccinated_masked*beta_0_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_unvaccinated_masked</ci><ci>beta_0_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I_unvaccinated_unmasked*S_unvaccinated_masked*beta_0_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_unvaccinated_masked</ci><ci>beta_0_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I_unvaccinated_unmasked*S_unvaccinated_unmasked*beta_0_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_0_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I_unvaccinated_masked*S_unvaccinated_unmasked*beta_0_3/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_0_3</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "I_vaccinated_j_and_j*S_unvaccinated_masked*beta_1_0_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_unvaccinated_masked</ci><ci>beta_1_0_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I_vaccinated_j_and_j*S_unvaccinated_unmasked*beta_1_0_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_1_0_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I_vaccinated_moderna_1dose*S_unvaccinated_masked*beta_1_1_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_unvaccinated_masked</ci><ci>beta_1_1_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I_vaccinated_moderna_1dose*S_unvaccinated_unmasked*beta_1_1_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_1_1_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "I_vaccinated_moderna_2dose*S_unvaccinated_masked*beta_1_1_4/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_unvaccinated_masked</ci><ci>beta_1_1_4</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "I_vaccinated_moderna_2dose*S_unvaccinated_unmasked*beta_1_1_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_1_1_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "I_vaccinated_pfizer_1dose*S_unvaccinated_masked*beta_1_2_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_unvaccinated_masked</ci><ci>beta_1_2_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "I_vaccinated_pfizer_1dose*S_unvaccinated_unmasked*beta_1_2_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_1_2_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "I_vaccinated_pfizer_2dose*S_unvaccinated_masked*beta_1_2_4/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_unvaccinated_masked</ci><ci>beta_1_2_4</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "I_vaccinated_pfizer_2dose*S_unvaccinated_unmasked*beta_1_2_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_unvaccinated_unmasked</ci><ci>beta_1_2_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "I_vaccinated_j_and_j*S_vaccinated_j_and_j*beta_2_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_2_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "I_vaccinated_moderna_1dose*S_vaccinated_j_and_j*beta_2_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_2_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "I_vaccinated_moderna_2dose*S_vaccinated_j_and_j*beta_2_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_2_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "I_vaccinated_pfizer_1dose*S_vaccinated_j_and_j*beta_2_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_2_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "I_vaccinated_pfizer_2dose*S_vaccinated_j_and_j*beta_2_2/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_2_2</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "I_vaccinated_moderna_1dose*S_vaccinated_moderna_1dose*beta_2_3/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_2_3</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "I_vaccinated_moderna_2dose*S_vaccinated_moderna_1dose*beta_2_3/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_2_3</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "I_vaccinated_moderna_2dose*S_vaccinated_moderna_2dose*beta_2_3/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_2_3</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "I_vaccinated_moderna_1dose*S_vaccinated_moderna_2dose*beta_2_3/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_2_3</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "I_vaccinated_j_and_j*S_vaccinated_moderna_1dose*beta_2_4/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_2_4</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "I_vaccinated_j_and_j*S_vaccinated_moderna_2dose*beta_2_4/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_2_4</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "I_vaccinated_pfizer_1dose*S_vaccinated_moderna_1dose*beta_2_5/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_2_5</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "I_vaccinated_pfizer_2dose*S_vaccinated_moderna_1dose*beta_2_5/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_2_5</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "I_vaccinated_pfizer_2dose*S_vaccinated_moderna_2dose*beta_2_5/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_2_5</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "I_vaccinated_pfizer_1dose*S_vaccinated_moderna_2dose*beta_2_5/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_2_5</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "I_vaccinated_pfizer_1dose*S_vaccinated_pfizer_1dose*beta_2_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_2_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "I_vaccinated_pfizer_2dose*S_vaccinated_pfizer_1dose*beta_2_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_2_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "I_vaccinated_pfizer_2dose*S_vaccinated_pfizer_2dose*beta_2_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_2_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "I_vaccinated_pfizer_1dose*S_vaccinated_pfizer_2dose*beta_2_6/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_2_6</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t34",
+     "expression": "I_vaccinated_j_and_j*S_vaccinated_pfizer_1dose*beta_2_7/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_2_7</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t35",
+     "expression": "I_vaccinated_j_and_j*S_vaccinated_pfizer_2dose*beta_2_7/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_j_and_j</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_2_7</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t36",
+     "expression": "I_vaccinated_moderna_1dose*S_vaccinated_pfizer_1dose*beta_2_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_2_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t37",
+     "expression": "I_vaccinated_moderna_2dose*S_vaccinated_pfizer_1dose*beta_2_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_2_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t38",
+     "expression": "I_vaccinated_moderna_2dose*S_vaccinated_pfizer_2dose*beta_2_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_2_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t39",
+     "expression": "I_vaccinated_moderna_1dose*S_vaccinated_pfizer_2dose*beta_2_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_2_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t40",
+     "expression": "I_unvaccinated_masked*S_vaccinated_j_and_j*beta_3_0_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_3_0_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t41",
+     "expression": "I_unvaccinated_unmasked*S_vaccinated_j_and_j*beta_3_0_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_vaccinated_j_and_j</ci><ci>beta_3_0_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t42",
+     "expression": "I_unvaccinated_masked*S_vaccinated_moderna_1dose*beta_3_3_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_3_3_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t43",
+     "expression": "I_unvaccinated_unmasked*S_vaccinated_moderna_1dose*beta_3_3_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_vaccinated_moderna_1dose</ci><ci>beta_3_3_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t44",
+     "expression": "I_unvaccinated_masked*S_vaccinated_moderna_2dose*beta_3_3_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_3_3_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t45",
+     "expression": "I_unvaccinated_unmasked*S_vaccinated_moderna_2dose*beta_3_3_9/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_vaccinated_moderna_2dose</ci><ci>beta_3_3_9</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t46",
+     "expression": "I_unvaccinated_masked*S_vaccinated_pfizer_1dose*beta_3_6_0/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_3_6_0</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t47",
+     "expression": "I_unvaccinated_unmasked*S_vaccinated_pfizer_1dose*beta_3_6_1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_vaccinated_pfizer_1dose</ci><ci>beta_3_6_1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t48",
+     "expression": "I_unvaccinated_masked*S_vaccinated_pfizer_2dose*beta_3_6_8/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_masked</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_3_6_8</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t49",
+     "expression": "I_unvaccinated_unmasked*S_vaccinated_pfizer_2dose*beta_3_6_9/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I_unvaccinated_unmasked</ci><ci>S_vaccinated_pfizer_2dose</ci><ci>beta_3_6_9</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t50",
+     "expression": "E_unvaccinated_masked*r_E_to_I_0",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_masked</ci><ci>r_E_to_I_0</ci></apply>"
+    },
+    {
+     "target": "t51",
+     "expression": "E_unvaccinated_unmasked*r_E_to_I_1",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_unmasked</ci><ci>r_E_to_I_1</ci></apply>"
+    },
+    {
+     "target": "t52",
+     "expression": "E_vaccinated_j_and_j*r_E_to_I",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_j_and_j</ci><ci>r_E_to_I</ci></apply>"
+    },
+    {
+     "target": "t53",
+     "expression": "E_vaccinated_moderna_1dose*r_E_to_I",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_moderna_1dose</ci><ci>r_E_to_I</ci></apply>"
+    },
+    {
+     "target": "t54",
+     "expression": "E_vaccinated_moderna_2dose*r_E_to_I",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_moderna_2dose</ci><ci>r_E_to_I</ci></apply>"
+    },
+    {
+     "target": "t55",
+     "expression": "E_vaccinated_pfizer_1dose*r_E_to_I",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_pfizer_1dose</ci><ci>r_E_to_I</ci></apply>"
+    },
+    {
+     "target": "t56",
+     "expression": "E_vaccinated_pfizer_2dose*r_E_to_I",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_pfizer_2dose</ci><ci>r_E_to_I</ci></apply>"
+    },
+    {
+     "target": "t57",
+     "expression": "I_unvaccinated_masked*p_I_to_R_0*r_I_to_R_0",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_masked</ci><ci>p_I_to_R_0</ci><ci>r_I_to_R_0</ci></apply>"
+    },
+    {
+     "target": "t58",
+     "expression": "I_unvaccinated_unmasked*p_I_to_R_1*r_I_to_R_1",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_unmasked</ci><ci>p_I_to_R_1</ci><ci>r_I_to_R_1</ci></apply>"
+    },
+    {
+     "target": "t59",
+     "expression": "I_vaccinated_j_and_j*p_I_to_R*r_I_to_R",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_j_and_j</ci><ci>p_I_to_R</ci><ci>r_I_to_R</ci></apply>"
+    },
+    {
+     "target": "t60",
+     "expression": "I_vaccinated_moderna_1dose*p_I_to_R*r_I_to_R",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>p_I_to_R</ci><ci>r_I_to_R</ci></apply>"
+    },
+    {
+     "target": "t61",
+     "expression": "I_vaccinated_moderna_2dose*p_I_to_R*r_I_to_R",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>p_I_to_R</ci><ci>r_I_to_R</ci></apply>"
+    },
+    {
+     "target": "t62",
+     "expression": "I_vaccinated_pfizer_1dose*p_I_to_R*r_I_to_R",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>p_I_to_R</ci><ci>r_I_to_R</ci></apply>"
+    },
+    {
+     "target": "t63",
+     "expression": "I_vaccinated_pfizer_2dose*p_I_to_R*r_I_to_R",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>p_I_to_R</ci><ci>r_I_to_R</ci></apply>"
+    },
+    {
+     "target": "t64",
+     "expression": "I_unvaccinated_masked*p_I_to_H_0*r_I_to_H_0",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_masked</ci><ci>p_I_to_H_0</ci><ci>r_I_to_H_0</ci></apply>"
+    },
+    {
+     "target": "t65",
+     "expression": "I_unvaccinated_unmasked*p_I_to_H_1*r_I_to_H_1",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_unmasked</ci><ci>p_I_to_H_1</ci><ci>r_I_to_H_1</ci></apply>"
+    },
+    {
+     "target": "t66",
+     "expression": "I_vaccinated_j_and_j*p_I_to_H*r_I_to_H",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_j_and_j</ci><ci>p_I_to_H</ci><ci>r_I_to_H</ci></apply>"
+    },
+    {
+     "target": "t67",
+     "expression": "I_vaccinated_moderna_1dose*p_I_to_H*r_I_to_H",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>p_I_to_H</ci><ci>r_I_to_H</ci></apply>"
+    },
+    {
+     "target": "t68",
+     "expression": "I_vaccinated_moderna_2dose*p_I_to_H*r_I_to_H",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_moderna_2dose</ci><ci>p_I_to_H</ci><ci>r_I_to_H</ci></apply>"
+    },
+    {
+     "target": "t69",
+     "expression": "I_vaccinated_pfizer_1dose*p_I_to_H*r_I_to_H",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>p_I_to_H</ci><ci>r_I_to_H</ci></apply>"
+    },
+    {
+     "target": "t70",
+     "expression": "I_vaccinated_pfizer_2dose*p_I_to_H*r_I_to_H",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_pfizer_2dose</ci><ci>p_I_to_H</ci><ci>r_I_to_H</ci></apply>"
+    },
+    {
+     "target": "t71",
+     "expression": "H_unvaccinated_masked*p_H_to_R_0*r_H_to_R_0",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_masked</ci><ci>p_H_to_R_0</ci><ci>r_H_to_R_0</ci></apply>"
+    },
+    {
+     "target": "t72",
+     "expression": "H_unvaccinated_unmasked*p_H_to_R_1*r_H_to_R_1",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_unmasked</ci><ci>p_H_to_R_1</ci><ci>r_H_to_R_1</ci></apply>"
+    },
+    {
+     "target": "t73",
+     "expression": "H_vaccinated_j_and_j*p_H_to_R*r_H_to_R",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_j_and_j</ci><ci>p_H_to_R</ci><ci>r_H_to_R</ci></apply>"
+    },
+    {
+     "target": "t74",
+     "expression": "H_vaccinated_moderna_1dose*p_H_to_R*r_H_to_R",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_moderna_1dose</ci><ci>p_H_to_R</ci><ci>r_H_to_R</ci></apply>"
+    },
+    {
+     "target": "t75",
+     "expression": "H_vaccinated_moderna_2dose*p_H_to_R*r_H_to_R",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_moderna_2dose</ci><ci>p_H_to_R</ci><ci>r_H_to_R</ci></apply>"
+    },
+    {
+     "target": "t76",
+     "expression": "H_vaccinated_pfizer_1dose*p_H_to_R*r_H_to_R",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_pfizer_1dose</ci><ci>p_H_to_R</ci><ci>r_H_to_R</ci></apply>"
+    },
+    {
+     "target": "t77",
+     "expression": "H_vaccinated_pfizer_2dose*p_H_to_R*r_H_to_R",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_pfizer_2dose</ci><ci>p_H_to_R</ci><ci>r_H_to_R</ci></apply>"
+    },
+    {
+     "target": "t78",
+     "expression": "H_unvaccinated_masked*p_H_to_D_0*r_H_to_D_0",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_masked</ci><ci>p_H_to_D_0</ci><ci>r_H_to_D_0</ci></apply>"
+    },
+    {
+     "target": "t79",
+     "expression": "H_unvaccinated_unmasked*p_H_to_D_1*r_H_to_D_1",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_unmasked</ci><ci>p_H_to_D_1</ci><ci>r_H_to_D_1</ci></apply>"
+    },
+    {
+     "target": "t80",
+     "expression": "H_vaccinated_j_and_j*p_H_to_D*r_H_to_D",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_j_and_j</ci><ci>p_H_to_D</ci><ci>r_H_to_D</ci></apply>"
+    },
+    {
+     "target": "t81",
+     "expression": "H_vaccinated_moderna_1dose*p_H_to_D*r_H_to_D",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_moderna_1dose</ci><ci>p_H_to_D</ci><ci>r_H_to_D</ci></apply>"
+    },
+    {
+     "target": "t82",
+     "expression": "H_vaccinated_moderna_2dose*p_H_to_D*r_H_to_D",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_moderna_2dose</ci><ci>p_H_to_D</ci><ci>r_H_to_D</ci></apply>"
+    },
+    {
+     "target": "t83",
+     "expression": "H_vaccinated_pfizer_1dose*p_H_to_D*r_H_to_D",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_pfizer_1dose</ci><ci>p_H_to_D</ci><ci>r_H_to_D</ci></apply>"
+    },
+    {
+     "target": "t84",
+     "expression": "H_vaccinated_pfizer_2dose*p_H_to_D*r_H_to_D",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_pfizer_2dose</ci><ci>p_H_to_D</ci><ci>r_H_to_D</ci></apply>"
+    },
+    {
+     "target": "t85",
+     "expression": "S_unvaccinated_masked*p_unvaccinated_vaccinated_0",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_0</ci></apply>"
+    },
+    {
+     "target": "t86",
+     "expression": "S_unvaccinated_unmasked*p_unvaccinated_vaccinated_1",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_1</ci></apply>"
+    },
+    {
+     "target": "t87",
+     "expression": "S_unvaccinated_masked*p_unvaccinated_vaccinated_4",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_4</ci></apply>"
+    },
+    {
+     "target": "t88",
+     "expression": "S_unvaccinated_unmasked*p_unvaccinated_vaccinated_5",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_5</ci></apply>"
+    },
+    {
+     "target": "t89",
+     "expression": "S_unvaccinated_masked*p_unvaccinated_vaccinated_6",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_6</ci></apply>"
+    },
+    {
+     "target": "t90",
+     "expression": "S_unvaccinated_unmasked*p_unvaccinated_vaccinated_7",
+     "expression_mathml": "<apply><times/><ci>S_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_7</ci></apply>"
+    },
+    {
+     "target": "t91",
+     "expression": "E_unvaccinated_masked*p_unvaccinated_vaccinated_8",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_8</ci></apply>"
+    },
+    {
+     "target": "t92",
+     "expression": "E_unvaccinated_unmasked*p_unvaccinated_vaccinated_9",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_9</ci></apply>"
+    },
+    {
+     "target": "t93",
+     "expression": "E_unvaccinated_masked*p_unvaccinated_vaccinated_12",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_12</ci></apply>"
+    },
+    {
+     "target": "t94",
+     "expression": "E_unvaccinated_unmasked*p_unvaccinated_vaccinated_13",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_13</ci></apply>"
+    },
+    {
+     "target": "t95",
+     "expression": "E_unvaccinated_masked*p_unvaccinated_vaccinated_14",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_14</ci></apply>"
+    },
+    {
+     "target": "t96",
+     "expression": "E_unvaccinated_unmasked*p_unvaccinated_vaccinated_15",
+     "expression_mathml": "<apply><times/><ci>E_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_15</ci></apply>"
+    },
+    {
+     "target": "t97",
+     "expression": "I_unvaccinated_masked*p_unvaccinated_vaccinated_16",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_16</ci></apply>"
+    },
+    {
+     "target": "t98",
+     "expression": "I_unvaccinated_unmasked*p_unvaccinated_vaccinated_17",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_17</ci></apply>"
+    },
+    {
+     "target": "t99",
+     "expression": "I_unvaccinated_masked*p_unvaccinated_vaccinated_20",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_20</ci></apply>"
+    },
+    {
+     "target": "t100",
+     "expression": "I_unvaccinated_unmasked*p_unvaccinated_vaccinated_21",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_21</ci></apply>"
+    },
+    {
+     "target": "t101",
+     "expression": "I_unvaccinated_masked*p_unvaccinated_vaccinated_22",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_22</ci></apply>"
+    },
+    {
+     "target": "t102",
+     "expression": "I_unvaccinated_unmasked*p_unvaccinated_vaccinated_23",
+     "expression_mathml": "<apply><times/><ci>I_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_23</ci></apply>"
+    },
+    {
+     "target": "t103",
+     "expression": "R_unvaccinated_masked*p_unvaccinated_vaccinated_24",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_24</ci></apply>"
+    },
+    {
+     "target": "t104",
+     "expression": "R_unvaccinated_unmasked*p_unvaccinated_vaccinated_25",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_25</ci></apply>"
+    },
+    {
+     "target": "t105",
+     "expression": "R_unvaccinated_masked*p_unvaccinated_vaccinated_28",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_28</ci></apply>"
+    },
+    {
+     "target": "t106",
+     "expression": "R_unvaccinated_unmasked*p_unvaccinated_vaccinated_29",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_29</ci></apply>"
+    },
+    {
+     "target": "t107",
+     "expression": "R_unvaccinated_masked*p_unvaccinated_vaccinated_30",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_30</ci></apply>"
+    },
+    {
+     "target": "t108",
+     "expression": "R_unvaccinated_unmasked*p_unvaccinated_vaccinated_31",
+     "expression_mathml": "<apply><times/><ci>R_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_31</ci></apply>"
+    },
+    {
+     "target": "t109",
+     "expression": "H_unvaccinated_masked*p_unvaccinated_vaccinated_32",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_32</ci></apply>"
+    },
+    {
+     "target": "t110",
+     "expression": "H_unvaccinated_unmasked*p_unvaccinated_vaccinated_33",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_33</ci></apply>"
+    },
+    {
+     "target": "t111",
+     "expression": "H_unvaccinated_masked*p_unvaccinated_vaccinated_36",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_36</ci></apply>"
+    },
+    {
+     "target": "t112",
+     "expression": "H_unvaccinated_unmasked*p_unvaccinated_vaccinated_37",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_37</ci></apply>"
+    },
+    {
+     "target": "t113",
+     "expression": "H_unvaccinated_masked*p_unvaccinated_vaccinated_38",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_masked</ci><ci>p_unvaccinated_vaccinated_38</ci></apply>"
+    },
+    {
+     "target": "t114",
+     "expression": "H_unvaccinated_unmasked*p_unvaccinated_vaccinated_39",
+     "expression_mathml": "<apply><times/><ci>H_unvaccinated_unmasked</ci><ci>p_unvaccinated_vaccinated_39</ci></apply>"
+    },
+    {
+     "target": "t115",
+     "expression": "I_vaccinated_moderna_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_moderna_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t116",
+     "expression": "I_vaccinated_pfizer_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>I_vaccinated_pfizer_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t117",
+     "expression": "S_vaccinated_moderna_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>S_vaccinated_moderna_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t118",
+     "expression": "E_vaccinated_moderna_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_moderna_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t119",
+     "expression": "S_vaccinated_pfizer_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>S_vaccinated_pfizer_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t120",
+     "expression": "E_vaccinated_pfizer_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>E_vaccinated_pfizer_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t121",
+     "expression": "R_vaccinated_moderna_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>R_vaccinated_moderna_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t122",
+     "expression": "R_vaccinated_pfizer_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>R_vaccinated_pfizer_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t123",
+     "expression": "H_vaccinated_moderna_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_moderna_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    },
+    {
+     "target": "t124",
+     "expression": "H_vaccinated_pfizer_1dose*p_1dose_2dose",
+     "expression_mathml": "<apply><times/><ci>H_vaccinated_pfizer_1dose</ci><ci>p_1dose_2dose</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S_unvaccinated_masked",
+     "expression": "3640372.25000000",
+     "expression_mathml": "<cn>3640372.25</cn>"
+    },
+    {
+     "target": "I_unvaccinated_masked",
+     "expression": "530863.000000000",
+     "expression_mathml": "<cn>530863.0</cn>"
+    },
+    {
+     "target": "E_unvaccinated_masked",
+     "expression": "132715.750000000",
+     "expression_mathml": "<cn>132715.75</cn>"
+    },
+    {
+     "target": "I_unvaccinated_unmasked",
+     "expression": "530863.000000000",
+     "expression_mathml": "<cn>530863.0</cn>"
+    },
+    {
+     "target": "S_unvaccinated_unmasked",
+     "expression": "3640372.25000000",
+     "expression_mathml": "<cn>3640372.25</cn>"
+    },
+    {
+     "target": "E_unvaccinated_unmasked",
+     "expression": "132715.750000000",
+     "expression_mathml": "<cn>132715.75</cn>"
+    },
+    {
+     "target": "I_vaccinated_j_and_j",
+     "expression": "353908.6666666667",
+     "expression_mathml": "<cn>353908.6666666667006</cn>"
+    },
+    {
+     "target": "I_vaccinated_moderna_1dose",
+     "expression": "176954.33333333334",
+     "expression_mathml": "<cn>176954.33333333334008</cn>"
+    },
+    {
+     "target": "I_vaccinated_moderna_2dose",
+     "expression": "176954.33333333334",
+     "expression_mathml": "<cn>176954.33333333334008</cn>"
+    },
+    {
+     "target": "I_vaccinated_pfizer_1dose",
+     "expression": "176954.33333333334",
+     "expression_mathml": "<cn>176954.33333333334008</cn>"
+    },
+    {
+     "target": "I_vaccinated_pfizer_2dose",
+     "expression": "176954.33333333334",
+     "expression_mathml": "<cn>176954.33333333334008</cn>"
+    },
+    {
+     "target": "S_vaccinated_j_and_j",
+     "expression": "2426914.8333333335",
+     "expression_mathml": "<cn>2426914.8333333334995</cn>"
+    },
+    {
+     "target": "E_vaccinated_j_and_j",
+     "expression": "88477.16666666667",
+     "expression_mathml": "<cn>88477.1666666666697</cn>"
+    },
+    {
+     "target": "S_vaccinated_moderna_1dose",
+     "expression": "1213457.4166666667",
+     "expression_mathml": "<cn>1213457.4166666667006</cn>"
+    },
+    {
+     "target": "E_vaccinated_moderna_1dose",
+     "expression": "44238.583333333336",
+     "expression_mathml": "<cn>44238.583333333335986</cn>"
+    },
+    {
+     "target": "S_vaccinated_moderna_2dose",
+     "expression": "1213457.4166666667",
+     "expression_mathml": "<cn>1213457.4166666667006</cn>"
+    },
+    {
+     "target": "E_vaccinated_moderna_2dose",
+     "expression": "44238.583333333336",
+     "expression_mathml": "<cn>44238.583333333335986</cn>"
+    },
+    {
+     "target": "S_vaccinated_pfizer_1dose",
+     "expression": "1213457.4166666667",
+     "expression_mathml": "<cn>1213457.4166666667006</cn>"
+    },
+    {
+     "target": "E_vaccinated_pfizer_1dose",
+     "expression": "44238.583333333336",
+     "expression_mathml": "<cn>44238.583333333335986</cn>"
+    },
+    {
+     "target": "S_vaccinated_pfizer_2dose",
+     "expression": "1213457.4166666667",
+     "expression_mathml": "<cn>1213457.4166666667006</cn>"
+    },
+    {
+     "target": "E_vaccinated_pfizer_2dose",
+     "expression": "44238.583333333336",
+     "expression_mathml": "<cn>44238.583333333335986</cn>"
+    },
+    {
+     "target": "R_unvaccinated_masked",
+     "expression": "517475.500000000",
+     "expression_mathml": "<cn>517475.5</cn>"
+    },
+    {
+     "target": "R_unvaccinated_unmasked",
+     "expression": "517475.500000000",
+     "expression_mathml": "<cn>517475.5</cn>"
+    },
+    {
+     "target": "R_vaccinated_j_and_j",
+     "expression": "344983.6666666667",
+     "expression_mathml": "<cn>344983.6666666667006</cn>"
+    },
+    {
+     "target": "R_vaccinated_moderna_1dose",
+     "expression": "172491.83333333334",
+     "expression_mathml": "<cn>172491.83333333334008</cn>"
+    },
+    {
+     "target": "R_vaccinated_moderna_2dose",
+     "expression": "172491.83333333334",
+     "expression_mathml": "<cn>172491.83333333334008</cn>"
+    },
+    {
+     "target": "R_vaccinated_pfizer_1dose",
+     "expression": "172491.83333333334",
+     "expression_mathml": "<cn>172491.83333333334008</cn>"
+    },
+    {
+     "target": "R_vaccinated_pfizer_2dose",
+     "expression": "172491.83333333334",
+     "expression_mathml": "<cn>172491.83333333334008</cn>"
+    },
+    {
+     "target": "H_unvaccinated_masked",
+     "expression": "186.000000000000",
+     "expression_mathml": "<cn>186.0</cn>"
+    },
+    {
+     "target": "H_unvaccinated_unmasked",
+     "expression": "186.000000000000",
+     "expression_mathml": "<cn>186.0</cn>"
+    },
+    {
+     "target": "H_vaccinated_j_and_j",
+     "expression": "124.000000000000",
+     "expression_mathml": "<cn>124.0</cn>"
+    },
+    {
+     "target": "H_vaccinated_moderna_1dose",
+     "expression": "62.0000000000000",
+     "expression_mathml": "<cn>62.0</cn>"
+    },
+    {
+     "target": "H_vaccinated_moderna_2dose",
+     "expression": "62.0000000000000",
+     "expression_mathml": "<cn>62.0</cn>"
+    },
+    {
+     "target": "H_vaccinated_pfizer_1dose",
+     "expression": "62.0000000000000",
+     "expression_mathml": "<cn>62.0</cn>"
+    },
+    {
+     "target": "H_vaccinated_pfizer_2dose",
+     "expression": "62.0000000000000",
+     "expression_mathml": "<cn>62.0</cn>"
+    },
+    {
+     "target": "D",
+     "expression": "53550.0000000000",
+     "expression_mathml": "<cn>53550.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 19340000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta_0_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_16",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_17",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_18",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_19",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_20",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_21",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_22",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_0_23",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_0_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_1_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_2_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_3_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_4_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_5_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_6_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_7_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_1_8_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_2_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_0_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_1_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_2_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_3_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_4_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_5_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_6_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_7_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_0",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_1",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_2",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_3",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_4",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_5",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_6",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_7",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_8",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_9",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_10",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_11",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_12",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_13",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_14",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "beta_3_8_15",
+     "value": 0.8,
+     "units": {
+      "expression": "1/(day*person)",
+      "expression_mathml": "<apply><divide/><cn>1</cn><apply><times/><ci>day</ci><ci>person</ci></apply></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_0",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_1",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_2",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_3",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_4",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_5",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_6",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_7",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_8",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_9",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_10",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I_11",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_E_to_I",
+     "value": 0.2,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_0",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_0",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_1",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_1",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_2",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_2",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_3",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_3",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_4",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_4",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_5",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_5",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_6",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_6",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_7",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_7",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_8",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_8",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_9",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_9",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_10",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_10",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R_11",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R_11",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_R",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_R",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_0",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_0",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_1",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_1",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_2",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_2",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_3",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_3",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_4",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_4",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_5",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_5",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_6",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_6",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_7",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_7",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_8",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_8",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_9",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_9",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_10",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_10",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H_11",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H_11",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_I_to_H",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_I_to_H",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_0",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_0",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_1",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_1",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_2",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_2",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_3",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_3",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_4",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_4",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_5",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_5",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_6",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_6",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_7",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_7",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_8",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_8",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_9",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_9",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_10",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_10",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R_11",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R_11",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_R",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_R",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_0",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_0",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_1",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_1",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_2",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_2",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_3",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_3",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_4",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_4",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_5",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_5",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_6",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_6",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_7",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_7",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_8",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_8",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_9",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_9",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_10",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_10",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D_11",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D_11",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_H_to_D",
+     "value": 0.15,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "r_H_to_D",
+     "value": 0.1,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_0",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_1",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_2",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_3",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_4",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_5",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_6",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_7",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_8",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_9",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_10",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_11",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_12",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_13",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_14",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_15",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_16",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_17",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_18",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_19",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_20",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_21",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_22",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_23",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_24",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_25",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_26",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_27",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_28",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_29",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_30",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_31",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_32",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_33",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_34",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_35",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_36",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_37",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_38",
+     "value": 0.1
+    },
+    {
+     "id": "p_unvaccinated_vaccinated_39",
+     "value": 0.1
+    },
+    {
+     "id": "p_1dose_2dose",
+     "value": 0.1
+    }
+   ],
+   "observables": [
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I_unvaccinated_masked + I_unvaccinated_unmasked + I_vaccinated_j_and_j + I_vaccinated_moderna_1dose + I_vaccinated_moderna_2dose + I_vaccinated_pfizer_1dose + I_vaccinated_pfizer_2dose ",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "hospitalized",
+     "name": "hospitalized",
+     "expression": "H_unvaccinated_masked + H_unvaccinated_unmasked + H_vaccinated_j_and_j + H_vaccinated_moderna_1dose + H_vaccinated_moderna_2dose + H_vaccinated_pfizer_1dose + H_vaccinated_pfizer_2dose",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "dead",
+     "name": "dead",
+     "expression": "D",
+     "expression_mathml": "<apply><plus/><ci>D_middle_aged</ci><ci>D_old</ci><ci>D_young</ci></apply>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}

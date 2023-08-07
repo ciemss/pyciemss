@@ -1,0 +1,2686 @@
+{
+ "name": "Scenario 2.2.b multi-vax",
+ "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+ "schema_name": "petrinet",
+ "description": "Scenario 2.2.b model with two different vaccine types (Pfizer and AstraZeneca)",
+ "model_version": "0.1",
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccination_status": "vo:0001377"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "A",
+    "name": "A",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C3833"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "V1_vo_0004987",
+    "name": "V1_vo_0004987",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccination_status": "askemo:0000018",
+      "vaccine_type": "vo:0004987"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "V1_vo_0005158",
+    "name": "V1_vo_0005158",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccination_status": "askemo:0000018",
+      "vaccine_type": "vo:0005158"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "V2_vo_0004987",
+    "name": "V2_vo_0004987",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccination_status": "askemo:0000019",
+      "vaccine_type": "vo:0004987"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "V2_vo_0005158",
+    "name": "V2_vo_0005158",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "vaccination_status": "askemo:0000019",
+      "vaccine_type": "vo:0005158"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "IV_vo_0004987",
+    "name": "IV_vo_0004987",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccination_status": "vo:0001376",
+      "vaccine_type": "vo:0004987"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "IV_vo_0005158",
+    "name": "IV_vo_0005158",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "vaccination_status": "vo:0001376",
+      "vaccine_type": "vo:0005158"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "disease_severity": "ido:0000592"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "AR",
+    "name": "AR",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_severity": "ncit:C3833"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "IR",
+    "name": "IR",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "disease_history": "ido:0000592"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "R2",
+    "name": "R2",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   },
+   {
+    "id": "SVR",
+    "name": "SVR",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {
+      "disease_history": "ido:0000592"
+     }
+    },
+    "units": {
+     "expression": "1",
+     "expression_mathml": "<cn>1</cn>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "A"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "I",
+     "A"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "I",
+     "A"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "I",
+     "A"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "I",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "I",
+     "A"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "I"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "I",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "I",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "I",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "I",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "I",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "I",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "I",
+     "R"
+    ],
+    "output": [
+     "I",
+     "AR"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "I",
+     "R"
+    ],
+    "output": [
+     "I",
+     "IR"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "IV_vo_0004987",
+     "S"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "A"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "IV_vo_0005158",
+     "S"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "A"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "IV_vo_0004987",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "A"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "IV_vo_0005158",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "A"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "IV_vo_0005158",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "A"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "IV_vo_0004987",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "A"
+    ],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "IV_vo_0004987",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "A"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "IV_vo_0005158",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "A"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "IV_vo_0005158",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "A"
+    ],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "IV_vo_0004987",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "A"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "IV_vo_0004987",
+     "S"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "I"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "IV_vo_0005158",
+     "S"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "I"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "IV_vo_0004987",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "IV_vo_0005158",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "IV_vo_0005158",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "IV_vo_0004987",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "IV_vo_0004987",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "IV_vo_0005158",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "IV_vo_0005158",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "IV_vo_0004987",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "IV_vo_0004987",
+     "R"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "AR"
+    ],
+    "properties": {
+     "name": "t33"
+    }
+   },
+   {
+    "id": "t34",
+    "input": [
+     "IV_vo_0005158",
+     "R"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "AR"
+    ],
+    "properties": {
+     "name": "t34"
+    }
+   },
+   {
+    "id": "t35",
+    "input": [
+     "IV_vo_0004987",
+     "R"
+    ],
+    "output": [
+     "IV_vo_0004987",
+     "IR"
+    ],
+    "properties": {
+     "name": "t35"
+    }
+   },
+   {
+    "id": "t36",
+    "input": [
+     "IV_vo_0005158",
+     "R"
+    ],
+    "output": [
+     "IV_vo_0005158",
+     "IR"
+    ],
+    "properties": {
+     "name": "t36"
+    }
+   },
+   {
+    "id": "t37",
+    "input": [
+     "IR",
+     "S"
+    ],
+    "output": [
+     "IR",
+     "A"
+    ],
+    "properties": {
+     "name": "t37"
+    }
+   },
+   {
+    "id": "t38",
+    "input": [
+     "IR",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IR",
+     "A"
+    ],
+    "properties": {
+     "name": "t38"
+    }
+   },
+   {
+    "id": "t39",
+    "input": [
+     "IR",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IR",
+     "A"
+    ],
+    "properties": {
+     "name": "t39"
+    }
+   },
+   {
+    "id": "t40",
+    "input": [
+     "IR",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IR",
+     "A"
+    ],
+    "properties": {
+     "name": "t40"
+    }
+   },
+   {
+    "id": "t41",
+    "input": [
+     "IR",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IR",
+     "A"
+    ],
+    "properties": {
+     "name": "t41"
+    }
+   },
+   {
+    "id": "t42",
+    "input": [
+     "IR",
+     "S"
+    ],
+    "output": [
+     "IR",
+     "I"
+    ],
+    "properties": {
+     "name": "t42"
+    }
+   },
+   {
+    "id": "t43",
+    "input": [
+     "IR",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "IR",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t43"
+    }
+   },
+   {
+    "id": "t44",
+    "input": [
+     "IR",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "IR",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t44"
+    }
+   },
+   {
+    "id": "t45",
+    "input": [
+     "IR",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "IR",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t45"
+    }
+   },
+   {
+    "id": "t46",
+    "input": [
+     "IR",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "IR",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t46"
+    }
+   },
+   {
+    "id": "t47",
+    "input": [
+     "IR",
+     "R"
+    ],
+    "output": [
+     "IR",
+     "AR"
+    ],
+    "properties": {
+     "name": "t47"
+    }
+   },
+   {
+    "id": "t48",
+    "input": [
+     "IR",
+     "R"
+    ],
+    "output": [
+     "IR",
+     "IR"
+    ],
+    "properties": {
+     "name": "t48"
+    }
+   },
+   {
+    "id": "t49",
+    "input": [
+     "A",
+     "S"
+    ],
+    "output": [
+     "A",
+     "A"
+    ],
+    "properties": {
+     "name": "t49"
+    }
+   },
+   {
+    "id": "t50",
+    "input": [
+     "A",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "A",
+     "A"
+    ],
+    "properties": {
+     "name": "t50"
+    }
+   },
+   {
+    "id": "t51",
+    "input": [
+     "A",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "A",
+     "A"
+    ],
+    "properties": {
+     "name": "t51"
+    }
+   },
+   {
+    "id": "t52",
+    "input": [
+     "A",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "A",
+     "A"
+    ],
+    "properties": {
+     "name": "t52"
+    }
+   },
+   {
+    "id": "t53",
+    "input": [
+     "A",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "A",
+     "A"
+    ],
+    "properties": {
+     "name": "t53"
+    }
+   },
+   {
+    "id": "t54",
+    "input": [
+     "A",
+     "S"
+    ],
+    "output": [
+     "A",
+     "I"
+    ],
+    "properties": {
+     "name": "t54"
+    }
+   },
+   {
+    "id": "t55",
+    "input": [
+     "A",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "A",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t55"
+    }
+   },
+   {
+    "id": "t56",
+    "input": [
+     "A",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "A",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t56"
+    }
+   },
+   {
+    "id": "t57",
+    "input": [
+     "A",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "A",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t57"
+    }
+   },
+   {
+    "id": "t58",
+    "input": [
+     "A",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "A",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t58"
+    }
+   },
+   {
+    "id": "t59",
+    "input": [
+     "A",
+     "R"
+    ],
+    "output": [
+     "A",
+     "AR"
+    ],
+    "properties": {
+     "name": "t59"
+    }
+   },
+   {
+    "id": "t60",
+    "input": [
+     "A",
+     "R"
+    ],
+    "output": [
+     "A",
+     "IR"
+    ],
+    "properties": {
+     "name": "t60"
+    }
+   },
+   {
+    "id": "t61",
+    "input": [
+     "AR",
+     "S"
+    ],
+    "output": [
+     "AR",
+     "A"
+    ],
+    "properties": {
+     "name": "t61"
+    }
+   },
+   {
+    "id": "t62",
+    "input": [
+     "AR",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "AR",
+     "A"
+    ],
+    "properties": {
+     "name": "t62"
+    }
+   },
+   {
+    "id": "t63",
+    "input": [
+     "AR",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "AR",
+     "A"
+    ],
+    "properties": {
+     "name": "t63"
+    }
+   },
+   {
+    "id": "t64",
+    "input": [
+     "AR",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "AR",
+     "A"
+    ],
+    "properties": {
+     "name": "t64"
+    }
+   },
+   {
+    "id": "t65",
+    "input": [
+     "AR",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "AR",
+     "A"
+    ],
+    "properties": {
+     "name": "t65"
+    }
+   },
+   {
+    "id": "t66",
+    "input": [
+     "AR",
+     "S"
+    ],
+    "output": [
+     "AR",
+     "I"
+    ],
+    "properties": {
+     "name": "t66"
+    }
+   },
+   {
+    "id": "t67",
+    "input": [
+     "AR",
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "AR",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t67"
+    }
+   },
+   {
+    "id": "t68",
+    "input": [
+     "AR",
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "AR",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t68"
+    }
+   },
+   {
+    "id": "t69",
+    "input": [
+     "AR",
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "AR",
+     "IV_vo_0004987"
+    ],
+    "properties": {
+     "name": "t69"
+    }
+   },
+   {
+    "id": "t70",
+    "input": [
+     "AR",
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "AR",
+     "IV_vo_0005158"
+    ],
+    "properties": {
+     "name": "t70"
+    }
+   },
+   {
+    "id": "t71",
+    "input": [
+     "AR",
+     "R"
+    ],
+    "output": [
+     "AR",
+     "AR"
+    ],
+    "properties": {
+     "name": "t71"
+    }
+   },
+   {
+    "id": "t72",
+    "input": [
+     "AR",
+     "R"
+    ],
+    "output": [
+     "AR",
+     "IR"
+    ],
+    "properties": {
+     "name": "t72"
+    }
+   },
+   {
+    "id": "t73",
+    "input": [
+     "S"
+    ],
+    "output": [
+     "V1_vo_0004987"
+    ],
+    "properties": {
+     "name": "t73"
+    }
+   },
+   {
+    "id": "t74",
+    "input": [
+     "S"
+    ],
+    "output": [
+     "V1_vo_0005158"
+    ],
+    "properties": {
+     "name": "t74"
+    }
+   },
+   {
+    "id": "t75",
+    "input": [
+     "A"
+    ],
+    "output": [
+     "V1_vo_0004987"
+    ],
+    "properties": {
+     "name": "t75"
+    }
+   },
+   {
+    "id": "t76",
+    "input": [
+     "A"
+    ],
+    "output": [
+     "V1_vo_0005158"
+    ],
+    "properties": {
+     "name": "t76"
+    }
+   },
+   {
+    "id": "t77",
+    "input": [
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "V2_vo_0004987"
+    ],
+    "properties": {
+     "name": "t77"
+    }
+   },
+   {
+    "id": "t78",
+    "input": [
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "V2_vo_0005158"
+    ],
+    "properties": {
+     "name": "t78"
+    }
+   },
+   {
+    "id": "t79",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t79"
+    }
+   },
+   {
+    "id": "t80",
+    "input": [
+     "IV_vo_0004987"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t80"
+    }
+   },
+   {
+    "id": "t81",
+    "input": [
+     "IV_vo_0005158"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t81"
+    }
+   },
+   {
+    "id": "t82",
+    "input": [
+     "A"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t82"
+    }
+   },
+   {
+    "id": "t83",
+    "input": [
+     "IR"
+    ],
+    "output": [
+     "R2"
+    ],
+    "properties": {
+     "name": "t83"
+    }
+   },
+   {
+    "id": "t84",
+    "input": [
+     "AR"
+    ],
+    "output": [
+     "R2"
+    ],
+    "properties": {
+     "name": "t84"
+    }
+   },
+   {
+    "id": "t85",
+    "input": [
+     "S"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t85"
+    }
+   },
+   {
+    "id": "t86",
+    "input": [
+     "SVR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t86"
+    }
+   },
+   {
+    "id": "t87",
+    "input": [
+     "V1_vo_0004987"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t87"
+    }
+   },
+   {
+    "id": "t88",
+    "input": [
+     "V1_vo_0005158"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t88"
+    }
+   },
+   {
+    "id": "t89",
+    "input": [
+     "V2_vo_0004987"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t89"
+    }
+   },
+   {
+    "id": "t90",
+    "input": [
+     "V2_vo_0005158"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t90"
+    }
+   },
+   {
+    "id": "t91",
+    "input": [
+     "I"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t91"
+    }
+   },
+   {
+    "id": "t92",
+    "input": [
+     "IV_vo_0004987"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t92"
+    }
+   },
+   {
+    "id": "t93",
+    "input": [
+     "IV_vo_0005158"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t93"
+    }
+   },
+   {
+    "id": "t94",
+    "input": [
+     "IR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t94"
+    }
+   },
+   {
+    "id": "t95",
+    "input": [
+     "A"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t95"
+    }
+   },
+   {
+    "id": "t96",
+    "input": [
+     "AR"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t96"
+    }
+   },
+   {
+    "id": "t97",
+    "input": [
+     "R"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t97"
+    }
+   },
+   {
+    "id": "t98",
+    "input": [
+     "R2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t98"
+    }
+   },
+   {
+    "id": "t99",
+    "input": [],
+    "output": [
+     "S"
+    ],
+    "properties": {
+     "name": "t99"
+    }
+   },
+   {
+    "id": "t100",
+    "input": [
+     "V1_vo_0004987"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t100"
+    }
+   },
+   {
+    "id": "t101",
+    "input": [
+     "V1_vo_0005158"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t101"
+    }
+   },
+   {
+    "id": "t102",
+    "input": [
+     "V2_vo_0004987"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t102"
+    }
+   },
+   {
+    "id": "t103",
+    "input": [
+     "V2_vo_0005158"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t103"
+    }
+   },
+   {
+    "id": "t104",
+    "input": [
+     "R"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t104"
+    }
+   },
+   {
+    "id": "t105",
+    "input": [
+     "R2"
+    ],
+    "output": [
+     "SVR"
+    ],
+    "properties": {
+     "name": "t105"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I*V1_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*V1_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I*V2_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "I*V2_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I*S*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I*V1_vo_0004987*ai*beta_scale*beta_v1_0",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_0</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I*V1_vo_0005158*ai*beta_scale*beta_v1_2",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_2</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "I*V2_vo_0004987*ai*beta_scale*beta_v2_0",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_0</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "I*V2_vo_0005158*ai*beta_scale*beta_v2_2",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_2</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "I*R*ai_R*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>R</ci><ci>ai_R</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "I*R*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>R</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "IV_vo_0004987*S*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>S</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "IV_vo_0005158*S*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>S</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "IV_vo_0004987*V1_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "IV_vo_0005158*V1_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "IV_vo_0005158*V1_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "IV_vo_0004987*V1_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "IV_vo_0004987*V2_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "IV_vo_0005158*V2_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "IV_vo_0005158*V2_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "IV_vo_0004987*V2_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "IV_vo_0004987*S*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>S</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "IV_vo_0005158*S*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>S</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "IV_vo_0004987*V1_vo_0004987*ai*beta_scale*beta_v1_4",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_4</ci></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "IV_vo_0005158*V1_vo_0004987*ai*beta_scale*beta_v1_5",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_5</ci></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "IV_vo_0005158*V1_vo_0005158*ai*beta_scale*beta_v1_6",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_6</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "IV_vo_0004987*V1_vo_0005158*ai*beta_scale*beta_v1_7",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_7</ci></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "IV_vo_0004987*V2_vo_0004987*ai*beta_scale*beta_v2_4",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_4</ci></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "IV_vo_0005158*V2_vo_0004987*ai*beta_scale*beta_v2_5",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_5</ci></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "IV_vo_0005158*V2_vo_0005158*ai*beta_scale*beta_v2_6",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_6</ci></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "IV_vo_0004987*V2_vo_0005158*ai*beta_scale*beta_v2_7",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_7</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "IV_vo_0004987*R*ai_R*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>R</ci><ci>ai_R</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t34",
+     "expression": "IV_vo_0005158*R*ai_R*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>R</ci><ci>ai_R</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t35",
+     "expression": "IV_vo_0004987*R*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>R</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t36",
+     "expression": "IV_vo_0005158*R*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>R</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t37",
+     "expression": "IR*S*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>S</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t38",
+     "expression": "IR*V1_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t39",
+     "expression": "IR*V1_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t40",
+     "expression": "IR*V2_vo_0004987*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t41",
+     "expression": "IR*V2_vo_0005158*ai*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t42",
+     "expression": "IR*S*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>S</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t43",
+     "expression": "IR*V1_vo_0004987*ai*beta_scale*beta_v1_8",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V1_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_8</ci></apply>"
+    },
+    {
+     "target": "t44",
+     "expression": "IR*V1_vo_0005158*ai*beta_scale*beta_v1_10",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V1_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_10</ci></apply>"
+    },
+    {
+     "target": "t45",
+     "expression": "IR*V2_vo_0004987*ai*beta_scale*beta_v2_8",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V2_vo_0004987</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_8</ci></apply>"
+    },
+    {
+     "target": "t46",
+     "expression": "IR*V2_vo_0005158*ai*beta_scale*beta_v2_10",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>V2_vo_0005158</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_10</ci></apply>"
+    },
+    {
+     "target": "t47",
+     "expression": "IR*R*ai_R*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>R</ci><ci>ai_R</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t48",
+     "expression": "IR*R*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>R</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t49",
+     "expression": "A*S*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>S</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t50",
+     "expression": "A*V1_vo_0004987*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V1_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t51",
+     "expression": "A*V1_vo_0005158*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V1_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t52",
+     "expression": "A*V2_vo_0004987*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V2_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t53",
+     "expression": "A*V2_vo_0005158*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V2_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t54",
+     "expression": "A*S*ai_beta_ratio*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>S</ci><ci>ai_beta_ratio</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t55",
+     "expression": "A*V1_vo_0004987*ai*ai_beta_ratio*beta_scale*beta_v1_12",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V1_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_12</ci></apply>"
+    },
+    {
+     "target": "t56",
+     "expression": "A*V1_vo_0005158*ai*ai_beta_ratio*beta_scale*beta_v1_14",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V1_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_14</ci></apply>"
+    },
+    {
+     "target": "t57",
+     "expression": "A*V2_vo_0004987*ai*ai_beta_ratio*beta_scale*beta_v2_12",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V2_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_12</ci></apply>"
+    },
+    {
+     "target": "t58",
+     "expression": "A*V2_vo_0005158*ai*ai_beta_ratio*beta_scale*beta_v2_14",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>V2_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_14</ci></apply>"
+    },
+    {
+     "target": "t59",
+     "expression": "A*R*ai_R*ai_beta_ratio*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>R</ci><ci>ai_R</ci><ci>ai_beta_ratio</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t60",
+     "expression": "A*R*ai_beta_ratio*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>R</ci><ci>ai_beta_ratio</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t61",
+     "expression": "AR*S*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>S</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t62",
+     "expression": "AR*V1_vo_0004987*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V1_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t63",
+     "expression": "AR*V1_vo_0005158*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V1_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t64",
+     "expression": "AR*V2_vo_0004987*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V2_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t65",
+     "expression": "AR*V2_vo_0005158*ai*ai_beta_ratio*beta*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V2_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t66",
+     "expression": "AR*S*ai_beta_ratio*beta*beta_scale*(1 - ai)",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>S</ci><ci>ai_beta_ratio</ci><ci>beta_scale</ci><ci>beta</ci><apply><minus/><cn>1</cn><ci>ai</ci></apply></apply>"
+    },
+    {
+     "target": "t67",
+     "expression": "AR*V1_vo_0004987*ai*ai_beta_ratio*beta_scale*beta_v1_16",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V1_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_16</ci></apply>"
+    },
+    {
+     "target": "t68",
+     "expression": "AR*V1_vo_0005158*ai*ai_beta_ratio*beta_scale*beta_v1_18",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V1_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v1_18</ci></apply>"
+    },
+    {
+     "target": "t69",
+     "expression": "AR*V2_vo_0004987*ai*ai_beta_ratio*beta_scale*beta_v2_16",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V2_vo_0004987</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_16</ci></apply>"
+    },
+    {
+     "target": "t70",
+     "expression": "AR*V2_vo_0005158*ai*ai_beta_ratio*beta_scale*beta_v2_18",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>V2_vo_0005158</ci><ci>ai_beta_ratio</ci><ci>ai</ci><ci>beta_scale</ci><ci>beta_v2_18</ci></apply>"
+    },
+    {
+     "target": "t71",
+     "expression": "AR*R*ai_R*ai_beta_ratio*beta_R*beta_scale",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>R</ci><ci>ai_R</ci><ci>ai_beta_ratio</ci><ci>beta_R</ci><ci>beta_scale</ci></apply>"
+    },
+    {
+     "target": "t72",
+     "expression": "AR*R*ai_beta_ratio*beta_R*beta_scale*(1 - ai_R)",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>R</ci><ci>ai_beta_ratio</ci><ci>beta_R</ci><ci>beta_scale</ci><apply><minus/><cn>1</cn><ci>ai_R</ci></apply></apply>"
+    },
+    {
+     "target": "t73",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t74",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t75",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t76",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t77",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t78",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "t79",
+     "expression": "I*gamma",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t80",
+     "expression": "IV_vo_0004987*gamma",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t81",
+     "expression": "IV_vo_0005158*gamma",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t82",
+     "expression": "A*gamma",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t83",
+     "expression": "IR*gamma",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t84",
+     "expression": "AR*gamma",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t85",
+     "expression": "S*mu",
+     "expression_mathml": "<apply><times/><ci>S</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t86",
+     "expression": "SVR*mu",
+     "expression_mathml": "<apply><times/><ci>SVR</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t87",
+     "expression": "V1_vo_0004987*mu",
+     "expression_mathml": "<apply><times/><ci>V1_vo_0004987</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t88",
+     "expression": "V1_vo_0005158*mu",
+     "expression_mathml": "<apply><times/><ci>V1_vo_0005158</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t89",
+     "expression": "V2_vo_0004987*mu",
+     "expression_mathml": "<apply><times/><ci>V2_vo_0004987</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t90",
+     "expression": "V2_vo_0005158*mu",
+     "expression_mathml": "<apply><times/><ci>V2_vo_0005158</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t91",
+     "expression": "I*mu_I",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>mu_I</ci></apply>"
+    },
+    {
+     "target": "t92",
+     "expression": "IV_vo_0004987*mu_IV_0",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0004987</ci><ci>mu_IV_0</ci></apply>"
+    },
+    {
+     "target": "t93",
+     "expression": "IV_vo_0005158*mu_IV_1",
+     "expression_mathml": "<apply><times/><ci>IV_vo_0005158</ci><ci>mu_IV_1</ci></apply>"
+    },
+    {
+     "target": "t94",
+     "expression": "IR*mu",
+     "expression_mathml": "<apply><times/><ci>IR</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t95",
+     "expression": "A*mu",
+     "expression_mathml": "<apply><times/><ci>A</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t96",
+     "expression": "AR*mu",
+     "expression_mathml": "<apply><times/><ci>AR</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t97",
+     "expression": "R*mu",
+     "expression_mathml": "<apply><times/><ci>R</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t98",
+     "expression": "R2*mu",
+     "expression_mathml": "<apply><times/><ci>R2</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t99",
+     "expression": "mu",
+     "expression_mathml": "<ci>mu</ci>"
+    },
+    {
+     "target": "t100",
+     "expression": "V1_vo_0004987*nu_v1_0",
+     "expression_mathml": "<apply><times/><ci>V1_vo_0004987</ci><ci>nu_v1_0</ci></apply>"
+    },
+    {
+     "target": "t101",
+     "expression": "V1_vo_0005158*nu_v1_1",
+     "expression_mathml": "<apply><times/><ci>V1_vo_0005158</ci><ci>nu_v1_1</ci></apply>"
+    },
+    {
+     "target": "t102",
+     "expression": "V2_vo_0004987*nu_v2_0",
+     "expression_mathml": "<apply><times/><ci>V2_vo_0004987</ci><ci>nu_v2_0</ci></apply>"
+    },
+    {
+     "target": "t103",
+     "expression": "V2_vo_0005158*nu_v2_1",
+     "expression_mathml": "<apply><times/><ci>V2_vo_0005158</ci><ci>nu_v2_1</ci></apply>"
+    },
+    {
+     "target": "t104",
+     "expression": "R*nu_R",
+     "expression_mathml": "<apply><times/><ci>R</ci><ci>nu_R</ci></apply>"
+    },
+    {
+     "target": "t105",
+     "expression": "R2*nu_R",
+     "expression_mathml": "<apply><times/><ci>R2</ci><ci>nu_R</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "0.999999000000000",
+     "expression_mathml": "<cn>0.99999899999999997</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "1.00000000000000e-6",
+     "expression_mathml": "<cn>9.9999999999999995e-7</cn>"
+    },
+    {
+     "target": "A",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "V1_vo_0004987",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "V1_vo_0005158",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "V2_vo_0004987",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "V2_vo_0005158",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "IV_vo_0004987",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "IV_vo_0005158",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "R",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "AR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "IR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "R2",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "SVR",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "ai",
+     "value": 0.5,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.048081000000000006,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_scale",
+     "value": 1.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "beta_v1_0",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_1",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_2",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_3",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_0",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_1",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_2",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_3",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "ai_R",
+     "value": 0.85,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "beta_R",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_4",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_5",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_6",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_7",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_4",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_5",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_6",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_7",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_8",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_9",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_10",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_11",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_8",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_9",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_10",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_11",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "ai_beta_ratio",
+     "value": 3.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "beta_v1_12",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_13",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_14",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_15",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_12",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_13",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_14",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_15",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_16",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_17",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_18",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v1_19",
+     "value": 0.009616200000000002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_16",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_17",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_18",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_v2_19",
+     "value": 0.0024040500000000005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.03571428571428571,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "mu",
+     "value": 2.049980726017995e-05,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "mu_I",
+     "value": 0.001,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "mu_IV_0",
+     "value": 0.00015,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "mu_IV_1",
+     "value": 0.00015,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu_v1_0",
+     "value": 0.0027397260273972603,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu_v1_1",
+     "value": 0.0027397260273972603,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu_v2_0",
+     "value": 0.0006849315068493151,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu_v2_1",
+     "value": 0.0006849315068493151,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu_R",
+     "value": 0.0006849315068493151,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
