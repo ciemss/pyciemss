@@ -282,7 +282,7 @@ def cdc_reformatcsv(
             q_ensemble_data["output"] = q_ensemble_data["output"].replace(k,v)
 
     # Creating target column
-    q_ensemble_data["target"] = q_ensemble_data["number_days"].astype("string") + " days ahead " + q_ensemble_data["inc_cum"] + " " + q_ensemble_data["output"]
+    q_ensemble_data["target"] = q_ensemble_data["number_days"].astype("string") + " days ahead " + " " + q_ensemble_data["output"]
     
     # Add dates
     if forecast_start_date:
