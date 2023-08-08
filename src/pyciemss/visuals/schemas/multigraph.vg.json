@@ -129,7 +129,8 @@
           "groupby": "id"
         }
       },
-      "data": [{
+      "data": [
+        {
           "name": "linky-data",
           "source": "link-facets",
           "transform": [

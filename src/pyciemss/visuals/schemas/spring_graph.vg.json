@@ -60,6 +60,14 @@
       }
     ],
   
+    "legends": [
+      {
+        "title": "Group",
+        "stroke": "color", 
+        "symbolType": "stroke"
+      }
+    ],
+
     "marks": [
       {
         "name": "nodes",
