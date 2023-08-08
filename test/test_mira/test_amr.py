@@ -54,8 +54,8 @@ class Configuration:
     def from_json(spec):
         v = Configuration(spec["id"])
         v.source_url == spec["source_url"]
-        v.tests_pass = spec["tests_pass"]
-        v.tests_fail = spec["tests_fail"]
+        v.tests_pass = spec["tests_pass"].copy()
+        v.tests_fail = spec["tests_fail"].copy()
         return v
 
 
@@ -90,7 +90,7 @@ def try_loading_biomodel(config: Configuration, context: any):
             timepoints=sample_timepoints,
         )
         context.assertIsNotNone(samples)
-        context.assertIsInstance(samples, pd.DataFrame)
+        context.assertIsInstance(samples["data"], pd.DataFrame)
         config.tests_pass.append("load_and_sample_petri_model")
     except Exception as e:
         warnings.warn(f"{config.id} {str(e)}")
@@ -113,7 +113,7 @@ def try_loading_biomodel(config: Configuration, context: any):
         )
 
         context.assertIsNotNone(calibrated_samples)
-        context.assertIsInstance(calibrated_samples, pd.DataFrame)
+        context.assertIsInstance(calibrated_samples["data"], pd.DataFrame)
         config.tests_pass.append("load_and_calibrate_and_sample_petri_model")
     except Exception as e:
         warnings.warn(f"{config.id} {str(e)}")
@@ -162,6 +162,12 @@ class TestAMR(unittest.TestCase):
             try_loading_biomodel(result, self)
 
             results.append(result)
+
+            # print("------------------------------------")
+            # print(f"{ref.id} -- {result.id}")
+            # print(f"\t{ref.tests_fail} -- {result.tests_fail}")
+            # print(f"\t{ref.tests_pass} -- {result.tests_pass}")
+
             if set(result.tests_fail) != set(ref.tests_fail):
                 failures.append(result)
 
@@ -202,7 +208,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--test",
-        help="Only process <test> models, skips early file test",
+        help="Only process <test> number of models (also skips checking for the target file, will not overwrite)",
         default=None,
         required=False,
         type=int,
@@ -227,6 +233,7 @@ if __name__ == "__main__":
     tests = [Configuration(model_id) for model_id in biomodels][: args.test]
 
     for config in tests:
+        print(f"{config.id}  -------------------------------------------")
         with warnings.catch_warnings():
             if args.nowarn:
                 warnings.simplefilter("ignore")
@@ -292,7 +299,7 @@ if __name__ == "__main__":
                     **{
                         "old-fail/new-pass": [
                             *old_fail.intersection(new_pass)
-                        ],  # Imrpoved
+                        ],  # Improved
                         "old-pass/new-pass": [
                             *old_pass.intersection(new_pass)
                         ],  # Stayed at passing
