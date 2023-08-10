@@ -204,7 +204,7 @@ def plot_prior_posterior(
         color="blue",
         label="Ensemble Model Prior Forecasts",
     )
-    if not (calibrated_solution == None):
+    if calibrated_solution is not None:
         ax = plot_predictive(
             calibrated_solution,
             all_timepoints,
@@ -223,7 +223,7 @@ def box_plot_weights(generating_weights, calibrated_solution):
     as inputs, and makes a box plot of the calibrated ensemble weights to compare
     with the generating weights."""
     fig = plt.figure(facecolor="w", figsize=(9, 9))
-    ax = fig.add_subplot(111, axisbelow=True)
+    _ = fig.add_subplot(111, axisbelow=True)
     num_models = len(calibrated_solution["model_weights"][0])
     if num_models == 1:
         weight_df = pd.DataFrame(
