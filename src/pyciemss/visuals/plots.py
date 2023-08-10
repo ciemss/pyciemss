@@ -17,6 +17,7 @@ from copy import deepcopy
 
 import matplotlib.tri as tri
 from pyro.distributions import Dirichlet
+from statsmodels.tsa.stattools import grangercausalitytests
 
 
 VegaSchema = Dict[str, Any]
@@ -141,6 +142,73 @@ def nice_df(df):
 
     df = df.drop(columns=["timepoint_id"]).set_index(["timepoint", "sample_id"])
     return df
+
+
+
+def select_traces(traces_df, 
+    subset: Union[str, list] = all,
+    example_traj_agg: Literal["mean", "var", "granger"] = "mean",
+    limit: Optional[Integral] = None,
+    relabel: Optional[Dict[str, str]] = None
+    ):
+    """Return the time line most representative of the time series data"""
+    if subset == all:
+        keep = traces_df.columns
+    elif isinstance(subset, str):
+        keep = [k for k in traces_df.columns if re.match(subset, k)]
+    else:
+        keep = subset
+
+    traces_df = nice_df(traces_df)    
+    traces_df = traces_df.filter(items=keep).rename(columns=relabel)
+
+    # get average line
+    examplary_line_df = (
+        traces_df.melt(ignore_index=False, var_name="trajectory")
+        .set_index("trajectory", append=True)
+        .groupby(level=["trajectory", "timepoint"]).mean()
+        .reset_index()
+        .iloc[:limit]
+    )
+
+    def granger_fun(x):
+        # first column is the column to compare to 
+        # not sure what lag value to use
+        # return ssr based F test p value
+        granger_value = grangercausalitytests(x[['medium_value','value']], maxlag = [10])[10][0]['ssr_ftest'][1]
+        return granger_value
+    
+    # all data, melted
+    melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
+    #add value of average line to original df as column
+    merged_all_medium = pd.merge(melt_all, examplary_line_df, on =["trajectory", "timepoint"]).rename(columns = {'value_x': 'value', 'value_y': 'medium_value'})
+    # get distance from average line for each sample/timepoint/trajectory
+    merged_all_medium["distance_medium"] = abs(merged_all_medium['medium_value'] -  merged_all_medium['value'])
+    # get sum of distance from medium for all timepoints in sample/trajectory
+    group_examplary = merged_all_medium.set_index(["trajectory", 'timepoint', 'sample_id'], append=True).groupby(level=["trajectory", 'sample_id'])
+
+    # get sum and variable of each trajectory (rabbit or wolf) and sample id group
+    if example_traj_agg == "mean":
+        # change to mean, add document, least like as well, information to pick an examplare, look at teams note from joseph, transfer entropy, granger causality
+        # decapods
+        sum_examplary = group_examplary.mean().reset_index() # get only min distance from each trajectory type (rabbit or worlf) back
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_medium.idxmin()][['sample_id', 'trajectory']]
+    
+    elif example_traj_agg == "var":
+        sum_examplary = group_examplary.var().reset_index() # get only min distance from each trajectory type (rabbit or worlf) back
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_medium.idxmin()][['sample_id', 'trajectory']]
+
+    elif example_traj_agg == "granger":
+        granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
+        sum_examplary = pd.DataFrame({'granger': granger_examplary})
+        sum_examplary = sum_examplary.reset_index()
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").granger.idxmin()][['sample_id', 'trajectory']]
+
+
+   # only keep sample id's from 'best' lines
+    only_examplary_line = pd.merge(melt_all , best_sample_id , on = ['sample_id', 'trajectory'], how= "right")
+    examplary_line = only_examplary_line.to_dict(orient="records")
+    return examplary_line
 
 
 def trajectories(
