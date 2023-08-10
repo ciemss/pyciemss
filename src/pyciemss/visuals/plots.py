@@ -208,7 +208,11 @@ def select_traces(traces_df,
 
    # only keep sample id's from 'best' lines
     only_examplary_line = pd.merge(melt_all , best_sample_id , on = ['sample_id', 'trajectory'], how= "right")
-    examplary_line = only_examplary_line.to_dict(orient="records")
+
+
+    only_examplary_line = only_examplary_line.drop(columns=['sample_id'], errors="ignore")
+    examplary_line = only_examplary_line.pivot_table(values='value', index ='timepoint', columns='trajectory')
+    examplary_line['timepoint_id'] = examplary_line.index
     return examplary_line
 
 
