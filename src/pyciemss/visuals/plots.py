@@ -152,7 +152,13 @@ def select_traces(traces_df,
     limit: Optional[Integral] = None,
     relabel: Optional[Dict[str, str]] = None
     ):
-    """Return the time line most representative of the time series data"""
+    """Return the time line most representative of the time series data
+    Args:
+        subset: only keep subset columns
+        example_traj_agg: mean is lowest mean distance from average line
+        var is lowest variance distance from average line
+        grange is lowest p value result grangercausalitytest with lax of 10, from average line
+    """
     if subset == all:
         keep = traces_df.columns
     elif isinstance(subset, str):
@@ -174,30 +180,30 @@ def select_traces(traces_df,
 
     def granger_fun(x):
         # first column is the column to compare to 
-        # not sure what lag value to use
-        # return ssr based F test p value
-        granger_value = grangercausalitytests(x[['medium_value','value']], maxlag = [10])[10][0]['ssr_ftest'][1]
+        # not sure what maxlag value to use
+        # return ssr-based-F test p value
+        granger_value = grangercausalitytests(x[['mean_value','value']], maxlag = [10])[10][0]['ssr_ftest'][1]
         return granger_value
     
     # all data, melted
     melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
     #add value of average line to original df as column
-    merged_all_medium = pd.merge(melt_all, examplary_line_df, on =["trajectory", "timepoint"]).rename(columns = {'value_x': 'value', 'value_y': 'medium_value'})
+    merged_all_mean = pd.merge(melt_all, examplary_line_df, on =["trajectory", "timepoint"]).rename(columns = {'value_x': 'value', 'value_y': 'mean_value'})
     # get distance from average line for each sample/timepoint/trajectory
-    merged_all_medium["distance_medium"] = abs(merged_all_medium['medium_value'] -  merged_all_medium['value'])
-    # get sum of distance from medium for all timepoints in sample/trajectory
-    group_examplary = merged_all_medium.set_index(["trajectory", 'timepoint', 'sample_id'], append=True).groupby(level=["trajectory", 'sample_id'])
+    merged_all_mean["distance_mean"] = abs(merged_all_mean['mean_value'] -  merged_all_mean['value'])
+    # get sum of distance from mean for all timepoints in sample/trajectory
+    group_examplary = merged_all_mean.set_index(["trajectory", 'timepoint', 'sample_id'], append=True).groupby(level=["trajectory", 'sample_id'])
 
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if example_traj_agg == "mean":
         # change to mean, add document, least like as well, information to pick an examplare, look at teams note from joseph, transfer entropy, granger causality
         # decapods
         sum_examplary = group_examplary.mean().reset_index() # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_medium.idxmin()][['sample_id', 'trajectory']]
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_mean.idxmin()][['sample_id', 'trajectory']]
     
     elif example_traj_agg == "var":
         sum_examplary = group_examplary.var().reset_index() # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_medium.idxmin()][['sample_id', 'trajectory']]
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_mean.idxmin()][['sample_id', 'trajectory']]
 
     elif example_traj_agg == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
@@ -626,10 +632,14 @@ def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name
     if force_clear:
         IPython.display.clear_output(wait=True)
     if save_png:
+        if not os.path.exists('images'):
+            os.makedirs('images')
         png_data = vlc.vega_to_png(spec)
-        with open(chart_name, "wb") as f:
+        with open(os.path.join('images', chart_name), "wb") as f:
             f.write(png_data)
+            
     IPython.display.display(bundle, raw=True)
+    IPython.display.display(IPython.display.Image(filename=os.path.join('images', chart_name)))
 
 
 def save_schema(schema: Dict[str, Any], path: str):
