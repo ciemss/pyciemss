@@ -700,10 +700,10 @@ def ensemble_calibration(
         solution_mappings,
         start_time,
         start_states,
-        ensemble_total_population,
+        total_population=ensemble_total_population,
         dirichlet_concentration=dirichlet_concentration,
-        noise_pseudocount=noise_pseudocount,
     )
+    
     display(ensemble)
 
     # Sample from the ensemble prior
