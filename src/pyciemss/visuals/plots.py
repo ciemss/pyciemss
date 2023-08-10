@@ -13,6 +13,7 @@ import os
 
 from itertools import tee, filterfalse, compress
 import IPython.display
+import vl_convert as vlc
 from copy import deepcopy
 
 import matplotlib.tri as tri
@@ -608,7 +609,7 @@ def triangle_contour(data, *, title=None, contour=True):
 # -------- Utlity functions for working with Vega plots
 
 
-def ipy_display(spec: Dict[str, Any], *, lite=False, force_clear=False):
+def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name = "chart.png", force_clear=False):
     """Wrap for dispaly in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
     """
@@ -620,7 +621,10 @@ def ipy_display(spec: Dict[str, Any], *, lite=False, force_clear=False):
     print("", end=None)
     if force_clear:
         IPython.display.clear_output(wait=True)
-
+    if save_png:
+        png_data = vlc.vega_to_png(spec)
+        with open(chart_name, "wb") as f:
+            f.write(png_data)
     IPython.display.display(bundle, raw=True)
 
 
