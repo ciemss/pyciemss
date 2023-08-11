@@ -690,9 +690,7 @@ def ensemble_calibration(
     start_time = train_timepoints[0] - 1e-5
 
     # Set up the ensemble model
-    ensemble_total_population = 1.0
     dirichlet_concentration = 1.0
-    noise_pseudocount = 100.0
     solution_mappings = [solution_mapping1, solution_mapping2, solution_mapping3]
     ensemble = setup_model_ensemble(
         models,
@@ -700,17 +698,9 @@ def ensemble_calibration(
         solution_mappings,
         start_time,
         start_states,
-<<<<<<< HEAD
-        total_population=ensemble_total_population,
         dirichlet_concentration=dirichlet_concentration,
     )
-    
-=======
-        ensemble_total_population,
-        dirichlet_concentration=dirichlet_concentration,
-        noise_pseudocount=noise_pseudocount,
-    )
->>>>>>> main
+
     display(ensemble)
 
     # Sample from the ensemble prior
