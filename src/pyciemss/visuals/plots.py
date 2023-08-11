@@ -33,7 +33,9 @@ def save_schema(schema: Dict[str, Any], path: str):
         json.dump(schema, f, indent=3)
 
 
-def ipy_display(spec: Dict[str, Any], *, lite=False, force_clear=False):
+def ipy_display(
+    spec: Dict[str, Any], *, lite=False, save_png=True, chart_name="", force_clear=False
+):
     """Wrap for dispaly in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
     """
@@ -45,5 +47,17 @@ def ipy_display(spec: Dict[str, Any], *, lite=False, force_clear=False):
     print("", end=None)
     if force_clear:
         IPython.display.clear_output(wait=True)
+    if save_png:
+        if not os.path.exists("images"):
+            os.makedirs("images")
+
+        png_data = vlc.vega_to_png(spec)
+        if chart_name == "":
+            now = datetime.datetime.now()
+            chart_name = now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
+        else:
+            chart_name = chart_name + now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
+        with open(os.path.join("images", chart_name), "wb") as f:
+            f.write(png_data)
 
     IPython.display.display(bundle, raw=True)
