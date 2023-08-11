@@ -10,6 +10,7 @@ import pkgutil
 import json
 import re
 import os
+import datetime
 
 from itertools import tee, filterfalse, compress
 import IPython.display
@@ -196,8 +197,6 @@ def select_traces(traces_df,
 
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if example_traj_agg == "mean":
-        # change to mean, add document, least like as well, information to pick an examplare, look at teams note from joseph, transfer entropy, granger causality
-        # decapods
         sum_examplary = group_examplary.mean().reset_index() # get only min distance from each trajectory type (rabbit or worlf) back
         best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_mean.idxmin()][['sample_id', 'trajectory']]
     
@@ -215,7 +214,7 @@ def select_traces(traces_df,
    # only keep sample id's from 'best' lines
     only_examplary_line = pd.merge(melt_all , best_sample_id , on = ['sample_id', 'trajectory'], how= "right")
 
-
+    # get into dataframe in correct foramt for trajectories traces argument
     only_examplary_line = only_examplary_line.drop(columns=['sample_id'], errors="ignore")
     examplary_line = only_examplary_line.pivot_table(values='value', index ='timepoint', columns='trajectory')
     examplary_line['timepoint_id'] = examplary_line.index
@@ -619,7 +618,7 @@ def triangle_contour(data, *, title=None, contour=True):
 # -------- Utlity functions for working with Vega plots
 
 
-def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name = "chart.png", force_clear=False):
+def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name = "", force_clear=False):
     """Wrap for dispaly in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
     """
@@ -634,10 +633,16 @@ def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name
     if save_png:
         if not os.path.exists('images'):
             os.makedirs('images')
+
         png_data = vlc.vega_to_png(spec)
+        if chart_name == "":
+            now = datetime.datetime.now()
+            chart_name = now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
+        else:
+            chart_name = chart_name + now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
         with open(os.path.join('images', chart_name), "wb") as f:
             f.write(png_data)
-            
+
     IPython.display.display(bundle, raw=True)
     IPython.display.display(IPython.display.Image(filename=os.path.join('images', chart_name)))
 
