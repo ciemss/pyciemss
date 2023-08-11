@@ -153,8 +153,10 @@ class TestAMR(unittest.TestCase):
     def test_configs(self):
         print("Starting test...")
         print(f"ABS PATH: {AMR_ROOT.absolute()}")
+
         results = []
-        failures = []
+        unexpected_failures = []
+        unexpected_successes = []
         for config in self.configs:
             ref = Configuration.from_json(config)
             result = Configuration.from_json(config)
@@ -169,12 +171,20 @@ class TestAMR(unittest.TestCase):
             # print(f"\t{ref.tests_pass} -- {result.tests_pass}")
 
             if set(result.tests_fail) != set(ref.tests_fail):
-                failures.append(result)
+                unexpected_failures.append(result)
+
+            if set(result.tests_pass) != set(ref.tests_pass):
+                unexpected_successes.append(result)
 
         with open(_report_file, "w") as f:
             json.dump(results, f, cls=JSONEncoder, indent=3)
 
-        self.assertIs(len(failures), 0, "Unexpected failures detected")
+        self.assertIs(len(unexpected_failures), 0, "Unexpected failures detected")
+        self.assertIs(
+            len(unexpected_successes),
+            0,
+            f"Unexpected successe. PLEASE UPDATE {_config_file} by running test_amr.py as a script.",
+        )
 
 
 if __name__ == "__main__":
@@ -213,10 +223,9 @@ if __name__ == "__main__":
         required=False,
         type=int,
     )
-
     parser.add_argument(
         "--diff-details",
-        help="Print out all differences from the reference (default only prints regressions; aka, old-pass/new-fail and missing)",
+        help="Print out all differences from the reference (default only prints old-pass/new-fail and missing)",
         action="store_true",
     )
     parser.add_argument("--nowarn", help="Suppress warning output", action="store_true")
