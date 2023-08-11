@@ -142,7 +142,7 @@
       "marks": [
         {"type": "symbol",
         "name": "_points_symbol",
-        "from": {"data": "points"},
+        "from": {"data": "points_split"},
         "zindex": 3,
         "encode": {
           "update": {
@@ -172,7 +172,7 @@
         {
           "type": "line",
           "name": "_points_line",
-          "from": {"data": "points"},
+          "from": {"data": "points_split"},
           "zindex": 3,
           "encode": {
             "update": {
