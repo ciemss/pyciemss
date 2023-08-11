@@ -701,7 +701,7 @@ def ensemble_calibration(
         dirichlet_concentration=dirichlet_concentration,
     )
 
-    display(ensemble)
+    # display(ensemble)
 
     # Sample from the ensemble prior
     ensemble_prior_forecasts = sample_ensemble(ensemble, all_timepoints, num_samples)
