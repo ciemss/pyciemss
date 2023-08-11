@@ -1,7 +1,9 @@
-from typing import Dict, Any
+from typing import Dict, Any, Literal, Optional
 
 import json
+
 import IPython.display
+import vl_convert
 
 from .vega import VegaSchema, pad, resize, set_title, rescale, orient_legend
 from .barycenter import triangle_contour
@@ -34,30 +36,57 @@ def save_schema(schema: Dict[str, Any], path: str):
 
 
 def ipy_display(
-    spec: Dict[str, Any], *, lite=False, save_png=True, chart_name="", force_clear=False
+    schema: Dict[str, Any],
+    *,
+    format: Literal["PNG", "SVG", "interative"] = "PNG",
+    force_clear: bool = False,
+    dpi: Optional[int] = None,
+    **kwargs,
 ):
     """Wrap for dispaly in an ipython notebook.
-    spec -- A vega JSON schema ready for rendering
-    """
-    if lite:
-        bundle = {"application/vnd.vegalite.v5+json": spec}
-    else:
-        bundle = {"application/vnd.vega.v5+json": spec}
+    schema -- A vega JSON schema ready for rendering
+    format -- Return a PNG or SVG if requested (wrapped for jupyter dipslay)
+                OR for "interactive" returns None but displays the schema
+              Format specifier is case-insensitive.
+    force_clear -- Force clear the result cell (sometimes required after an error)
+    dpi -- approximates DPI for output (other factors apply)
+    **kwargs -- Passed on to the selected vl_convert function
 
-    print("", end=None)
+    The vlc_convert PNG export function takes a 'scale' factor,
+    which uses in machine-dependent resolution units.
+    If dpi is specified and kwargs DOES NOT include a scale,
+    then dpi will be used to estimate the scale factor to get a result near the requested
+    resolution assuming a machine-resolution of 72dpi.
+
+    This (may) return PNG data **wrappped** for display in jupyter.
+    The raw PNG data is accessible from the returned objects `data` property. Save to a file as:
+    ```
+    image = display(schema)
+    with open("test_image.png", "wb") as f:
+       f.write(image.data)
+    ```
+
+    return -- PNG data to display (if not interactive) OR an interactive vega plot
+
+    """
     if force_clear:
         IPython.display.clear_output(wait=True)
-    if save_png:
-        if not os.path.exists("images"):
-            os.makedirs("images")
 
-        png_data = vlc.vega_to_png(spec)
-        if chart_name == "":
-            now = datetime.datetime.now()
-            chart_name = now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
-        else:
-            chart_name = chart_name + now.strftime("%Y-%m-%d %H:%M:%S") + ".png"
-        with open(os.path.join("images", chart_name), "wb") as f:
-            f.write(png_data)
+    format = format.lower()
 
-    IPython.display.display(bundle, raw=True)
+    if format == "interactive":
+        bundle = {"application/vnd.vega.v5+json": schema}
+
+        print("", end=None)
+        IPython.display.display(bundle, raw=True)
+    elif format == "png":
+        if dpi and "scale" not in kwargs:
+            kwargs["scale"] = dpi // 72
+
+        png_data = vl_convert.vega_to_png(schema, **kwargs)
+        return IPython.display.Image(png_data)
+    elif format == "svg":
+        png_data = vl_convert.vega_to_svg(schema, **kwargs)
+        return IPython.display.SVG(png_data)
+    else:
+        raise ValueError(f"Unhandled format requested: {format}")
