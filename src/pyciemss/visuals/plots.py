@@ -619,8 +619,10 @@ def triangle_contour(data, *, title=None, contour=True):
 
 
 def ipy_display(spec: Dict[str, Any], *, lite=False, save_png = True, chart_name = "", force_clear=False):
-    """Wrap for dispaly in an ipython notebook.
+    """Wrap for display in an ipython notebook.
     spec -- A vega JSON schema ready for rendering
+    save_png (True) --  save png within images folder, show within notebook 
+    chart_name -- name of saved file. time string will be added to chart_name. if left blank, chart_name is just the time
     """
     if lite:
         bundle = {"application/vnd.vegalite.v5+json": spec}
