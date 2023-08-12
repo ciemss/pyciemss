@@ -92,6 +92,26 @@
           "force":  true
         }
       ]
+    },
+        {
+      "name": "clearData", "value": true,
+      "on": [
+        {
+          "events": "mouseup[!event.item]",
+          "update": "true",
+          "force": true
+        }
+      ]
+    },
+    {
+      "name": "clickedData", "value": null,
+      "on": [
+        {
+        "events": "@area:click",
+          "update": "{value: datum.trajectory}",
+          "force":  true
+        }
+      ]
     }
   ],
 
@@ -107,7 +127,7 @@
             "fill": {"value": "transparent"},
             "strokeWidth": {"value": 2},
             "opacity": [
-              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 0.7},
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)", "value": 0.7},
               {"value": 0.15}
             ],
             "size": {"value": 64}
@@ -118,7 +138,7 @@
           "interactive": true,
           "update": {
             "opacity": [
-              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 1},
+              {"test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.value)", "value": 1},
               {"value": 0.25}
             ]
           }
@@ -243,6 +263,8 @@
      "marks": [
       {
         "type": "area",
+        "name": "area",
+        "interactive": true,
         "from": {"data": "trajectory_split"},
         "encode": {
           "update": {
@@ -358,6 +380,14 @@
         {"trigger": "!shift", "remove": true},
         {"trigger": "!shift && clicked", "insert": "clicked"},
         {"trigger": "shift && clicked", "toggle": "clicked"}
+      ]
+    },
+    
+    {
+      "name": "selectedData",
+      "on": [
+        {"trigger": "clearData", "remove": true},
+        {"trigger": "clickedData", "toggle": "clickedData"}
       ]
     }
   ]
