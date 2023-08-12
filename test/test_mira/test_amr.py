@@ -100,7 +100,7 @@ def try_loading_biomodel(config: Configuration, context: any):
         return
 
     try:
-        synthetic_obs_data = solutions_to_observations(sample_timepoints, samples)
+        synthetic_obs_data = solutions_to_observations(sample_timepoints, samples['data'])
         synthetic_obs_data[0].to_csv(SYN_SAMPLE_DATA_TEMP, index=False)
 
         calib_sample_timepoints = sample_timepoints + [0.9, 1.0, 1.1, 1.2]
