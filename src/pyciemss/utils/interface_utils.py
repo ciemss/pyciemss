@@ -230,7 +230,10 @@ def assign_interventions_to_timepoints(
 def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     """Convert pyciemss outputs to data observations."""
     # Use groupby to create separate DataFrames
-    grouped = df.groupby(level=1)
+    if isinstance(df.index, pd.MultiIndex):
+        grouped = df.groupby(level='sample_id')
+    else:
+        grouped = df.set_index(['timepoint_id', 'sample_id']).groupby(level='sample_id')
 
     # Create a dictionary of dataframes
     outputs = {level: group for level, group in grouped}
@@ -238,9 +241,8 @@ def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[st
     for idx, observation in outputs.items():
         observation = observation.drop([k for k in observation.columns if '_sol' != k[-4:]],
                                       axis=1)
-        observation = observation.rename(columns={k: k[:-4] for k in observation.columns})
+        observation = observation.rename(columns={k: k.removesuffix('_sol') for k in observation.columns})
         observation['Timestep'] = timepoints
-
         observations[idx] = observation[['Timestep'] + [c for c in observation.columns[:-1]]]
     return observations
       
