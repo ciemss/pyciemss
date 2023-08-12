@@ -3,13 +3,16 @@ from pyciemss.utils.interface_utils import (
     convert_to_output_format,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
-    csv_to_list
+    csv_to_list,
 )
+from pyciemss.PetriNetODE.interfaces import load_and_sample_petri_model
 from torch import tensor
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
-
+from mira.metamodel.template_model import Observable
+from sympy import lambdify, symbols
+from sympytorch import SymPyModule
 
 class Test_Interface_Utils(unittest.TestCase):
     """Test interface_utils.py"""
@@ -59,8 +62,9 @@ class Test_Interface_Utils(unittest.TestCase):
             'Y': [21,22,np.NaN,np.NaN,25],
             'Z': 5*[np.NaN]
         })
-
-
+        S, I =  symbols('Susceptible Infected')
+        self.observable_function = {'S+I': SymPyModule(expressions=[S+I])}
+        
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
@@ -104,6 +108,45 @@ class Test_Interface_Utils(unittest.TestCase):
             rtol=1e-5,
         )
 
+        result2 = convert_to_output_format(
+            self.intervened_samples,
+            self.timepoints,
+            self.interventions,
+            time_unit="days",
+            observables=self.observable_function
+        )
+        self.assertTrue(
+            "S+I_obs" in result2.columns, "S+I observable was added to the output"
+        )
+        result3 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
+                                              num_samples=2, timepoints=self.timepoints,
+                                              compile_observables_p=True)['data']
+        self.assertTrue(
+            "Cases_obs" in result3.columns, "Cases observable should have been added to the output"
+        )
+        self.assertTrue(
+            "Hospitalizations_obs" in result3.columns, "Hospitalizations observable should have been added to the output"
+        )
+
+        self.assertTrue(
+            "Deaths_obs" in result3.columns, "Deaths observable should have been added to the output"
+        )
+
+        result4 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
+                                              num_samples=2, timepoints=self.timepoints,
+                                              compile_observables_p=False)['data']
+        self.assertFalse(
+            "Cases_obs" in result4.columns, "Cases observable should not have been added to the output"
+        )
+        self.assertFalse(
+            "Hospitalizations_obs" in result4.columns, "Hospitalizations observable should not have been added to the output"
+        )
+
+        self.assertFalse(
+            "Deaths_obs" in result4.columns, "Deaths observable should not have been not added to the output"
+        )
+        
+            
     def test_intervention_to_interval(self):
         """Test intervention_to_interval."""
         expected_intervals = {

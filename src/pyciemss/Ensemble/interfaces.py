@@ -20,7 +20,7 @@ from pyciemss.PetriNetODE.base import get_name
 from pyciemss.PetriNetODE.interfaces import load_petri_model
 
 from pyciemss.Ensemble.base import EnsembleSystem, ScaledBetaNoiseEnsembleSystem, ScaledNormalNoiseEnsembleSystem
-from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list
+from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list, create_mapping_function_from_observables
 
 from typing import Iterable, Optional, Tuple, Callable, Union
 import copy
@@ -33,16 +33,19 @@ from pyciemss.PetriNetODE.events import (
     LoggingEvent,
 )
 
+from pyciemss.custom_decorators import pyciemss_logging_wrapper
+
 EnsembleSolution = Iterable[dict[str, torch.Tensor]]
 EnsembleInferredParameters = pyro.nn.PyroModule
 
 
+@pyciemss_logging_wrapper
 def load_and_sample_petri_ensemble(
     petri_model_or_paths: Iterable[
         Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
     ],
     weights: Iterable[float],
-    solution_mappings: Iterable[Callable],
+    solution_mappings: Iterable[dict[str, str]],
     num_samples: int,
     timepoints: Iterable[float],
     *,
@@ -56,7 +59,7 @@ def load_and_sample_petri_ensemble(
     visual_options: Union[None, bool, dict[str, any]] = None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a petri net from a file, compile it into a probabilistic program, and sample from it.
 
@@ -111,18 +114,27 @@ def load_and_sample_petri_ensemble(
             - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution, quantiles: The samples from the model and quantiles for ensemble score as a pandas DataFrames. (for falsy visual_options)
-            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
     models = [
         load_petri_model(
         petri_model_or_path=pmop,
-        add_uncertainty=True,
+        add_uncertainty=False,
         compile_rate_law_p=compile_rate_law_p,
+        compile_observables_p=True,
     )
         for pmop in petri_model_or_paths
     ]
+
+    solution_mapping_fs = []
+
+    for i, model in enumerate(models):
+        solution_mapping_f = create_mapping_function_from_observables(model, solution_mappings[i])
+        solution_mapping_fs.append(solution_mapping_f)
 
     # If the user doesn't override the start state, use the initial values from the model.
     if start_states is None:
@@ -134,7 +146,7 @@ def load_and_sample_petri_ensemble(
     models = setup_model(
         models,
         weights,
-        solution_mappings,
+        solution_mapping_fs,
         start_time,
         start_states,
         total_population=total_population,
@@ -149,7 +161,7 @@ def load_and_sample_petri_ensemble(
     )
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
-        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
     )
 
     if visual_options:
@@ -157,16 +169,17 @@ def load_and_sample_petri_ensemble(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples, q_ensemble
+        return {"data": processed_samples, "quantiles": q_ensemble}
 
 
+@pyciemss_logging_wrapper
 def load_and_calibrate_and_sample_ensemble_model(
     petri_model_or_paths: Iterable[
         Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]
     ],
     data_path: str,
     weights: Iterable[float],
-    solution_mappings: Iterable[Callable],
+    solution_mappings: Iterable[dict[str, str]],
     num_samples: int,
     timepoints: Iterable[float],
     *,
@@ -188,7 +201,7 @@ def load_and_calibrate_and_sample_ensemble_model(
     visual_options: Union[None, bool, dict[str, any]] = None,
     alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
     stacking_order: Optional[str] = "timepoints",
-) -> pd.DataFrame:
+) -> dict:
     """
     Load a collection petri net from a file, compile them into an ensemble probabilistic program, calibrate it on data,
     and sample from the calibrated model.
@@ -264,18 +277,21 @@ def load_and_calibrate_and_sample_ensemble_model(
             - Options: "timepoints" or "quantiles"
 
     Returns:
-        samples:
-            - PetriSolution: The samples from the model as a pandas DataFrame. (for falsy visual_options)
-            - dict{data: <samples>, qauntiles: <quantiles>, visual: <visual>}: The PetriSolution, quantiles for ensemble score, and a visualization (for truthy visual_options)
+        result: dict
+            - Dictionary of outputs with following attribute:
+                * data: The samples from the calibrated model as a pandas DataFrame.
+                * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * visual: Visualization. (If visual_options is truthy)
     """
 
     data = csv_to_list(data_path)
-
+    
     models = [
         load_petri_model(
             petri_model_or_path=pmop,
-            add_uncertainty=True,
+            add_uncertainty=False,
             compile_rate_law_p=compile_rate_law_p,
+            compile_observables_p=True,
         )
         for pmop in petri_model_or_paths
     ]
@@ -287,10 +303,16 @@ def load_and_calibrate_and_sample_ensemble_model(
             for model in models
         ]
 
+    solution_mapping_fs = []
+
+    for i, model in enumerate(models):
+        solution_mapping_f = create_mapping_function_from_observables(model, solution_mappings[i])
+        solution_mapping_fs.append(solution_mapping_f)
+
     models = setup_model(
         models,
         weights,
-        solution_mappings,
+        solution_mapping_fs,
         start_time,
         start_states,
         total_population=total_population,
@@ -321,7 +343,8 @@ def load_and_calibrate_and_sample_ensemble_model(
 
     processed_samples, q_ensemble = convert_to_output_format(
         samples, timepoints, time_unit=time_unit,
-        ensemble_quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order
+        quantiles=True, alpha_qs=alpha_qs, stacking_order=stacking_order,
+        train_end_point = max([d[0] for d in data])
     )
 
     if visual_options:
@@ -329,7 +352,7 @@ def load_and_calibrate_and_sample_ensemble_model(
         schema = plots.trajectories(processed_samples, **visual_options)
         return {"data": processed_samples, "quantiles": q_ensemble, "visual": schema}
     else:
-        return processed_samples, q_ensemble
+        return {"data": processed_samples, "quantiles": q_ensemble}
 
 
 ##############################################################################
@@ -338,6 +361,7 @@ def load_and_calibrate_and_sample_ensemble_model(
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
 @setup_model.register(list)
+@pyciemss_logging_wrapper
 def setup_ensemble_model(
     models: list[DynamicalSystem],
     weights: Iterable[float],
@@ -386,6 +410,7 @@ def setup_ensemble_model(
 
 
 @reset_model.register
+@pyciemss_logging_wrapper
 def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
     """
     Reset a model to its initial state.
@@ -395,6 +420,7 @@ def reset_ensemble_model(ensemble: EnsembleSystem) -> EnsembleSystem:
 
 
 @intervene.register
+@pyciemss_logging_wrapper
 def intervene_ensemble_model(
     ensemble: EnsembleSystem, interventions: Iterable[Tuple[float, str, float]]
 ) -> EnsembleSystem:
@@ -405,6 +431,7 @@ def intervene_ensemble_model(
 
 
 @calibrate.register
+@pyciemss_logging_wrapper
 def calibrate_ensemble_model(
     ensemble: EnsembleSystem,
     data: Iterable[Tuple[float, dict[str, float]]],
@@ -459,6 +486,7 @@ def calibrate_ensemble_model(
 
 
 @sample.register
+@pyciemss_logging_wrapper
 def sample_ensemble_model(
     ensemble: EnsembleSystem,
     timepoints: Iterable[float],
