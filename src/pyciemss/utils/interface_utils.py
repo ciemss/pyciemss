@@ -81,13 +81,13 @@ def convert_to_output_format(
 
     if observables is not None:
         expression_vars = {
-            k.replace('_sol', ''): torch.squeeze( torch.tensor(d[k]), dim=-1) #.detach().cpu().numpy().astype(np.float64)
+            k.replace('_sol', ''): torch.squeeze( torch.tensor(d[k]), dim=-1)
             for k in pyciemss_results["states"].keys()
         }
         d = {
             **d,
             **{
-                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars)).detach().cpu().numpy().astype(np.float64)
+                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars))
                 for observable_id, expression in observables.items()
             },
         }
@@ -109,7 +109,7 @@ def convert_to_output_format(
         # Solution (state variables)
         for k, v in pyciemss_results["states"].items():
             q_vals = np.quantile(v, alpha_qs, axis=0)
-            k = k.replace("_sol","")
+            k = k.replace("_sol", "")
             if stacking_order == "timepoints":
                 # Keeping timepoints together
                 q["timepoint_id"].extend(list(np.repeat(np.array(range(num_timepoints)), num_quantiles)))
@@ -151,7 +151,16 @@ def csv_to_list(filename):
             # it will ignore extra values in either the header or the row
             data_dict = dict(zip(header[1:], row[1:]))
             # use float for the timestep, and convert the values in the dictionary to float only if not NaN or NA
-            result.append((float(row[0]), {k: float(v) for k, v in data_dict.items() if not(v=='' or v=='NaN')}))
+            result.append(
+                (
+                    float(row[0]),
+                    {
+                        k: float(v)
+                        for k, v in data_dict.items()
+                        if not (v == "" or v == "NaN")
+                    },
+                )
+            )
     return result
 
 
@@ -221,7 +230,7 @@ def assign_interventions_to_timepoints(
 def solutions_to_observations(timepoints: Iterable, df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     """Convert pyciemss outputs to data observations."""
     # Use groupby to create separate DataFrames
-    grouped = df.groupby(level=1)
+    grouped = df.set_index(['timepoint_id', 'sample_id']).groupby(level='sample_id')
 
     # Create a dictionary of dataframes
     outputs = {level: group for level, group in grouped}
