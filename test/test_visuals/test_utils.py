@@ -1,6 +1,9 @@
-from pyciemss.visuals import plots
+from pyciemss.visuals import plots, vega
 from pathlib import Path
 import unittest
+import torch
+import numpy as np
+import json
 
 from pyciemss.utils import get_tspan
 from pyciemss.utils.interface_utils import convert_to_output_format
@@ -8,11 +11,20 @@ from pyciemss.utils.interface_utils import convert_to_output_format
 _data_root = Path(__file__).parent.parent / "data"
 
 
+def tensor_load(path):
+    with open(path) as f:
+        data = json.load(f)
+
+    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
+
+    return data
+
+
 class TestUtils(unittest.TestCase):
     def setUp(self):
         tspan = get_tspan(1, 50, 500).detach().numpy()
         self.dists = convert_to_output_format(
-            plots.tensor_load(_data_root / "prior_samples.json"),
+            tensor_load(_data_root / "prior_samples.json"),
             tspan,
             time_unit="notional",
         )
@@ -42,11 +54,11 @@ class TestUtils(unittest.TestCase):
         new_orientation = "not-really-an-option"
         schema2 = plots.orient_legend(schema1, "color_legend", new_orientation)
 
-        legend = plots.find_keyed(schema2["legends"], "name", "color_legend")
+        legend = vega.find_keyed(schema2["legends"], "name", "color_legend")
         self.assertEqual(legend["orient"], new_orientation)
 
         schema3 = plots.orient_legend(schema1, "color_legend", None)
-        legend = plots.find_keyed(schema3["legends"], "name", "color_legend")
+        legend = vega.find_keyed(schema3["legends"], "name", "color_legend")
         self.assertFalse("orient" in legend)
 
     def test_pad(self):
@@ -70,14 +82,14 @@ class TestUtils(unittest.TestCase):
         self.assertFalse("title" in schema1)
         self.assertEqual(schema2["title"], "Main Title")
 
-        xaxis = plots.find_keyed(schema3["axes"], "name", "x_axis")
-        yaxis = plots.find_keyed(schema3["axes"], "name", "y_axis")
+        xaxis = vega.find_keyed(schema3["axes"], "name", "x_axis")
+        yaxis = vega.find_keyed(schema3["axes"], "name", "y_axis")
         self.assertFalse("title" in schema3)
         self.assertFalse("title" in yaxis)
         self.assertEqual(xaxis["title"], "XTitle")
 
-        xaxis = plots.find_keyed(schema4["axes"], "name", "x_axis")
-        yaxis = plots.find_keyed(schema4["axes"], "name", "y_axis")
+        xaxis = vega.find_keyed(schema4["axes"], "name", "x_axis")
+        yaxis = vega.find_keyed(schema4["axes"], "name", "y_axis")
         self.assertFalse("title" in schema4)
         self.assertFalse("title" in xaxis)
         self.assertEqual(yaxis["title"], "YTitle")
@@ -90,19 +102,17 @@ class TestUtils(unittest.TestCase):
 
     def test_delete_named(self):
         schema1 = plots.trajectories(self.dists)
-        self.assertIsNotNone(plots.find_keyed(schema1["signals"], "name", "clear"))
+        self.assertIsNotNone(vega.find_keyed(schema1["signals"], "name", "clear"))
 
-        schema_fragment = plots.delete_named(schema1["signals"], "clear")
+        schema_fragment = vega.delete_named(schema1["signals"], "clear")
         self.assertFalse(
             schema1["signals"] == schema_fragment, "Expected copy did not occur"
         )
-        self.assertRaises(
-            ValueError, plots.find_keyed, schema_fragment, "name", "clear"
-        )
+        self.assertRaises(ValueError, vega.find_keyed, schema_fragment, "name", "clear")
 
     def test_find_keyed(self):
         schema1 = plots.trajectories(self.dists)
-        self.assertIsNotNone(plots.find_keyed(schema1["signals"], "name", "clear"))
+        self.assertIsNotNone(vega.find_keyed(schema1["signals"], "name", "clear"))
         self.assertRaises(
-            ValueError, plots.find_keyed, schema1["signals"], "name", "NOT THERE"
+            ValueError, vega.find_keyed, schema1["signals"], "name", "NOT THERE"
         )
