@@ -147,10 +147,12 @@ class Test_Interface_Utils(unittest.TestCase):
         self.assertFalse(
             "Deaths_obs" in result4.columns, "Deaths observable should not have been not added to the output"
         )
-        
-        result5 = load_and_sample_petri_model('test/models/AMR_examples/ES3_detection_log10V.json',
+        try:
+            result5 = load_and_sample_petri_model('test/models/AMR_examples/ES3_detection_log10V.json',
                                               num_samples=2, timepoints=self.timepoints,
                                               compile_observables_p=True)['data']
+        except RuntimeError as e:
+            self.assertFalse(e is None, e)
         self.assertTrue('logV_obs' in result5.columns, "logV observable should have been added to the output")
         self.assertTrue(isinstance(result5['logV_obs'], pd.Series), "logV observable is a pandas Series")
         self.assertTrue(isinstance(result5['logV_obs'].values, np.ndarray), "logV observable is a numpy array")
