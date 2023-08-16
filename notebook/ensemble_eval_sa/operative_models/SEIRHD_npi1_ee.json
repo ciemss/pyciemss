@@ -208,7 +208,7 @@
    "initials": [
     {
      "target": "S",
-     "expression": "19339100.0",
+     "expression": "19339300.0",
      "expression_mathml": "<cn>19339995.0</cn>"
     },
     {
@@ -218,7 +218,7 @@
     },
     {
      "target": "E",
-     "expression": "500.00000000000000",
+     "expression": "300.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
@@ -248,12 +248,12 @@
     },
     {
      "id": "beta_c",
-     "value": 0.11,
+     "value": 0.19,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.05,
-       "maximum": 0.2
+       "minimum": 0.1,
+       "maximum": 0.3
       }
      },
      "units": {
@@ -271,7 +271,7 @@
     },
     {
      "id": "k",
-     "value": 0.5,
+     "value": 5.0,
      "units": {
       "expression": "1",
       "expression_mathml": "<cn>1</cn>"
@@ -279,12 +279,12 @@
     },
     {
      "id": "kappa",
-     "value": 0.3,
+     "value": 0.9,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.05,
-       "maximum": 0.8
+       "minimum": 0.5,
+       "maximum": 0.95
       }
      },
      "units": {
@@ -294,7 +294,7 @@
     },
     {
      "id": "t_0",
-     "value": 21.0,
+     "value": 20.0,
      "units": {
       "expression": "day",
       "expression_mathml": "<ci>day</ci>"

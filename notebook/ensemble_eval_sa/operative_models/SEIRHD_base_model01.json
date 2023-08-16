@@ -196,13 +196,13 @@
     },
     {
      "target": "t5",
-     "expression": "H*(1 - death)/los",
-     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><apply><minus/><cn>1</cn><ci>death</ci></apply></apply><ci>los</ci></apply>"
+     "expression": "H*(1 - death_hosp)/los",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><apply><minus/><cn>1</cn><ci>death_hosp</ci></apply></apply><ci>los</ci></apply>"
     },
     {
      "target": "t6",
-     "expression": "H*death/los",
-     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><ci>death</ci></apply><ci>los</ci></apply>"
+     "expression": "H*death_hosp/los",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><ci>death_hosp</ci></apply><ci>los</ci></apply>"
     }
    ],
    "initials": [
@@ -300,7 +300,7 @@
      }
     },
     {
-     "id": "death",
+     "id": "death_hosp",
      "value": 0.07,
      "distribution": {
       "type": "Uniform1",
