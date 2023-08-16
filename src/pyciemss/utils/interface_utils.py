@@ -87,7 +87,7 @@ def convert_to_output_format(
         d = {
             **d,
             **{
-                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars))
+                f"{observable_id}_obs": torch.squeeze( expression(**expression_vars)).detach().cpu().numpy().astype(np.float64)
                 for observable_id, expression in observables.items()
             },
         }
