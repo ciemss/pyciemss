@@ -6,6 +6,60 @@ import csv
 from typing import Dict, Optional, Iterable, Callable
 
 
+    
+def make_quantiles(
+    pyciemss_results: dict[str,dict[str, torch.tensor]],
+    timepoints: Iterable[float],
+    alpha_qs: Optional[Iterable[float]] = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99],
+    num_quantiles: Optional[int] = 0,
+    *,
+    time_unit: Optional[str] = "(unknown)",
+    stacking_order: Optional[str] = "timepoints",
+    train_end_point: Optional[float] = None,
+) -> pd.DataFrame:
+     """Make quantiles for each timepoint"""
+     num_samples, num_timepoints = next(iter(pyciemss_results["states"].values())).shape    
+     key_list = ["timepoint_id", "inc_cum", "output", "type", "quantile", "value"]
+     q = {k: [] for k in key_list}
+     if alpha_qs is None:
+         alpha_qs = np.linspace(0, 1, num_quantiles)
+         alpha_qs[0] = 0.01
+         alpha_qs[-1] = 0.99
+     else:
+         num_quantiles = len(alpha_qs)
+     
+     # Solution (state variables)
+     for k, v in pyciemss_results["states"].items():
+         q_vals = np.quantile(v, alpha_qs, axis=0)
+         k = k.replace("_sol","")
+         if stacking_order == "timepoints":
+             # Keeping timepoints together
+             q["timepoint_id"].extend(list(np.repeat(np.array(range(num_timepoints)), num_quantiles)))
+             q["output"].extend([k]*num_timepoints*num_quantiles)
+             q["type"].extend(["quantile"]*num_timepoints*num_quantiles)
+             q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
+             q["value"].extend(list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1)))))
+         elif stacking_order == "quantiles":
+             # Keeping quantiles together
+             q["timepoint_id"].extend(list(np.tile(np.array(range(num_timepoints)), num_quantiles)))
+             q["output"].extend([k]*num_timepoints*num_quantiles)
+             q["type"].extend(["quantile"]*num_timepoints*num_quantiles)
+             q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
+             q["value"].extend(list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1)))))
+         else:
+             raise Exception("Incorrect input for stacking_order.")
+     q["inc_cum"].extend(["inc"]*num_timepoints*num_quantiles*len(pyciemss_results["states"].items()))
+     result_q = pd.DataFrame(q)
+     if time_unit is not None:
+         all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v])
+         result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})   
+         result_q = result_q[["timepoint_id", f"number_{time_unit}", "inc_cum", "output", "type", "quantile", "value"]]
+         if train_end_point is None:
+             result_q["Forecast_Backcast"] = "Forecast"
+         else:
+             result_q["Forecast_Backcast"] = np.where(result_q[f"number_{time_unit}"] > train_end_point, "Forecast", "Backcast")
+     return result_q
+    
 def convert_to_output_format(
     samples: Dict[str, torch.Tensor],
     timepoints: Iterable[float],
@@ -46,7 +100,6 @@ def convert_to_output_format(
             pyciemss_results["states"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
-
     num_samples, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
     d = {
         "timepoint_id": np.tile(np.array(range(num_timepoints)), num_samples),
