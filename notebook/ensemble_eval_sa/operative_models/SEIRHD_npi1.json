@@ -248,12 +248,12 @@
     },
     {
      "id": "beta_c",
-     "value": 0.3,
+     "value": 0.09,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.1,
-       "maximum": 0.7
+       "minimum": 0.05,
+       "maximum": 0.1
       }
      },
      "units": {
@@ -267,8 +267,8 @@
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.25,
-       "maximum": 0.9
+       "minimum": 0.3,
+       "maximum": 0.6
       }
      },   
      "units": {
@@ -294,12 +294,12 @@
     },
     {
      "id": "t_0",
-     "value": 25.0,
+     "value": 29.0,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 20.0,
-       "maximum": 30.0
+       "minimum": 25.0,
+       "maximum": 35.0
       }
      },
      "units": {
@@ -355,11 +355,11 @@
     },
     {
      "id": "mu",
-     "value": 0.45,
+     "value": 0.4,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.001,
+       "minimum": 0.18,
        "maximum": 0.5
       }
      },

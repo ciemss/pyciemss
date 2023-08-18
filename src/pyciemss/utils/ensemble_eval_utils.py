@@ -5,15 +5,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyciemss.Ensemble.interfaces import (
-    load_and_sample_petri_ensemble, load_and_calibrate_and_sample_ensemble_model
-)
-from pyciemss.PetriNetODE.interfaces import (
-    load_and_sample_petri_model,
-    load_and_calibrate_and_sample_petri_model,
-    load_and_optimize_and_sample_petri_model,
-    load_and_calibrate_and_optimize_and_sample_petri_model
-)
+from pyciemss.Ensemble.interfaces import load_and_sample_petri_ensemble, load_and_calibrate_and_sample_ensemble_model
+from pyciemss.PetriNetODE.interfaces import load_and_sample_petri_model
 from pyciemss.visuals import plots
 from pyciemss.utils.interface_utils import cdc_reformatcsv, make_quantiles, convert_to_output_format
 
@@ -29,7 +22,7 @@ def data_selector_function(data_df, train_start_row_num, train_end_row_num, fore
 
     train_data = data_df[train_start_row_num:train_end_row_num].reset_index(drop=True)
     train_data1 = train_data.assign(timepoints=[float(i) for i in range(len(train_data))])
-    train_data = train_data1[["timepoints", "I", "E", "H", "D"]]
+    train_data = train_data1[["I", "E", "H", "D", "I0", "I1", "I2", "I3", "H0", "H1", "H2", "H3"]]
 
     num_timepoints = (len(all_data) - 1)*10 + 1
     simulation_timepoints = [round(i * 0.1, 1) for i in range(0, num_timepoints)]
@@ -79,6 +72,8 @@ def plot_case_hosp_death_data(N, data, per100K=True):
     ax3.axvline(x = 46, color = 'green', linestyle ="-.", label = 'begin forecast 3')
     ax3.axvline(x = 53, color = 'teal', label = 'begin forecast 4')
     ax3.legend(loc='lower right')
+
+    return plt
     
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -8124,7 +8124,7 @@
     },
     {
      "target": "I_2_0_0",
-     "expression": "5.00000000000000",
+     "expression": "5000.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8134,7 +8134,7 @@
     },
     {
      "target": "I_3_0_0",
-     "expression": "2.00000000000000",
+     "expression": "5002.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8169,7 +8169,7 @@
     },
     {
      "target": "I_2_1_0",
-     "expression": "4.00000000000000",
+     "expression": "2504.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8179,7 +8179,7 @@
     },
     {
      "target": "I_3_1_0",
-     "expression": "2.00000000000000",
+     "expression": "2502.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8214,7 +8214,7 @@
     },
     {
      "target": "I_2_2_0",
-     "expression": "10.00000000000000",
+     "expression": "2510.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8224,7 +8224,7 @@
     },
     {
      "target": "I_3_2_0",
-     "expression": "1.00000000000000",
+     "expression": "2501.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
@@ -8294,7 +8294,7 @@
     },
     {
      "target": "S_2_0",
-     "expression": "2359700.0000000",
+     "expression": "2349555.0000000",
      "expression_mathml": "<cn>19339995.0</cn>"
     },
     {
@@ -8334,7 +8334,7 @@
     },
     {
      "target": "S_3_0",
-     "expression": "2936130.0000000",
+     "expression": "2926060.0000000",
      "expression_mathml": "<cn>19339995.0</cn>"
     },
     {
@@ -8494,7 +8494,7 @@
     },
     {
      "target": "H_0_0_0",
-     "expression": "0.0",
+     "expression": "150.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
@@ -8584,7 +8584,7 @@
     },
     {
      "target": "H_3_0_0",
-     "expression": "70.0",
+     "expression": "140.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
@@ -8614,7 +8614,7 @@
     },
     {
      "target": "D_0_0_0",
-     "expression": "0.0",
+     "expression": "26000.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
@@ -8760,12 +8760,12 @@
     },
     {
      "id": "q",
-     "value": 0.45,
+     "value": 0.05,
       "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.2,
-       "maximum": 0.5
+       "minimum": 0.04,
+       "maximum": 0.1
       }
      },
      "units": {
@@ -8803,8 +8803,8 @@
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 1.0,
-       "maximum": 2.5
+       "minimum": 1.3,
+       "maximum": 1.5
       }
      },
      "units": {
@@ -8818,7 +8818,7 @@
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 1.0,
+       "minimum": 1.8,
        "maximum": 2.5
       }
      },
@@ -9664,6 +9664,12 @@
      "id": "infected",
      "name": "infected",
      "expression": "I_0_0_0 + I_0_0_1 + I_1_0_0 + I_1_0_1 + I_2_0_0 + I_2_0_1 + I_3_0_0 + I_3_0_1 + I_0_1_0 + I_0_1_1 + I_1_1_0 + I_1_1_1 + I_2_1_0 + I_2_1_1 + I_3_1_0 + I_3_1_1 + I_0_2_0 + I_0_2_1 + I_1_2_0 + I_1_2_1 + I_2_2_0 + I_2_2_1 + I_3_2_0 + I_3_2_1",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "exposed",
+     "name": "exposed",
+     "expression": "E_0_0_0 + E_0_0_1 + E_1_0_0 + E_1_0_1 + E_2_0_0 + E_2_0_1 + E_3_0_0 + E_3_0_1 + E_0_1_0 + E_0_1_1 + E_1_1_0 + E_1_1_1 + E_2_1_0 + E_2_1_1 + E_3_1_0 + E_3_1_1 + E_0_2_0 + E_0_2_1 + E_1_2_0 + E_1_2_1 + E_2_2_0 + E_2_2_1 + E_3_2_0 + E_3_2_1",
      "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
     },
     {

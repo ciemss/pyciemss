@@ -1180,12 +1180,12 @@
     },
     {
      "id": "beta_c",
-     "value": 0.11,
+     "value": 0.1,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
        "minimum": 0.05,
-       "maximum": 0.2
+       "maximum": 0.18
       }
      },
      "units": {
@@ -1211,11 +1211,11 @@
     },
     {
      "id": "kappa",
-     "value": 0.4,
+     "value": 0.45,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.05,
+       "minimum": 0.3,
        "maximum": 0.7
       }
      },
@@ -1226,7 +1226,14 @@
     },
     {
      "id": "t_0",
-     "value": 21.0,
+     "value": 24.0,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 20.0,
+       "maximum": 29.0
+      }
+     },
      "units": {
       "expression": "day",
       "expression_mathml": "<ci>day</ci>"
@@ -1371,11 +1378,11 @@
     },
     {
      "id": "mu_2",
-     "value": 0.15,
+     "value": 0.2,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.001,
+       "minimum": 0.1,
        "maximum": 0.3
       }
      },
@@ -1394,12 +1401,12 @@
     },
     {
      "id": "mu_3",
-     "value": 0.25,
+     "value": 0.45,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.1,
-       "maximum": 0.3
+       "minimum": 0.4,
+       "maximum": 0.5
       }
      },
      "units": {
@@ -1422,9 +1429,57 @@
      "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
     },
     {
+     "id": "I0",
+     "name": "I0",
+     "expression": "I_0",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "I1",
+     "name": "I1",
+     "expression": "I_1",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "I2",
+     "name": "I2",
+     "expression": "I_2",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "I3",
+     "name": "I3",
+     "expression": "I_3",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
      "id": "hospitalized",
      "name": "hospitalized",
      "expression": "H_0 + H_1 + H_2 + H_3",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "H0",
+     "name": "H0",
+     "expression": "H_0",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "H1",
+     "name": "H1",
+     "expression": "H_1",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "H2",
+     "name": "H2",
+     "expression": "H_2",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
+     "id": "H3",
+     "name": "H3",
+     "expression": "H_3",
      "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
     },
     {
