@@ -1410,6 +1410,12 @@
    ],
    "observables": [
     {
+     "id": "exposed",
+     "name": "exposed",
+     "expression": "E_0 + E_1 + E_2 + E_3",
+     "expression_mathml": "<apply><plus/><ci>I_middle_aged</ci><ci>I_old</ci><ci>I_young</ci></apply>"
+    },
+    {
      "id": "infected",
      "name": "infected",
      "expression": "I_0 + I_1 + I_2 + I_3",
