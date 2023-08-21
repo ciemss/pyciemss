@@ -72,6 +72,12 @@
       "title": "Group",
       "stroke": "color", 
       "symbolType": "stroke"
+    },
+
+    {
+      "title": "Link Group",
+      "stroke": "colorlink", 
+      "symbolType": "stroke"
     }
   ],
 
@@ -234,11 +240,11 @@
       "name": "link-data",
       "values": [
         {"id": 1, "source": 0, "target": 1, "group": "A"},
-        {"id": 2, "source": 0, "target": 2, "group": "C"},
+        {"id": 2, "source": 4, "target": 2, "group": "C"},
         {"id": 3, "source": 3, "target": 0, "group": "A"},
-        {"id": 4, "source": 0, "target": 4, "group": "C"},
-        {"id": 5, "source": 0, "target": 5, "group": "B"},
-        {"id": 6, "source": 0, "target": 6, "group": "B"}
+        {"id": 4, "source": 2, "target": 5, "group": "C"},
+        {"id": 5, "source": 0, "target": 4, "group": "B"},
+        {"id": 6, "source": 5, "target": 0, "group": "B"}
       ]
     }
   ]
