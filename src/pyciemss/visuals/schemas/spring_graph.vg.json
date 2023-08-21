@@ -57,6 +57,13 @@
       "type": "ordinal",
       "domain": {"data": "node-data", "field": "group"},
       "range": {"scheme": "category20c"}
+    },
+
+    {
+      "name": "colorlink",
+      "type": "ordinal",
+      "domain": {"data": "link-data", "field": "group"},
+      "range": {"scheme": "category20c"}
     }
   ],
 
@@ -151,7 +158,7 @@
       "interactive": false,
       "encode": {
         "update": {
-          "stroke": {"value": "#ccc"},
+          "stroke":  {"scale": "colorlink", "field": "group"},
           "strokeWidth": {"value": 0.5}
         }
       },
@@ -172,8 +179,8 @@
       "zindex": {"value": 40},
       "encode": {
           "enter": {
-              "fill": {"value": "#652c90"},
-              "stroke": {"value": "#652c90"},
+              "fill": {"scale": "colorlink", "field": "group"},
+              "stroke": {"scale": "colorlink", "field": "group"},
               "shape": {"value": "triangle-right"},
               "size": {"value": 40}
           },
@@ -214,24 +221,24 @@
     {
       "name": "node-data",
       "values": [
-        {"id": 0, "label": "Zero"},
-        {"id": 1, "label": "One"},
-        {"id": 2, "label": "Two"},
-        {"id": 3, "label": "Three"},
-        {"id": 4, "label": "Four"},
-        {"id": 5, "label": "Five"},
-        {"id": 6, "label": "Six"}
+      {"id": 0, "label": "Zero", "group": "A"},
+      {"id": 1, "label": "One", "group": "A"},
+      {"id": 2, "label": "Two", "group": "B"},
+      {"id": 3, "label": "Three", "group": "B"},
+      {"id": 4, "label": "Four", "group": "C"},
+      {"id": 5, "label": "Five", "group": "C"},
+      {"id": 6, "label": "Six", "group": "C"}
       ]
     },
     {
       "name": "link-data",
       "values": [
-        {"id": 1, "source": 0, "target": 1},
-        {"id": 2, "source": 0, "target": 2},
-        {"id": 3, "source": 0, "target": 3},
-        {"id": 4, "source": 0, "target": 4},
-        {"id": 5, "source": 0, "target": 5},
-        {"id": 6, "source": 0, "target": 6}
+        {"id": 1, "source": 0, "target": 1, "group": "A"},
+        {"id": 2, "source": 0, "target": 2, "group": "C"},
+        {"id": 3, "source": 3, "target": 0, "group": "A"},
+        {"id": 4, "source": 0, "target": 4, "group": "C"},
+        {"id": 5, "source": 0, "target": 5, "group": "B"},
+        {"id": 6, "source": 0, "target": 6, "group": "B"}
       ]
     }
   ]
