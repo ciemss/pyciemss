@@ -218,7 +218,7 @@
     },
     {
      "target": "E",
-     "expression": "18000.00000000000000",
+     "expression": "17600.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
@@ -252,7 +252,7 @@
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 2.36,
+       "minimum": 2.37,
        "maximum": 2.38
       }
      },

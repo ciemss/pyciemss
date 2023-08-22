@@ -208,17 +208,17 @@
    "initials": [
     {
      "target": "S",
-     "expression": "19339995.0000000",
+     "expression": "19339700.0000000",
      "expression_mathml": "<cn>19339995.0</cn>"
     },
     {
      "target": "I",
-     "expression": "4.00000000000000",
+     "expression": "25.00000000000000",
      "expression_mathml": "<cn>4.0</cn>"
     },
     {
      "target": "E",
-     "expression": "1.00000000000000",
+     "expression": "275.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
@@ -248,7 +248,7 @@
     },
     {
      "id": "beta",
-     "value": 0.4,
+     "value": 0.6,
      "distribution": {
       "type": "Uniform1",
       "parameters": {

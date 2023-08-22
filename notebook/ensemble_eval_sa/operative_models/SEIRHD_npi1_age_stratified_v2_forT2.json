@@ -1050,82 +1050,82 @@
    "initials": [
     {
      "target": "S_0",
-     "expression": "4597268.0",
+     "expression": "4596818.0",
      "expression_mathml": "<cn>4597366.75</cn>"
     },
     {
      "target": "I_0",
-     "expression": "25.00000000000000",
+     "expression": "34.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
      "target": "E_0",
-     "expression": "75.0",
+     "expression": "50.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
      "target": "I_1",
-     "expression": "25.00000000000000",
+     "expression": "900.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
      "target": "I_2",
-     "expression": "25.00000000000000",
+     "expression": "7000.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
      "target": "I_3",
-     "expression": "25.00000000000000",
+     "expression": "10000.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
      "target": "S_1",
-     "expression": "7893459.0",
+     "expression": "7880277.0",
      "expression_mathml": "<cn>7893557.75</cn>"
     },
     {
      "target": "E_1",
-     "expression": "75.0",
+     "expression": "550.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
      "target": "S_2",
-     "expression": "3878709.0",
+     "expression": "3564359.0",
      "expression_mathml": "<cn>3878807.75</cn>"
     },
     {
      "target": "E_2",
-     "expression": "75.0",
+     "expression": "7000.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
      "target": "S_3",
-     "expression": "2970164.0",
+     "expression": "2499514.0",
      "expression_mathml": "<cn>2970262.75</cn>"
     },
     {
      "target": "E_3",
-     "expression": "75.0",
+     "expression": "10000.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
      "target": "R_0",
-     "expression": "0.0",
+     "expression": "447.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "R_1",
-     "expression": "0.0",
+     "expression": "11000.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "R_2",
-     "expression": "0.0",
+     "expression": "280000.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "R_3",
-     "expression": "0.0",
+     "expression": "420000.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
@@ -1135,37 +1135,37 @@
     },
     {
      "target": "H_1",
-     "expression": "0.0",
+     "expression": "32.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "H_2",
-     "expression": "0.0",
+     "expression": "50.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "H_3",
-     "expression": "0.0",
+     "expression": "150.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "D_0",
-     "expression": "0.0",
+     "expression": "19.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "D_1",
-     "expression": "0.0",
+     "expression": "800.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "D_2",
-     "expression": "0.0",
+     "expression": "20400.0",
      "expression_mathml": "<cn>0.0</cn>"
     },
     {
      "target": "D_3",
-     "expression": "0.0",
+     "expression": "30600.0",
      "expression_mathml": "<cn>0.0</cn>"
     }
    ],
@@ -1180,12 +1180,12 @@
     },
     {
      "id": "beta_c",
-     "value": 0.08,
+     "value": 2.0,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.01,
-       "maximum": 0.1
+       "minimum": 1.8,
+       "maximum": 2.05
       }
      },
      "units": {
@@ -1211,12 +1211,12 @@
     },
     {
      "id": "kappa",
-     "value": 0.65,
+     "value": 0.241,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.05,
-       "maximum": 0.8
+       "minimum": 0.22,
+       "maximum": 0.25
       }
      },
      "units": {
@@ -1226,7 +1226,14 @@
     },
     {
      "id": "t_0",
-     "value": 29.0,
+     "value": 60.0,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 60.0,
+       "maximum": 62.0
+      }
+     },
      "units": {
       "expression": "day",
       "expression_mathml": "<ci>day</ci>"
