@@ -31,7 +31,7 @@ def data_selector_function(data_df, train_start_row_num, train_end_row_num, fore
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-def plot_case_hosp_death_data(N, data, per100K=True):
+def plot_case_hosp_death_data(N, data, forecast1_start, forecast2_start, forecast3_start, forecast4_start, per100K=True):
     '''
     Plot case, hospitalization, and death data
     '''
@@ -43,10 +43,10 @@ def plot_case_hosp_death_data(N, data, per100K=True):
     else:
         ax1.scatter(data.index, data.I, color="red")
         ax1.set_title("Cases")
-    ax1.axvline(x = 32, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
-    ax1.axvline(x = 39, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
-    ax1.axvline(x = 46, color = 'green', linestyle ="-.", label = 'begin forecast 3')
-    ax1.axvline(x = 53, color = 'teal', label = 'begin forecast 4')
+    ax1.axvline(x = forecast1_start, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
+    ax1.axvline(x = forecast2_start, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
+    ax1.axvline(x = forecast3_start, color = 'green', linestyle ="-.", label = 'begin forecast 3')
+    ax1.axvline(x = forecast4_start, color = 'teal', label = 'begin forecast 4')
     ax1.legend(loc='lower right')
 
     if per100K:
@@ -55,10 +55,10 @@ def plot_case_hosp_death_data(N, data, per100K=True):
     else:
         ax2.scatter(data.index, data.H, color="navy")
         ax2.set_title("Hospitalizations")
-    ax2.axvline(x = 32, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
-    ax2.axvline(x = 39, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
-    ax2.axvline(x = 46, color = 'green', linestyle ="-.", label = 'begin forecast 3')
-    ax2.axvline(x = 53, color = 'teal', label = 'begin forecast 4')
+    ax2.axvline(x = forecast1_start, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
+    ax2.axvline(x = forecast2_start, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
+    ax2.axvline(x = forecast3_start, color = 'green', linestyle ="-.", label = 'begin forecast 3')
+    ax2.axvline(x = forecast4_start, color = 'teal', label = 'begin forecast 4')
     ax2.legend(loc='lower right')
     
     if per100K:
@@ -67,10 +67,10 @@ def plot_case_hosp_death_data(N, data, per100K=True):
     else:
         ax3.scatter(data.index, data.D, color="blue")
         ax3.set_title("Cumulative Deaths")
-    ax3.axvline(x = 32, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
-    ax3.axvline(x = 39, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
-    ax3.axvline(x = 46, color = 'green', linestyle ="-.", label = 'begin forecast 3')
-    ax3.axvline(x = 53, color = 'teal', label = 'begin forecast 4')
+    ax3.axvline(x = forecast1_start, color = 'darkgreen', linestyle ="--", label = 'begin forecast 1')
+    ax3.axvline(x = forecast2_start, color = 'forestgreen', linestyle =":", label = 'begin forecast 2')
+    ax3.axvline(x = forecast3_start, color = 'green', linestyle ="-.", label = 'begin forecast 3')
+    ax3.axvline(x = forecast4_start, color = 'teal', label = 'begin forecast 4')
     ax3.legend(loc='lower right')
 
     return plt
