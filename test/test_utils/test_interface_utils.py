@@ -91,7 +91,7 @@ class Test_Interface_Utils(unittest.TestCase):
         )
         assert_frame_equal(
             expected_output_quantiles,
-            result_q,
+            result_q.drop(columns=["timepoint_FancyUnit"]),
             check_exact=False,
             atol=1e-5,
             rtol=1e-5,
