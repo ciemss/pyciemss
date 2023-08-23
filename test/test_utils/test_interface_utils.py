@@ -69,7 +69,7 @@ class Test_Interface_Utils(unittest.TestCase):
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
-        expected_output_quantiles = pd.read_csv("test/test_utils/expected_output_format.csv")
+        expected_output_quantiles = pd.read_csv("test/test_utils/expected_output_quantiles_format.csv")
         result, result_q = convert_to_output_format(
             self.intervened_samples,
             self.timepoints,
@@ -91,7 +91,7 @@ class Test_Interface_Utils(unittest.TestCase):
         )
         assert_frame_equal(
             expected_output_quantiles,
-            result_q.drop(columns=["timepoint_FancyUnit"]),
+            result_q,
             check_exact=False,
             atol=1e-5,
             rtol=1e-5,
