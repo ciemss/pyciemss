@@ -1050,12 +1050,12 @@
    "initials": [
     {
      "target": "S_0",
-     "expression": "1199915.0",
+     "expression": "1179915.0",
      "expression_mathml": "<cn>4597366.75</cn>"
     },
     {
      "target": "I_0",
-     "expression": "921.00000000000000",
+     "expression": "20921.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
@@ -1075,17 +1075,17 @@
     },
     {
      "target": "I_3",
-     "expression": "20000.00000000000000",
+     "expression": "0.00000000000000",
      "expression_mathml": "<cn>1.0</cn>"
     },
     {
      "target": "S_1",
-     "expression": "4495441.0",
+     "expression": "4482441.0",
      "expression_mathml": "<cn>7893557.75</cn>"
     },
     {
      "target": "E_1",
-     "expression": "300.0",
+     "expression": "12300.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
@@ -1100,12 +1100,12 @@
     },
     {
      "target": "S_3",
-     "expression": "2503886.0",
+     "expression": "2536886.0",
      "expression_mathml": "<cn>2970262.75</cn>"
     },
     {
      "target": "E_3",
-     "expression": "19000.0",
+     "expression": "6000.0",
      "expression_mathml": "<cn>0.25</cn>"
     },
     {
@@ -1180,12 +1180,12 @@
     },
     {
      "id": "beta_c",
-     "value": 0.08,
+     "value": 0.11,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.05,
-       "maximum": 0.18
+       "minimum": 0.1,
+       "maximum": 0.2
       }
      },
      "units": {
@@ -1211,11 +1211,11 @@
     },
     {
      "id": "kappa",
-     "value": 0.75,
+     "value": 0.92,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 0.65,
+       "minimum": 0.87,
        "maximum": 0.95
       }
      },
@@ -1226,12 +1226,12 @@
     },
     {
      "id": "t_0",
-     "value": 28.0,
+     "value": 37.0,
      "distribution": {
       "type": "Uniform1",
       "parameters": {
-       "minimum": 20.0,
-       "maximum": 35.0
+       "minimum": 36.0,
+       "maximum": 38.0
       }
      },
      "units": {
