@@ -1,15 +1,27 @@
 import unittest
 import pandas as pd
 import xarray as xr
+import numpy as np
+import json
+import torch
 
 from pathlib import Path
 
-from pyciemss.visuals import plots
+from pyciemss.visuals import plots, vega
 from pyciemss.utils import get_tspan
 from pyciemss.utils.interface_utils import convert_to_output_format
 
 
 _data_root = Path(__file__).parent.parent / "data"
+
+
+def tensor_load(path):
+    with open(path) as f:
+        data = json.load(f)
+
+    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
+
+    return data
 
 
 def by_key_value(targets, key, value):
@@ -24,7 +36,7 @@ class TestTrajectory(unittest.TestCase):
         self.nice_labels = {"Rabbits_sol": "Rabbits", "Wolves_sol": "Wolves"}
 
         self.dists = convert_to_output_format(
-            plots.tensor_load(_data_root / "prior_samples.json"),
+            tensor_load(_data_root / "prior_samples.json"),
             self.tspan,
             time_unit="notional",
         )
@@ -39,7 +51,7 @@ class TestTrajectory(unittest.TestCase):
         self.traces = pd.concat([wolves, rabbits], axis="columns")
 
         self.observed_trajectory = convert_to_output_format(
-            plots.tensor_load(_data_root / "observed_trajectory.json"),
+            tensor_load(_data_root / "observed_trajectory.json"),
             self.tspan,
             time_unit="years",
         )
@@ -61,7 +73,7 @@ class TestTrajectory(unittest.TestCase):
     def test_base(self):
         schema = plots.trajectories(self.dists)
 
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertSetEqual(
             {"trajectory", "timepoint", "lower", "upper"}, set(df.columns)
         )
@@ -69,7 +81,7 @@ class TestTrajectory(unittest.TestCase):
     def test_rename(self):
         schema = plots.trajectories(self.dists, relabel=self.nice_labels)
 
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertIn("Rabbits", df["trajectory"].unique())
         self.assertIn("Wolves", df["trajectory"].unique())
         self.assertNotIn("Rabbits_sol", df["trajectory"].unique())
@@ -77,7 +89,7 @@ class TestTrajectory(unittest.TestCase):
 
     def test_keep(self):
         schema = plots.trajectories(self.dists, keep=".*_sol")
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
             sorted(df["trajectory"].unique()),
@@ -85,7 +97,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
         schema = plots.trajectories(self.dists, keep=["Rabbits_sol", "Wolves_sol"])
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
             sorted(df["trajectory"].unique()),
@@ -95,7 +107,7 @@ class TestTrajectory(unittest.TestCase):
         schema = plots.trajectories(
             self.dists, relabel=self.nice_labels, keep=["Rabbits_sol", "Wolves_sol"]
         )
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits", "Wolves"],
             sorted(df["trajectory"].unique()),
@@ -115,7 +127,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
         schema = plots.trajectories(self.dists, keep=".*_.*", drop=".*_param")
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         self.assertIn(
             "Rabbits_sol",
@@ -140,7 +152,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
         schema = plots.trajectories(self.dists, drop=should_drop)
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         self.assertIn(
             "Rabbits_sol",
@@ -166,7 +178,7 @@ class TestTrajectory(unittest.TestCase):
             self.fail("Error dropping non-existent trajectory")
 
         schema = plots.trajectories(self.dists, drop="gam.*")
-        df = pd.DataFrame(plots.find_named(schema["data"], "distributions")["values"])
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertIn(
             "Rabbits_sol",
             df["trajectory"].unique(),
@@ -191,7 +203,7 @@ class TestTrajectory(unittest.TestCase):
             points=self.observed_points,
         )
 
-        points = pd.DataFrame(plots.find_named(schema["data"], "points")["values"])
+        points = pd.DataFrame(vega.find_named(schema["data"], "points")["values"])
         print(points.columns)
 
         self.assertEqual(
@@ -211,7 +223,7 @@ class TestTrajectory(unittest.TestCase):
             traces=self.traces,
         )
 
-        traces = pd.DataFrame(plots.find_named(schema["data"], "traces")["values"])
+        traces = pd.DataFrame(vega.find_named(schema["data"], "traces")["values"])
         plots.save_schema(schema, "_schema.json")
 
         self.assertEqual(
