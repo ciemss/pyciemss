@@ -445,16 +445,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         """Return a model from an ASKEM Model Representation json."""
         if "templates" in model_json:
             return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
-        
-        if "header" in model_json:
-            # This just ensures backwards compatibility with old AMRs. To be deprecated.
-            schema = model_json["header"]["schema"]
-        else:
-            schema = model_json["schema"]
-
-        if "petrinet" in schema:
+        elif "petrinet" in model_json["header"]["schema"]:
             return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json), **kwargs)
-        elif "regnet" in schema:
+        elif "regnet" in model_json["header"]["schema"]:
             return cls.from_askenet(regnet.template_model_from_askenet_json(model_json), **kwargs)
 
 
