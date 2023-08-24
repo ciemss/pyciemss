@@ -1,9 +1,12 @@
 {
-  "id": "b7cb560e-02b3-467d-b3b4-ca4f7efd996c",
-  "timestamp": "2023-07-27 22:16:02",
-  "name": "ES3_detection_log10V",
-  "description": "Scenario 3 base model\nTransformed from model 'Scenario 3 base model' (ada3d20a-cbc8-4bbd-b6b3-76446fb3cfdb) at Wed Jul 19 18:50:57 2023 \nTransformed from model 'ES3_detection' (f5a23011-ec01-4851-93bf-24baa4404fad) at Wed Jul 19 19:04:15 2023 \nTransformed from model 'ES3_detection_obs' (665605d7-9af9-4f82-af5a-1593ae1e7620) at Wed Jul 19 19:37:01 2023 ",
-  "username": null,
+  "header": {
+    "id": "b7cb560e-02b3-467d-b3b4-ca4f7efd996c",
+    "timestamp": "2023-07-27 22:16:02",
+    "name": "ES3_detection_log10V",
+    "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+    "description": "Scenario 3 base model\nTransformed from model 'Scenario 3 base model' (ada3d20a-cbc8-4bbd-b6b3-76446fb3cfdb) at Wed Jul 19 18:50:57 2023 \nTransformed from model 'ES3_detection' (f5a23011-ec01-4851-93bf-24baa4404fad) at Wed Jul 19 19:04:15 2023 \nTransformed from model 'ES3_detection_obs' (665605d7-9af9-4f82-af5a-1593ae1e7620) at Wed Jul 19 19:37:01 2023 ",
+    "username": null
+  },
   "model": {
     "states": [
       {
@@ -191,7 +194,7 @@
       "rates": [
         {
           "target": "t1",
-            "expression": "I*S*lambda/(S+E+I)",
+          "expression": "I*S*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
         },
         {
@@ -211,17 +214,17 @@
         },
         {
           "target": "t5",
-            "expression": "I*S*lambda/(S+E+I)",
+          "expression": "I*S*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci></apply>"
         },
         {
           "target": "t6",
-            "expression": "I*S*k*lambda/(S+E+I)",
+          "expression": "I*S*k*lambda/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>k</ci><ci>lambda</ci></apply>"
         },
         {
           "target": "t7",
-            "expression": "I*S*lambda*(1 - k)/(S+E+I)",
+          "expression": "I*S*lambda*(1 - k)/(S+E+I)",
           "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>lambda</ci><apply><minus/><cn>1</cn><ci>k</ci></apply></apply>"
         }
       ],
@@ -316,7 +319,7 @@
         {
           "id": "logV",
           "name": "logV",
-            "expression": "log(V)*0.43429448190325176",
+          "expression": "log(V)*0.43429448190325176",
           "expression_mathml": "<apply><divide/><apply><ln/><ci>V</ci></apply><apply><ln/><cn>10</cn></apply></apply>"
         }
       ],
@@ -343,6 +346,5 @@
       "hosts": [],
       "model_types": []
     }
-  },
-  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json"
+  }
 }
