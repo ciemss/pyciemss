@@ -156,11 +156,19 @@ class TestRateLaw(unittest.TestCase):
 
     def test_time_varying_parameter_rate_law(self):
         """Test that the rate law can be compiled correctly."""
-        url = "https://raw.githubusercontent.com/indralab/mira/56bf4c0d77919142684c8cbfb3521b7bf4470888/notebooks/hackathon_2023.07/scenario1_c.json"
-        scenario1_c = load_petri_model(url, compile_rate_law_p=True)
-        expected_rate_law_str = "kappa*(beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0))))"
-        expected_rate_law_symbolic = sympy.sympify(expected_rate_law_str)
-        param_vals = dict(
+        # url = "https://raw.githubusercontent.com/indralab/mira/56bf4c0d77919142684c8cbfb3521b7bf4470888/notebooks/hackathon_2023.07/scenario1_c.json"
+        path = "test/models/AMR_examples/scenario1_c_with_distributions.json"
+        scenario1_c = load_petri_model(path, compile_rate_law_p=True)
+        # expected_rate_law_str = "Infec * Susc * kappa * (beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0)))) / N"
+        I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t = sympy.symbols(
+            "I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t",
+            real=True
+        )
+
+        expected_rate_law_symbolic = I * S * kappa * (beta_nc + (beta_c - beta_nc)/(1 + sympy.exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + sympy.exp(-k_1*(-t + t_0)))) / N
+        input_vals = dict(
+            I=1.0,
+            S=99999.0,
             kappa=1.0,
             beta_nc=0.5,
             beta_c=0.6,
@@ -169,20 +177,23 @@ class TestRateLaw(unittest.TestCase):
             k_2=0.1,
             t_0=0.0,
             t_1=1.0,
+            N=120000.0,
         )
+
+        input_vals = {k: torch.as_tensor(v) for k, v in input_vals.items()}
         expected_rate_law_mod = SymPyModule(expressions=[expected_rate_law_symbolic])
         expected_rate_law_values = expected_rate_law_mod(
-            **param_vals, **dict(t=torch.tensor(0.2))
+            **input_vals, **dict(t=torch.tensor(0.2))
         )
         actual_rate_law_symbolic = scenario1_c.extract_sympy(
             scenario1_c.G.template_model.templates[0].rate_law
         )
         actual_rate_law_mod = SymPyModule(expressions=[actual_rate_law_symbolic])
         actual_rate_law_values1 = actual_rate_law_mod(
-            **param_vals, **dict(t=torch.tensor(23.0))
+            **input_vals, **dict(t=torch.tensor(23.0))
         )
         actual_rate_law_values2 = actual_rate_law_mod(
-            **param_vals, **dict(t=torch.tensor(0.2))
+            **input_vals, **dict(t=torch.tensor(0.2))
         )
 
         self.assertFalse(
