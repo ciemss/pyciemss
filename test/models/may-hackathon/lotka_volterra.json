@@ -1,8 +1,10 @@
 {
-  "name": "Lotka Volterra",
-  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/regnet_v0.1/regnet/regnet_schema.json",
-  "description": "Lotka Volterra model",
-  "model_version": "0.1",
+  "header": {
+    "name": "Lotka Volterra",
+    "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/regnet_v0.1/regnet/regnet_schema.json",
+    "description": "Lotka Volterra model",
+    "model_version": "0.1"
+  },
   "model": {
     "vertices": [
       {
