@@ -156,10 +156,8 @@ class TestRateLaw(unittest.TestCase):
 
     def test_time_varying_parameter_rate_law(self):
         """Test that the rate law can be compiled correctly."""
-        # url = "https://raw.githubusercontent.com/indralab/mira/56bf4c0d77919142684c8cbfb3521b7bf4470888/notebooks/hackathon_2023.07/scenario1_c.json"
         path = "test/models/AMR_examples/scenario1_c_with_distributions.json"
         scenario1_c = load_petri_model(path, compile_rate_law_p=True)
-        # expected_rate_law_str = "Infec * Susc * kappa * (beta_nc + (beta_c - beta_nc)/(1 + exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + exp(-k_1*(-t + t_0)))) / N"
         I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t = sympy.symbols(
             "I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t",
             real=True
