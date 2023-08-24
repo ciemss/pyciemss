@@ -1,6 +1,7 @@
 import unittest
 from pyciemss.utils.interface_utils import (
     convert_to_output_format,
+    make_quantiles,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
     csv_to_list,
@@ -68,11 +69,14 @@ class Test_Interface_Utils(unittest.TestCase):
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
-        result = convert_to_output_format(
+        expected_output_quantiles = pd.read_csv("test/test_utils/expected_output_quantiles_format.csv")
+        result, result_q = convert_to_output_format(
             self.intervened_samples,
             self.timepoints,
             self.interventions,
             time_unit="FancyUnit",
+            quantiles = True,
+            alpha_qs = [0.01, 0.05, 0.95, 0.99],
         )
 
         self.assertTrue(
@@ -81,6 +85,13 @@ class Test_Interface_Utils(unittest.TestCase):
         assert_frame_equal(
             expected_output,
             result.drop(columns=["timepoint_FancyUnit"]),
+            check_exact=False,
+            atol=1e-5,
+            rtol=1e-5,
+        )
+        assert_frame_equal(
+            expected_output_quantiles,
+            result_q,
             check_exact=False,
             atol=1e-5,
             rtol=1e-5,
