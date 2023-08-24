@@ -340,12 +340,14 @@ def load_and_calibrate_and_sample_petri_model(
         train_end_point = max([d[0] for d in data])
     )
 
+    result = {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "inferred_parameters": inferred_parameters}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
-    else:
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
+        result["visual"] = schema
+    
+    return result
 
 @pyciemss_logging_wrapper
 def load_and_optimize_and_sample_petri_model(
@@ -881,6 +883,64 @@ def calibrate_petri(
 
     return guide
 
+
+@pyciemss_logging_wrapper
+def get_log_posterior_density_petri(inferred_parameters: PetriInferredParameters, parameter_values:dict[str, list]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
+
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        parameter_values: dict[str, list]
+            - The parameter values to evaluate the log posterior density at.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """
+
+    guides = [guide for guide in inferred_parameters if type(guide) == AutoLowRankMultivariateNormal]
+
+    # By construction there should be only a single AutoLowRankMultivariateNormal guide. The rest should be AutoDeltas.
+    assert(len(guides) == 1)
+
+    guide = guides[0]
+
+    # For now we only support density evaluation on the full parameter space.
+    assert(guide.loc.shape[0] == len(parameter_values))
+
+    parameter_values = {name: torch.as_tensor(value) for name, value in parameter_values.items()}
+
+    # Assert that all of the parameters in the `parameter_values` are the same size.
+    parameter_sizes = set([value.size() for value in parameter_values.values()])
+    assert(len(parameter_sizes) == 1)
+    
+    parameter_size = parameter_sizes.pop()
+
+    # Initialize Log Density
+    log_density = 0.0
+
+    unconstrained_values = torch.zeros(parameter_size + guide.loc.size())
+
+    for i, (name, site) in enumerate(guide.prototype_trace.iter_stochastic_nodes()):
+        transform = biject_to(site["fn"].support)
+        value = torch.as_tensor(parameter_values[name])
+        unconstrained_value = transform.inv(value)
+        
+        unconstrained_values[..., i] = unconstrained_value
+
+        # Compute Jacobian Correction
+        log_density += transform.inv.log_abs_det_jacobian(
+            value,
+            unconstrained_value,
+        )
+
+    # Compute the log density in the unconstrained space
+    unconstrained_density = guide.get_posterior().log_prob(unconstrained_values)
+
+    log_density += unconstrained_density
+
+    return log_density
 
 @sample.register
 @pyciemss_logging_wrapper
