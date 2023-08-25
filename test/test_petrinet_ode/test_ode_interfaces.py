@@ -24,6 +24,7 @@ from pyciemss.PetriNetODE.interfaces import (
     load_and_calibrate_and_sample_petri_model,
     load_and_optimize_and_sample_petri_model,
     load_and_calibrate_and_optimize_and_sample_petri_model,
+    posterior_density_petri_model,
 )
 
 
@@ -434,6 +435,40 @@ class TestODEInterfaces(unittest.TestCase):
         SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
         self.assertIsInstance(sidarthe_output["data"], pd.DataFrame, "Dataframe not returned")
+
+    def test_posterior_density_petri_model(self):
+        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        timepoints = [1.0, 1.1, 1.2, 1.3]
+        num_samples = 3
+        initial_state = {
+            "S": 0.99,
+            "I": 0.01,
+            "R": 0.0,
+        }
+
+        data_path = "test/test_petrinet_ode/data.csv"
+        calibrated_results = load_and_calibrate_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            num_samples,
+            timepoints,
+            start_state=initial_state,
+            num_iterations=2,
+        )
+
+        inferred_parameters = calibrated_results["inferred_parameters"]
+        
+        # Values of beta and gamma were set by looking at the priors in the model in ASKENET_PATH
+        betas = torch.tensor([-1., 0.027])
+        gammas = torch.tensor([-1., 0.15])
+    
+        density = posterior_density_petri_model(inferred_parameters=inferred_parameters, parameter_values={"beta": betas, "gamma": gammas})
+        
+        # Density should be 0 outside of the support.
+        self.assertAlmostEqual(density[0].item(), 0.)
+
+        # Density should be greater than 0 inside the support.
+        self.assertGreater(density[1].item(), 0.)
 
     # def test_optimize(self):
     #     '''Test the optimize function.'''
