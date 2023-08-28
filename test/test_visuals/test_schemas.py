@@ -9,7 +9,9 @@ to violate these conventions, but these are lint-like checks that may help
 to avoid problems"""
 
 
-_schema_root = Path(__file__).parent.parent.parent / "src" / "pyciemss" / "visuals"
+_schema_root = (
+    Path(__file__).parent.parent.parent / "src" / "pyciemss" / "visuals" / "schemas"
+)
 
 
 def find_scale_applications(schema, target_properties, found=None):
@@ -85,7 +87,8 @@ class TestTrajectory(unittest.TestCase):
     def test_nested_mark_sources(self):
         """If there is a group-mark, do the marks of that group point at the split-out-data?
         Group marks almost always follow from the split data,
-        though it is (vega) syntatcitally valid to point at any datasource.
+        though it is (vega) syntatcitally valid to point at any datasource AND there might be
+        a derived data-source as well.
         """
 
         schema_issues = []
@@ -98,12 +101,13 @@ class TestTrajectory(unittest.TestCase):
                 self.assertEqual(
                     len(group_marks),
                     4,
-                    f"{schema_file.name} spot-check number of group marks",
+                    f"{schema_file.name} spot-check number of group marks incorrect",
                 )
 
             try:
                 for group in group_marks:
                     split_data = group.get("from", {}).get("facet", {}).get("name")
+
                     if "trajectories.vg.json" == schema_file.name and group["name"] in [
                         "_points",
                         "_traces",
@@ -111,18 +115,26 @@ class TestTrajectory(unittest.TestCase):
                     ]:
                         self.assertIsNotNone(
                             split_data,
-                            f"{schema_file.name} spot-check facet found",
+                            f"{schema_file.name} spot-check facet not found",
                         )
 
                     if split_data is None:
                         # Data not faceted
                         continue
 
+                    if "data" in group:
+                        # Can transform each facet...then the marks usually derive from here
+                        datas = [d["source"] for d in group["data"]]
+                        self.assertIn(split_data, datas, "Facets not used in derived")
+                        split_data = [split_data] + [d["name"] for d in group["data"]]
+                    else:
+                        split_data = [split_data]
+
                     for mark in group["marks"]:
-                        self.assertEqual(
+                        self.assertIn(
                             mark["from"]["data"],
                             split_data,
-                            "Did not use split data in group mark",
+                            "Did not use split data (or derivation) in group mark",
                         )
             except Exception as e:
                 schema_issues.append({"file": schema_file.name, "issue": str(e)})

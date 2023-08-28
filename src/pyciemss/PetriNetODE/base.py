@@ -445,9 +445,9 @@ class MiraPetriNetODESystem(PetriNetODESystem):
         """Return a model from an ASKEM Model Representation json."""
         if "templates" in model_json:
             return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json), **kwargs)
-        elif 'petrinet' in model_json['schema']:
+        elif "petrinet" in model_json["header"]["schema"]:
             return cls.from_askenet(petrinet.template_model_from_askenet_json(model_json), **kwargs)
-        elif 'regnet' in model_json['schema']:
+        elif "regnet" in model_json["header"]["schema"]:
             return cls.from_askenet(regnet.template_model_from_askenet_json(model_json), **kwargs)
 
 

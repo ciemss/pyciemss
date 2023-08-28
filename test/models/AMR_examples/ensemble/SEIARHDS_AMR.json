@@ -1,10 +1,12 @@
 {
-  "name": "Model",
-  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
-  "schema_name": "petrinet",
-  "description": "Model",
-  "model_version": "0.1",
-  "properties": {},
+  "header": {
+    "name": "Model",
+    "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+    "schema_name": "petrinet",
+    "description": "Model",
+    "model_version": "0.1",
+    "properties": {}
+  },
   "model": {
     "states": [
       {
