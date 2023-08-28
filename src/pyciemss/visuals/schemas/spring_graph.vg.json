@@ -1,8 +1,8 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "A node-link diagram with force-directed layout.",
-  "width": 300,
-  "height": 300,
+  "width": 500,
+  "height": 500,
   "padding": 0,
 
   "signals": [
@@ -64,6 +64,16 @@
       "type": "ordinal",
       "domain": {"data": "link-data", "field": "group"},
       "range": {"scheme": "category20c"}
+    },
+    {
+      "name": "xscale",
+      "domain": {"data": "node-data", "field": "x"},
+      "range": [10, {"signal": "width - 10"}]
+    },
+    {
+      "name": "yscale",
+      "domain": {"data": "node-data", "field": "y"},
+      "range": [10, {"signal": "height - 10"}]
     }
   ],
 
@@ -99,17 +109,7 @@
           "modify": "node", "values": "{fx: null, fy: null}"
         }
       ],
-
-      "encode": {
-        "enter": {
-          "fill": {"scale": "color", "field": "group"},
-          "stroke": {"value": "white"}
-        },
-        "update": {
-          "size": {"signal": "2 * nodeRadius * nodeRadius"},
-          "cursor": {"value": "pointer"}
-        }
-      },
+      
 
       "transform": [
         {
@@ -125,7 +125,20 @@
             {"force": "link", "links": "link-data",  "distance": {"signal": "linkDistance"}}
           ]
         }
-      ]
+      ],
+
+      "encode": {
+        "enter": {
+          "fill": {"scale": "color", "field": "group"},
+          "stroke": {"value": "white"},
+          "fx": {"scale": "xscale", "field": "x"},
+          "fy": {"scale": "yscale", "field": "y"}
+        },
+        "update": {
+          "size": {"signal": "2 * nodeRadius * nodeRadius"},
+          "cursor": {"value": "pointer"}
+        }
+      }
     },
     {
       "type": "text",
@@ -227,13 +240,13 @@
     {
       "name": "node-data",
       "values": [
-      {"id": 0, "label": "Zero", "group": "A"},
-      {"id": 1, "label": "One", "group": "A"},
-      {"id": 2, "label": "Two", "group": "B"},
-      {"id": 3, "label": "Three", "group": "B"},
-      {"id": 4, "label": "Four", "group": "C"},
-      {"id": 5, "label": "Five", "group": "C"},
-      {"id": 6, "label": "Six", "group": "C"}
+      {"id": 0, "label": "Zero", "group": "A", "x": 20, "y": 10},
+      {"id": 1, "label": "One", "group": "A", "x": 10, "y": 10},
+      {"id": 2, "label": "Two", "group": "B", "x": 20, "y": 45},
+      {"id": 3, "label": "Three", "group": "B", "x": 100, "y": 0},
+      {"id": 4, "label": "Four", "group": "C", "x": 20, "y": 10},
+      {"id": 5, "label": "Five", "group": "C", "x": 20, "y": 10},
+      {"id": 6, "label": "Six", "group": "C", "x": 20, "y": 10}
       ]
     },
     {
