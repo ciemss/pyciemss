@@ -1,6 +1,7 @@
 import unittest
 from pyciemss.utils.interface_utils import (
     convert_to_output_format,
+    make_quantiles,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
     csv_to_list,
@@ -68,11 +69,14 @@ class Test_Interface_Utils(unittest.TestCase):
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
-        result = convert_to_output_format(
+        expected_output_quantiles = pd.read_csv("test/test_utils/expected_output_quantiles_format.csv")
+        result, result_q = convert_to_output_format(
             self.intervened_samples,
             self.timepoints,
             self.interventions,
             time_unit="FancyUnit",
+            quantiles = True,
+            alpha_qs = [0.01, 0.05, 0.95, 0.99],
         )
 
         self.assertTrue(
@@ -81,6 +85,13 @@ class Test_Interface_Utils(unittest.TestCase):
         assert_frame_equal(
             expected_output,
             result.drop(columns=["timepoint_FancyUnit"]),
+            check_exact=False,
+            atol=1e-5,
+            rtol=1e-5,
+        )
+        assert_frame_equal(
+            expected_output_quantiles,
+            result_q,
             check_exact=False,
             atol=1e-5,
             rtol=1e-5,
@@ -118,6 +129,8 @@ class Test_Interface_Utils(unittest.TestCase):
         self.assertTrue(
             "S+I_obs" in result2.columns, "S+I observable was added to the output"
         )
+        self.assertTrue(isinstance(result2["S+I_obs"], pd.Series), "S+I observable is a pandas Series")
+        self.assertTrue(isinstance(result2["S+I_obs"].values, np.ndarray), "S+I observable is a numpy array")
         result3 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
                                               num_samples=2, timepoints=self.timepoints,
                                               compile_observables_p=True)['data']
@@ -145,8 +158,16 @@ class Test_Interface_Utils(unittest.TestCase):
         self.assertFalse(
             "Deaths_obs" in result4.columns, "Deaths observable should not have been not added to the output"
         )
+        try:
+            result5 = load_and_sample_petri_model('test/models/AMR_examples/ES3_detection_log10V.json',
+                                              num_samples=2, timepoints=self.timepoints,
+                                              compile_observables_p=True)['data']
+        except RuntimeError as e:
+            self.assertFalse(e is None, e)
+        self.assertTrue('logV_obs' in result5.columns, "logV observable should have been added to the output")
+        self.assertTrue(isinstance(result5['logV_obs'], pd.Series), "logV observable is a pandas Series")
+        self.assertTrue(isinstance(result5['logV_obs'].values, np.ndarray), "logV observable is a numpy array")
         
-            
     def test_intervention_to_interval(self):
         """Test intervention_to_interval."""
         expected_intervals = {
