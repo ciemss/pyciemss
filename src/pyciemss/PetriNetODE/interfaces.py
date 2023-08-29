@@ -356,8 +356,8 @@ def load_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
@@ -397,8 +397,8 @@ def load_and_optimize_and_sample_petri_model(
         objfun: callable
             - The objective function defined as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - The initial guess for the optimizer
-        bounds: Iterable[float]
+            - The initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - The lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
@@ -540,8 +540,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     noise_model: str = "scaled_normal",
     noise_scale: float = 0.1,
@@ -590,8 +590,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         objfun: callable
             - Objective function as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - Initial guess for the optimizer
-        bounds: Iterable[float]
+            - Initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - Lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
