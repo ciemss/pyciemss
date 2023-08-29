@@ -1,10 +1,12 @@
 {
- "name": "SEIRHD model with NPI type 1",
- "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
- "schema_name": "petrinet",
- "description": "SEIRHD model with NPI type 1",
- "model_version": "0.1",
- "properties": {},
+ "header": {
+     "name": "SEIRHD NPI Type 1 (for Timepoint 2)",
+     "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+     "schema_name": "petrinet",
+     "description": "SEIRHD model with NPI type 1",
+     "model_version": "0.1",
+     "properties": {}
+ },
  "model": {
   "states": [
    {

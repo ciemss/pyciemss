@@ -1,10 +1,12 @@
 {
- "name": "SEIRHD NPI Type 1 Age-Stratified V3",
- "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
- "schema_name": "petrinet",
- "description": "        This model has been stratified into four age groups: (0) for 0-19, (1) for 20-49, (2) for 50-64, and (3) for 65+\n        ",
- "model_version": "0.1",
- "properties": {},
+ "header": {
+     "name": "SEIRHD NPI Type 1 Age-Stratified V3 (for Timepoint 2)",
+     "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+     "schema_name": "petrinet",
+     "description": "SEIRHD age-structured model with NPI type 1",
+     "model_version": "0.1",
+     "properties": {}
+ },
  "model": {
   "states": [
    {
