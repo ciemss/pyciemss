@@ -5,12 +5,31 @@
   "height": 100,
   "padding": 5,
   "data": [
-    {
-      "name": "binned",
-      "values": []
-    },
-    {"name": "xref", "values": []},
-    {"name": "yref", "values": []},
+      {
+         "name": "binned",
+         "values": [
+            {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "label": "s30"},
+            {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "label": "s30"},
+            {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "label": "s30"},
+            {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "label": "s30"},
+            {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "label": "s30"},
+            {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "label": "s30"}
+         ]
+      },
+      {
+         "name": "xref",
+         "values": [
+            {"value": 10000},
+            {"value": 74000}
+         ]
+      },
+      {
+         "name": "yref",
+         "values": [
+          {"value": 100},
+          {"value": 400}
+         ]
+      },
     {
       "name": "_ranges",
       "source": ["binned"],
@@ -101,7 +120,7 @@
       "encode": {
         "enter": {"stroke": {"value": "red"}},
         "update": {
-          "y": {"scale": "yscale", "field": "count"},
+          "y": {"scale": "yscale", "field": "value"},
           "x2": {"value": 0},
           "x": {"signal": "width"},
           "opacity": {"value": 1}
