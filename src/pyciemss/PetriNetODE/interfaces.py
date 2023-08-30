@@ -238,8 +238,8 @@ def load_and_calibrate_and_sample_petri_model(
             - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
         num_particles: int > 0
             - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
-        autoguide: pyro.infer.autoguide.AutoGuide
-            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        deterministic_learnable_parameters: Iterable[str]
+            - The set of parameters whose calibration output will be point estimates that were learned from data. 
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
@@ -356,8 +356,8 @@ def load_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
@@ -397,8 +397,8 @@ def load_and_optimize_and_sample_petri_model(
         objfun: callable
             - The objective function defined as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - The initial guess for the optimizer
-        bounds: Iterable[float]
+            - The initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - The lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
@@ -540,8 +540,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     noise_model: str = "scaled_normal",
     noise_scale: float = 0.1,
@@ -590,8 +590,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         objfun: callable
             - Objective function as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - Initial guess for the optimizer
-        bounds: Iterable[float]
+            - Initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - Lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
@@ -609,8 +609,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - Whether to print out the calibration progress and the optimization under uncertainty progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
         num_particles: int > 0
             - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
-        autoguide: pyro.infer.autoguide.AutoGuide
-            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        deterministic_learnable_parameters: Iterable[str]
+            - The set of parameters whose calibration output will be point estimates that were learned from data. 
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
