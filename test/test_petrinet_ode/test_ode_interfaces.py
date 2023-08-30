@@ -24,7 +24,8 @@ from pyciemss.PetriNetODE.interfaces import (
     load_and_calibrate_and_sample_petri_model,
     load_and_optimize_and_sample_petri_model,
     load_and_calibrate_and_optimize_and_sample_petri_model,
-    posterior_density_petri_model,
+    get_posterior_density_petri,
+    get_posterior_density_mesh_petri
 )
 
 
@@ -436,7 +437,51 @@ class TestODEInterfaces(unittest.TestCase):
         sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
         self.assertIsInstance(sidarthe_output["data"], pd.DataFrame, "Dataframe not returned")
 
-    def test_posterior_density_petri_model(self):
+    def test_get_posterior_density_mesh_petri(self):
+        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        timepoints = [1.0, 1.1, 1.2, 1.3]
+        num_samples = 3
+        initial_state = {
+            "S": 0.99,
+            "I": 0.01,
+            "R": 0.0,
+        }
+
+        data_path = "test/test_petrinet_ode/data.csv"
+        calibrated_results = load_and_calibrate_and_sample_petri_model(
+            ASKENET_PATH,
+            data_path,
+            num_samples,
+            timepoints,
+            start_state=initial_state,
+            num_iterations=2,
+        )
+
+        inferred_parameters = calibrated_results["inferred_parameters"]
+
+        # Values of beta and gamma were set by looking at the priors in the model in ASKENET_PATH
+        beta_params = (-.5, .5, 100)
+        gamma_params = (-1., 0.15, 50)
+        betas, gammas = torch.meshgrid(torch.linspace(*beta_params),
+                                       torch.linspace(*gamma_params), indexing='ij')
+        
+        ref_density = get_posterior_density_petri(
+            inferred_parameters=inferred_parameters,
+            parameter_values={"beta": betas, "gamma": gammas}
+        )
+
+        params, obs_density = get_posterior_density_mesh_petri(
+            inferred_parameters=inferred_parameters,
+            mesh_params={"beta": beta_params, "gamma": gamma_params})
+
+        self.assertSetEqual({"beta", "gamma"},
+                            set(params.keys()),
+                            "Result keys not as expected")
+
+        for ref, obs in zip(ref_density.ravel(), obs_density.ravel()):
+            self.assertAlmostEqual(ref, obs, "Result values not as expected")
+      
+    def test_get_posterior_density_petri(self):
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
@@ -462,7 +507,7 @@ class TestODEInterfaces(unittest.TestCase):
         betas = torch.tensor([-1., 0.027])
         gammas = torch.tensor([-1., 0.15])
     
-        density = posterior_density_petri_model(inferred_parameters=inferred_parameters, parameter_values={"beta": betas, "gamma": gammas})
+        density = get_posterior_density_petri(inferred_parameters=inferred_parameters, parameter_values={"beta": betas, "gamma": gammas})
         
         # Density should be 0 outside of the support.
         self.assertAlmostEqual(density[0].item(), 0.)

@@ -887,10 +887,31 @@ def calibrate_petri(
 
 
 @pyciemss_logging_wrapper
-def posterior_density_petri_model(inferred_parameters: PetriInferredParameters, parameter_values:dict[str, Union[list[float], torch.tensor]]) -> float:
+def get_posterior_density_mesh_petri(inferred_parameters: PetriInferredParameters,
+                                     mesh_params: Optional[dict[str, list[float]]]) -> float:
     """
     Compute the log posterior density of the inferred parameters at the given parameter values.
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        mesh_params: dict[str, list]
+            - Parameter values used to compute a mesh of sample points.  
+            Keys are parameter names, values are (min, max, steps) parameters passed to linspace.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """    
+    spaces = [torch.linspace(*params) for params in mesh_params.values()]
+    parameter_values = dict(zip(mesh_params.keys(), torch.meshgrid(*spaces, indexing='ij')))
+    density = get_posterior_density_petri(inferred_parameters, parameter_values)
+    return parameter_values, density
 
+
+@pyciemss_logging_wrapper
+def get_posterior_density_petri(inferred_parameters: PetriInferredParameters,
+                                parameter_values: dict[str, Union[list[float], torch.tensor]]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
     Args:
         inferred_parameters: PetriInferredParameters
             - The inferred parameters from the calibration.
@@ -919,7 +940,7 @@ def posterior_density_petri_model(inferred_parameters: PetriInferredParameters, 
     parameter_sizes = set([value.size() for value in parameter_values.values()])
     if len(parameter_sizes) != 1:
         raise ValueError(f"Expected all parameter values to have the same size, but found {len(parameter_sizes)} distinct sizes.")
-    
+
     parameter_size = parameter_sizes.pop()
 
     unconstrained_values = torch.zeros(parameter_size + guide.loc.size())
@@ -928,7 +949,7 @@ def posterior_density_petri_model(inferred_parameters: PetriInferredParameters, 
         transform = biject_to(site["fn"].support)
         value = parameter_values[name]
         unconstrained_value = transform.inv(value)
-        
+
         unconstrained_values[..., i] = unconstrained_value
 
     # Compute the log density using the transformed distribution and the unconstrained values.
