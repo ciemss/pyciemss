@@ -13,6 +13,8 @@ import warnings
 
 import random as rand
 
+from torch.distributions import biject_to
+
 from pyro.infer import Predictive
 from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
@@ -340,12 +342,14 @@ def load_and_calibrate_and_sample_petri_model(
         train_end_point = max([d[0] for d in data])
     )
 
+    result = {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "inferred_parameters": inferred_parameters}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
-    else:
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
+        result["visual"] = schema
+    
+    return result
 
 @pyciemss_logging_wrapper
 def load_and_optimize_and_sample_petri_model(
@@ -881,6 +885,77 @@ def calibrate_petri(
 
     return guide
 
+
+@pyciemss_logging_wrapper
+def get_posterior_density_mesh_petri(inferred_parameters: PetriInferredParameters,
+                                     mesh_params: Optional[dict[str, list[float]]]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        mesh_params: dict[str, list]
+            - Parameter values used to compute a mesh of sample points.  
+            Keys are parameter names, values are (min, max, steps) parameters passed to linspace.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """    
+    spaces = [torch.linspace(*params) for params in mesh_params.values()]
+    parameter_values = dict(zip(mesh_params.keys(), torch.meshgrid(*spaces, indexing='ij')))
+    density = get_posterior_density_petri(inferred_parameters, parameter_values)
+    return parameter_values, density
+
+
+@pyciemss_logging_wrapper
+def get_posterior_density_petri(inferred_parameters: PetriInferredParameters,
+                                parameter_values: dict[str, Union[list[float], torch.tensor]]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        parameter_values: dict[str, list]
+            - The parameter values to evaluate the log posterior density at.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """
+
+    guides = [guide for guide in inferred_parameters if type(guide) == AutoLowRankMultivariateNormal]
+
+    # By construction there should be only a single AutoLowRankMultivariateNormal guide. The rest should be AutoDeltas.
+    if len(guides) != 1:
+        raise ValueError(f"Expected a single AutoLowRankMultivariateNormal guide, but found {len(guides)} guides.")
+
+    guide = guides[0]
+
+    # For now we only support density evaluation on the full parameter space.
+    if guide.loc.shape[0] != len(parameter_values):
+        raise ValueError(f"Expected {guide.loc.shape[0]} parameters, but found {len(parameter_values)} parameters.")
+
+    parameter_values = {name: torch.as_tensor(value) for name, value in parameter_values.items()}
+
+    # Assert that all of the parameters in the `parameter_values` are the same size.
+    parameter_sizes = set([value.size() for value in parameter_values.values()])
+    if len(parameter_sizes) != 1:
+        raise ValueError(f"Expected all parameter values to have the same size, but found {len(parameter_sizes)} distinct sizes.")
+
+    parameter_size = parameter_sizes.pop()
+
+    unconstrained_values = torch.zeros(parameter_size + guide.loc.size())
+
+    for i, (name, site) in enumerate(guide.prototype_trace.iter_stochastic_nodes()):
+        transform = biject_to(site["fn"].support)
+        value = parameter_values[name]
+        unconstrained_value = transform.inv(value)
+
+        unconstrained_values[..., i] = unconstrained_value
+
+    # Compute the log density using the transformed distribution and the unconstrained values.
+    log_density = guide.get_posterior().log_prob(unconstrained_values)
+
+    return torch.exp(log_density).detach()
 
 @sample.register
 @pyciemss_logging_wrapper
