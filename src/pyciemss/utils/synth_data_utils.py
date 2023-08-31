@@ -584,11 +584,12 @@ def create_synth_data(
     return synth_data_df, sample_data
 
 
-def add_noise(data_df, noise_level, to_plot=True):
+def add_noise(data_df, noise_level, full_tspan, to_plot=True):
     """Function that accepts a DataFrame and level of noise as inputs, and returns
     (and plots) the noisy data.
     : param data_df: DataFrame containing the original data
     : param noise_level: level of noise to add
+    : param full_tspan: list of timepoints
     : param to_plot: whether to plot the noisy data
     : return: a DataFrame containing the noisy data"""
     noisy_data_df = copy.deepcopy(data_df)
@@ -704,7 +705,7 @@ def ensemble_calibration(
         dirichlet_concentration=dirichlet_concentration,
         noise_pseudocount=noise_pseudocount,
     )
-    display(ensemble)
+    #display(ensemble)
 
     # Sample from the ensemble prior
     ensemble_prior_forecasts = sample_ensemble(ensemble, all_timepoints, num_samples)
