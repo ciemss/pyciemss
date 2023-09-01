@@ -117,7 +117,7 @@ def load_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
-                * state: Risk estimates for each state as 2-day average at the final timepoint
+                * risk: Risk estimates for each state as 2-day average at the final timepoint
                     * risk: Estimated alpha-superquantile risk with alpha=0.95
                     * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
