@@ -11,7 +11,7 @@
     { "name": "nodeRadius", "value": 15},
     { "name": "nodeCharge", "value": -80},
     { "name": "linkDistance", "value": 80},
-    { "name": "layoutdata", "value": true,
+    { "name": "layoutdata", "value": false,
       "bind": {"input": "checkbox"} },
     { "name": "static", "value": true,
       "bind": {"input": "checkbox"} },
@@ -49,7 +49,6 @@
       "name": "restart", "value": false,
       "on": [
         {"events": {"signal": "fix"}, "update": "fix && fix.length"},
-
         {"events": {"signal": "layoutdata"}, "update": "true"}
       ]
 
@@ -124,13 +123,13 @@
       "encode": {
         "enter": {
           "fill": {"scale": "color", "field": "group"},
-          "stroke": {"value": "white"},
-          "fx" : {"signal": "layoutdata ? scale('yscale', datum.fy) : null"},
-          "fy": {"signal": "layoutdata ? scale('yscale', datum.fy) : null"}
+          "stroke": {"value": "white"}
           },
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
-          "cursor": {"value": "pointer"}
+          "cursor": {"value": "pointer"},
+          "fy": {"signal": "node != null && node.datum.id == datum.id ?  (fix === true ? node.y : (!fix ? null :fix[1])) : layoutdata ? scale('yscale', datum.fy) : null"},
+          "fx": {"signal": "node != null && node.datum.id == datum.id ?  (fix === true ? node.x : (!fix ? null :fix[0])) : layoutdata ? scale('xscale', datum.fx) : null"}
         }
       },
 
@@ -246,11 +245,11 @@
     {
       "name": "node-data",
       "values": [
-      {"id": 0, "label": "Zero", "group": "A", "fx": 2, "fy": 5},
+      {"id": 4, "label": "Zero", "group": "A", "fx": 2, "fy": 5},
       {"id": 1, "label": "One", "group": "A", "fx": 2, "fy": 10},
       {"id": 2, "label": "Two", "group": "B", "fx": 2, "fy": 5},
       {"id": 3, "label": "Three", "group": "B", "fx": 2, "fy": 3},
-      {"id": 4, "label": "Four", "group": "C", "fx": 1, "fy": 5},
+      {"id": 0, "label": "Four", "group": "C", "fx": 1, "fy": 5},
       {"id": 5, "label": "Five", "group": "C", "fx": 2, "fy": 5},
       {"id": 6, "label": "Six", "group": "C", "fx": 2, "fy": 5}
       ]
