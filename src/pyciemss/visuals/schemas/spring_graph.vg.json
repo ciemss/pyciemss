@@ -11,6 +11,8 @@
     { "name": "nodeRadius", "value": 15},
     { "name": "nodeCharge", "value": -80},
     { "name": "linkDistance", "value": 80},
+    { "name": "layoutdata", "value": true,
+      "bind": {"input": "checkbox"} },
     { "name": "static", "value": true,
       "bind": {"input": "checkbox"} },
     {
@@ -46,8 +48,11 @@
       "description": "Flag to restart Force simulation upon data changes.",
       "name": "restart", "value": false,
       "on": [
-        {"events": {"signal": "fix"}, "update": "fix && fix.length"}
+        {"events": {"signal": "fix"}, "update": "fix && fix.length"},
+
+        {"events": {"signal": "layoutdata"}, "update": "true"}
       ]
+
     }
   ],
 
@@ -98,17 +103,6 @@
       "zindex": 1,
 
       "from": {"data": "node-data"},
-      "on": [
-        {
-          "trigger": "fix",
-          "modify": "node",
-          "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}"
-        },
-        {
-          "trigger": "!fix",
-          "modify": "node", "values": "{fx: null, fy: null}"
-        }
-      ],
       
 
       "transform": [
@@ -131,19 +125,26 @@
         "enter": {
           "fill": {"scale": "color", "field": "group"},
           "stroke": {"value": "white"},
-          "fx": {
-          "condition": {"test": "datum.fx == null", "value": null},
-          "scale": "xscale", "field": "fx"},
-
-          "fy": {
-          "condition": {"test": "datum.fy == null", "value": null},
-          "scale": "yscale", "field": "fy"}
-        },
+          "fx" : {"signal": "layoutdata ? scale('yscale', datum.fy) : null"},
+          "fy": {"signal": "layoutdata ? scale('yscale', datum.fy) : null"}
+          },
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"}
         }
-      }
+      },
+
+      "on": [
+        {
+          "trigger": "fix",
+          "modify": "node",
+          "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}"
+        },
+        {
+          "trigger": "!fix",
+          "modify": "node", "values": "{fx: null, fy: null}"
+        }
+      ]
     },
     {
       "type": "text",
@@ -168,7 +169,7 @@
           "align": {"value": "center"},
           "baseline": {"value": "middle"},
           "fontSize": {"value": 10},
-          "text": {"field": "datum.label"}
+          "text": {"field": "datum.id"}
         },
         "update": {
           "x": {"field": "x"},
@@ -245,13 +246,13 @@
     {
       "name": "node-data",
       "values": [
-      {"id": 0, "label": "Zero", "group": "A", "fx": null, "fy": null},
-      {"id": 1, "label": "One", "group": "A", "fx": null, "fy": null},
-      {"id": 2, "label": "Two", "group": "B", "fx": null, "fy": null},
-      {"id": 3, "label": "Three", "group": "B", "fx": null, "fy": null},
-      {"id": 4, "label": "Four", "group": "C", "fx": null, "fy": null},
-      {"id": 5, "label": "Five", "group": "C", "fx": null, "fy": null},
-      {"id": 6, "label": "Six", "group": "C", "fx": null, "fy": null}
+      {"id": 0, "label": "Zero", "group": "A", "fx": 2, "fy": 5},
+      {"id": 1, "label": "One", "group": "A", "fx": 2, "fy": 10},
+      {"id": 2, "label": "Two", "group": "B", "fx": 2, "fy": 5},
+      {"id": 3, "label": "Three", "group": "B", "fx": 2, "fy": 3},
+      {"id": 4, "label": "Four", "group": "C", "fx": 1, "fy": 5},
+      {"id": 5, "label": "Five", "group": "C", "fx": 2, "fy": 5},
+      {"id": 6, "label": "Six", "group": "C", "fx": 2, "fy": 5}
       ]
     },
     {
