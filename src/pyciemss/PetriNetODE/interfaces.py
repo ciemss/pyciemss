@@ -117,7 +117,7 @@ def load_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
-                * state: Risk estimates for each state as 2-day average at the final timepoint
+                * risk: Risk estimates for each state as 2-day average at the final timepoint
                     * risk: Estimated alpha-superquantile risk with alpha=0.95
                     * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
@@ -268,9 +268,10 @@ def load_and_calibrate_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the calibrated model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
-                * state: Risk estimates for each state as 2-day average at the final timepoint
+                * risk: Risk estimates for each state as 2-day average at the final timepoint
                     * risk: Estimated alpha-superquantile risk with alpha=0.95
                     * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
+                * inferred_parameters: The inferred parameters from the calibration as PetriInferredParameters.
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -527,12 +528,14 @@ def load_and_optimize_and_sample_petri_model(
         observables=observables
     )
 
+    result = {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
-    else:
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+        result["visual"] = schema
+    
+    return result
 
 @pyciemss_logging_wrapper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
@@ -656,6 +659,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
                         * samples: Samples from the model at the optimal intervention
                         * qoi: Samples of quantity of interest
                 * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * inferred_parameters: The inferred parameters from the calibration as PetriInferredParameters.
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -758,12 +762,14 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         train_end_point = max([d[0] for d in data])
     )
 
+    result = {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "inferred_parameters": inferred_parameters}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
-    else:
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+        result["visual"] = schema
+    
+    return result
 
 
 ##############################################################################
