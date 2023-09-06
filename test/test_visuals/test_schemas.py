@@ -1,6 +1,10 @@
+from typing import Callable, Any
 import unittest
 import json
 from pathlib import Path
+
+import IPython
+from pyciemss.visuals import plots
 
 
 """
@@ -36,7 +40,87 @@ def find_scale_applications(schema, target_properties, found=None):
     return found
 
 
-class TestTrajectory(unittest.TestCase):
+class TestExport(unittest.TestCase):
+    def setUp(self):
+        self.schemas = [*_schema_root.glob("*.vg.json")]
+        self.assertGreater(len(self.schemas), 0, "No schemas found")
+
+    def format_checker(self, format: str, content_check: Callable[[str, Any], None]):
+        """
+        Args:
+            format (str): What file format to export to?
+            content_check (Callable[[str, Any], None]):
+                Test if the content matches a reference.
+                Raise ValueError if it does not.
+
+        Returns:
+            _type_: _description_
+        """
+        schema_issues = []
+        for schema_file in self.schemas:
+            with open(schema_file) as f:
+                schema = json.load(f)
+
+            try:
+                image = plots.ipy_display(schema, format=format)
+                content_check(schema_file, image)
+            except Exception as e:
+                schema_issues.append({"file": schema_file.stem, "issue": str(e)})
+
+        return schema_issues
+
+    def test_export_interactive(self):
+        def interactive_check(_, wrapped):
+            if wrapped is not None:
+                raise ValueError("Recieved a result when None was expected")
+
+        schema_issues = self.format_checker("interactive", interactive_check)
+        self.assertFalse(schema_issues)
+
+    def test_export_PNG(self):
+        saved_pngs = (Path(__file__).parent / "reference_images").glob("*.png")
+        saved_images = {f.stem: f for f in saved_pngs}
+
+        def png_check(schema_file, wrapped):
+            if not isinstance(wrapped, IPython.display.Image):
+                raise ValueError("Expected wrapped PNG")
+
+            reference_file = saved_images.get(schema_file.stem, None)
+            if reference_file is not None:
+                with open(reference_file, "b") as f:
+                    reference = f.read()
+
+                content = wrapped.data
+                if content != reference:
+                    raise ValueError("PNG content does not match")
+
+        schema_issues = self.format_checker("PNG", png_check)
+
+        self.assertFalse(schema_issues)
+
+    def test_export_SVG(self):
+        saved_svgs = (Path(__file__).parent / "reference_images").glob("*.svg")
+        saved_images = {f.stem: f for f in saved_svgs}
+
+        def svg_check(schema_file, wrapped):
+            if not isinstance(wrapped, IPython.display.SVG):
+                raise ValueError("Expected wrapped SVG")
+
+            reference_file = saved_images.get(schema_file.stem, None)
+            if reference_file is not None:
+                with open(reference_file) as f:
+                    reference = "".join(f.readlines(f))
+                content = "".join(wrapped.data)
+                if content != reference:
+                    raise ValueError("SVG content does not match")
+
+            # TODO: Check contents of schema_file against stored images
+
+        schema_issues = self.format_checker("SVG", svg_check)
+        self.assertFalse(schema_issues)
+
+
+class TestSchemaContents(unittest.TestCase):
     def setUp(self):
         self.schemas = [*_schema_root.glob("*.vg.json")]
         self.assertGreater(len(self.schemas), 0, "No schemas found")

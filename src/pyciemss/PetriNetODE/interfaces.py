@@ -13,6 +13,8 @@ import warnings
 
 import random as rand
 
+from torch.distributions import biject_to
+
 from pyro.infer import Predictive
 from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
@@ -115,7 +117,7 @@ def load_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
-                * state: Risk estimates for each state as 2-day average at the final timepoint
+                * risk: Risk estimates for each state as 2-day average at the final timepoint
                     * risk: Estimated alpha-superquantile risk with alpha=0.95
                     * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
                 * visual: Visualization. (If visual_options is truthy)
@@ -238,8 +240,8 @@ def load_and_calibrate_and_sample_petri_model(
             - Whether to print out the calibration progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
         num_particles: int > 0
             - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
-        autoguide: pyro.infer.autoguide.AutoGuide
-            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        deterministic_learnable_parameters: Iterable[str]
+            - The set of parameters whose calibration output will be point estimates that were learned from data. 
         method: str
             - The method to use for the ODE solver. See `torchdiffeq.odeint` for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
@@ -266,9 +268,10 @@ def load_and_calibrate_and_sample_petri_model(
             - Dictionary of outputs with following attribute:
                 * data: The samples from the calibrated model as a pandas DataFrame.
                 * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
-                * state: Risk estimates for each state as 2-day average at the final timepoint
+                * risk: Risk estimates for each state as 2-day average at the final timepoint
                     * risk: Estimated alpha-superquantile risk with alpha=0.95
                     * qoi: Samples of quantity of interest (in this case, 2-day average of the state at the final timepoint)
+                * inferred_parameters: The inferred parameters from the calibration as PetriInferredParameters.
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -340,12 +343,14 @@ def load_and_calibrate_and_sample_petri_model(
         train_end_point = max([d[0] for d in data])
     )
 
+    result = {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "inferred_parameters": inferred_parameters}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results, "visual": schema}
-    else:
-        return {"data": processed_samples, "quantiles": q_ensemble, "risk": risk_results}
+        result["visual"] = schema
+    
+    return result
 
 @pyciemss_logging_wrapper
 def load_and_optimize_and_sample_petri_model(
@@ -356,8 +361,8 @@ def load_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     start_state: Optional[dict[str, float]] = None,
     start_time: float = -1e-10,
@@ -397,8 +402,8 @@ def load_and_optimize_and_sample_petri_model(
         objfun: callable
             - The objective function defined as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - The initial guess for the optimizer
-        bounds: Iterable[float]
+            - The initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - The lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
@@ -523,12 +528,14 @@ def load_and_optimize_and_sample_petri_model(
         observables=observables
     )
 
+    result = {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
-    else:
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+        result["visual"] = schema
+    
+    return result
 
 @pyciemss_logging_wrapper
 def load_and_calibrate_and_optimize_and_sample_petri_model(
@@ -540,8 +547,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
     qoi: Tuple[str, str, float] = ("scenario2dec_nday_average", "I_sol", 2),
     risk_bound: float = 1.0,
     objfun: callable = lambda x: np.sum(np.abs(x)),
-    initial_guess: Iterable[float] = 0.5,
-    bounds: Iterable[float] = [[0.0], [1.0]],
+    initial_guess: Iterable[float] = [0.5],
+    bounds: Iterable[Iterable[float]] = [[0.0], [1.0]],
     *,
     noise_model: str = "scaled_normal",
     noise_scale: float = 0.1,
@@ -590,8 +597,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         objfun: callable
             - Objective function as a callable function definition. E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess: Iterable[float]
-            - Initial guess for the optimizer
-        bounds: Iterable[float]
+            - Initial guess for the optimizer. The length should be equal to number of dimensions of the intervention (or control action).
+        bounds: Iterable[Iterable[float]]
             - Lower and upper bounds for intervention parameter. Bounds are a list of the form [[lower bounds], [upper bounds]]
         start_state: Optional[dict[str, float]]
             - The initial state of the model. If None, the initial state is taken from the mira model.
@@ -609,8 +616,8 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
             - Whether to print out the calibration progress and the optimization under uncertainty progress. This will include summaries of the evidence lower bound (ELBO) and the parameters.
         num_particles: int > 0
             - The number of particles to use for the calibration. Increasing this value will result in lower variance gradient estimates, but will also increase the computational cost per gradient step.
-        autoguide: pyro.infer.autoguide.AutoGuide
-            - The guide to use for the calibration. By default we use the AutoLowRankMultivariateNormal guide. This is an advanced option. Please see the Pyro documentation for more details.
+        deterministic_learnable_parameters: Iterable[str]
+            - The set of parameters whose calibration output will be point estimates that were learned from data. 
         method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug. If using `euler` results in faster simulation, the issue is likely that the model is stiff.
@@ -652,6 +659,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
                         * samples: Samples from the model at the optimal intervention
                         * qoi: Samples of quantity of interest
                 * quantiles: The quantiles for ensemble score calculation after calibration as a pandas DataFrames.
+                * inferred_parameters: The inferred parameters from the calibration as PetriInferredParameters.
                 * visual: Visualization. (If visual_options is truthy)
     """
     data = csv_to_list(data_path)
@@ -754,12 +762,14 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         train_end_point = max([d[0] for d in data])
     )
 
+    result = {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "inferred_parameters": inferred_parameters}
+
     if visual_options:
         visual_options = {} if visual_options is True else visual_options
         schema = plots.trajectories(processed_samples, **visual_options)
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble, "visual": schema}
-    else:
-        return {"data": processed_samples, "policy": ouu_policy, "quantiles": q_ensemble}
+        result["visual"] = schema
+    
+    return result
 
 
 ##############################################################################
@@ -881,6 +891,77 @@ def calibrate_petri(
 
     return guide
 
+
+@pyciemss_logging_wrapper
+def get_posterior_density_mesh_petri(inferred_parameters: PetriInferredParameters,
+                                     mesh_params: Optional[dict[str, list[float]]]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        mesh_params: dict[str, list]
+            - Parameter values used to compute a mesh of sample points.  
+            Keys are parameter names, values are (min, max, steps) parameters passed to linspace.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """    
+    spaces = [torch.linspace(*params) for params in mesh_params.values()]
+    parameter_values = dict(zip(mesh_params.keys(), torch.meshgrid(*spaces, indexing='ij')))
+    density = get_posterior_density_petri(inferred_parameters, parameter_values)
+    return parameter_values, density
+
+
+@pyciemss_logging_wrapper
+def get_posterior_density_petri(inferred_parameters: PetriInferredParameters,
+                                parameter_values: dict[str, Union[list[float], torch.tensor]]) -> float:
+    """
+    Compute the log posterior density of the inferred parameters at the given parameter values.
+    Args:
+        inferred_parameters: PetriInferredParameters
+            - The inferred parameters from the calibration.
+        parameter_values: dict[str, list]
+            - The parameter values to evaluate the log posterior density at.
+    Returns:
+        log_density: float
+            - The log posterior density of the inferred parameters at the given parameter values.
+    """
+
+    guides = [guide for guide in inferred_parameters if type(guide) == AutoLowRankMultivariateNormal]
+
+    # By construction there should be only a single AutoLowRankMultivariateNormal guide. The rest should be AutoDeltas.
+    if len(guides) != 1:
+        raise ValueError(f"Expected a single AutoLowRankMultivariateNormal guide, but found {len(guides)} guides.")
+
+    guide = guides[0]
+
+    # For now we only support density evaluation on the full parameter space.
+    if guide.loc.shape[0] != len(parameter_values):
+        raise ValueError(f"Expected {guide.loc.shape[0]} parameters, but found {len(parameter_values)} parameters.")
+
+    parameter_values = {name: torch.as_tensor(value) for name, value in parameter_values.items()}
+
+    # Assert that all of the parameters in the `parameter_values` are the same size.
+    parameter_sizes = set([value.size() for value in parameter_values.values()])
+    if len(parameter_sizes) != 1:
+        raise ValueError(f"Expected all parameter values to have the same size, but found {len(parameter_sizes)} distinct sizes.")
+
+    parameter_size = parameter_sizes.pop()
+
+    unconstrained_values = torch.zeros(parameter_size + guide.loc.size())
+
+    for i, (name, site) in enumerate(guide.prototype_trace.iter_stochastic_nodes()):
+        transform = biject_to(site["fn"].support)
+        value = parameter_values[name]
+        unconstrained_value = transform.inv(value)
+
+        unconstrained_values[..., i] = unconstrained_value
+
+    # Compute the log density using the transformed distribution and the unconstrained values.
+    log_density = guide.get_posterior().log_prob(unconstrained_values)
+
+    return torch.exp(log_density).detach()
 
 @sample.register
 @pyciemss_logging_wrapper

@@ -6,6 +6,7 @@ import pyro
 from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.risk.risk_measures import alpha_superquantile
 from typing import Iterable, Optional, Tuple, Union
+from tqdm import tqdm
 
 class RandomDisplacementBounds():
     '''
@@ -102,9 +103,14 @@ class solveOUU():
         # self.kwargs = kwargs
 
     def solve(self):
+        pbar = tqdm(total=self.maxfeval*(self.maxiter+1))
+
+        def update_progress(xk):
+            pbar.update(1)
+
         # wrapper around SciPy optimizer(s).
         minimizer_kwargs = dict(constraints=self.constraints, method='COBYLA', 
-                                tol=1e-5, options={'disp': False, 'maxiter':  self.maxfeval})
+                                tol=1e-5, callback=update_progress, options={'disp': False, 'maxiter':  self.maxfeval})
         # take_step = RandomDisplacementBounds(self.u_bounds[0], self.u_bounds[1], stepsize=stepsize)
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5, 
         #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
