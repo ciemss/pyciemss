@@ -104,7 +104,9 @@ def attributed_graph(
 
 
 def spring_force_graph(
-    graph: nx.Graph, node_labels: Union[str, None] = "label"
+    graph: nx.Graph, 
+    node_labels: Union[str, None] = "label",
+    directed_graph: bool = True
 ) -> vega.VegaSchema:
     """Draw a general spring-force graph
 
@@ -130,5 +132,8 @@ def spring_force_graph(
     else:
         labels = vega.find_named(schema["marks"], "labels")
         labels["encode"]["enter"]["text"]["field"] = f"datum.{node_labels}"
+
+    if not directed_graph:
+        schema["marks"] = vega.delete_named(schema["marks"], "arrows")
 
     return schema
