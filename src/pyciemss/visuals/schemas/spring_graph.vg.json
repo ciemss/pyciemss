@@ -13,8 +13,6 @@
     { "name": "linkDistance", "value": 80},
     { "name": "layoutdata", "value": false,
       "bind": {"input": "checkbox"} },
-    { "name": "static", "value": true,
-      "bind": {"input": "checkbox"} },
     {
       "description": "State variable for active node fix status.",
       "name": "fix", "value": false,
@@ -44,6 +42,7 @@
         }
       ]
     },
+
     {
       "description": "Flag to restart Force simulation upon data changes.",
       "name": "restart", "value": false,
@@ -109,7 +108,7 @@
           "type": "force",
           "iterations": 300,
           "restart": {"signal": "restart"},
-          "static": {"signal": "static"},
+          "static": true,
           "signal": "force",
           "forces": [
             {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
@@ -122,28 +121,16 @@
 
       "encode": {
         "enter": {
-          "fill": {"scale": "color", "field": "group"},
+          "fill": {"value": "color", "field": "group"},
           "stroke": {"value": "white"}
           },
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fy": {"signal": "node != null && node.datum.id == datum.id ?  (fix === true ? node.y : (!fix ? null :fix[1])) : layoutdata ? scale('yscale', datum.fy) : null"},
-          "fx": {"signal": "node != null && node.datum.id == datum.id ?  (fix === true ? node.x : (!fix ? null :fix[0])) : layoutdata ? scale('xscale', datum.fx) : null"}
+          "fy": {"signal": "node != null && node.datum.id == datum.id && fix.length == 2 ? fix[1] : (layoutdata ? scale('yscale', datum.fy) : null)"},
+          "fx": {"signal": "node != null && node.datum.id == datum.id && fix.length == 2 ? fix[0] : (layoutdata ? scale('xscale', datum.fx) : null)"}
         }
-      },
-
-      "on": [
-        {
-          "trigger": "fix",
-          "modify": "node",
-          "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}"
-        },
-        {
-          "trigger": "!fix",
-          "modify": "node", "values": "{fx: null, fy: null}"
-        }
-      ]
+      }
     },
     {
       "type": "text",
