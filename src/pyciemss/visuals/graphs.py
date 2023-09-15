@@ -1,7 +1,7 @@
 from typing import Union
 import networkx as nx
 
-import vega
+from . import vega
 
 
 def attributed_graph(
