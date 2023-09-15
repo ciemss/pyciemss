@@ -149,8 +149,8 @@
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fy": {"signal": "datum.fy2 != -100 ? datum.fy2 : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[1] : (layoutdata ? scale('yscale', datum.fy) : null))"},
-          "fx": {"signal": "datum.fx2 != -100 ? datum.fx2  : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[0] : (layoutdata ? scale('xscale', datum.fx) : null))"}
+          "fy": {"signal": "datum.fixedy != -100 ? datum.fixedy : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[1] : (layoutdata ? scale('yscale', datum.fy) : null))"},
+          "fx": {"signal": "datum.fixedx != -100 ? datum.fixedx  : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[0] : (layoutdata ? scale('xscale', datum.fx) : null))"}
         }
       }
     },
@@ -254,23 +254,23 @@
     {
       "name": "node-data",
       "values": [
-      {"id": 4, "label": "Zero", "group": "A", "fx": 2, "fy": 5, "fx2": -100,
-                       "fy2": -100},
-      {"id": 1, "label": "One", "group": "A", "fx": 2, "fy": 10, "fx2": -100,
-                       "fy2": -100},
-      {"id": 2, "label": "Two", "group": "B", "fx": 2, "fy": 5, "fx2": -100,
-                       "fy2": -100},
-      {"id": 3, "label": "Three", "group": "B", "fx": 2, "fy": 3, "fx2": -100,
-                       "fy2": -100},
-      {"id": 0, "label": "Four", "group": "C", "fx": 1, "fy": 5, "fx2": -100,
-                       "fy2": -100},
-      {"id": 5, "label": "Five", "group": "C", "fx": 2, "fy": 5, "fx2": -100,
-                       "fy2": -100},
-      {"id": 6, "label": "Six", "group": "C", "fx": 2, "fy": 5, "fx2": -100,
-                       "fy2": -100}
+      {"id": 4, "label": "Zero", "group": "A", "fx": 2, "fy": 5, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 1, "label": "One", "group": "A", "fx": 2, "fy": 10, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 2, "label": "Two", "group": "B", "fx": 2, "fy": 5, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 3, "label": "Three", "group": "B", "fx": 2, "fy": 3, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 0, "label": "Four", "group": "C", "fx": 1, "fy": 5, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 5, "label": "Five", "group": "C", "fx": 2, "fy": 5, "fixedx": -100,
+                       "fixedy": -100},
+      {"id": 6, "label": "Six", "group": "C", "fx": 2, "fy": 5, "fixedx": -100,
+                       "fixedy": -100}
       ],
       "on": [
-      {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fx2: fix[0], fy2: fix[1]}"}
+      {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fixedx: fix[0], fixedy: fix[1]}"}
     ]
     },
     {
