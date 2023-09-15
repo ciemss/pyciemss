@@ -30,8 +30,20 @@
           "update": "xy()",
           "force": true
         }
+
       ]
     },
+    {
+      "description": "Unfix node",
+      "name": "reset", "value": null,
+      "on": [
+        {
+          "events": "symbol:dblclick",
+          "update": "item().datum"
+        }
+      ]
+    },
+        
     {
       "description": "Graph node most recently interacted with.",
       "name": "node", "value": null,
@@ -48,31 +60,10 @@
       "name": "restart", "value": false,
       "on": [
         {"events": {"signal": "fix"}, "update": "fix && fix.length"},
-        {"events": {"signal": "layoutdata"}, "update": "true"}
+        {"events": {"signal": "layoutdata"}, "update": "true"},
+        {"events": {"signal": "reset"}, "update": "true"}
       ]
 
-    },
-        {
-      "name": "shift",
-      "value": false,
-      "on": [
-        {
-          "events": {"marktype": "symbol", "type": "click"},
-          "update": "event.shiftKey",
-          "force":  true
-        }
-      ]
-    },
-    {
-      "name": "clicked",
-      "value": null,
-      "on": [
-        {
-          "events": {"marktype": "symbol", "type": "click"},
-          "update": "datum",
-          "force":  true
-        }
-      ]
     }
   ],
 
@@ -149,8 +140,8 @@
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fy": {"signal": "datum.fixedy != -100 ? datum.fixedy : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[1] : (layoutdata ? scale('yscale', datum.fy) : null))"},
-          "fx": {"signal": "datum.fixedx != -100 ? datum.fixedx  : (node != null && node.datum.id == datum.id && fix.length == 2 ? fix[0] : (layoutdata ? scale('xscale', datum.fx) : null))"}
+          "fy": {"signal": "datum.fixedy != -100 ? datum.fixedy : ((layoutdata ? scale('yscale', datum.fy) : null))"},
+          "fx": {"signal": "datum.fixedx != -100 ? datum.fixedx  : ((layoutdata ? scale('xscale', datum.fx) : null))"}
         }
       }
     },
@@ -270,7 +261,9 @@
                        "fixedy": -100}
       ],
       "on": [
-      {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fixedx: fix[0], fixedy: fix[1]}"}
+      {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fixedx: fix[0], fixedy: fix[1]}"},
+
+      {"trigger": "reset", "modify": "reset", "values": "{fixedx: -100, fixedy: -100}"}
     ]
     },
     {
