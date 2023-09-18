@@ -11,7 +11,7 @@
     { "name": "nodeRadius", "value": 15},
     { "name": "nodeCharge", "value": -80},
     { "name": "linkDistance", "value": 80},
-    { "name": "layoutdata", "value": true,
+    { "name": "layoutdata", "value": false,
       "bind": {"input": "checkbox"} },
     {
       "description": "State variable for active node fix status.",
@@ -140,8 +140,8 @@
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fy": {"signal": "datum.fixedy != -100 ? datum.fixedy : ((layoutdata ? scale('yscale', datum.fy) : null))"},
-          "fx": {"signal": "datum.fixedx != -100 ? datum.fixedx  : ((layoutdata ? scale('xscale', datum.fx) : null))"}
+          "fy": {"signal": "datum.fixedy != -100 ? datum.fixedy : (layoutdata ? scale('yscale', datum.fy) : null)"},
+          "fx": {"signal": "datum.fixedx != -100 ? datum.fixedx  : (layoutdata ? scale('xscale', datum.fx) : null)"}
         }
       }
     },

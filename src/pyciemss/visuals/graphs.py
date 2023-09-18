@@ -106,26 +106,42 @@ def attributed_graph(
 def spring_force_graph(
     graph: nx.Graph, 
     node_labels: Union[str, None] = "label",
+    input_layout:  bool = True,
     directed_graph: bool = True
 ) -> vega.VegaSchema:
     """Draw a general spring-force graph
 
     graph -- Networkx graph to draw
+    input_layout -- input of locations of nodes in graph as fx and fy items in data list of dictionaries
     labels -- If it is a string, that field name is used ('label' is the default; 'id' will give the networkx node-id).
               If it is None, no label is drawn.
     """
     graph = nx.convert_node_labels_to_integers(graph, label_attribute=node_labels)
 
     gjson = nx.json_graph.node_link_data(graph)
+    # use -100 to signify no fixed location. values will update if node is dragged
+    gjson["nodes"] = [dict(item, fixedx = -100, fixedy = -100) for item in gjson["nodes"]]
 
     schema = vega.load_schema("spring_graph.vg.json")
 
+    
     schema["data"] = vega.replace_named_with(
         schema["data"], "node-data", ["values"], gjson["nodes"]
     )
+
     schema["data"] = vega.replace_named_with(
         schema["data"], "link-data", ["values"], gjson["links"]
     )
+    if input_layout:
+
+        if 'fx' not in gjson["nodes"][0].keys():
+            raise ValueError(f"Cannot create graph with fixed layout without fx as key.")
+        if 'fy' not in gjson["nodes"][0].keys():
+            raise ValueError(f"Cannot create graph with fixed layout without fy as key.")
+        
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "layoutdata", ["value"], True
+        )
 
     if node_labels is None:
         schema["marks"] = vega.delete_named(schema["marks"], "labels")
