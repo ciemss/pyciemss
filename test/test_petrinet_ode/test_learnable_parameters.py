@@ -45,7 +45,7 @@ class TestLearnableParameters(unittest.TestCase):
         I_to_R = NaturalConversion(
             subject=infected, outcome=recovered, rate_law=gamma * I
         )
-        self.all_learnable_parameters = TemplateModel(
+        self.no_distribution_parameters = TemplateModel(
             templates=[S_to_I, I_to_R],
             parameters={
                 "beta": Parameter(name="beta", value=0.55),  # transmission rate
@@ -59,7 +59,7 @@ class TestLearnableParameters(unittest.TestCase):
                 "R": (Initial(concept=recovered, value=0)),
             },
         )
-        self.gamma_learnable_parameters = TemplateModel(
+        self.beta_only_distribution = TemplateModel(
             templates=[S_to_I, I_to_R],
             parameters={
                 "beta": Parameter(name="beta", value=0.55,
@@ -76,7 +76,7 @@ class TestLearnableParameters(unittest.TestCase):
                 "R": (Initial(concept=recovered, value=0)),
             },
         )
-        self.beta_learnable_parameters = TemplateModel(
+        self.gamma_only_distribution = TemplateModel(
             templates=[S_to_I, I_to_R],
             parameters={
                 "beta": Parameter(name="beta", value=0.55),  # transmission rate
@@ -95,7 +95,7 @@ class TestLearnableParameters(unittest.TestCase):
             },
         )
         
-        self.no_learnable_parameters = TemplateModel(
+        self.all_distribution_parameters = TemplateModel(
             templates=[S_to_I, I_to_R],
             parameters={
                 "beta": Parameter(name="beta", value=0.55,
@@ -118,7 +118,7 @@ class TestLearnableParameters(unittest.TestCase):
             
     
     def test_calibrate_fails_on_learned_parameters(self):
-        """Test that calibrate does not fail when the model has only learned parameters."""
+        """Test that calibrate fails when the model has only non-distribution parameters."""
         num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         num_timepoints = len(timepoints)
@@ -127,7 +127,7 @@ class TestLearnableParameters(unittest.TestCase):
         self.assertTrue(
             type(
                 load_and_calibrate_and_sample_petri_model(
-                    self.gamma_learnable_parameters,
+                    self.beta_only_distribution,
                     self.data_path,
                     num_samples,
                     timepoints=timepoints,
@@ -137,7 +137,7 @@ class TestLearnableParameters(unittest.TestCase):
         self.assertTrue(
             type(
                 load_and_calibrate_and_sample_petri_model(
-                    self.beta_learnable_parameters,
+                    self.gamma_only_distribution,
                     self.data_path,
                     num_samples,
                     timepoints=timepoints,
@@ -146,19 +146,70 @@ class TestLearnableParameters(unittest.TestCase):
         self.assertTrue(
             type(
                 load_and_calibrate_and_sample_petri_model(
-                    self.no_learnable_parameters,
+                    self.all_distribution_parameters,
                     self.data_path,
                     num_samples,
                     timepoints=timepoints,
                     method='euler',
                 ) is dict))
         self.assertTrue(
-            type(load_and_calibrate_and_sample_petri_model(
-                self.all_learnable_parameters,
+            type(
+                load_and_calibrate_and_sample_petri_model(
+                    self.beta_only_distribution,
+                    self.data_path,
+                    num_samples,
+                    timepoints=timepoints,
+                    method='euler',
+                    deterministic_learnable_parameters=['gamma'],
+                ) is dict))
+       
+        with self.assertRaises(RuntimeError):
+            load_and_calibrate_and_sample_petri_model(
+                self.gamma_only_distribution,
                 self.data_path,
                 num_samples,
                 timepoints=timepoints,
                 method='euler',
-            ) is dict))
+                deterministic_learnable_parameters=['beta', 'gamma'],
+            )
+         
+        with self.assertRaises(RuntimeError):
+            load_and_calibrate_and_sample_petri_model(
+                self.gamma_only_distribution,
+                self.data_path,
+                num_samples,
+                timepoints=timepoints,
+                method='euler',
+                deterministic_learnable_parameters=['gamma'],
+            )
+        with self.assertRaises(RuntimeError):
+            load_and_calibrate_and_sample_petri_model(
+                self.all_distribution_parameters,
+                self.data_path,
+                num_samples,
+                timepoints=timepoints,
+                method='euler',
+                deterministic_learnable_parameters=['beta', 'gamma'],
+            )
+        with self.assertRaises(RuntimeError):
+            load_and_calibrate_and_sample_petri_model(
+                self.no_distribution_parameters,
+                self.data_path,
+                num_samples,
+                timepoints=timepoints,
+                method='euler',
+                )
+        with self.assertRaises(RuntimeError):
+            load_and_calibrate_and_sample_petri_model(
+                self.no_distribution_parameters,
+                self.data_path,
+                num_samples,
+                timepoints=timepoints,
+                method='euler',
+                deterministic_learnable_parameters=['beta', 'gamma'],
+                )
+            
+        
+
         
                  
