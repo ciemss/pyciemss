@@ -5,8 +5,9 @@ class TestAMR(unittest.TestCase):
     """Test the AMR model"""
     def setUp(self):
         """Load the model"""
-        self.SEIV_model_url = "https://raw.githubusercontent.com/indralab/mira/hackathon2/notebooks/evaluation_2023.07/eval_scenario3_base.json"
-
+        #self.SEIV_model_url = "https://raw.githubusercontent.com/indralab/mira/hackathon2/notebooks/evaluation_2023.07/eval_scenario3_base.json"
+        self.SEIV_model_url = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json"
+        
         self.model_from_url = model_from_url(self.SEIV_model_url)
         self.model_from_json_file = model_from_json_file("test/models/AMR_examples/eval_scenario3_base.json")
 
