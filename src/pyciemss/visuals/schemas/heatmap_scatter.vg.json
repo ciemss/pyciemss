@@ -1,0 +1,163 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "background": "white",
+    "padding": 5,
+    "width": 300,
+    "height": 200,
+    "style": "cell",
+      "signals": [
+  
+      {
+        "name": "bandwidthX", "value": 10,
+        "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
+      },
+      {
+        "name": "bandwidthY", "value": 10,
+        "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
+      }
+    ],
+    "data": [
+      {
+        "name": "source_0",
+        "url": "data/movies.json",
+        "format": {"type": "json"},
+        "transform": [
+          {
+            "type": "filter",
+            "expr": "isValid(datum['IMDB Rating']) && isValid(datum['Rotten Tomatoes Rating'])"
+          },
+          {
+            "type": "extent",
+            "field": "IMDB Rating",
+            "signal": "x_extent"
+          },
+          {
+            "type": "bin",
+            "field": "IMDB Rating",
+            "as": [
+              "x_start",
+              "x_end"
+            ],
+            "signal": "x_bins",
+            "extent": {"signal": "x_extent"},
+            "maxbins": {"signal": "bandwidthX"}
+          },
+          {
+            "type": "extent",
+            "field": "Rotten Tomatoes Rating",
+            "signal": "y_extent"
+          },
+          {
+            "type": "bin",
+            "field": "Rotten Tomatoes Rating",
+            "as": [
+              "y_start",
+              "y_end"
+            ],
+            "signal": "y_bins",
+            "extent": {"signal": "y_extent"},
+            "maxbins": {"signal": "bandwidthY"}
+          },
+          {
+            "type": "aggregate",
+            "groupby": [
+              "x_start",
+              "x_end",
+              "y_start",
+              "y_end"
+            ],
+            "ops": ["count"],
+            "as": ["__count"]
+          }
+        ]
+      }
+    ],
+    "marks": [
+      {
+        "name": "marks",
+        "type": "rect",
+        "style": ["rect"],
+        "from": {"data": "source_0"},
+        "encode": {
+          "update": {
+            "fill": {"scale": "color", "field": "__count"},
+            "x2": {
+              "scale": "x",
+              "field": "x_start"
+            },
+            "x": {
+              "scale": "x",
+              "field": "x_end"
+            },
+            "y2": {
+              "scale": "y",
+              "field": "y_start"
+            },
+            "y": {
+              "scale": "y",
+              "field": "y_end"
+            }
+          }
+        }
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": {
+          "signal": "[x_bins.start, x_bins.stop]"
+        },
+        "range": [0, {"signal": "width"}],
+        "bins": {"signal": "x_bins"},
+        "zero": false
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": {
+          "signal": "[y_bins.start, y_bins.stop]"
+        },
+        "range": [{"signal": "height"}, 0],
+        "bins": {"signal": "y_bins"},
+        "zero": false
+      },
+      {
+        "name": "color",
+        "type": "linear",
+        "domain": {"data": "source_0", "field": "__count"},
+        "range": "heatmap",
+        "interpolate": "hcl",
+        "zero": false
+      }
+    ],
+    "axes": [
+      {
+        "scale": "x",
+        "orient": "bottom",
+        "grid": false,
+        "title": "Y (binned)",
+        "labelFlush": true,
+        "labelOverlap": true,
+        "tickCount": {"signal": "ceil(width/3)"},
+        "zindex": 1
+      },
+      {
+        "scale": "y",
+        "orient": "left",
+        "grid": false,
+        "title": "Y (binned)",
+        "labelOverlap": true,
+        "tickCount": {"signal": "ceil(height/3)"},
+        "zindex": 1
+      }
+    ],
+    "legends": [
+      {
+        "fill": "color",
+        "gradientLength": {"signal": "height - 16"},
+        "title": "Count of Records"
+      }
+    ],
+    "config": {"style": {"cell": {"stroke": "transparent"}}}
+  }
