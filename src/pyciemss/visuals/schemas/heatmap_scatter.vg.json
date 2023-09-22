@@ -9,15 +9,18 @@
       {
         "name": "bandwidthX", "value": 10,
         "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
-      },
+       },
       {
         "name": "bandwidthY", "value": 10,
         "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
-      },
+       },
       { "name": "x_name", "value": "x_value",
-        "bind": {"input": "text"} },
-      { "name": "y_name", "value": "y_value",
-        "bind": {"input": "text"} }
+        "bind": {"input": "text"} 
+        },
+
+    { "name": "y_name", "value": "y_value",
+            "bind": {"input": "text"} 
+        }
     ],
     "data": [
         {
