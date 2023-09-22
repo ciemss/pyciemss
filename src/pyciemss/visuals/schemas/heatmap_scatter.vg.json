@@ -160,7 +160,7 @@
         "scale": "x",
         "orient": "bottom",
         "grid": false,
-        "title": "Y (binned)",
+        "title": "X (binned)",
         "labelFlush": true,
         "labelOverlap": true,
         "tickCount": {"signal": "ceil(width/3)"},
