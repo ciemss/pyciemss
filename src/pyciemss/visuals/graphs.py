@@ -153,3 +153,5 @@ def spring_force_graph(
         schema["marks"] = vega.delete_named(schema["marks"], "arrows")
 
     return schema
+
+

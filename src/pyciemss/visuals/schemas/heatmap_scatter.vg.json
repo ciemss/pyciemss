@@ -6,7 +6,6 @@
     "height": 200,
     "style": "cell",
       "signals": [
-  
       {
         "name": "bandwidthX", "value": 10,
         "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
@@ -14,35 +13,46 @@
       {
         "name": "bandwidthY", "value": 10,
         "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
-      }
+      },
+      { "name": "x_name", "value": "x_value",
+        "bind": {"input": "text"} },
+      { "name": "y_name", "value": "y_value",
+        "bind": {"input": "text"} }
     ],
     "data": [
         {
         "name": "points",
-        "url": "data/movies.json",
-        "transform": [
-          {
-            "type": "filter",
-            "expr": "isValid(datum['IMDB Rating']) && isValid(datum['Rotten Tomatoes Rating'])"
-          }]
+        "values": [
+            {"x_value": 2, "y_value": 10},
+            {"x_value": 3, "y_value": 5},
+            {"x_value": 3, "y_value": 5},
+            {"x_value": 10, "y_value": 6},
+            {"x_value": 2, "y_value": 3},
+            {"x_value": 4, "y_value": 10},
+            {"x_value": 3, "y_value": 1}
+          ]
         },
       {
         "name": "source_0",
-        "url": "data/movies.json",
+        "values": [
+            {"x_value": 2, "y_value": 10},
+            {"x_value": 3, "y_value": 5},
+            {"x_value": 3, "y_value": 5},
+            {"x_value": 2, "y_value": 3},
+            {"x_value": 4, "y_value": 10},
+            {"x_value": 3, "y_value": 1}
+          ],
         "format": {"type": "json"},
         "transform": [
-          {
-            "type": "filter",
-            "expr": "isValid(datum['IMDB Rating']) && isValid(datum['Rotten Tomatoes Rating'])"
-          },
+
           {
             "type": "extent",
-            "field": "IMDB Rating",
+            "field": {"signal": "x_name"},
             "signal": "x_extent"
           },
           {
             "type": "bin",
-            "field": "IMDB Rating",
+            "field": {"signal": "x_name"},
             "as": [
               "x_start",
               "x_end"
@@ -53,12 +63,12 @@
           },
           {
             "type": "extent",
-            "field": "Rotten Tomatoes Rating",
+            "field": {"signal": "y_name"},
             "signal": "y_extent"
           },
           {
             "type": "bin",
-            "field": "Rotten Tomatoes Rating",
+            "field": {"signal": "y_name"},
             "as": [
               "y_start",
               "y_end"
