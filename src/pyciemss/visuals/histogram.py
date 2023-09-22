@@ -86,29 +86,37 @@ def histogram_multi(
 
 def heatmap_scatter(
     data: pd.DataFrame,
-    x_name: str,
-    y_name: str,
+    x_name: str = "x_name",
+    y_name: str = "y_name",
     x_bin: int = 10,
     y_bin: int = 10
 ) -> vega.VegaSchema:
     """
-    **data -- Datasets, should contain x_name and y_name,
+    **data -- Datasets as pandas dataframe, should contain x_name and y_name,
     x_name: str name of column in dataset for x axis,
     y_name: str, name of column in dataset for y axis,
     x_bin: int = 10, max bins by x axis,
     y_bin: int = 10, max bins by y axis,
     """
-
+    json_dict = data.to_json(orient = 'records')
     schema = vega.load_schema("heatmap_scatter.vg.json")
 
-    schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
+    schema["data"] = vega.replace_named_with(schema["data"], "points", ["values"], json_dict)
 
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]
-    )
+    schema["data"] = vega.replace_named_with(schema["data"], "source_0", ["values"], json_dict)
 
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "yref", ["values"], [{"count": v} for v in yrefs]
-    )
+    schema["signals"] = vega.replace_named_with(
+            schema["signals"], "bandwidthX", ["value"], x_bin
+        )
+    schema["signals"] = vega.replace_named_with(
+            schema["signals"], "bandwidthY", ["value"], y_bin
+        )
+    schema["signals"] = vega.replace_named_with(
+            schema["signals"], "x_name", ["value"], x_name
+        )
+
+    schema["signals"] = vega.replace_named_with(
+            schema["signals"], "y_name", ["value"], y_name
+        )
 
     return schema
