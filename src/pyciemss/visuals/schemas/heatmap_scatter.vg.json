@@ -17,6 +17,15 @@
       }
     ],
     "data": [
+        {
+        "name": "points",
+        "url": "data/movies.json",
+        "transform": [
+          {
+            "type": "filter",
+            "expr": "isValid(datum['IMDB Rating']) && isValid(datum['Rotten Tomatoes Rating'])"
+          }]
+        },
       {
         "name": "source_0",
         "url": "data/movies.json",
@@ -97,6 +106,21 @@
               "scale": "y",
               "field": "y_end"
             }
+          }
+        }
+      },
+          {
+        "type": "symbol",
+        "from": {"data": "points"},
+        "encode": {
+          "enter": {
+            "fillOpacity": {"value": 0.2},
+            "fill": {"value": "black"}
+          },
+          "update": {
+            "x": {"scale": "x", "field": "IMDB Rating"},
+            "y": {"scale": "y", "field": "Rotten Tomatoes Rating"},
+            "size": {"value": 5}
           }
         }
       }
