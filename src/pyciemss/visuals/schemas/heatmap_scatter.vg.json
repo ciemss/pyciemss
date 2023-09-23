@@ -1,200 +1,200 @@
 {
-    "$schema": "https://vega.github.io/schema/vega/v5.json",
-    "background": "white",
-    "padding": 5,
-    "width": 300,
-    "height": 200,
-    "style": "cell",
-      "signals": [
-      {
-        "name": "bandwidthX", "value": 10,
-        "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
-       },
-      {
-        "name": "bandwidthY", "value": 10,
-        "bind": {"input": "range", "min": 10, "max": 100, "step": 1}
-       },
-      { "name": "x_name", "value": "x_value",
-        "bind": {"input": "text"} 
-        },
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 300,
+  "height": 200,
+  "style": "cell",
+    "signals": [
+    {
+      "name": "bandwidthX", "value": 3,
+      "bind": {"input": "range", "min": 1, "max": 100, "step": 1}
+     },
+    {
+      "name": "bandwidthY", "value": 3,
+      "bind": {"input": "range", "min": 1, "max": 100, "step": 1}
+     },
+    { "name": "x_name", "value": "x_value",
+      "bind": {"input": "text"} 
+      },
 
-    { "name": "y_name", "value": "y_value",
-            "bind": {"input": "text"} 
-        }
-    ],
-    "data": [
-        {
-        "name": "points",
-        "values": [
-            {"x_value": 2, "y_value": 10},
-            {"x_value": 3, "y_value": 5},
-            {"x_value": 3, "y_value": 5},
-            {"x_value": 10, "y_value": 6},
-            {"x_value": 2, "y_value": 3},
-            {"x_value": 4, "y_value": 10},
-            {"x_value": 3, "y_value": 1}
-          ]
-        },
+  { "name": "y_name", "value": "y_value",
+          "bind": {"input": "text"} 
+      }
+  ],
+  "data": [
       {
-        "name": "source_0",
-        "values": [
-            {"x_value": 2, "y_value": 10},
-            {"x_value": 3, "y_value": 5},
-            {"x_value": 3, "y_value": 5},
-            {"x_value": 2, "y_value": 3},
-            {"x_value": 4, "y_value": 10},
-            {"x_value": 3, "y_value": 1}
-          ],
-        "format": {"type": "json"},
-        "transform": [
-
-          {
-            "type": "extent",
-            "field": {"signal": "x_name"},
-            "signal": "x_extent"
-          },
-          {
-            "type": "bin",
-            "field": {"signal": "x_name"},
-            "as": [
-              "x_start",
-              "x_end"
-            ],
-            "signal": "x_bins",
-            "extent": {"signal": "x_extent"},
-            "maxbins": {"signal": "bandwidthX"}
-          },
-          {
-            "type": "extent",
-            "field": {"signal": "y_name"},
-            "signal": "y_extent"
-          },
-          {
-            "type": "bin",
-            "field": {"signal": "y_name"},
-            "as": [
-              "y_start",
-              "y_end"
-            ],
-            "signal": "y_bins",
-            "extent": {"signal": "y_extent"},
-            "maxbins": {"signal": "bandwidthY"}
-          },
-          {
-            "type": "aggregate",
-            "groupby": [
-              "x_start",
-              "x_end",
-              "y_start",
-              "y_end"
-            ],
-            "ops": ["count"],
-            "as": ["__count"]
-          }
+      "name": "points",
+      "values": [
+          {"x_value": 2, "y_value": 10},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 10, "y_value": 6},
+          {"x_value": 2, "y_value": 3},
+          {"x_value": 4, "y_value": 10},
+          {"x_value": 3, "y_value": 1}
         ]
-      }
-    ],
-    "marks": [
-      {
-        "name": "marks",
-        "type": "rect",
-        "style": ["rect"],
-        "from": {"data": "source_0"},
-        "encode": {
-          "update": {
-            "fill": {"scale": "color", "field": "__count"},
-            "x2": {
-              "scale": "x",
-              "field": "x_start"
-            },
-            "x": {
-              "scale": "x",
-              "field": "x_end"
-            },
-            "y2": {
-              "scale": "y",
-              "field": "y_start"
-            },
-            "y": {
-              "scale": "y",
-              "field": "y_end"
-            }
-          }
-        }
       },
-          {
-        "type": "symbol",
-        "from": {"data": "points"},
-        "encode": {
-          "enter": {
-            "fillOpacity": {"value": 0.2},
-            "fill": {"value": "black"}
+    {
+      "name": "source_0",
+      "values": [
+          {"x_value": 2, "y_value": 10},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 2, "y_value": 3},
+          {"x_value": 4, "y_value": 10},
+          {"x_value": 3, "y_value": 1}
+        ],
+      "format": {"type": "json"},
+      "transform": [
+
+        {
+          "type": "extent",
+          "field": {"signal": "x_name"},
+          "signal": "x_extent"
+        },
+        {
+          "type": "bin",
+          "field": {"signal": "x_name"},
+          "as": [
+            "x_start",
+            "x_end"
+          ],
+          "signal": "x_bins",
+          "extent": {"signal": "x_extent"},
+          "maxbins": {"signal": "bandwidthX"}
+        },
+        {
+          "type": "extent",
+          "field": {"signal": "y_name"},
+          "signal": "y_extent"
+        },
+        {
+          "type": "bin",
+          "field": {"signal": "y_name"},
+          "as": [
+            "y_start",
+            "y_end"
+          ],
+          "signal": "y_bins",
+          "extent": {"signal": "y_extent"},
+          "maxbins": {"signal": "bandwidthY"}
+        },
+        {
+          "type": "aggregate",
+          "groupby": [
+            "x_start",
+            "x_end",
+            "y_start",
+            "y_end"
+          ],
+          "ops": ["count"],
+          "as": ["__count"]
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "__count"},
+          "x2": {
+            "scale": "x",
+            "field": "x_start"
           },
-          "update": {
-            "x": {"scale": "x", "field": "IMDB Rating"},
-            "y": {"scale": "y", "field": "Rotten Tomatoes Rating"},
-            "size": {"value": 5}
+          "x": {
+            "scale": "x",
+            "field": "x_end"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "y_start"
+          },
+          "y": {
+            "scale": "y",
+            "field": "y_end"
           }
         }
       }
-    ],
-    "scales": [
-      {
-        "name": "x",
-        "type": "linear",
-        "domain": {
-          "signal": "[x_bins.start, x_bins.stop]"
+    },
+        {
+      "type": "symbol",
+      "from": {"data": "points"},
+      "encode": {
+        "enter": {
+          "fillOpacity": {"value": 1},
+          "fill": {"value": "black"}
         },
-        "range": [0, {"signal": "width"}],
-        "bins": {"signal": "x_bins"},
-        "zero": false
-      },
-      {
-        "name": "y",
-        "type": "linear",
-        "domain": {
-          "signal": "[y_bins.start, y_bins.stop]"
-        },
-        "range": [{"signal": "height"}, 0],
-        "bins": {"signal": "y_bins"},
-        "zero": false
-      },
-      {
-        "name": "color",
-        "type": "linear",
-        "domain": {"data": "source_0", "field": "__count"},
-        "range": "heatmap",
-        "interpolate": "hcl",
-        "zero": false
+        "update": {
+          "x": {"scale": "x", "field" : {"signal": "x_name"}},
+          "y": {"scale": "y", "field" : {"signal": "y_name"}},
+          "size": {"value": 10}
+        }
       }
-    ],
-    "axes": [
-      {
-        "scale": "x",
-        "orient": "bottom",
-        "grid": false,
-        "title": "X (binned)",
-        "labelFlush": true,
-        "labelOverlap": true,
-        "tickCount": {"signal": "ceil(width/3)"},
-        "zindex": 1
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "signal": "[x_bins.start, x_bins.stop]"
       },
-      {
-        "scale": "y",
-        "orient": "left",
-        "grid": false,
-        "title": "Y (binned)",
-        "labelOverlap": true,
-        "tickCount": {"signal": "ceil(height/3)"},
-        "zindex": 1
-      }
-    ],
-    "legends": [
-      {
-        "fill": "color",
-        "gradientLength": {"signal": "height - 16"},
-        "title": "Count of Records"
-      }
-    ],
-    "config": {"style": {"cell": {"stroke": "transparent"}}}
-  }
+      "range": [0, {"signal": "width"}],
+      "bins": {"signal": "x_bins"},
+      "zero": false
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "signal": "[y_bins.start, y_bins.stop]"
+      },
+      "range": [{"signal": "height"}, 0],
+      "bins": {"signal": "y_bins"},
+      "zero": false
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "__count"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": false
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": {"signal": "x_name"},
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/3)"},
+      "zindex": 1
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": {"signal": "y_name"},
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/3)"},
+      "zindex": 1
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "height - 16"},
+      "title": "Count of Records"
+    }
+  ],
+  "config": {"style": {"cell": {"stroke": "transparent"}}}
+}
