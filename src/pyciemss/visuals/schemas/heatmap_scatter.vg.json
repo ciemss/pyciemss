@@ -1,10 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "background": "white",
-  "padding": 5,
   "width": 300,
   "height": 200,
-  "style": "cell",
     "signals": [
     {
       "name": "bandwidthX", "value": 3,
@@ -172,21 +169,16 @@
     {
       "scale": "x",
       "orient": "bottom",
-      "grid": false,
       "title": {"signal": "x_name"},
-      "labelFlush": true,
       "labelOverlap": true,
-      "tickCount": {"signal": "ceil(width/3)"},
-      "zindex": 1
+      "tickCount": {"signal": "ceil(width/3)"}
     },
     {
       "scale": "y",
       "orient": "left",
-      "grid": false,
       "title": {"signal": "y_name"},
       "labelOverlap": true,
-      "tickCount": {"signal": "ceil(height/3)"},
-      "zindex": 1
+      "tickCount": {"signal": "ceil(height/3)"}
     }
   ],
   "legends": [
@@ -195,6 +187,5 @@
       "gradientLength": {"signal": "height - 16"},
       "title": "Count of Records"
     }
-  ],
-  "config": {"style": {"cell": {"stroke": "transparent"}}}
+  ]
 }
