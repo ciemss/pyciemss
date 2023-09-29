@@ -542,22 +542,8 @@ class MiraPetriNetODESystem(PetriNetODESystem):
     def _from_path(cls, model_json_path: str, **kwargs):
         """Return a model from an ASKEM Model Representation path (either url or local file)."""
         if "https://" in model_json_path:
-            # Solution for SSL context renegotiation adapted from https://github.com/urllib3/urllib3/issues/2653
-            import urllib3
-            from requests.adapters import HTTPAdapter
-            from urllib3.util.ssl_ import create_urllib3_context
-
-            class CustomSslContextHttpAdapter(HTTPAdapter):
-                def init_poolmanager(self, connections, maxsize, block=False):
-                    ctx = create_urllib3_context()
-                    ctx.load_default_certs()
-                    ctx.options |= 0x4  # ssl.OP_LEGACY_SERVER_CONNECT
-                    self.poolmanager = urllib3.PoolManager(ssl_context=ctx)
-
-            with requests.Session() as session:
-                session.mount(model_json_path, CustomSslContextHttpAdapter())
-                res = session.get(model_json_path)
-                model_json = res.json()
+            res = requests.get(model_json_path)
+            model_json = res.json()
         else:
             if not os.path.exists(model_json_path):
                 raise ValueError(f"Model file not found: {model_json_path}")
