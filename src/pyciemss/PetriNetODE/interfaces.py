@@ -457,9 +457,9 @@ def prepare_interchange_dictionary(
     alpha_qs: Optional[Iterable[float]] = DEFAULT_QUANTILES,
     stacking_order: Optional[str] = "timepoints",
     visual_options: Union[None, bool, dict[str, any]] = None,
-    interventions,
-    observables,
-    train_endpoint,
+    train_endpoint: Optional[any] = None,
+    interventions: Optional[any] = None,
+    observables: Optional[any] = None,
 ) -> dict:
     processed_samples, q_ensemble = convert_to_output_format(
         samples,

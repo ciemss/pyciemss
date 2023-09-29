@@ -359,7 +359,7 @@ def load_and_calibrate_and_sample_petri_model(
         alpha_qs=alpha_qs,
         stacking_order=stacking_order,
         observables=observables,
-        train_end_point=max([d[0] for d in data]),
+        train_endpoint=max([d[0] for d in data]),
         visual_options=visual_options,
     )
     result = {
@@ -825,7 +825,7 @@ def load_and_calibrate_and_optimize_and_sample_petri_model(
         alpha_qs=alpha_qs,
         stacking_order=stacking_order,
         observables=observables,
-        train_end_point=max([d[0] for d in data]),
+        train_endpoint=max([d[0] for d in data]),
         visual_options=visual_options,
     )
 
