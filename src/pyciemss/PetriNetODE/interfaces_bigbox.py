@@ -161,7 +161,7 @@ def load_and_sample_petri_model(
         alpha_qs=alpha_qs,
         stacking_order=stacking_order,
         observables=observables,
-        visaul_options=visual_options,
+        visual_options=visual_options,
     )
 
     result = {**result, "risk": risk_results}
