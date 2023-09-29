@@ -158,7 +158,6 @@ def load_and_sample_petri_model(
         timepoints,
         interventions=interventions,
         time_unit=time_unit,
-        quantiles=True,
         alpha_qs=alpha_qs,
         stacking_order=stacking_order,
         observables=observables,
