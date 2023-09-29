@@ -4,11 +4,14 @@ import sympy
 from sympytorch import SymPyModule
 import mira
 from pyciemss.PetriNetODE.interfaces import (
-    setup_petri_model,
     sample,
     load_petri_model,
-    load_and_sample_petri_model,
 )
+
+from pyciemss.PetriNetODE.interfaces import setup_petri_model
+
+from pyciemss.PetriNetODE.interfaces_bigbox import load_and_sample_petri_model
+
 import torch
 from mira.metamodel import (
     Concept,
@@ -159,11 +162,20 @@ class TestRateLaw(unittest.TestCase):
         path = "test/models/AMR_examples/scenario1_c_with_distributions.json"
         scenario1_c = load_petri_model(path, compile_rate_law_p=True)
         I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t = sympy.symbols(
-            "I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t",
-            real=True
+            "I, S, kappa, beta_nc, beta_c, beta_s, k_1, k_2, t_0, t_1, N, t", real=True
         )
 
-        expected_rate_law_symbolic = I * S * kappa * (beta_nc + (beta_c - beta_nc)/(1 + sympy.exp(-k_2*(-t + t_1))) + (-beta_c + beta_s)/(1 + sympy.exp(-k_1*(-t + t_0)))) / N
+        expected_rate_law_symbolic = (
+            I
+            * S
+            * kappa
+            * (
+                beta_nc
+                + (beta_c - beta_nc) / (1 + sympy.exp(-k_2 * (-t + t_1)))
+                + (-beta_c + beta_s) / (1 + sympy.exp(-k_1 * (-t + t_0)))
+            )
+            / N
+        )
         input_vals = dict(
             I=1.0,
             S=99999.0,
@@ -212,7 +224,7 @@ class TestRateLaw(unittest.TestCase):
 
     def test_askem_model_representation(self):
         """Test that the rate law can be compiled correctly."""
-        url = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
+        url = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
         samples = load_and_sample_petri_model(
             url,
             num_samples=self.nsamples,

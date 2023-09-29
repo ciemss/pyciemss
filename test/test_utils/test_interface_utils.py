@@ -1,19 +1,18 @@
 import unittest
 from pyciemss.utils.interface_utils import (
     convert_to_output_format,
-    make_quantiles,
     interventions_and_sampled_params_to_interval,
     assign_interventions_to_timepoints,
     csv_to_list,
 )
-from pyciemss.PetriNetODE.interfaces import load_and_sample_petri_model
+from pyciemss.PetriNetODE.interfaces_bigbox import load_and_sample_petri_model
 from torch import tensor
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
-from mira.metamodel.template_model import Observable
-from sympy import lambdify, symbols
+from sympy import symbols
 from sympytorch import SymPyModule
+
 
 class Test_Interface_Utils(unittest.TestCase):
     """Test interface_utils.py"""
@@ -56,27 +55,31 @@ class Test_Interface_Utils(unittest.TestCase):
             "beta_param": [0.2, 0.25, 0.15],
             "gamma_param": [0.3, 0.25, 0.35],
         }
-        self.df_filename = 'test/data/data_with_missing_entries.csv'
-        self.df = pd.DataFrame({
-            'timepoints': list(range(5)),
-            'X': [11,np.NaN,13,np.NaN,15],
-            'Y': [21,22,np.NaN,np.NaN,25],
-            'Z': 5*[np.NaN]
-        })
-        S, I =  symbols('Susceptible Infected')
-        self.observable_function = {'S+I': SymPyModule(expressions=[S+I])}
-        
+        self.df_filename = "test/data/data_with_missing_entries.csv"
+        self.df = pd.DataFrame(
+            {
+                "timepoints": list(range(5)),
+                "X": [11, np.NaN, 13, np.NaN, 15],
+                "Y": [21, 22, np.NaN, np.NaN, 25],
+                "Z": 5 * [np.NaN],
+            }
+        )
+        S, I = symbols("Susceptible Infected")
+        self.observable_function = {"S+I": SymPyModule(expressions=[S + I])}
+
     def test_convert_to_output_format(self):
         """Test convert_to_output_format."""
         expected_output = pd.read_csv("test/test_utils/expected_output_format.csv")
-        expected_output_quantiles = pd.read_csv("test/test_utils/expected_output_quantiles_format.csv")
+        expected_output_quantiles = pd.read_csv(
+            "test/test_utils/expected_output_quantiles_format.csv"
+        )
         result, result_q = convert_to_output_format(
             self.intervened_samples,
             self.timepoints,
             self.interventions,
             time_unit="FancyUnit",
-            quantiles = True,
-            alpha_qs = [0.01, 0.05, 0.95, 0.99],
+            quantiles=True,
+            alpha_qs=[0.01, 0.05, 0.95, 0.99],
         )
 
         self.assertTrue(
@@ -124,50 +127,80 @@ class Test_Interface_Utils(unittest.TestCase):
             self.timepoints,
             self.interventions,
             time_unit="days",
-            observables=self.observable_function
+            observables=self.observable_function,
         )
         self.assertTrue(
             "S+I_obs" in result2.columns, "S+I observable was added to the output"
         )
-        self.assertTrue(isinstance(result2["S+I_obs"], pd.Series), "S+I observable is a pandas Series")
-        self.assertTrue(isinstance(result2["S+I_obs"].values, np.ndarray), "S+I observable is a numpy array")
-        result3 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
-                                              num_samples=2, timepoints=self.timepoints,
-                                              compile_observables_p=True)['data']
         self.assertTrue(
-            "Cases_obs" in result3.columns, "Cases observable should have been added to the output"
+            isinstance(result2["S+I_obs"], pd.Series),
+            "S+I observable is a pandas Series",
         )
         self.assertTrue(
-            "Hospitalizations_obs" in result3.columns, "Hospitalizations observable should have been added to the output"
+            isinstance(result2["S+I_obs"].values, np.ndarray),
+            "S+I observable is a numpy array",
+        )
+        result3 = load_and_sample_petri_model(
+            "test/models/AMR_examples/SIDARTHE.amr.json",
+            num_samples=2,
+            timepoints=self.timepoints,
+            compile_observables_p=True,
+        )["data"]
+        self.assertTrue(
+            "Cases_obs" in result3.columns,
+            "Cases observable should have been added to the output",
+        )
+        self.assertTrue(
+            "Hospitalizations_obs" in result3.columns,
+            "Hospitalizations observable should have been added to the output",
         )
 
         self.assertTrue(
-            "Deaths_obs" in result3.columns, "Deaths observable should have been added to the output"
+            "Deaths_obs" in result3.columns,
+            "Deaths observable should have been added to the output",
         )
 
-        result4 = load_and_sample_petri_model('test/models/AMR_examples/SIDARTHE.amr.json',
-                                              num_samples=2, timepoints=self.timepoints,
-                                              compile_observables_p=False)['data']
+        result4 = load_and_sample_petri_model(
+            "test/models/AMR_examples/SIDARTHE.amr.json",
+            num_samples=2,
+            timepoints=self.timepoints,
+            compile_observables_p=False,
+        )["data"]
         self.assertFalse(
-            "Cases_obs" in result4.columns, "Cases observable should not have been added to the output"
+            "Cases_obs" in result4.columns,
+            "Cases observable should not have been added to the output",
         )
         self.assertFalse(
-            "Hospitalizations_obs" in result4.columns, "Hospitalizations observable should not have been added to the output"
+            "Hospitalizations_obs" in result4.columns,
+            "Hospitalizations observable should not have been added to the output",
         )
 
         self.assertFalse(
-            "Deaths_obs" in result4.columns, "Deaths observable should not have been not added to the output"
+            "Deaths_obs" in result4.columns,
+            "Deaths observable should not have been not added to the output",
         )
         try:
-            result5 = load_and_sample_petri_model('test/models/AMR_examples/ES3_detection_log10V.json',
-                                              num_samples=2, timepoints=self.timepoints,
-                                              compile_observables_p=True)['data']
+            result5 = load_and_sample_petri_model(
+                "test/models/AMR_examples/ES3_detection_log10V.json",
+                num_samples=2,
+                timepoints=self.timepoints,
+                compile_observables_p=True,
+            )["data"]
         except RuntimeError as e:
             self.assertFalse(e is None, e)
-        self.assertTrue('logV_obs' in result5.columns, "logV observable should have been added to the output")
-        self.assertTrue(isinstance(result5['logV_obs'], pd.Series), "logV observable is a pandas Series")
-        self.assertTrue(isinstance(result5['logV_obs'].values, np.ndarray), "logV observable is a numpy array")
-        
+        self.assertTrue(
+            "logV_obs" in result5.columns,
+            "logV observable should have been added to the output",
+        )
+        self.assertTrue(
+            isinstance(result5["logV_obs"], pd.Series),
+            "logV observable is a pandas Series",
+        )
+        self.assertTrue(
+            isinstance(result5["logV_obs"].values, np.ndarray),
+            "logV observable is a numpy array",
+        )
+
     def test_intervention_to_interval(self):
         """Test intervention_to_interval."""
         expected_intervals = {
@@ -239,17 +272,10 @@ class Test_Interface_Utils(unittest.TestCase):
         """Test csv_to_list."""
         self.df.to_csv(self.df_filename, index=False)
         expected_list = [
-            (0.0, {'X': 11.0, 'Y': 21.0}),
-            (1.0, {'Y': 22.0}),
-            (2.0, {'X': 13.0}),
+            (0.0, {"X": 11.0, "Y": 21.0}),
+            (1.0, {"Y": 22.0}),
+            (2.0, {"X": 13.0}),
             (3.0, {}),
-            (4.0, {'X': 15.0, 'Y': 25.0}),
+            (4.0, {"X": 15.0, "Y": 25.0}),
         ]
-        self.assertEqual(
-            expected_list,
-            csv_to_list(self.df_filename)
-        )
-
-
-
-
+        self.assertEqual(expected_list, csv_to_list(self.df_filename))
