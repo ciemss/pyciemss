@@ -1,9 +1,14 @@
 import unittest
 import os
+import torch
+import requests
+import warnings
+
+import numpy as np
+import pandas as pd
+
 
 from mira.examples.sir import sir_parameterized as sir
-
-import torch
 
 from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
@@ -16,8 +21,6 @@ from pyciemss.PetriNetODE.interfaces import (
     get_posterior_density_mesh_petri,
 )
 
-import numpy as np
-import pandas as pd
 from pandas.testing import assert_frame_equal
 from pyciemss.PetriNetODE.interfaces_bigbox import (
     load_and_sample_petri_model,
@@ -25,6 +28,23 @@ from pyciemss.PetriNetODE.interfaces_bigbox import (
     load_and_optimize_and_sample_petri_model,
     load_and_calibrate_and_optimize_and_sample_petri_model,
 )
+
+REMOTE_ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+LOCAL_ASKENET_PATH = "test/test_petrinet_ode/cached_sir_typed.json"
+
+
+def determine_askenet_path():
+    """Some VPN configurations prevent downloading the remote schema.
+    This function tries that download, but if it fails falls back to a local copy.
+    Retaining the remote download helps detect issues as the cannonical schemas
+    change.  BUT having a backup enables faster testing/iteration.
+    """
+    try:
+        requests.get(REMOTE_ASKENET_PATH)
+        return REMOTE_ASKENET_PATH
+    except requests.exceptions.SSLError:
+        warnings.warn("Using locally cached schema because remote copy is unavailable")
+        return LOCAL_ASKENET_PATH
 
 
 class TestSamplesFormat(unittest.TestCase):
@@ -37,7 +57,8 @@ class TestSamplesFormat(unittest.TestCase):
         # Should be using AMR model instead
         DEMO_PATH = "notebook/integration_demo/"
 
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+        ASKENET_PATH = determine_askenet_path()
+
         cls.num_samples = 2
         timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
         cls.num_timepoints = len(timepoints)
@@ -405,7 +426,9 @@ class TestODEInterfaces(unittest.TestCase):
 
     def test_load_and_sample_petri_model(self):
         """Test the load_and_sample_petri_model function with and without interventions."""
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+
+        ASKENET_PATH = determine_askenet_path()
+
         interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
@@ -433,7 +456,7 @@ class TestODEInterfaces(unittest.TestCase):
 
     def test_load_and_calibrate_and_sample_petri_model(self):
         """Test the load_and_calibrate_and_sample_petri_model function with and without interventions."""
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+        ASKENET_PATH = determine_askenet_path()
         interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
@@ -477,7 +500,8 @@ class TestODEInterfaces(unittest.TestCase):
         )
 
     def test_get_posterior_density_mesh_petri(self):
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+        ASKENET_PATH = determine_askenet_path()
+
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
@@ -523,7 +547,7 @@ class TestODEInterfaces(unittest.TestCase):
             self.assertAlmostEqual(ref, obs, "Result values not as expected")
 
     def test_get_posterior_density_petri(self):
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"  # noqa
+        ASKENET_PATH = determine_askenet_path()
         timepoints = [1.0, 1.1, 1.2, 1.3]
         num_samples = 3
         initial_state = {
@@ -578,7 +602,3 @@ class TestODEInterfaces(unittest.TestCase):
     #                     maxfeval=1)
 
     #     self.assertIsNotNone(ouu_policy)
-
-
-if __name__ == "__main__":
-    unittest.main()
