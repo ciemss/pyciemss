@@ -41,6 +41,8 @@ from pyciemss.interfaces import (
     sample,
     calibrate,
     optimize,
+    prepare_interchange_dictionary,
+    DEFAULT_QUANTILES
 )
 
 from pyciemss.PetriNetODE.events import (
@@ -54,7 +56,7 @@ from pyciemss.custom_decorators import pyciemss_logging_wrapper
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 
-PetriSolution = dict[str, torch.Tensor]
+PetriSolution = dict  # NOTE: [str, torch.tensor] type argument removed because of issues with type-based dispatch.
 PetriInferredParameters = pyro.nn.PyroModule
 
 @pyciemss_logging_wrapper
@@ -1129,3 +1131,39 @@ def optimize_petri(
             "OptResults": opt_results,
         }
     return ouu_results
+
+
+@pyciemss_logging_wrapper
+@prepare_interchange_dictionary.register
+def prepare_interchange_dictionary(
+    samples: PetriSolution,
+    timepoints: Iterable[float],
+    *,
+    time_unit: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = DEFAULT_QUANTILES,
+    stacking_order: Optional[str] = "timepoints",
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    train_endpoint: Optional[any] = None,
+    interventions: Optional[any] = None,
+    observables: Optional[any] = None,
+) -> dict:
+    processed_samples, q_ensemble = convert_to_output_format(
+        samples,
+        timepoints,
+        interventions=interventions,
+        time_unit=time_unit,
+        quantiles=True,
+        alpha_qs=alpha_qs,
+        stacking_order=stacking_order,
+        observables=observables,
+        train_end_point=train_endpoint,
+    )
+
+    result = {"data": processed_samples, "quantiles": q_ensemble}
+
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        result["visual"] = schema
+
+    return result
