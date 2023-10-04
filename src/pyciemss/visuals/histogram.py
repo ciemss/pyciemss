@@ -120,3 +120,38 @@ def heatmap_scatter(
         )
 
     return schema
+
+
+
+def mesh_scatter(
+    mesh_data,
+    scatter_data: pd.DataFrame,
+) -> vega.VegaSchema:
+    """
+    **mesh_data -- input as mesh data, will be converted to grids
+    **scatter_data -- with alpha and gamma data
+    """
+
+    schema = vega.load_schema("mesh_scatter.vg.json")
+
+    def mesh_to_heatmap(mesh_data):
+        xv, yv, zz = mesh_data
+        end_x = (xv[0, 1] - xv[0, 0])/2
+        end_y = (yv[1, 0] - yv[0, 0])/2
+        dataset = pd.DataFrame({"x_start": xv.ravel() - end_x, \
+                                "x_end": xv.ravel() + end_x, \
+                                    "y_start": yv.ravel() - end_y,     
+                                    "y_end": yv.ravel() + end_y,
+                                    '__count': zz.ravel()})
+        return dataset.to_json(orient="records")
+        
+        
+    json_heatmap = mesh_to_heatmap(mesh_data)
+
+    json_scatter = scatter_data.to_json(orient="records")
+
+    schema["data"] = vega.replace_named_with(schema["data"], "points", ["values"], json_scatter)
+
+    schema["data"] = vega.replace_named_with(schema["data"], "mesh", ["values"], json_heatmap)
+
+    return schema

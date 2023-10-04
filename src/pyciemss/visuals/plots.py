@@ -9,7 +9,7 @@ from .vega import VegaSchema, pad, resize, set_title, rescale, orient_legend
 from .barycenter import triangle_contour
 from .trajectories import trajectories
 from .calibration import calibration
-from .histogram import histogram_multi, heatmap_scatter
+from .histogram import histogram_multi, heatmap_scatter, mesh_scatter
 from .graphs import attributed_graph, spring_force_graph
 
 
@@ -26,7 +26,8 @@ __all__ = [
     histogram_multi,
     attributed_graph,
     spring_force_graph,
-    heatmap_scatter
+    heatmap_scatter,
+    mesh_scatter
 ]
 
 
