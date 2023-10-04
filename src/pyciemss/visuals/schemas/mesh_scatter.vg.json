@@ -1,0 +1,117 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 300,
+  "height": 200,
+  "data": [
+      {
+      "name": "points",
+      "values": [
+          {"x_value": 2, "y_value": 10},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 3, "y_value": 5},
+          {"x_value": 10, "y_value": 6},
+          {"x_value": 2, "y_value": 3},
+          {"x_value": 4, "y_value": 10},
+          {"x_value": 3, "y_value": 1}
+        ]
+      },
+    {
+      "name": "source_0",
+      "values": [
+        {"x_start":-0.0555555556,"x_end":3, "y_start":0.125, "y_end":3,"__count":0.0},
+        {"x_start":2,"x_end":3,"y_start":0.125,  "y_end":3,"__count":0.1111111111}
+        ],
+      "format": {"type": "json"}
+      
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "__count"},
+          "x2": {
+            "scale": "x",
+            "field": "x_start"
+          },
+          "x": {
+            "scale": "x",
+            "field": "x_end"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "y_start"
+          },
+          "y": {
+            "scale": "y",
+            "field": "y_end"
+          }
+        }
+      }
+    },
+        {
+      "type": "symbol",
+      "from": {"data": "points"},
+      "encode": {
+        "enter": {
+          "fillOpacity": {"value": 1},
+          "fill": {"value": "black"}
+        },
+        "update": {
+          "x": {"scale": "x", "field" : "x_value"},
+          "y": {"scale": "y", "field" : "y_value"},
+          "size": {"value": 10}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "points", "field": "x_value"},
+      "range": [0, {"signal": "width"}]
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "points", "field": "y_value"},
+      "range": [{"signal": "height"}, 0]
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "__count"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": false
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "title": "x_value",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/3)"}
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "title": "y_value",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/3)"}
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "height - 16"},
+      "title": "Count of Records"
+    }
+  ]
+}
