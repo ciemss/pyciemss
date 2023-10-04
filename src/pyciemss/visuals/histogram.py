@@ -135,23 +135,27 @@ def mesh_scatter(
     schema = vega.load_schema("mesh_scatter.vg.json")
 
     def mesh_to_heatmap(mesh_data):
+        """
+        **mesh_data -- input as mesh data, will be converted to grids
+        adding half the difference in grid spacing to each coordinate 
+        so point becomes center of a grid for heatmap
+        """
         xv, yv, zz = mesh_data
-        end_x = (xv[0, 1] - xv[0, 0])/2
-        end_y = (yv[1, 0] - yv[0, 0])/2
-        dataset = pd.DataFrame({"x_start": xv.ravel() - end_x, \
-                                "x_end": xv.ravel() + end_x, \
-                                    "y_start": yv.ravel() - end_y,     
-                                    "y_end": yv.ravel() + end_y,
+        half_spacing_x = (xv[0, 1] - xv[0, 0])/2
+        half_spacing_y = (yv[1, 0] - yv[0, 0])/2
+        dataset = pd.DataFrame({"x_start": xv.ravel() - half_spacing_x, \
+                                "x_end": xv.ravel() + half_spacing_x, \
+                                    "y_start": yv.ravel() - half_spacing_y,     
+                                    "y_end": yv.ravel() + half_spacing_y,
                                     '__count': zz.ravel()})
         return dataset.to_json(orient="records")
         
-        
+    # convert to json
     json_heatmap = mesh_to_heatmap(mesh_data)
-
     json_scatter = scatter_data.to_json(orient="records")
 
+    # update data in schema
     schema["data"] = vega.replace_named_with(schema["data"], "points", ["values"], json_scatter)
-
     schema["data"] = vega.replace_named_with(schema["data"], "mesh", ["values"], json_heatmap)
 
     return schema
