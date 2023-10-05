@@ -14,6 +14,8 @@ from pyciemss.interfaces import (
     DEFAULT_QUANTILES,
 )
 
+from pyciemss.utils import interface_utils
+
 from pyciemss.Ensemble.base import (
     EnsembleSystem,
     ScaledBetaNoiseEnsembleSystem,
@@ -37,6 +39,18 @@ from pyciemss.visuals import plots
 
 EnsembleSolution = Iterable  # NOTE: [dict[str, torch.Tensor]] type argument removed because of issues with type-based dispatch.  # noqa
 EnsembleInferredParameters = pyro.nn.PyroModule
+
+
+def create_solution_mapping_fns(
+    models: list[DynamicalSystem], solution_mappings: list[dict]
+) -> list:
+    solution_mapping_fs = []
+    for i, model in enumerate(models):
+        solution_mapping_f = interface_utils.create_mapping_function_from_observables(
+            model, solution_mappings[i]
+        )
+        solution_mapping_fs.append(solution_mapping_f)
+    return solution_mapping_fs
 
 
 # TODO: create better type hint for `models`. Struggled with `Iterable[DynamicalSystem]`.
@@ -191,6 +205,7 @@ def sample_ensemble_model(
 @prepare_interchange_dictionary.register
 def prepare_interchange_dictionary(
     samples: EnsembleSolution,
+    *,
     timepoints: Iterable[float],
     time_unit: Optional[str] = None,
     alpha_qs: Optional[Iterable[float]] = DEFAULT_QUANTILES,

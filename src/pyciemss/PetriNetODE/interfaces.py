@@ -65,8 +65,9 @@ def load_petri_model(
     add_uncertainty: bool = True,
     noise_model: str = "scaled_normal",
     noise_scale: float = 0.1,
-    compile_observables_p = False,
-    compile_rate_law_p: bool = False) -> PetriNetODESystem:
+    compile_observables_p: bool = False,
+    compile_rate_law_p: bool = False
+) -> PetriNetODESystem:
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
@@ -87,11 +88,16 @@ def load_petri_model(
 def setup_petri_model(
     petri: PetriNetODESystem,
     start_time: float,
-    start_state: dict[str, float],
+    start_state: Optional[dict[str, float]] = None,
 ) -> PetriNetODESystem:
     """
     Instantiate a model for a particular configuration of initial conditions
     """
+    if start_state is None:
+        start_state = {
+            get_name(v): v.data["initial_value"] for v in petri.G.variables.values()
+        }
+    
     # TODO: Figure out how to do this without copying the petri net.
     start_event = StartEvent(start_time, start_state)
     new_petri = copy.deepcopy(petri)
