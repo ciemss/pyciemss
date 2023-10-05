@@ -152,7 +152,12 @@ def load_and_sample_petri_ensemble(
     )
 
     return prepare_interchange_dictionary(
-        samples, timepoints, time_unit, alpha_qs, stacking_order, visual_options
+        samples,
+        timepoints=timepoints,
+        time_unit=time_unit,
+        alpha_qs=alpha_qs,
+        stacking_order=stacking_order,
+        visual_options=visual_options,
     )
 
 
@@ -333,5 +338,10 @@ def load_and_calibrate_and_sample_ensemble_model(
     )
 
     return prepare_interchange_dictionary(
-        samples, timepoints, time_unit, alpha_qs, stacking_order, visual_options
+        samples,
+        timepoints=timepoints,
+        time_unit=time_unit,
+        alpha_qs=alpha_qs,
+        stacking_order=stacking_order,
+        visual_options=visual_options,
     )
