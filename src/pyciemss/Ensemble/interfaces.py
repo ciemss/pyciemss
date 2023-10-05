@@ -3,6 +3,7 @@ import torch
 
 from pyro.infer import Predictive
 
+from pyciemss.PetriNetODE.base import get_name
 from pyciemss.interfaces import (
     setup_model,
     reset_model,
@@ -61,7 +62,7 @@ def setup_ensemble_model(
     weights: Iterable[float],
     solution_mappings: Iterable[Callable],
     start_time: float,
-    start_states: Iterable[dict[str, float]],
+    start_states: Optional[Iterable[dict[str, float]]] = None,
     *,
     total_population: float = 1.0,
     noise_model: str = "scaled_normal",
@@ -71,6 +72,12 @@ def setup_ensemble_model(
     """
     Instatiate a model for a particular configuration of initial conditions
     """
+
+    start_states = [
+        {get_name(v): v.data["initial_value"] for v in model.G.variables.values()}
+        for model in models
+    ]
+
     if noise_model == "scaled_beta":
         # TODO
         noise_pseudocount = torch.as_tensor(1 / noise_scale)
