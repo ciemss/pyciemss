@@ -5,10 +5,14 @@ from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
     setup_petri_model,
     sample_petri,
-    load_and_sample_petri_model,
     calibrate,
-    load_and_calibrate_and_sample_petri_model,
     )
+
+from pyciemss.PetriNetODE.interfaces_bigbox import ( 
+    load_and_sample_petri_model,
+    load_and_calibrate_and_sample_petri_model,
+)
+
 import pandas as pd
 from pyciemss.utils.interface_utils import convert_to_output_format, csv_to_list, solutions_to_observations
 
