@@ -22,11 +22,9 @@ logging_times = torch.tensor([1.0, 2.0, 3.0])
     [
         "test/models/AMR_examples/BIOMD0000000955_askenet.json",
         "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json",
-
     ],
 )
 def test_simulate_from_askenet(model_path):
-    # with open(model_path, "r") as f:
     mira_model = CompiledDynamics.from_askenet(model_path)
 
     assert isinstance(mira_model, CompiledDynamics)
@@ -56,31 +54,35 @@ def test_simulate_from_askenet(model_path):
 @pytest.mark.parametrize(
     "model_path",
     [
+        "test/models/AMR_examples/BIOMD0000000955_askenet.json",
         "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json",
     ],
 )
 def test_simulate_intervened_from_askenet(model_path):
-    with open(model_path, "r") as f:
-        mira_model = CompiledDynamics.from_askenet(json.load(f))
+    mira_model = CompiledDynamics.from_askenet(model_path)
 
     assert isinstance(mira_model, CompiledDynamics)
-    assert isinstance(mira_model.source, mira.modeling.Model)
+    assert isinstance(mira_model.src, mira.modeling.Model)
 
-    tspan = torch.tensor([0.0, 0.2, 0.4, 0.6])
-    initial_state = default_initial_state(mira_model.source)
+    initial_state = default_initial_state(mira_model.src)
     assert isinstance(initial_state, State)
     assert len(initial_state.keys) > 0
 
-    with SimulatorEventLoop(), \
+    with DynamicTrace(logging_times) as dt, \
+            SimulatorEventLoop(), \
             StaticIntervention(time=0.15, intervention=initial_state), \
             StaticIntervention(time=0.3, intervention=initial_state):
         result = mira_model(initial_state, start_time, end_time)
 
-    assert isinstance(result, Trajectory)
+    assert isinstance(result, State)
     assert result.keys == initial_state.keys
+    
+    assert isinstance(dt.trace, Trajectory)
+    assert dt.trace.keys == initial_state.keys
+
     for key in result.keys:
-        value = getattr(result, key)
+        value = getattr(dt.trace, key)
         assert isinstance(value, torch.Tensor)
-        assert value.shape[0] == tspan.shape[0] > 1
+        assert value.shape[0] == logging_times.shape[0] > 1
         assert not torch.any(torch.isnan(value))
         assert torch.any(value[1:] != value[0])
