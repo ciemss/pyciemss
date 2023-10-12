@@ -6,9 +6,8 @@ import pytest
 import torch
 
 from chirho.dynamical.handlers import SimulatorEventLoop, StaticIntervention, DynamicTrace
-from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State, Trajectory
-from pyciemss.mira import CompiledDynamics, default_initial_state
+from pyciemss.mira import CompiledInPlaceDynamics, default_initial_state
 
 
 logger = logging.getLogger(__name__)
@@ -25,9 +24,9 @@ logging_times = torch.tensor([1.0, 2.0, 3.0])
     ],
 )
 def test_simulate_from_askenet(model_path):
-    mira_model = CompiledDynamics.from_askenet(model_path)
+    mira_model = CompiledInPlaceDynamics.from_askenet(model_path)
 
-    assert isinstance(mira_model, CompiledDynamics)
+    assert isinstance(mira_model, CompiledInPlaceDynamics)
     assert isinstance(mira_model.src, mira.modeling.Model)
 
     initial_state = default_initial_state(mira_model.src)
@@ -59,9 +58,9 @@ def test_simulate_from_askenet(model_path):
     ],
 )
 def test_simulate_intervened_from_askenet(model_path):
-    mira_model = CompiledDynamics.from_askenet(model_path)
+    mira_model = CompiledInPlaceDynamics.from_askenet(model_path)
 
-    assert isinstance(mira_model, CompiledDynamics)
+    assert isinstance(mira_model, CompiledInPlaceDynamics)
     assert isinstance(mira_model.src, mira.modeling.Model)
 
     initial_state = default_initial_state(mira_model.src)

@@ -24,18 +24,19 @@ import torch
 
 from pyciemss.utils.distributions import mira_distribution_to_pyro
 
-from chirho.dynamical.ops import State, Dynamics, simulate
-from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
+from chirho.dynamical.ops import InPlaceDynamics, State, simulate
+from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.dynamical.internals.backend import Solver
 
 S = TypeVar("S")
 T = TypeVar("T")
 
-_DynamicsMeta = type(Dynamics)
+_InPlaceDynamicsMeta = type(InPlaceDynamics)
 _PyroModuleMeta = type(pyro.nn.PyroModule)
-class _CompiledDynamicsMeta(_DynamicsMeta, _PyroModuleMeta):
+class _CompiledInPlaceDynamicsMeta(_InPlaceDynamicsMeta, _PyroModuleMeta):
     pass
 
-class CompiledDynamics(pyro.nn.PyroModule, Dynamics, metaclass=_CompiledDynamicsMeta):
+class CompiledInPlaceDynamics(pyro.nn.PyroModule, InPlaceDynamics, metaclass=_CompiledInPlaceDynamicsMeta):
 
     def __init__(self, src, **kwargs):
         super().__init__()
@@ -76,7 +77,7 @@ class CompiledDynamics(pyro.nn.PyroModule, Dynamics, metaclass=_CompiledDynamics
 
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, src) -> "CompiledDynamics":
+    def from_askenet(cls, src) -> "CompiledInPlaceDynamics":
         raise NotImplementedError
 
     @from_askenet.register
