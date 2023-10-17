@@ -287,7 +287,11 @@ def cdc_reformatcsv(
     """
     q_ensemble_data = pd.read_csv(filename)
     # Number of days for which data is available
-    number_data_days = max(q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")]["number_days"])
+    mask = q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")
+    if not any(mask):
+        raise ValueError("No 'backcast' entries found in source data (required for CDC format)")
+
+    number_data_days = max(q_ensemble_data[mask]["number_days"])
     # Subtracting number of backast days from number_days
     q_ensemble_data["number_days"] = q_ensemble_data["number_days"] - number_data_days
     # Drop rows that are backcasting

@@ -1,9 +1,11 @@
 import unittest
 import os
+import pyro
+import torch
 
 from mira.examples.sir import sir_parameterized as sir
+from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
-import torch
 
 from pyciemss.PetriNetODE.interfaces import (
     load_petri_model,
@@ -14,192 +16,17 @@ from pyciemss.PetriNetODE.interfaces import (
     calibrate,
 )
 
-import unittest
-import os
+from pyciemss.utils.interface_utils import csv_to_list
+
 import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 from pyciemss.PetriNetODE.interfaces import (
-    load_and_sample_petri_model,
-    load_and_calibrate_and_sample_petri_model,
-    load_and_optimize_and_sample_petri_model,
-    load_and_calibrate_and_optimize_and_sample_petri_model,
     get_posterior_density_petri,
     get_posterior_density_mesh_petri
 )
 
 
-class TestSamplesFormat(unittest.TestCase):
-
-    """Tests for the output of PetriNetODE.interfaces.load_*_sample_petri_net_model."""
-
-    # Setup for the tests
-    @classmethod
-    def setUpClass(cls):
-        # Should be using AMR model instead
-        DEMO_PATH = "notebook/integration_demo/"
-
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        cls.num_samples = 2
-        timepoints = [0.0, 1.0, 2.0, 3.0, 4.0]
-        cls.num_timepoints = len(timepoints)
-        data_path = os.path.join(DEMO_PATH, "data.csv")
-
-        cls.samples = load_and_sample_petri_model(
-            ASKENET_PATH,
-            cls.num_samples,
-            timepoints=timepoints,
-            method="euler",
-        )["data"]
-
-        cls.calibrated_samples = load_and_calibrate_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            cls.num_samples,
-            timepoints=timepoints,
-            num_iterations=2,
-            method="euler",
-        )["data"]
-
-        cls.calibrated_samples_deterministic = load_and_calibrate_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            cls.num_samples,
-            timepoints=timepoints,
-            num_iterations=2,
-            deterministic_learnable_parameters=["beta"],
-        )["data"]
-
-        cls.interventions = [(1., "beta", 1.0), (2.1, "gamma", 0.1)]
-        cls.intervened_samples = load_and_sample_petri_model(
-            ASKENET_PATH,
-            cls.num_samples,
-            timepoints=timepoints,
-            interventions=cls.interventions,
-        )["data"]
-
-        OBJFUN = lambda x: np.abs(x)
-        INTERVENTION = [(0.1, "beta")]
-        QOI = ("scenario2dec_nday_average", "I_sol", 2)
-
-        cls.ouu_samples = load_and_optimize_and_sample_petri_model(
-            ASKENET_PATH,
-            cls.num_samples,
-            timepoints=timepoints,
-            interventions=INTERVENTION,
-            qoi=QOI,
-            risk_bound=10.0,
-            objfun=OBJFUN,
-            initial_guess=0.02,
-            bounds=[[0.0], [3.0]],
-            n_samples_ouu=int(1),
-            maxiter=0,
-            maxfeval=2,
-            method="euler",
-        )["data"]
-
-        cls.ouu_cal_samples = load_and_calibrate_and_optimize_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            cls.num_samples,
-            timepoints=timepoints,
-            interventions=INTERVENTION,
-            qoi=QOI,
-            risk_bound=10.0,
-            objfun=OBJFUN,
-            initial_guess=0.02,
-            bounds=[[0.0], [3.0]],
-            num_iterations=2,
-            n_samples_ouu=int(1),
-            maxiter=0,
-            maxfeval=2,
-            method="euler",
-        )["data"]
-
-        cls.all_samples = [cls.samples, cls.calibrated_samples, cls.calibrated_samples_deterministic, cls.intervened_samples, cls.ouu_samples, cls.ouu_cal_samples]
-
-    def test_deterministic_calibrated_samples(self):
-        # Add additional test that checks that the deterministic parameters are actually deterministic
-        beta = self.calibrated_samples_deterministic["beta_param"].values
-        gamma = self.calibrated_samples_deterministic["gamma_param"].values
-        self.assertEqual(beta[:self.num_timepoints].tolist(), beta[self.num_timepoints:].tolist(), "beta is deterministic during calibration")
-        self.assertNotEqual(gamma[:self.num_timepoints].tolist(), gamma[self.num_timepoints:].tolist(), "gamma is not deterministic during calibration")
-
-    def test_samples_type(self):
-        """Test that `samples` is a Pandas DataFrame"""
-        for s in self.all_samples:
-            self.assertIsInstance(s, pd.DataFrame)
-
-    def test_samples_shape(self):
-        """Test that `samples` has the correct number of rows and columns"""
-        for s in self.all_samples:
-            self.assertEqual(s.shape[0], self.num_timepoints * self.num_samples)
-            self.assertGreaterEqual(s.shape[1], 2)
-
-    def test_samples_column_names(self):
-        """Test that `samples` has required column names"""
-        for s in self.all_samples:
-            self.assertEqual(list(s.columns)[:2], ["timepoint_id", "sample_id"])
-            for col_name in s.columns[2:]:
-                self.assertIn(col_name.split("_")[-1], ("param", "sol", "(unknown)"))
-
-    def test_samples_dtype(self):
-        """Test that `samples` has the required data types"""
-        for s in self.all_samples:
-            self.assertEqual(s["timepoint_id"].dtype, np.int64)
-            self.assertEqual(s["sample_id"].dtype, np.int64)
-            for col_name in s.columns[2:]:
-                self.assertEqual(s[col_name].dtype, np.float64)
-
-class TestAMRDistribution(unittest.TestCase):
-    """Tests for the distribution of the AMR model."""
-    
-    def test_distribution(self):
-        filepath = "test/models/AMR_examples/scenario1_c_with_distributions.json"
-        samples = load_and_sample_petri_model(
-            filepath,
-            2,
-            timepoints=[1.],
-            method="euler",
-        )["data"]
-        self.assertIsNotNone(samples)
-        
-        k_2 = samples["k_2_param"].values
-        beta_nc = samples["beta_nc_param"].values
-        beta_s = samples["beta_s_param"].values
-
-        self.assertNotEqual(k_2[0], k_2[1], "k_2 is drawn from a distribution and should produce different samples")
-        self.assertNotEqual(beta_nc[0], beta_nc[1], "beta_nc is drawn from a distribution and should produce different samples")
-        self.assertEqual(beta_s[0], beta_s[1], "beta_s is not drawn from a distribution and should produce the same samples")
-
-class TestProblematicCalibration(unittest.TestCase):
-    """Tests for the calibration of problematic models."""
-    def test_normal_noise_fix(self):
-        filepath = "test/test_petrinet_ode/problematic_example/BIOMD0000000955_askenet.json"
-        data_path = "test/test_petrinet_ode/problematic_example/ciemss-dataset-input.csv"
-        calibrated_samples = load_and_calibrate_and_sample_petri_model(
-                filepath,
-                data_path,
-                5,
-                timepoints=[1., 10.],
-                num_iterations=10,
-                noise_model="scaled_normal",
-            )
-        self.assertIsNotNone(calibrated_samples["data"]) 
-
-        try:
-            load_and_calibrate_and_sample_petri_model(
-                    filepath,
-                    data_path,
-                    5,
-                    timepoints=[1., 10.],
-                    num_iterations=10,
-                    noise_model="scaled_beta",
-                )
-        except Exception as e:
-            self.assertIn("Expected parameter concentration", str(e))
-            
-    
 
 class TestODEInterfaces(unittest.TestCase):
     """Tests for the ODE interfaces."""
@@ -368,75 +195,6 @@ class TestODEInterfaces(unittest.TestCase):
             simulation["infected_population_sol"].shape[1], len(timepoints)
         )
 
-    def test_load_and_sample_petri_model(self):
-        """Test the load_and_sample_petri_model function with and without interventions."""
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
-        timepoints = [1.0, 1.1, 1.2, 1.3]
-        num_samples = 3
-        initial_state = {
-            "S": 0.99,
-            "I": 0.01,
-            "R": 0.0,
-        }
-        expected_intervened_samples = pd.read_csv(
-            "test/test_petrinet_ode/expected_intervened_samples.csv"
-        )
-        actual_intervened_samples = load_and_sample_petri_model(
-            ASKENET_PATH,
-            num_samples,
-            timepoints,
-            interventions=interventions,
-            start_state=initial_state,
-        )
-        assert_frame_equal(
-            expected_intervened_samples,
-            actual_intervened_samples["data"],
-            check_exact=False,
-            atol=1e-5,
-        )
-
-    def test_load_and_calibrate_and_sample_petri_model(self):
-        """Test the load_and_calibrate_and_sample_petri_model function with and without interventions."""
-        ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
-        interventions = [(1e-6, "beta", 1.0), (2e-6, "gamma", 0.1)]
-        timepoints = [1.0, 1.1, 1.2, 1.3]
-        num_samples = 3
-        initial_state = {
-            "S": 0.99,
-            "I": 0.01,
-            "R": 0.0,
-        }
-        expected_intervened_samples = pd.read_csv(
-            "test/test_petrinet_ode/expected_intervened_samples.csv"
-        )
-        data_path = "test/test_petrinet_ode/data.csv"
-        actual_intervened_samples = load_and_calibrate_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            num_samples,
-            timepoints,
-            interventions=interventions,
-            start_state=initial_state,
-            num_iterations=2,
-        )
-        assert_frame_equal(
-            expected_intervened_samples,
-            actual_intervened_samples["data"],
-            check_exact=False,
-            atol=1e-5,
-        )
-
-        SCENARIO_1a_H2 = "test/models/AMR_examples/scenario1_a.json"
-        scenario1a_output = load_and_sample_petri_model(
-            SCENARIO_1a_H2, num_samples, timepoints
-        )
-        self.assertIsInstance(scenario1a_output["data"], pd.DataFrame, "Dataframe not returned")
-
-        SIDARTHE = "test/models/AMR_examples/BIOMD0000000955_askenet.json"
-        sidarthe_output = load_and_sample_petri_model(SIDARTHE, num_samples, timepoints)
-        self.assertIsInstance(sidarthe_output["data"], pd.DataFrame, "Dataframe not returned")
-
     def test_get_posterior_density_mesh_petri(self):
         ASKENET_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json"
         timepoints = [1.0, 1.1, 1.2, 1.3]
@@ -447,17 +205,27 @@ class TestODEInterfaces(unittest.TestCase):
             "R": 0.0,
         }
 
-        data_path = "test/test_petrinet_ode/data.csv"
-        calibrated_results = load_and_calibrate_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            num_samples,
-            timepoints,
-            start_state=initial_state,
-            num_iterations=2,
-        )
+        def autoguide(model):
+            guide = AutoGuideList(model)
+            guide.append(
+                AutoDelta(
+                    pyro.poutine.block(model, expose=[])
+                )
+            )
+            guide.append(
+                AutoLowRankMultivariateNormal(
+                    pyro.poutine.block(model, hide=[])
+                )
+            )
+            return guide
 
-        inferred_parameters = calibrated_results["inferred_parameters"]
+
+        data_path = "test/test_petrinet_ode/data.csv"
+          
+        model = load_petri_model(ASKENET_PATH)
+        model = setup_model(model, self.initial_time, initial_state)
+        inferred_parameters = calibrate(model, csv_to_list(data_path), num_iterations=2, autoguide=autoguide)
+        calibrated_results = sample(model, timepoints, num_samples, inferred_parameters)
 
         # Values of beta and gamma were set by looking at the priors in the model in ASKENET_PATH
         beta_params = (-.5, .5, 100)
@@ -491,17 +259,30 @@ class TestODEInterfaces(unittest.TestCase):
             "R": 0.0,
         }
 
-        data_path = "test/test_petrinet_ode/data.csv"
-        calibrated_results = load_and_calibrate_and_sample_petri_model(
-            ASKENET_PATH,
-            data_path,
-            num_samples,
-            timepoints,
-            start_state=initial_state,
-            num_iterations=2,
-        )
+        def autoguide(model):
+            guide = AutoGuideList(model)
+            guide.append(
+                AutoDelta(
+                    pyro.poutine.block(model, expose=[])
+                )
+            )
+            guide.append(
+                AutoLowRankMultivariateNormal(
+                    pyro.poutine.block(model, hide=[])
+                )
+            )
+            return guide
 
-        inferred_parameters = calibrated_results["inferred_parameters"]
+
+        data_path = "test/test_petrinet_ode/data.csv"
+
+        model = load_petri_model(ASKENET_PATH)
+        model = setup_model(model,  -1e-10, initial_state)
+        inferred_parameters = calibrate(model,
+                                        csv_to_list(data_path),
+                                        num_iterations=2,
+                                        autoguide=autoguide)
+        calibrated_results = sample(model, timepoints, num_samples, inferred_parameters)
         
         # Values of beta and gamma were set by looking at the priors in the model in ASKENET_PATH
         betas = torch.tensor([-1., 0.027])
@@ -514,26 +295,3 @@ class TestODEInterfaces(unittest.TestCase):
 
         # Density should be greater than 0 inside the support.
         self.assertGreater(density[1].item(), 0.)
-
-    # def test_optimize(self):
-    #     '''Test the optimize function.'''
-    #     model = load_petri_model(self.filename)
-    #     model = setup_model(model, self.initial_time, self.initial_state)
-    #     INTERVENTION= [(0.2, "beta")]
-    #     QOI = lambda y: scenario2dec_nday_average(y, contexts=["infected_population_sol"], ndays=3)
-    #     timepoints_qoi = [0.1, 0.4, 0.6, 0.8, 0.9, 1.]
-    #     ouu_policy = optimize(model,
-    #                     timepoints=timepoints_qoi,
-    #                     interventions=INTERVENTION,
-    #                     qoi=QOI,
-    #                     risk_bound=10.,
-    #                     initial_guess=0.02,
-    #                     bounds=[[0.],[3.]],
-    #                     n_samples_ouu=1,
-    #                     maxiter=0,
-    #                     maxfeval=1)
-
-    #     self.assertIsNotNone(ouu_policy)
-
-if __name__ == "__main__":
-    unittest.main()
