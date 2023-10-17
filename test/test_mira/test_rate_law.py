@@ -6,9 +6,14 @@ import mira
 from pyciemss.PetriNetODE.interfaces import (
     setup_petri_model,
     sample,
+)
+
+from pyciemss.PetriNetODE.interfaces_bigbox import ( 
     load_petri_model,
     load_and_sample_petri_model,
+    load_and_calibrate_and_sample_petri_model,
 )
+
 import torch
 from mira.metamodel import (
     Concept,

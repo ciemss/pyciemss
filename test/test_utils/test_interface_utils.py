@@ -6,7 +6,7 @@ from pyciemss.utils.interface_utils import (
     assign_interventions_to_timepoints,
     csv_to_list,
 )
-from pyciemss.PetriNetODE.interfaces import load_and_sample_petri_model
+from pyciemss.PetriNetODE.interfaces_bigbox import load_and_sample_petri_model
 from torch import tensor
 import pandas as pd
 import numpy as np
