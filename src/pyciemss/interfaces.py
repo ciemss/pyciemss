@@ -1,6 +1,6 @@
 import pyro
 
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, Iterable, Union
 import functools
 
 # Declare types
@@ -16,6 +16,33 @@ Constraints = TypeVar("Constraints")
 OptimizationAlgorithm = TypeVar("OptimizationAlgorithm")
 OptimizationResult = TypeVar("OptimizationResult")
 Solution = TypeVar("Solution")
+
+# Set of default quantiles used by interface implementations
+DEFAULT_QUANTILES = [
+    0.01,
+    0.025,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    0.975,
+    0.99,
+]
 
 
 # TODO: Figure out how to declare the parameteric type of `DynamicalSystem` in the signature.
@@ -142,5 +169,36 @@ def optimize(
 ) -> OptimizationResult:
     """
     Optimize the objective function subject to the constraints.
+    """
+    raise NotImplementedError
+
+
+
+@functools.singledispatch
+def prepare_interchange_dictionary(
+    samples: Simulation,
+    timepoints: Iterable[float],
+    time_unit: Optional[str],
+    alpha_qs: Optional[Iterable[float]],
+    stacking_order: Optional[str] = "timepoints",
+    visual_options: Union[None, bool, dict[str, any]] = None,
+    **kwargs
+) -> dict:
+    """
+    Reformat the internal representation of results for external consumption.
+    This may loose data, but it puts it into a convenient format for working with external tools
+    (and this method hsould be the _only_ place that loss is incurred for the purpose fo
+    interchange with other tools like terarium).
+
+    samples -- Output of the same shape as the 'sample' method.
+    timepoints -- The timepoints used to build the samples
+    time_unit -- Label for the timepoints (minutes, seconds, etc).
+                 It IS NOT interepreted or used in conversaionts
+    alpha_qs --
+    stacking_order -- Default is 'timepoints'
+    visual_otions -- If the implementation constructsion visaulizations, these are passed on.
+                    Set to None and no visuals are produced.  If True, visuals are produced
+                    with default options.
+    **kwargs -- Specific implementations may require additional information that may be passed here.
     """
     raise NotImplementedError
