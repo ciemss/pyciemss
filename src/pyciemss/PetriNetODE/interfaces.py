@@ -279,8 +279,8 @@ def sample_petri(
 @pyciemss_logging_wrapper
 def optimize_petri(
     petri: PetriNetODESystem,
-    timepoints: Iterable,
-    interventions: dict,
+    timepoints: Iterable[float],
+    interventions: Iterable[Tuple[float, str]],
     qoi: callable,
     risk_bound: float,
     objfun: callable = lambda x: np.abs(x),
@@ -300,6 +300,10 @@ def optimize_petri(
     """
     # maxfeval: Maximum number of function evaluations for each local optimization step
     # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
+    # shifting timepoints to avoid conflicts with interventions timings
+    for k in interventions:
+        if k[0] in timepoints:
+            timepoints[timepoints==k[0]] += 1e-3
     timepoints = [float(x) for x in list(timepoints)]
     bounds = np.atleast_2d(bounds)
     u_min = bounds[0, :]
