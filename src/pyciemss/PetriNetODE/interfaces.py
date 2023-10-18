@@ -53,6 +53,24 @@ from pyciemss.custom_decorators import pyciemss_logging_wrapper
 PetriSolution = dict  # NOTE: [str, torch.tensor] type argument removed because of issues with type-based dispatch.
 PetriInferredParameters = pyro.nn.PyroModule
 
+def run_petri_model_checks(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]) -> bool:
+    # read the AMR
+    
+#     import json
+
+    try:
+        with open('data.json', 'r') as file:
+            data_dict = json.load(file)
+        print(data_dict)
+    except FileNotFoundError:
+        print("File not found.")
+    except json.JSONDecodeError:
+        print("Error decoding JSON data.")
+
+    # Check that the AMR contains an initial condition for each state variable. If yes, score += 1. If not, raise error.
+    # Check that the number of transitions is equal to the number of rate laws. If yes, score += 1. If not, raise error.
+    # Any other AMR checks needed?
+    # If score == 2 (or whatever it needs to be), return true.
 
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],
@@ -65,11 +83,11 @@ def load_petri_model(
     """
     Load a petri net from a file and compile it into a probabilistic program.
     """
-    if noise_model == "scaled_beta":
+    if (noise_model == "scaled_beta") and run_petri_model_checks(petri_model_or_path):
         return ScaledBetaNoisePetriNetODESystem.from_askenet(
             petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, add_uncertainty=add_uncertainty
         )
-    elif noise_model == "scaled_normal":
+    elif (noise_model == "scaled_normal") and run_petri_model_checks(petri_model_or_path):
         return ScaledNormalNoisePetriNetODESystem.from_askenet(
             petri_model_or_path, noise_scale=noise_scale, compile_rate_law_p=compile_rate_law_p, compile_observables_p=compile_observables_p, add_uncertainty=add_uncertainty
         )
