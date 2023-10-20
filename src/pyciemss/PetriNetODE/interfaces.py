@@ -26,6 +26,7 @@ from pyciemss.utils.interface_utils import convert_to_output_format
 from pyciemss.visuals import plots
 
 import mira
+import json
 
 # Load base interfaces
 from pyciemss.interfaces import (
@@ -54,23 +55,45 @@ PetriSolution = dict  # NOTE: [str, torch.tensor] type argument removed because 
 PetriInferredParameters = pyro.nn.PyroModule
 
 def run_petri_model_checks(petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model]) -> bool:
-    # read the AMR
-    
-#     import json
-
+    """
+    Check that the model AMR (a) is readable/formatted correctly, (b) that the number of transitions matches the number of rate laws, and (c) includes initial conditions for each state variable.
+    """
+    amr_dict = {}
+    # Read the AMR as a dictionary and alert the user if the model path is incorrect, or the AMR in not properly formatted
     try:
-        with open('data.json', 'r') as file:
-            data_dict = json.load(file)
-        print(data_dict)
+        with open(petri_model_or_path, 'r') as file:
+            amr_dict = json.load(file)
     except FileNotFoundError:
-        print("File not found.")
+        print("File not found. Make sure you have the correct model path.")
     except json.JSONDecodeError:
-        print("Error decoding JSON data.")
-
-    # Check that the AMR contains an initial condition for each state variable. If yes, score += 1. If not, raise error.
-    # Check that the number of transitions is equal to the number of rate laws. If yes, score += 1. If not, raise error.
-    # Any other AMR checks needed?
-    # If score == 2 (or whatever it needs to be), return true.
+        print("Error decoding JSON data. Check that the AMR is formatted correctly.")
+    
+    # Check that the AMR contains the required header, model, semantics, and metadata keys: 
+    required_keys = ['header', 'model', 'semantics', 'metadata']
+    missing_keys = [key for key in required_keys if key not in amr_dict]
+    
+    # Get the number of transitions and rate laws for comparison 
+    num_transitions = len(amr_dict["model"]["transitions"])
+    num_rate_laws = len(amr_dict["semantics"]["ode"]["rates"])
+    
+    # Check that every state variable is assigned an initial condition
+    missing_ids = [state['id'] for state in amr_dict["model"]["states"] if state['id'] not in set(item['target'] for item in amr_dict["semantics"]["ode"]["initials"])]
+    
+    # Check that the AMR contains the required header, model, semantics, and metadata keys: 
+    if missing_keys:
+        missing_keys_str = ', '.join(missing_keys)
+        raise ValueError(f"The AMR is missing: {missing_keys_str}")
+    # Check that the number of transitions matches the number of rate laws
+    elif num_transitions < num_rate_laws:
+        raise ValueError("At least one transition is missing. The number of transitions must equal the number of rate laws.")
+    elif num_transitions > num_rate_laws:
+        raise ValueError("There are more transitions than rate laws. The number of transitions must equal the number of rate laws.")
+    # Check that every state variable is assigned an initial condition
+    elif missing_ids:
+        missing_ids_str = ', '.join(missing_ids)
+        raise ValueError(f"The following state variables do not have corresponding initials: {missing_ids_str}")
+    else:
+        return True
 
 def load_petri_model(
     petri_model_or_path: Union[str, mira.metamodel.TemplateModel, mira.modeling.Model],

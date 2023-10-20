@@ -1,0 +1,424 @@
+{
+ "header": {
+     "name": "SEIRHD model with NPI Type 1 (for Timepoint 1)",
+     "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.5/petrinet/petrinet_schema.json",
+     "schema_name": "petrinet",
+     "description": "SEIRHD model with NPI type 1",
+     "model_version": "0.1",
+     "properties": {}
+ },
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E",
+    "name": "E",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H",
+    "name": "H",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "E"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "E"
+    ],
+    "output": [
+     "I"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "H"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*kappa*(beta_c + (-beta_c + beta_s)/(1 + exp(-k*(-t + t_0))))/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>kappa</ci><apply><plus/><ci>beta_c</ci><apply><divide/><apply><plus/><apply><minus/><ci>beta_c</ci></apply><ci>beta_s</ci></apply><apply><plus/><cn>1</cn><apply><exp/><apply><minus/><apply><times/><ci>k</ci><apply><minus/><ci>t_0</ci><ci>t</ci></apply></apply></apply></apply></apply></apply></apply></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "E*delta",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>delta</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*gamma*(1 - eta)",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci><apply><minus/><cn>1</cn><ci>eta</ci></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I*eta*gamma",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>eta</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "H*(1 - mu)/los",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><apply><minus/><cn>1</cn><ci>mu</ci></apply></apply><ci>los</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "H*mu/los",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>H</ci><ci>mu</ci></apply><ci>los</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "19339300.0",
+     "expression_mathml": "<cn>19339995.0</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "175.00000000000000",
+     "expression_mathml": "<cn>4.0</cn>"
+    },
+    {
+     "target": "E",
+     "expression": "300.00000000000000",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "R",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "H",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "D",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 19340000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta_c",
+     "value": 0.09,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.05,
+       "maximum": 0.1
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta_s",
+     "value": 0.5,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.3,
+       "maximum": 0.6
+      }
+     },   
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "k",
+     "value": 5.0,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "kappa",
+     "value": 1.0,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "t_0",
+     "value": 29.0,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 25.0,
+       "maximum": 35.0
+      }
+     },
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "delta",
+     "value": 0.25,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta",
+     "value": 0.1,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.005,
+       "maximum": 0.2
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.2,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.1,
+       "maximum": 0.5
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "los",
+     "value": 5.0,
+     "units": {
+      "expression": "day",
+      "expression_mathml": "<ci>day</ci>"
+     }
+    },
+    {
+     "id": "mu",
+     "value": 0.4,
+     "distribution": {
+      "type": "Uniform1",
+      "parameters": {
+       "minimum": 0.18,
+       "maximum": 0.5
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [    
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I",
+     "expression_mathml": "<ci>I</ci>"
+    },
+    {
+     "id": "exposed",
+     "name": "exposed",
+     "expression": "E",
+     "expression_mathml": "<ci>E</ci>"
+    },
+    {
+     "id": "hospitalized",
+     "name": "hospitalized",
+     "expression": "H",
+     "expression_mathml": "<ci>H</ci>"
+    },
+    {
+     "id": "dead",
+     "name": "dead",
+     "expression": "D",
+     "expression_mathml": "<ci>D</ci>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}

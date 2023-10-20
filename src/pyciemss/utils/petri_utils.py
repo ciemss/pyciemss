@@ -261,9 +261,9 @@ def grouped_controlled_conversion(params: Dict[str, T], t: T, states: Tuple[T, .
     raise NotImplementedError  # TODO
 
 
-@torch.fx.wrap
-def deterministic(name, value, *, event_dim=None):
-    return pyro.deterministic(name, value, event_dim=event_dim)
+# @torch.fx.wrap
+# def deterministic(name, value, *, event_dim=None):
+#     return pyro.deterministic(name, value, event_dim=event_dim)
 
 
 def petri_to_ode(
