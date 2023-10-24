@@ -1,9 +1,8 @@
 import functools
 import json
 import numbers
-import operator
 import os
-from typing import Callable, Dict, Optional, Tuple, Type, TypeVar, Union
+from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -22,25 +21,16 @@ import sympy
 import sympytorch
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.dynamical.internals.backend import Solver
-from chirho.dynamical.ops import InPlaceDynamics, State, simulate
+from chirho.dynamical.internals.solver import Solver
+from chirho.dynamical.ops import Dynamics, State, simulate
 
-from pyciemss.utils.distributions import mira_distribution_to_pyro
+from pyciemss.mira_utils.distributions import mira_distribution_to_pyro
 
 S = TypeVar("S")
 T = TypeVar("T")
 
-_InPlaceDynamicsMeta = type(InPlaceDynamics)
-_PyroModuleMeta = type(pyro.nn.PyroModule)
 
-
-class _CompiledInPlaceDynamicsMeta(_InPlaceDynamicsMeta, _PyroModuleMeta):
-    pass
-
-
-class CompiledInPlaceDynamics(
-    pyro.nn.PyroModule, InPlaceDynamics, metaclass=_CompiledInPlaceDynamicsMeta
-):
+class CompiledDynamics(pyro.nn.PyroModule, Dynamics[torch.Tensor]):
     def __init__(self, src, **kwargs):
         super().__init__()
         self.src = src
@@ -56,16 +46,12 @@ class CompiledInPlaceDynamics(
                 self.register_buffer(get_name(k), v)
 
     @pyro.nn.pyro_method
-    def diff(self, dX: State[torch.Tensor], X: State[torch.Tensor]) -> None:
-        return eval_diff(self.src, self, dX, X)
-
-    @pyro.nn.pyro_method
-    def observation(self, X: State[torch.Tensor]) -> None:
-        return eval_observation(self.src, self, X)
+    def diff(self, X: State[torch.Tensor]) -> None:
+        return eval_diff(self.src, self, X)
 
     def forward(
         self,
-        start_state: State[torch.Tensor],
+        initial_state: State[torch.Tensor],
         start_time: torch.Tensor,
         end_time: torch.Tensor,
         solver: Solver = TorchDiffEq(),
@@ -75,16 +61,16 @@ class CompiledInPlaceDynamics(
         for k in default_param_values(self.src).keys():
             getattr(self, get_name(k))
 
-        return simulate(self, start_state, start_time, end_time, solver=solver)
+        return simulate(self.diff, initial_state, start_time, end_time, solver=solver)
 
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, src) -> "CompiledInPlaceDynamics":
+    def from_askenet(cls, src) -> "CompiledDynamics":
         raise NotImplementedError
 
     @from_askenet.register
     @classmethod
-    def _from_askenet_model(cls, src: mira.modeling.Model):
+    def _from_askenet_model(cls, src: mira.modeling.Model) -> "CompiledDynamics":
         model = cls(src)
         # Compile the numeric derivative of the model from the transition rate laws.
         setattr(model, "numeric_deriv", _compile_deriv(src))
@@ -92,15 +78,11 @@ class CompiledInPlaceDynamics(
             # These are not used in the compiled model, but are helpful for inspecting the rate laws.
             setattr(model, f"rate_law_{get_name(trans)}", _compile_rate_law(trans))
 
-        # Compile the observation function from the model.
-        for obs_var, obs in src.observables.items():
-            setattr(model, f"observation_{get_name(obs_var)}", _compile_observable(obs))
-
         return model
 
     @from_askenet.register
     @classmethod
-    def _from_askenet_path(cls, path: str):
+    def _from_askenet_path(cls, path: str) -> "CompiledDynamics":
         if "https://" in path:
             res = requests.get(path)
             model_json = res.json()
@@ -113,7 +95,9 @@ class CompiledInPlaceDynamics(
 
     @from_askenet.register
     @classmethod
-    def _from_askenet_template_model(cls, template: mira.metamodel.TemplateModel):
+    def _from_askenet_template_model(
+        cls, template: mira.metamodel.TemplateModel
+    ) -> "CompiledDynamics":
         model = cls.from_askenet(mira.modeling.Model(template))
 
         # Check if all parameter names are strings
@@ -125,7 +109,7 @@ class CompiledInPlaceDynamics(
 
     @from_askenet.register
     @classmethod
-    def _from_askenet_json(cls, model_json: dict):
+    def _from_askenet_json(cls, model_json: dict) -> "CompiledDynamics":
         # return a model from an ASKEM Model Representation json
         if "templates" in model_json:
             return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
@@ -144,12 +128,7 @@ class CompiledInPlaceDynamics(
 
 
 @functools.singledispatch
-def eval_diff(src, param_module: pyro.nn.PyroModule, dX: State[T], X: State[T]):
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def eval_observation(src, param_module: pyro.nn.PyroModule, X: State[T]):
+def eval_diff(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
     raise NotImplementedError
 
 
@@ -191,22 +170,15 @@ def _compile_rate_law(
     return sympytorch.SymPyModule(expressions=[transition.template.rate_law.args[0]])
 
 
-def _compile_observable(
-    observable: mira.modeling.Observable,
-) -> Callable[..., Tuple[torch.Tensor]]:
-    return sympytorch.SymPyModule(
-        expressions=[observable.observable.expression.args[0]]
-    )
-
-
 @eval_diff.register
 def _eval_diff_compiled_mira(
     src: mira.modeling.Model,
     param_module: pyro.nn.PyroModule,
-    dX: State[torch.Tensor],
     X: State[torch.Tensor],
-):
-    states = {s_name: getattr(X, s_name) for s_name in X.keys}
+) -> State[torch.Tensor]:
+    dX = State()
+    # TODO: check if we can just comment this out
+    states = {s_name: X[s_name] for s_name in X.keys}
 
     parameters = {
         get_name(param_info): getattr(param_module, get_name(param_info))
@@ -216,35 +188,8 @@ def _eval_diff_compiled_mira(
     numeric_deriv = param_module.numeric_deriv(**states, **parameters)
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
-        setattr(dX, k, numeric_deriv[i])
-
-
-def normal_noise_model(name: str, obs_value: torch.Tensor) -> None:
-    mean = obs_value
-    var = 0.1 * obs_value
-    return pyro.sample(name, pyro.distributions.Normal(mean, var))
-
-
-@eval_observation.register
-def _eval_observation_compiled_mira(
-    src: mira.modeling.Model,
-    param_module: pyro.nn.PyroModule,
-    X: State[torch.Tensor],
-    *,
-    noise_kernel: Callable[[str, torch.Tensor], None] = normal_noise_model,
-) -> None:
-    states = {s_name: getattr(X, s_name) for s_name in X.keys}
-
-    parameters = {
-        get_name(param_info): getattr(param_module, get_name(param_info))
-        for param_info in src.parameters.values()
-    }
-
-    for obs_var in src.observables.keys():
-        obs_value = getattr(param_module, f"observation_{get_name(obs_var)}")(
-            **states, **parameters
-        )
-        noise_kernel(get_name(obs_var), obs_value)
+        dX[k] = numeric_deriv[i]
+    return dX
 
 
 @get_name.register
