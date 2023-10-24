@@ -29,7 +29,7 @@ def test_imports():
 
         return r.__name__ == import_name
 
-    root = Path(__file__).parent.parent / "src" / "pyciemss"
+    root = Path(__file__).parent.parent / "pyciemss"
 
     candidates = root.glob("**/*.py")
     targets = [
