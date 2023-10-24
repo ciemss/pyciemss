@@ -7,7 +7,7 @@ import pyro
 T = TypeVar("T")
 
 
-class DynamicalSystem(Generic[T], pyro.nn.PyroModule):
+class DynamicalSystem(Generic[T]):
     """
     A dynamical system is a model of a system that evolves over time.
     """
@@ -31,10 +31,9 @@ class Data(Generic[T]):
     pass
 
 
-class InferredParameters(Generic[T], pyro.nn.PyroModule):
+class InferredParameters(Generic[T]):
     """
     InferredParameters are the parameters of the dynamical system that are inferred from data.
-    This will always be a pyro.nn.PyroModule, as we rely on Pyro's variational inference with AutoGuides.
     """
 
     pass
