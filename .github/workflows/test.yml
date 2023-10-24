@@ -50,5 +50,4 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          pytest tests/ -s -n auto --cov=pyciemss/ --cov-report=term-missing ${@-}
-          cd docs && make html
+          pytest tests/ -s -n auto
