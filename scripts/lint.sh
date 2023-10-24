@@ -2,6 +2,6 @@
 set -euxo pipefail
 
 mypy --ignore-missing-imports pyciemss/
-isort --check --profile black --diff pyciemss/ test/
-black --check pyciemss/ test/
-flake8 pyciemss/ test/
+isort --check --profile black --diff pyciemss/ tests/
+black --check pyciemss/ tests/
+flake8 pyciemss/ tests/

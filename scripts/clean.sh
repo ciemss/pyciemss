@@ -1,5 +1,5 @@
 #!/bin/bash
 set -euxo pipefail
 
-isort --profile black pyciemss/ test/
-black pyciemss/ test/
+isort --profile black pyciemss/ tests/
+black pyciemss/ tests/
