@@ -1,40 +1,32 @@
+import copy
+from collections.abc import Iterable
+from typing import Callable, Optional, Tuple, Union
+
 import pyro
 import torch
-
 from pyro.infer import Predictive
 
-from pyciemss.PetriNetODE.base import get_name
-from pyciemss.interfaces import (
-    setup_model,
-    reset_model,
-    intervene,
-    sample,
-    calibrate,
-    DynamicalSystem,
-    prepare_interchange_dictionary,
-    DEFAULT_QUANTILES,
-)
-
-from pyciemss.utils import interface_utils
-
+from pyciemss.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.Ensemble.base import (
     EnsembleSystem,
     ScaledBetaNoiseEnsembleSystem,
     ScaledNormalNoiseEnsembleSystem,
 )
-
-from typing import Optional, Tuple, Callable, Union
-from collections.abc import Iterable
-import copy
+from pyciemss.interfaces import (
+    DEFAULT_QUANTILES,
+    DynamicalSystem,
+    calibrate,
+    intervene,
+    prepare_interchange_dictionary,
+    reset_model,
+    sample,
+    setup_model,
+)
+from pyciemss.PetriNetODE.base import get_name
 
 # TODO: probably refactor this out later.
-from pyciemss.PetriNetODE.events import (
-    StartEvent,
-    ObservationEvent,
-    LoggingEvent,
-)
-
-from pyciemss.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.PetriNetODE.events import LoggingEvent, ObservationEvent, StartEvent
+from pyciemss.utils import interface_utils
 from pyciemss.utils.interface_utils import convert_to_output_format
 from pyciemss.visuals import plots
 

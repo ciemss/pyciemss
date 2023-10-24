@@ -1,35 +1,29 @@
-from typing_extensions import deprecated
-import pyro
-import numpy as np
-from typing import Iterable, Optional, Tuple, Union, Callable
 import copy
-
-from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
-
-from pyciemss.ODE.base import (
-    get_name,
-)
-from pyciemss.risk.ouu import computeRisk
-from pyciemss.risk.risk_measures import alpha_superquantile
-import pyciemss.risk.qoi
-from pyciemss.utils.interface_utils import csv_to_list
+from typing import Callable, Iterable, Optional, Tuple, Union
 
 import mira
+import numpy as np
+import pyro
+from pyro.infer.autoguide import AutoDelta, AutoGuideList, AutoLowRankMultivariateNormal
+from typing_extensions import deprecated
 
-
+import pyciemss.risk.qoi
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.ODE.base import get_name
+from pyciemss.risk.ouu import computeRisk
+from pyciemss.risk.risk_measures import alpha_superquantile
+from pyciemss.utils.interface_utils import csv_to_list
 
-from .interfaces import (
-    load_petri_model,
-    setup_model,
-    sample,
-    calibrate,
-    optimize,
-    intervene,
-    prepare_interchange_dictionary,
-)
 from ..interfaces import DEFAULT_QUANTILES
-
+from .interfaces import (
+    calibrate,
+    intervene,
+    load_petri_model,
+    optimize,
+    prepare_interchange_dictionary,
+    sample,
+    setup_model,
+)
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 

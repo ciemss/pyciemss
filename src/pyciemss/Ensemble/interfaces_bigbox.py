@@ -1,26 +1,19 @@
-from typing_extensions import deprecated
-import pyro
+from typing import Iterable, Optional, Union
 
 import mira
+import pyro
+from typing_extensions import deprecated
 
-from ..interfaces import DEFAULT_QUANTILES
-from .interfaces import (
-    setup_model,
-    sample,
-    calibrate,
-    prepare_interchange_dictionary,
-)
-
+from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.ODE.base import get_name
 from pyciemss.ODE.interfaces import load_petri_model
-
 from pyciemss.utils.interface_utils import (
-    csv_to_list,
     create_mapping_function_from_observables,
+    csv_to_list,
 )
 
-from typing import Iterable, Optional, Union
-from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
+from ..interfaces import DEFAULT_QUANTILES
+from .interfaces import calibrate, prepare_interchange_dictionary, sample, setup_model
 
 
 @deprecated(

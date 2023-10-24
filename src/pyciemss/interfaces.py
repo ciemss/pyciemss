@@ -1,7 +1,7 @@
-import pyro
-
-from typing import TypeVar, Optional, Iterable, Union
 import functools
+from typing import Iterable, Optional, TypeVar, Union
+
+import pyro
 
 # Declare types
 # Note: this doesn't really do anything. More of a placeholder for how derived classes should be declared.
@@ -171,7 +171,6 @@ def optimize(
     Optimize the objective function subject to the constraints.
     """
     raise NotImplementedError
-
 
 
 @functools.singledispatch
