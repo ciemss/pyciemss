@@ -1,8 +1,6 @@
 import functools
 from typing import Generic, Optional, TypeVar
 
-import pyro
-
 # By convention we use "T" to denote the type of the dynamical system, e.g. `ODE`, `PDE`, or `SDE`.
 T = TypeVar("T")
 
