@@ -18,7 +18,7 @@ def pyciemss_logging_wrapper(function):
                 ###############################
 
                 There was an exception in pyciemss
-                
+
                 Error occured in function: %s
 
                 Function docs : %s

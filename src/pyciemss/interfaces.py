@@ -112,7 +112,8 @@ def calibrate(
     model: DynamicalSystem[T], data: Data[T], *args, **kwargs
 ) -> InferredParameters[T]:
     """
-    Infer parameters for a DynamicalSystem model conditional on data. This is typically done using a variational approximation.
+    Infer parameters for a DynamicalSystem model conditional on data.
+    This is typically done using a variational approximation.
     """
     raise NotImplementedError
 
@@ -125,7 +126,8 @@ def simulate(
     **kwargs
 ) -> Simulation[T]:
     """
-    Simulate trajectories from a given `model`, conditional on specified `inferred_parameters` distribution. If `inferred_parameters` is not given, this will sample from the prior distribution.
+    Simulate trajectories from a given `model`, conditional on specified `inferred_parameters` distribution.
+    If `inferred_parameters` is not given, this will sample from the prior distribution.
     """
     raise NotImplementedError
 
