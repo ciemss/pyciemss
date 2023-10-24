@@ -6,7 +6,7 @@ import copy
 
 from pyro.infer.autoguide import AutoDelta, AutoLowRankMultivariateNormal, AutoGuideList
 
-from pyciemss.PetriNetODE.base import (
+from pyciemss.ODE.base import (
     get_name,
 )
 from pyciemss.risk.ouu import computeRisk
@@ -17,7 +17,7 @@ from pyciemss.utils.interface_utils import csv_to_list
 import mira
 
 
-from pyciemss.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 
 from .interfaces import (
     load_petri_model,

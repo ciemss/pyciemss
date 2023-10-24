@@ -14,7 +14,7 @@ from torch.distributions import biject_to
 from pyro.infer import Predictive
 from pyro.infer.autoguide import AutoLowRankMultivariateNormal
 
-from pyciemss.PetriNetODE.base import (
+from pyciemss.ODE.base import (
     PetriNetODESystem,
     ScaledNormalNoisePetriNetODESystem,
     ScaledBetaNoisePetriNetODESystem,
@@ -39,14 +39,14 @@ from pyciemss.interfaces import (
     DEFAULT_QUANTILES
 )
 
-from pyciemss.PetriNetODE.events import (
+from pyciemss.ODE.events import (
     StartEvent,
     ObservationEvent,
     LoggingEvent,
     StaticParameterInterventionEvent,
 )
 
-from pyciemss.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 
 # TODO: These interfaces should probably be just in terms of JSON-like objects.
 

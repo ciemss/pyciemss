@@ -11,8 +11,8 @@ from .interfaces import (
     prepare_interchange_dictionary,
 )
 
-from pyciemss.PetriNetODE.base import get_name
-from pyciemss.PetriNetODE.interfaces import load_petri_model
+from pyciemss.ODE.base import get_name
+from pyciemss.ODE.interfaces import load_petri_model
 
 from pyciemss.utils.interface_utils import (
     csv_to_list,
@@ -20,7 +20,7 @@ from pyciemss.utils.interface_utils import (
 )
 
 from typing import Iterable, Optional, Union
-from pyciemss.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 
 
 @deprecated(
