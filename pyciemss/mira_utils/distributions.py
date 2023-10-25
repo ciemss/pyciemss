@@ -1,6 +1,6 @@
 from typing import Dict
 
-import mira
+import mira.metamodel
 import pyro
 
 

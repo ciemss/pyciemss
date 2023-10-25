@@ -23,9 +23,9 @@ def test_imports():
             return False
         except ImportError:
             return False
-        except Exception as e:
-            print(f"Unexpected exception: {e}")
-            return False
+        # except Exception as e:
+        #     print(f"Unexpected exception: {e}")
+        #     return False
 
         return r.__name__ == import_name
 
