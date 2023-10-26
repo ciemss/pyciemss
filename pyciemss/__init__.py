@@ -1,1 +1,1 @@
-from .mira_integration import compiled_dynamics
+from .mira_integration import compiled_dynamics  # noqa: F401

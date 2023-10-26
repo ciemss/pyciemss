@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
+from typing import Callable, Dict, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -21,7 +21,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def __init__(self, src, **kwargs):
         super().__init__()
         self.src = src
-        for k, v in default_param_values(src).items():
+        for k, v in _compile_param_values(src).items():
             if hasattr(self, get_name(k)):
                 continue
 
@@ -33,8 +33,8 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 self.register_buffer(get_name(k), v)
 
     @pyro.nn.pyro_method
-    def diff(self, X: State[torch.Tensor]) -> None:
-        return eval_diff(self.src, self, X)
+    def deriv(self, X: State[torch.Tensor]) -> None:
+        return eval_deriv(self.src, self, X)
 
     @pyro.nn.pyro_method
     def initial_state(self) -> State[torch.Tensor]:
@@ -48,11 +48,11 @@ class CompiledDynamics(pyro.nn.PyroModule):
     ):
         # Initialize random parameters once before simulating.
         # This is necessary because the parameters are PyroSample objects.
-        for k in default_param_values(self.src).keys():
+        for k in _compile_param_values(self.src).keys():
             getattr(self, get_name(k))
 
         return simulate(
-            self.diff, self.initial_state(), start_time, end_time, solver=solver
+            self.deriv, self.initial_state(), start_time, end_time, solver=solver
         )
 
     @functools.singledispatchmethod
@@ -101,7 +101,29 @@ class CompiledDynamics(pyro.nn.PyroModule):
 
 
 @functools.singledispatch
-def eval_diff(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
+def _compile_deriv(src) -> Callable[..., Tuple[torch.Tensor]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def _compile_initial_state(src) -> Callable[..., Tuple[torch.Tensor]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def _compile_param_values(
+    src,
+) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def _compile_rate_law(transition) -> Callable[..., Tuple[torch.Tensor]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def eval_deriv(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
     raise NotImplementedError
 
 
@@ -112,33 +134,6 @@ def eval_initial_state(src, param_module: pyro.nn.PyroModule) -> State[T]:
 
 @functools.singledispatch
 def get_name(obj) -> str:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def _compile_deriv(src) -> Callable[..., Tuple[torch.Tensor]]:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def _compile_rate_law(transition) -> Callable[..., Tuple[torch.Tensor]]:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def _compile_initial_state(src) -> Callable[..., Tuple[torch.Tensor]]:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def default_param_values(
-    src,
-) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def default_initial_state(src) -> Optional[State[torch.Tensor]]:
     raise NotImplementedError
 
 

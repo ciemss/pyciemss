@@ -15,25 +15,23 @@ import sympytorch
 import torch
 from chirho.dynamical.ops import State
 
+from pyciemss.compiled_dynamics import (
+    _compile_deriv,
+    _compile_initial_state,
+    _compile_param_values,
+    _compile_rate_law,
+    eval_deriv,
+    eval_initial_state,
+    get_name,
+)
 from pyciemss.mira_integration.distributions import mira_distribution_to_pyro
 
 S = TypeVar("S")
 T = TypeVar("T")
 
-from pyciemss.compiled_dynamics import (
-    _compile_deriv,
-    _compile_initial_state,
-    _compile_rate_law,
-    default_initial_state,
-    default_param_values,
-    eval_diff,
-    eval_initial_state,
-    get_name,
-)
-
 
 @_compile_deriv.register(mira.modeling.Model)
-def _compile_deriv(src: mira.modeling.Model) -> Callable[..., Tuple[torch.Tensor]]:
+def _compile_deriv_mira(src: mira.modeling.Model) -> Callable[..., Tuple[torch.Tensor]]:
     symbolic_deriv = {get_name(var): 0 for var in src.variables.values()}
     for transition in src.transitions.values():
         flux = transition.template.rate_law.args[0]
@@ -48,16 +46,8 @@ def _compile_deriv(src: mira.modeling.Model) -> Callable[..., Tuple[torch.Tensor
     return numeric_deriv_func
 
 
-@_compile_rate_law.register(mira.modeling.Transition)
-def _compile_rate_law(
-    transition: mira.modeling.Transition,
-) -> Callable[..., Tuple[torch.Tensor]]:
-    rate_law_func = sympytorch.SymPyModule(expressions=[transition.template.rate_law.args[0]])
-    return rate_law_func
-
-
 @_compile_initial_state.register(mira.modeling.Model)
-def _compile_initial_state(
+def _compile_initial_state_mira(
     src: mira.modeling.Model,
 ) -> Callable[..., Tuple[torch.Tensor]]:
     symbolic_initials = {
@@ -70,62 +60,8 @@ def _compile_initial_state(
     return numeric_initial_state_func
 
 
-@eval_diff.register(mira.modeling.Model)
-def _eval_diff_compiled_mira(
-    src: mira.modeling.Model,
-    param_module: pyro.nn.PyroModule,
-    X: State[torch.Tensor],
-) -> State[torch.Tensor]:
-    parameters = {
-        get_name(param_info): getattr(param_module, get_name(param_info))
-        for param_info in src.parameters.values()
-    }
-
-    numeric_deriv = param_module.numeric_deriv_func(**X, **parameters)
-
-    dX = State()
-    for i, var in enumerate(src.variables.values()):
-        k = get_name(var)
-        dX[k] = numeric_deriv[i]
-    return dX
-
-
-@eval_initial_state.register(mira.modeling.Model)
-def _eval_initial_state_compiled_mira(
-    src: mira.modeling.Model,
-    param_module: pyro.nn.PyroModule,
-) -> State[torch.Tensor]:
-    parameters = {
-        get_name(param_info): getattr(param_module, get_name(param_info))
-        for param_info in src.parameters.values()
-    }
-
-    numeric_initial_state = param_module.numeric_initial_state_func(**parameters)
-
-    X = State()
-    for i, var in enumerate(src.variables.values()):
-        k = get_name(var)
-        X[k] = numeric_initial_state[i]
-    return X
-
-
-@get_name.register
-def _get_name_variable(var: mira.modeling.Variable) -> str:
-    return var.data["name"]
-
-
-@get_name.register
-def _get_name_transition(trans: mira.modeling.Transition) -> str:
-    return f"trans_{trans.key}"
-
-
-@get_name.register
-def _get_name_modelparameter(param: mira.modeling.ModelParameter) -> str:
-    return str(param.key)
-
-
-@default_param_values.register(mira.modeling.Model)
-def _mira_default_param_values(
+@_compile_param_values.register(mira.modeling.Model)
+def _compile_param_values_mira(
     src: mira.modeling.Model,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
     values = {}
@@ -148,3 +84,67 @@ def _mira_default_param_values(
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
     return values
+
+
+@_compile_rate_law.register(mira.modeling.Transition)
+def _compile_rate_law_mira(
+    transition: mira.modeling.Transition,
+) -> Callable[..., Tuple[torch.Tensor]]:
+    rate_law_func = sympytorch.SymPyModule(
+        expressions=[transition.template.rate_law.args[0]]
+    )
+    return rate_law_func
+
+
+@eval_deriv.register(mira.modeling.Model)
+def _eval_deriv_mira(
+    src: mira.modeling.Model,
+    param_module: pyro.nn.PyroModule,
+    X: State[torch.Tensor],
+) -> State[torch.Tensor]:
+    parameters = {
+        get_name(param_info): getattr(param_module, get_name(param_info))
+        for param_info in src.parameters.values()
+    }
+
+    numeric_deriv = param_module.numeric_deriv_func(**X, **parameters)
+
+    dX = State()
+    for i, var in enumerate(src.variables.values()):
+        k = get_name(var)
+        dX[k] = numeric_deriv[i]
+    return dX
+
+
+@eval_initial_state.register(mira.modeling.Model)
+def _eval_initial_state_mira(
+    src: mira.modeling.Model,
+    param_module: pyro.nn.PyroModule,
+) -> State[torch.Tensor]:
+    parameters = {
+        get_name(param_info): getattr(param_module, get_name(param_info))
+        for param_info in src.parameters.values()
+    }
+
+    numeric_initial_state = param_module.numeric_initial_state_func(**parameters)
+
+    X = State()
+    for i, var in enumerate(src.variables.values()):
+        k = get_name(var)
+        X[k] = numeric_initial_state[i]
+    return X
+
+
+@get_name.register
+def _get_nam_mira_variable(var: mira.modeling.Variable) -> str:
+    return var.data["name"]
+
+
+@get_name.register
+def _get_name_mira_transition(trans: mira.modeling.Transition) -> str:
+    return f"trans_{trans.key}"
+
+
+@get_name.register
+def _get_name_mira_modelparameter(param: mira.modeling.ModelParameter) -> str:
+    return str(param.key)
