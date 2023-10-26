@@ -1,103 +1,70 @@
 import functools
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Optional, TypeVar, Union, Dict, Callable
+from compiled_dynamics import CompiledDynamics
+
+import pyro
+import torch
+import contextlib
+
+from chirho.dynamical.ops import State
+from chirho.dynamical.handlers import InterruptionEventLoop, LogTrajectory, StaticIntervention, DynamicIntervention
+
 
 # By convention we use "T" to denote the type of the dynamical system, e.g. `ODE`, `PDE`, or `SDE`.
 T = TypeVar("T")
 
+# Type alias for the variational approximate (i.e. "guide") representing the approximate posterior distribution over parameters.
+InferredParameters = pyro.nn.PyroModule
 
-class DynamicalSystem(Generic[T]):
+
+
+def load_model(model_path_or_json: Union[str, Dict]) -> CompiledDynamics:
     """
-    A dynamical system is a model of a system that evolves over time.
+    Load a model from a path or a JSON string.
     """
+    return CompiledDynamics.load(model_path_or_json)
 
-    pass
-
-
-class Intervention(Generic[T]):
+def save_model(model: CompiledDynamics, model_path: str) -> None:
     """
-    An intervention is a change to a dynamical system that is not a change to the parameters.
+    Save a model to a path.
     """
+    model.save(model_path)
 
-    pass
-
-
-class Data(Generic[T]):
+def simulate(
+    model: CompiledDynamics,
+    start_time: float,
+    end_time: float,
+    logging_step_size: float,
+    inferred_parameters: Optional[InferredParameters] = None,
+    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
+    dynamic_interventions: Dict[Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]] = {},
+) -> State[torch.Tensor]:
     """
-    Data is a collection of observations of the dynamical system.
-    """
-
-    pass
-
-
-class InferredParameters(Generic[T]):
-    """
-    InferredParameters are the parameters of the dynamical system that are inferred from data.
-    """
-
-    pass
-
-
-class Simulation(Generic[T]):
-    """
-    A simulation is a collection of trajectories of a dynamical system.
+    Simulate trajectories from a given `model`, conditional on specified `inferred_parameters` distribution.
+    If `inferred_parameters` is not given, this will sample from the prior distribution.
     """
 
-    pass
+    timespan = torch.arange(start_time, end_time, logging_step_size)
 
+    with LogTrajectory(timespan) as lt:
+        with InterruptionEventLoop():
+            # TODO: check this. Don't think it's correct usage of ExitStack
+            with contextlib.ExitStack() as stack:
+                for time, intervened_state_dict in static_interventions.items():
+                    static_intervened_state = State(**intervened_state_dict)
+                    stack.enter_context(StaticIntervention(torch.as_tensor(time), intervened_state))
+                    for event_fn, intervened_state_dict in dynamic_interventions.items():
+                        intervened_state = State(**intervened_state_dict)
+                        stack.enter_context(DynamicIntervention(event_fn, intervened_state))
+                model(start_time, end_time)
 
-class ObjectiveFunction(Generic[T]):
-    """
-    An objective function is a function that is optimized to infer parameters from data.
-    """
-
-    pass
-
-
-class Constraints(Generic[T]):
-    """
-    Constraints are constraints on the parameters of the dynamical system for optimization.
-    """
-
-    pass
-
-
-class OptimizationAlgorithm(Generic[T]):
-    """
-    An optimization algorithm is an algorithm that is used to optimize the objective function subject to constraints.
-    """
-
-    pass
-
-
-class OptimizationResult(Generic[T]):
-    """
-    An optimization result is the result of optimizing the objective function subject to constraints.
-    """
-
-    pass
-
-
-@functools.singledispatch
-def setup_model(model: DynamicalSystem[T], *args, **kwargs) -> DynamicalSystem[T]:
-    """
-    Instatiate a model for a particular configuration of initial conditions, boundary conditions, logging events, etc.
-    """
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def reset_model(model: DynamicalSystem[T], *args, **kwargs) -> DynamicalSystem[T]:
-    """
-    Reset a model to its initial state.
-    reset_model * setup_model = id
-    """
-    raise NotImplementedError
+    return lt
 
 
 @functools.singledispatch
 def intervene(
-    model: DynamicalSystem[T], intervention: Intervention[T], *args, **kwargs
-) -> DynamicalSystem[T]:
+    model: CompiledDynamics, intervention: Intervention[T], *args, **kwargs
+) -> CompiledDynamics:
     """
     `intervene(model, intervention)` returns a new model where the intervention has been applied.
     """
@@ -115,18 +82,7 @@ def calibrate(
     raise NotImplementedError
 
 
-@functools.singledispatch
-def simulate(
-    model: DynamicalSystem[T],
-    inferred_parameters: Optional[InferredParameters[T]] = None,
-    *args,
-    **kwargs
-) -> Simulation[T]:
-    """
-    Simulate trajectories from a given `model`, conditional on specified `inferred_parameters` distribution.
-    If `inferred_parameters` is not given, this will sample from the prior distribution.
-    """
-    raise NotImplementedError
+
 
 
 @functools.singledispatch
