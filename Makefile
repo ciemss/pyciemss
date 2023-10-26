@@ -5,6 +5,6 @@ format:
 	./scripts/clean.sh
 
 tests: lint FORCE
-	pytest -v test -n auto
+	pytest -v tests -n auto
 
 FORCE:
