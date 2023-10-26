@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import functools
-import json
 import numbers
-import os
 from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
@@ -43,7 +41,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @pyro.nn.pyro_method
     def diff(self, X: State[torch.Tensor]) -> None:
         return eval_diff(self.src, self, X)
-    
+
     @pyro.nn.pyro_method
     def initial_state(self) -> State[torch.Tensor]:
         return eval_initial_state(self.src, self)
@@ -59,7 +57,9 @@ class CompiledDynamics(pyro.nn.PyroModule):
         for k in default_param_values(self.src).keys():
             getattr(self, get_name(k))
 
-        return simulate(self.diff, self.initial_state(), start_time, end_time, solver=solver)
+        return simulate(
+            self.diff, self.initial_state(), start_time, end_time, solver=solver
+        )
 
     @functools.singledispatchmethod
     @classmethod
@@ -91,7 +91,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
         else:
             new_template = mira.metamodel.ops.aggregate_parameters(template)
             return cls.load(mira.modeling.Model(new_template))
-        
+
     @load.register(mira.modeling.Model)
     @classmethod
     def _load_from_mira_model(cls, src: mira.modeling.Model):
@@ -153,11 +153,18 @@ def _compile_rate_law(
 ) -> Callable[..., Tuple[torch.Tensor]]:
     return sympytorch.SymPyModule(expressions=[transition.template.rate_law.args[0]])
 
+
 def _compile_initial_state(
     src: mira.modeling.Model,
 ) -> Callable[..., Tuple[torch.Tensor]]:
-    symbolic_initials = {get_name(var): src.template_model.initials[get_name(var)].expression.args[0] for var in src.variables.values()}
-    return sympytorch.SymPyModule(expressions=[symbolic_initials[get_name(var)] for var in src.variables.values()])
+    symbolic_initials = {
+        get_name(var): src.template_model.initials[get_name(var)].expression.args[0]
+        for var in src.variables.values()
+    }
+    return sympytorch.SymPyModule(
+        expressions=[symbolic_initials[get_name(var)] for var in src.variables.values()]
+    )
+
 
 @eval_diff.register(mira.modeling.Model)
 def _eval_diff_compiled_mira(
@@ -178,6 +185,7 @@ def _eval_diff_compiled_mira(
         dX[k] = numeric_deriv[i]
     return dX
 
+
 @eval_initial_state.register(mira.modeling.Model)
 def _eval_initial_state_compiled_mira(
     src: mira.modeling.Model,
@@ -195,6 +203,7 @@ def _eval_initial_state_compiled_mira(
         k = get_name(var)
         X[k] = numeric_result[i]
     return X
+
 
 @get_name.register
 def _get_name_str(name: str) -> str:
