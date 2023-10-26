@@ -9,9 +9,10 @@ from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 import mira
 import mira.metamodel
 import mira.modeling
+import mira.sources
+import mira.sources.amr
 import numpy
 import pyro
-import requests
 import sympy
 import sympytorch
 import torch
@@ -42,10 +43,13 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @pyro.nn.pyro_method
     def diff(self, X: State[torch.Tensor]) -> None:
         return eval_diff(self.src, self, X)
+    
+    @pyro.nn.pyro_method
+    def initial_state(self) -> State[torch.Tensor]:
+        return eval_initial_state(self.src, self)
 
     def forward(
         self,
-        initial_state: State[torch.Tensor],
         start_time: torch.Tensor,
         end_time: torch.Tensor,
         solver: Solver = TorchDiffEq(),
@@ -55,70 +59,60 @@ class CompiledDynamics(pyro.nn.PyroModule):
         for k in default_param_values(self.src).keys():
             getattr(self, get_name(k))
 
-        return simulate(self.diff, initial_state, start_time, end_time, solver=solver)
+        return simulate(self.diff, self.initial_state(), start_time, end_time, solver=solver)
 
     @functools.singledispatchmethod
     @classmethod
-    def from_askenet(cls, src) -> "CompiledDynamics":
+    def load(cls, src) -> "CompiledDynamics":
         raise NotImplementedError
 
-    @from_askenet.register(mira.modeling.Model)
+    @load.register(str)
     @classmethod
-    def _from_askenet_model(cls, src: mira.modeling.Model):
-        model = cls(src)
-        # Compile the numeric derivative of the model from the transition rate laws.
-        setattr(model, "numeric_deriv", _compile_deriv(src))
-        for trans in src.transitions.values():
-            # These are not used in the compiled model, but are helpful for inspecting the rate laws.
-            setattr(model, f"rate_law_{get_name(trans)}", _compile_rate_law(trans))
-
-        return model
-
-    @from_askenet.register(str)
-    @classmethod
-    def _from_askenet_path(cls, path: str):
+    def _load_from_url_or_path(cls, path: str):
         if "https://" in path:
-            res = requests.get(path)
-            model_json = res.json()
+            model = mira.sources.amr.model_from_url(path)
         else:
-            if not os.path.exists(path):
-                raise ValueError(f"Model file not found: {path}")
-            with open(path) as fh:
-                model_json = json.load(fh)
-        return cls.from_askenet(model_json)
+            model = mira.sources.amr.model_from_json_file(path)
+        return cls.load(model)
 
-    @from_askenet.register(mira.metamodel.TemplateModel)
+    @load.register(dict)
     @classmethod
-    def _from_askenet_template_model(cls, template: mira.metamodel.TemplateModel):
-        model = cls.from_askenet(mira.modeling(template))
+    def _load_from_json(cls, model_json: dict):
+        return cls.load(mira.sources.amr.model_from_json(model_json))
+
+    @load.register(mira.metamodel.TemplateModel)
+    @classmethod
+    def _load_from_template_model(cls, template: mira.metamodel.TemplateModel):
+        model = cls.load(mira.modeling.Model(template))
 
         # Check if all parameter names are strings
         if all(isinstance(param.key, str) for param in model.src.parameters.values()):
             return model
         else:
             new_template = mira.metamodel.ops.aggregate_parameters(template)
-            return cls.from_askenet(mira.modeling(new_template))
-
-    @from_askenet.register(dict)
+            return cls.load(mira.modeling.Model(new_template))
+        
+    @load.register(mira.modeling.Model)
     @classmethod
-    def _from_askenet_json(cls, model_json: dict):
-        # return a model from an ASKEM Model Representation json
-        if "templates" in model_json:
-            return cls.from_askenet(mira.metamodel.TemplateModel.from_json(model_json))
-        elif "petrinet" in model_json["header"]["schema"]:
-            return cls.from_askenet(
-                mira.sources.amr.petrinet.template_model_from_askenet_json(model_json)
-            )
-        elif "regnet" in model_json["header"]["schema"]:
-            return cls.from_askenet(
-                mira.sources.amr.regnet.template_model_from_askenet_json(model_json)
-            )
-        else:
-            raise ValueError(f"Unknown model schema: {model_json['schema']}")
+    def _load_from_mira_model(cls, src: mira.modeling.Model):
+        model = cls(src)
+        # Compile the numeric derivative of the model from the transition rate laws.
+        setattr(model, "numeric_deriv", _compile_deriv(src))
+        setattr(model, "numeric_initial_state", _compile_initial_state(src))
+        for trans in src.transitions.values():
+            # These are not used in the compiled model, but are helpful for inspecting the rate laws.
+            setattr(model, f"rate_law_{get_name(trans)}", _compile_rate_law(trans))
+
+        return model
 
 
 @functools.singledispatch
 def eval_diff(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def eval_initial_state(src, param_module: pyro.nn.PyroModule) -> State[T]:
     raise NotImplementedError
 
 
@@ -159,6 +153,11 @@ def _compile_rate_law(
 ) -> Callable[..., Tuple[torch.Tensor]]:
     return sympytorch.SymPyModule(expressions=[transition.template.rate_law.args[0]])
 
+def _compile_initial_state(
+    src: mira.modeling.Model,
+) -> Callable[..., Tuple[torch.Tensor]]:
+    symbolic_initials = {get_name(var): src.template_model.initials[get_name(var)].expression.args[0] for var in src.variables.values()}
+    return sympytorch.SymPyModule(expressions=[symbolic_initials[get_name(var)] for var in src.variables.values()])
 
 @eval_diff.register(mira.modeling.Model)
 def _eval_diff_compiled_mira(
@@ -167,20 +166,35 @@ def _eval_diff_compiled_mira(
     X: State[torch.Tensor],
 ) -> State[torch.Tensor]:
     dX = State()
-    # TODO: check if we can just comment this out
-    states = {s_name: X[s_name] for s_name in X.keys}
 
     parameters = {
         get_name(param_info): getattr(param_module, get_name(param_info))
         for param_info in src.parameters.values()
     }
 
-    numeric_deriv = param_module.numeric_deriv(**states, **parameters)
+    numeric_deriv = param_module.numeric_deriv(**X, **parameters)
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
         dX[k] = numeric_deriv[i]
     return dX
 
+@eval_initial_state.register(mira.modeling.Model)
+def _eval_initial_state_compiled_mira(
+    src: mira.modeling.Model,
+    param_module: pyro.nn.PyroModule,
+) -> State[torch.Tensor]:
+    parameters = {
+        get_name(param_info): getattr(param_module, get_name(param_info))
+        for param_info in src.parameters.values()
+    }
+
+    numeric_result = param_module.numeric_initial_state(**parameters)
+
+    X = State()
+    for i, var in enumerate(src.variables.values()):
+        k = get_name(var)
+        X[k] = numeric_result[i]
+    return X
 
 @get_name.register
 def _get_name_str(name: str) -> str:
@@ -226,13 +240,3 @@ def _mira_default_param_values(
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
     return values
-
-
-@default_initial_state.register(mira.modeling.Model)
-def _mira_default_initial_state(src: mira.modeling.Model) -> State[torch.Tensor]:
-    return State(
-        **{
-            get_name(var): torch.as_tensor(var.data["initial_value"])
-            for var in src.variables.values()
-        }
-    )
