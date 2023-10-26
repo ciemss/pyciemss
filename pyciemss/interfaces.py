@@ -1,6 +1,5 @@
 import contextlib
-import functools
-from typing import Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import Callable, Dict, Optional, Union
 
 import pyro
 import torch
@@ -11,10 +10,7 @@ from chirho.dynamical.handlers import (
     StaticIntervention,
 )
 from chirho.dynamical.ops import State
-from compiled_dynamics import CompiledDynamics
-
-# By convention we use "T" to denote the type of the dynamical system, e.g. `ODE`, `PDE`, or `SDE`.
-T = TypeVar("T")
+from pyciemss.compiled_dynamics import CompiledDynamics
 
 # Type alias for the variational approximate (i.e. "guide") representing the approximate posterior distribution over parameters.
 InferredParameters = pyro.nn.PyroModule
@@ -76,7 +72,7 @@ def simulate(
 
 # TODO
 def calibrate(
-    model: CompiledDynamics, data: Data[T], *args, **kwargs
+    model: CompiledDynamics, data: Data, *args, **kwargs
 ) -> InferredParameters:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -88,12 +84,12 @@ def calibrate(
 # TODO
 def optimize(
     model: CompiledDynamics,
-    objective_function: ObjectiveFunction[T],
-    constraints: Constraints[T],
-    optimization_algorithm: OptimizationAlgorithm[T],
+    objective_function: ObjectiveFunction,
+    constraints: Constraints,
+    optimization_algorithm: OptimizationAlgorithm,
     *args,
     **kwargs
-) -> OptimizationResult[T]:
+) -> OptimizationResult:
     """
     Optimize the objective function subject to the constraints.
     """
