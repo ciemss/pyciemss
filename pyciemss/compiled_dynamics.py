@@ -32,6 +32,10 @@ class CompiledDynamics(pyro.nn.PyroModule):
             elif isinstance(v, torch.Tensor):
                 self.register_buffer(get_name(k), v)
 
+        # Compile the numeric derivative of the model from the transition rate laws.
+        setattr(self, "numeric_deriv_func", _compile_deriv(src))
+        setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
+
     @pyro.nn.pyro_method
     def deriv(self, X: State[torch.Tensor]) -> None:
         return eval_deriv(self.src, self, X)
@@ -89,15 +93,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @load.register(mira.modeling.Model)
     @classmethod
     def _load_from_mira_model(cls, src: mira.modeling.Model):
-        model = cls(src)
-        # Compile the numeric derivative of the model from the transition rate laws.
-        setattr(model, "numeric_deriv_func", _compile_deriv(src))
-        setattr(model, "numeric_initial_state_func", _compile_initial_state(src))
-        for trans in src.transitions.values():
-            # These are not used in the compiled model, but are helpful for inspecting the rate laws.
-            setattr(model, f"rate_law_{get_name(trans)}", _compile_rate_law(trans))
-
-        return model
+        return cls(src)
 
 
 @functools.singledispatch
@@ -114,11 +110,6 @@ def _compile_initial_state(src) -> Callable[..., Tuple[torch.Tensor]]:
 def _compile_param_values(
     src,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
-    raise NotImplementedError
-
-
-@functools.singledispatch
-def _compile_rate_law(transition) -> Callable[..., Tuple[torch.Tensor]]:
     raise NotImplementedError
 
 

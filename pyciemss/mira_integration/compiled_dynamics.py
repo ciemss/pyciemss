@@ -19,7 +19,6 @@ from pyciemss.compiled_dynamics import (
     _compile_deriv,
     _compile_initial_state,
     _compile_param_values,
-    _compile_rate_law,
     eval_deriv,
     eval_initial_state,
     get_name,
@@ -84,16 +83,6 @@ def _compile_param_values_mira(
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
     return values
-
-
-@_compile_rate_law.register(mira.modeling.Transition)
-def _compile_rate_law_mira(
-    transition: mira.modeling.Transition,
-) -> Callable[..., Tuple[torch.Tensor]]:
-    rate_law_func = sympytorch.SymPyModule(
-        expressions=[transition.template.rate_law.args[0]]
-    )
-    return rate_law_func
 
 
 @eval_deriv.register(mira.modeling.Model)
