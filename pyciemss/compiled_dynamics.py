@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import functools
+import pickle
 from typing import Callable, Dict, Tuple, TypeVar, Union
 
 import mira
@@ -8,7 +9,6 @@ import mira.metamodel
 import mira.modeling
 import mira.sources
 import mira.sources.amr
-import pickle
 import pyro
 import torch
 from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
@@ -61,7 +61,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
         )
 
     def save(self, dest: str) -> None:
-        assert dest[-4:] == '.pkl', 'Model must be saved as a .pkl file.'
+        assert dest[-4:] == ".pkl", "Model must be saved as a .pkl file."
         with open(dest, "wb") as f:
             pickle.dump(self, f)
 
@@ -75,8 +75,8 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def _load_from_url_or_path(cls, path: str):
         if "https://" in path:
             model = mira.sources.amr.model_from_url(path)
-        elif path[-4:] == '.pkl':
-            with open(path, 'rb') as f:
+        elif path[-4:] == ".pkl":
+            with open(path, "rb") as f:
                 return pickle.load(f)
         else:
             model = mira.sources.amr.model_from_json_file(path)
