@@ -4,7 +4,7 @@ import tempfile
 import pytest
 import requests
 
-from pyciemss.ODE.compiled_dynamics import CompiledDynamics
+from pyciemss.compiled_dynamics import CompiledDynamics
 
 from .model_fixtures import END_TIMES, MODEL_URLS, START_TIMES
 
