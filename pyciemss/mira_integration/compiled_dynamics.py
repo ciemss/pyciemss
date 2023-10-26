@@ -125,7 +125,7 @@ def _eval_initial_state_mira(
 
 
 @get_name.register
-def _get_nam_mira_variable(var: mira.modeling.Variable) -> str:
+def _get_name_mira_variable(var: mira.modeling.Variable) -> str:
     return var.data["name"]
 
 
