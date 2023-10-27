@@ -25,3 +25,5 @@ MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
 
 START_TIMES = [torch.tensor(0.0), torch.tensor(1.0), torch.tensor(2.0)]
 END_TIMES = [torch.tensor(3.0), torch.tensor(4.0), torch.tensor(5.0)]
+
+LOGGING_STEP_SIZES = [torch.tensor(0.1)]
