@@ -19,6 +19,8 @@ def simulate(
     start_time: float,
     end_time: float,
     logging_step_size: float,
+    num_samples: int,
+    *,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
@@ -43,16 +45,21 @@ def simulate(
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
-    with LogTrajectory(timespan) as lt:
-        with InterruptionEventLoop():
-            with contextlib.ExitStack() as stack:
-                for handler in (
-                    static_intervention_handlers + dynamic_intervention_handlers
-                ):
-                    stack.enter_context(handler)
-                model(start_time, end_time)
+    def wrapped_model():
+        with LogTrajectory(timespan) as lt:
+            with InterruptionEventLoop():
+                with contextlib.ExitStack() as stack:
+                    for handler in (
+                        static_intervention_handlers + dynamic_intervention_handlers
+                    ):
+                        stack.enter_context(handler)
+                    model(torch.as_tensor(start_time), torch.tensor(end_time))
+        # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
+        [pyro.deterministic(f"state_{k}", v) for k, v in lt.trajectory.items()]
 
-    return lt.trajectory
+    return pyro.infer.Predictive(
+        wrapped_model, guide=inferred_parameters, num_samples=num_samples
+    )()
 
 
 # # TODO
