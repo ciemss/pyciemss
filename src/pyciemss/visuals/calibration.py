@@ -3,7 +3,7 @@ import pandas as pd
 from . import vega
 
 
-def calibration(datasource: pd.DataFrame) -> vega.VegaSchema:
+def contour_plot_calibration(datasource: pd.DataFrame) -> vega.VegaSchema:
     """Create a contour plot from the passed datasource.
 
     datasource --  A dataframe ready for rendering.  Should include:
@@ -14,6 +14,11 @@ def calibration(datasource: pd.DataFrame) -> vega.VegaSchema:
        - y1 --- Upper range of values
        - y0 --- Lower range of values
     """
+    for column_name in ['time', 'column_names', 'calibration', 'y', 'y1', 'y0']:
+      if column_name not in datasource:
+            raise ValueError(
+                "Either {} doesn't exist".format( column_name)
+            )
     schema = vega.load_schema("calibrate_chart.vg.json")
 
     data = vega.find_keyed(schema["data"], "name", "table")

@@ -8,7 +8,7 @@ import vl_convert
 from .vega import VegaSchema, pad, resize, set_title, rescale, orient_legend
 from .barycenter import triangle_contour
 from .trajectories import trajectories
-from .calibration import calibration
+from .calibration import contour_plot_calibration
 from .histogram import histogram_multi
 from .graphs import attributed_graph, spring_force_graph
 
@@ -22,7 +22,7 @@ __all__ = [
     orient_legend,
     triangle_contour,
     trajectories,
-    calibration,
+    contour_plot_calibration,
     histogram_multi,
     attributed_graph,
     spring_force_graph,
