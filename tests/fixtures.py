@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, Dict
 
 import torch
 
@@ -35,13 +35,13 @@ LOGGING_STEP_SIZES = [0.09]
 NUM_SAMPLES = [2]
 
 
-def check_keys_match(obj1: dict[str, T], obj2: dict[str, T]):
+def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):
     assert set(obj1.keys()) == set(obj2.keys()), "Objects have different variables."
     return True
 
 
 def check_states_match_in_all_but_values(
-    traj1: dict[str, torch.Tensor], traj2: dict[str, torch.Tensor]
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor]
 ):
     assert check_keys_match(traj1, traj2)
 
@@ -55,7 +55,7 @@ def check_states_match_in_all_but_values(
 
 
 def check_result_sizes(
-    traj: dict[str, torch.Tensor],
+    traj: Dict[str, torch.Tensor],
     start_time: float,
     end_time: float,
     logging_step_size: float,
