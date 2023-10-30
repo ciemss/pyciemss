@@ -6,7 +6,7 @@ import requests
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
-from .model_fixtures import END_TIMES, MODEL_URLS, START_TIMES
+from .fixtures import END_TIMES, MODEL_URLS, START_TIMES
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)

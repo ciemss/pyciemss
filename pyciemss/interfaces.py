@@ -34,28 +34,23 @@ def simulate(
 
     timespan = torch.arange(start_time, end_time, logging_step_size)
 
+    static_intervention_handlers = [
+        StaticIntervention(time, State(**static_intervention_assignment))
+        for time, static_intervention_assignment in static_interventions.items()
+    ]
+    dynamic_intervention_handlers = [
+        DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
+    ]
+
     with LogTrajectory(timespan) as lt:
         with InterruptionEventLoop():
-            # TODO: check this. Don't think it's correct usage of ExitStack
             with contextlib.ExitStack() as stack:
-                for time, static_intervened_state_dict in static_interventions.items():
-                    static_intervened_state = State(**static_intervened_state_dict)
-                    stack.enter_context(
-                        StaticIntervention(
-                            torch.as_tensor(time), static_intervened_state
-                        )
-                    )
-                    for (
-                        event_fn,
-                        dynamic_intervened_state_dict,
-                    ) in dynamic_interventions.items():
-                        dynamic_intervened_state = State(
-                            **dynamic_intervened_state_dict
-                        )
-                        stack.enter_context(
-                            DynamicIntervention(event_fn, dynamic_intervened_state)
-                        )
-                        model(start_time, end_time)
+                for handler in (
+                    static_intervention_handlers + dynamic_intervention_handlers
+                ):
+                    stack.enter_context(handler)
+                model(start_time, end_time)
 
     return lt.trajectory
 
