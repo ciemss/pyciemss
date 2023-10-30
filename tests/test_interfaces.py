@@ -2,7 +2,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.interfaces import simulate
+from pyciemss.interfaces import sample
 
 from .fixtures import (
     END_TIMES,
@@ -20,10 +20,10 @@ from .fixtures import (
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_simulate_no_interventions(
+def test_sample_no_interventions(
     url, start_time, end_time, logging_step_size, num_samples
 ):
-    result = simulate(url, start_time, end_time, logging_step_size, num_samples)
+    result = sample(url, start_time, end_time, logging_step_size, num_samples)
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
@@ -33,7 +33,7 @@ def test_simulate_no_interventions(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_simulate_with_static_interventions(
+def test_sample_with_static_interventions(
     url, start_time, end_time, logging_step_size, num_samples
 ):
     model = CompiledDynamics.load(url)
@@ -49,7 +49,7 @@ def test_simulate_with_static_interventions(
         intervention_time_2: intervened_state_2,
     }
 
-    intervened_result = simulate(
+    intervened_result = sample(
         url,
         start_time,
         end_time,
@@ -58,7 +58,7 @@ def test_simulate_with_static_interventions(
         static_interventions=static_interventions,
     )
 
-    result = simulate(url, start_time, end_time, logging_step_size, num_samples)
+    result = sample(url, start_time, end_time, logging_step_size, num_samples)
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -72,7 +72,7 @@ def test_simulate_with_static_interventions(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_simulate_with_dynamic_interventions(
+def test_sample_with_dynamic_interventions(
     url, start_time, end_time, logging_step_size, num_samples
 ):
     model = CompiledDynamics.load(url)
@@ -95,7 +95,7 @@ def test_simulate_with_dynamic_interventions(
         intervention_event_fn_2: intervened_state_2,
     }
 
-    intervened_result = simulate(
+    intervened_result = sample(
         url,
         start_time,
         end_time,
@@ -104,7 +104,7 @@ def test_simulate_with_dynamic_interventions(
         dynamic_interventions=dynamic_interventions,
     )
 
-    result = simulate(url, start_time, end_time, logging_step_size, num_samples)
+    result = sample(url, start_time, end_time, logging_step_size, num_samples)
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -118,7 +118,7 @@ def test_simulate_with_dynamic_interventions(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_simulate_with_static_and_dynamic_interventions(
+def test_sample_with_static_and_dynamic_interventions(
     url, start_time, end_time, logging_step_size, num_samples
 ):
     model = CompiledDynamics.load(url)
@@ -137,7 +137,7 @@ def test_simulate_with_static_and_dynamic_interventions(
 
     static_interventions = {intervention_time_2: intervened_state_2}
 
-    intervened_result = simulate(
+    intervened_result = sample(
         url,
         start_time,
         end_time,
@@ -147,7 +147,7 @@ def test_simulate_with_static_and_dynamic_interventions(
         dynamic_interventions=dynamic_interventions,
     )
 
-    result = simulate(url, start_time, end_time, logging_step_size, num_samples)
+    result = sample(url, start_time, end_time, logging_step_size, num_samples)
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
