@@ -4,9 +4,9 @@ import tempfile
 import pytest
 import requests
 import torch
+from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from chirho.dynamical.ops import State
 
 from .fixtures import END_TIMES, MODEL_URLS, START_TIMES
 
