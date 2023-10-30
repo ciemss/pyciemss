@@ -25,7 +25,6 @@ def test_simulate_no_interventions(
 ):
     result = simulate(url, start_time, end_time, logging_step_size, num_samples)
     assert isinstance(result, dict)
-
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
 
@@ -43,7 +42,7 @@ def test_simulate_with_static_interventions(
     intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
     intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
 
-    intervention_time_1 = (end_time + start_time) / 2.000001  # Midpoint
+    intervention_time_1 = (end_time + start_time) / 2  # Midpoint
     intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
     static_interventions = {
         intervention_time_1: intervened_state_1,
@@ -82,7 +81,7 @@ def test_simulate_with_dynamic_interventions(
     intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
     intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
 
-    intervention_time_1 = (end_time + start_time) / 2.000001  # Midpoint
+    intervention_time_1 = (end_time + start_time) / 2  # Midpoint
     intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
 
     def intervention_event_fn_1(time: torch.Tensor, *args, **kwargs):
@@ -128,7 +127,7 @@ def test_simulate_with_static_and_dynamic_interventions(
     intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
     intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
 
-    intervention_time_1 = (end_time + start_time) / 2.000001  # Midpoint
+    intervention_time_1 = (end_time + start_time) / 2  # Midpoint
     intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
 
     def intervention_event_fn_1(time: torch.Tensor, *args, **kwargs):

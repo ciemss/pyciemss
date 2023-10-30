@@ -30,7 +30,7 @@ MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
 START_TIMES = [0.0, 1.0, 2.0]
 END_TIMES = [3.0, 4.0, 5.0]
 
-LOGGING_STEP_SIZES = [0.09]
+LOGGING_STEP_SIZES = [0.1]
 
 NUM_SAMPLES = [2]
 
@@ -68,7 +68,8 @@ def check_result_sizes(
         if k[:5] == "state":
             assert v.shape == (
                 num_samples,
-                len(torch.arange(start_time, end_time, logging_step_size)),
+                len(torch.arange(start_time, end_time, logging_step_size))
+                - 1,  # Does not include start_time
             )
         else:
             assert v.shape == (num_samples,)
