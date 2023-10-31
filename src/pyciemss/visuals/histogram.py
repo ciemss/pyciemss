@@ -128,9 +128,9 @@ def heatmap_scatter(
                 "__count": zz.ravel(),
             }
         )
-        return dataset.to_json(orient="records")
+        return dataset.to_dict(orient="records")
 
-    json_points = points.to_json(orient="records")
+    json_points = points.to_dict(orient="records")
 
     if x_name is None:
         x_name = points.columns[0]
@@ -142,10 +142,6 @@ def heatmap_scatter(
 
         schema["data"] = vega.replace_named_with(
             schema["data"], "points", ["values"], json_points
-        )
-
-        schema["data"] = vega.replace_named_with(
-            schema["data"], "source_0", ["values"], json_points
         )
 
         schema["signals"] = vega.replace_named_with(

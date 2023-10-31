@@ -30,16 +30,8 @@
         ]
       },
     {
-      "name": "source_0",
-      "values": [
-          {"x_value": 2, "y_value": 10},
-          {"x_value": 3, "y_value": 5},
-          {"x_value": 3, "y_value": 5},
-          {"x_value": 2, "y_value": 3},
-          {"x_value": 4, "y_value": 10},
-          {"x_value": 3, "y_value": 1}
-        ],
-      "format": {"type": "json"},
+      "name": "heatmap_bins",
+      "source": "points",
       "transform": [
 
         {
@@ -93,7 +85,7 @@
       "name": "marks",
       "type": "rect",
       "style": ["rect"],
-      "from": {"data": "source_0"},
+      "from": {"data": "heatmap_bins"},
       "encode": {
         "update": {
           "fill": {"scale": "color", "field": "__count"},
@@ -156,7 +148,7 @@
     {
       "name": "color",
       "type": "linear",
-      "domain": {"data": "source_0", "field": "__count"},
+      "domain": {"data": "heatmap_bins", "field": "__count"},
       "range": "heatmap",
       "interpolate": "hcl",
       "zero": true
