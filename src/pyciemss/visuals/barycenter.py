@@ -8,7 +8,7 @@ from pyro.distributions import Dirichlet
 from . import vega
 
 
-def triangle_weights(samples, concentration=20, subdiv=7):
+def triangle_weights(samples, concentration=20, subdiv=3):
     # Adapted from https://blog.bogatron.net/blog/2014/02/02/visualizing-dirichlet-distributions/
     # TODO: This method works...but it quite the monstrosity!  Look into ways to simplify...
 
@@ -119,9 +119,8 @@ def triangle_contour(
 
     if not contour:
         contours = vega.find_keyed(schema["marks"], "name", "_contours")
-        contours["encode"]["enter"]["stroke"] = {
-            "scale": "color",
-            "field": "contour.value",
+        contours["encode"]["enter"]["strokeWidth"] = {
+            "value": 0
         }
 
     return schema

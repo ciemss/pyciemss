@@ -7,7 +7,7 @@ import torch
 
 from pathlib import Path
 
-from pyciemss.visuals import plots, vega
+from pyciemss.visuals import plots, vega, trajectories
 from pyciemss.utils import get_tspan
 from pyciemss.utils.interface_utils import convert_to_output_format
 
@@ -238,6 +238,13 @@ class TestTrajectory(unittest.TestCase):
                 len(traces[traces["trajectory"] == exemplar]),
                 "Unexpected number of trace data points",
             )
+
+    def test_mean_traces(self):
+        
+        traces = trajectories.select_traces(self.dists,
+                                    keep=".*_sol", 
+                                    relabel=self.nice_labels)
+
 
 
 class TestHistograms(unittest.TestCase):
