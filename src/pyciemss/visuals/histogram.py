@@ -88,17 +88,17 @@ def heatmap_scatter(
     data: pd.DataFrame,
     x_name: str = "x_name",
     y_name: str = "y_name",
-    x_bin: int = 10,
-    y_bin: int = 10
+    max_x_bin: int = 10,
+    max_y_bin: int = 10
 ) -> vega.VegaSchema:
     """
     **data -- Datasets as pandas dataframe, should contain x_name and y_name,
     x_name: str name of column in dataset for x axis,
     y_name: str, name of column in dataset for y axis,
-    x_bin: int = 10, max bins by x axis,
-    y_bin: int = 10, max bins by y axis,
+    max_x_bin: int = 10, maximum number bins for the x axis,
+    max_y_bin: int = 10, maximum number bins for the y axis,
     """
-    json_dict = data.to_json(orient = 'records')
+    json_dict = data.to_json(orient='records')
     schema = vega.load_schema("heatmap_scatter.vg.json")
 
     schema["data"] = vega.replace_named_with(schema["data"], "points", ["values"], json_dict)
@@ -106,10 +106,10 @@ def heatmap_scatter(
     schema["data"] = vega.replace_named_with(schema["data"], "source_0", ["values"], json_dict)
 
     schema["signals"] = vega.replace_named_with(
-            schema["signals"], "bandwidthX", ["value"], x_bin
+            schema["signals"], "max_x_bins", ["value"], x_bin
         )
     schema["signals"] = vega.replace_named_with(
-            schema["signals"], "bandwidthY", ["value"], y_bin
+            schema["signals"], "max_y_bins", ["value"], y_bin
         )
     schema["signals"] = vega.replace_named_with(
             schema["signals"], "x_name", ["value"], x_name
