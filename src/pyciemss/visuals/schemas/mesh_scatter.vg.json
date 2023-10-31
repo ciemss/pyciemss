@@ -17,9 +17,10 @@
       },
     {
       "name": "mesh",
-      "values": [{"x_start":-0.5555555556,"x_end":0.5555555556,"y_start":0.5555555556, "y_end": 1, "__count":0.0},
-      {"x_start":0.5555555556,"x_end":1.6666666667,"y_start":0.5555555556, "y_end": 1, "__count":1.1111111111},
-      {"x_start":1.6666666667,"x_end":2.7777777778,"y_start":0.5555555556, "y_end": 1, "__count":2.2222222222}
+      "values": [
+        {"x_start":-0.5555555556,"x_end":0.5555555556,"y_start":0.5555555556, "y_end": 1, "__count":0.0},
+        {"x_start":0.5555555556,"x_end":1.6666666667,"y_start":0.5555555556, "y_end": 1, "__count":1.1111111111},
+        {"x_start":1.6666666667,"x_end":2.7777777778,"y_start":0.5555555556, "y_end": 1, "__count":2.2222222222}
         ],
       "format": {"type": "json"}
       
@@ -96,7 +97,7 @@
       "domain": {"data": "mesh", "field": "__count"},
       "range": "heatmap",
       "interpolate": "hcl",
-      "zero": false
+      "zero": true
     }
   ],
   "axes": [

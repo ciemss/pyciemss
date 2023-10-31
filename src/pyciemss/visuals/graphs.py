@@ -71,10 +71,4 @@ def spring_force_graph(
         labels = vega.find_named(schema["marks"], "labels")
         labels["encode"]["enter"]["text"]["field"] = f"datum.{node_labels}"
 
-    if not directed_graph:
-        schema["marks"] = vega.delete_named(schema["marks"], "arrows")
-
     return schema
-
-
-
