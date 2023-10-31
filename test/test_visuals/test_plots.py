@@ -348,3 +348,44 @@ class TestHistograms(unittest.TestCase):
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30)
         data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         self.assertEqual({"s30", "r30"}, set(data["label"].values))
+
+
+class TestHeatmapScatter(unittest.TestCase):
+    def test_implicit_heatmap(self):
+        df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
+        schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
+
+        points = vega.find_named(schema["data"], "points")["values"]
+        self.assertTrue(
+            all(pd.DataFrame(points) == df), "Unexpected points values found"
+        )
+
+    def test_explicit_heatmap(self):
+        def create_fake_data():
+            nx, ny = (10, 10)
+            x = np.linspace(0, 10, nx)
+            y, a = np.linspace(0, 10, ny, retstep=True)
+
+            # create mesh data
+            xv, yv = np.meshgrid(x, y)
+            zz = xv**2 + yv**2
+
+            # create scatter plot
+            df = pd.DataFrame(
+                10 * np.random.random((100, 2)), columns=["alpha", "gamma"]
+            )
+            return (xv, yv, zz), df
+
+        mesh_data, scatter_data = create_fake_data()
+        schema = plots.heatmap_scatter(scatter_data, mesh_data)
+
+        points = vega.find_named(schema["data"], "points")["values"]
+        self.assertTrue(
+            all(pd.DataFrame(points) == scatter_data), "Unexpected points values found"
+        )
+
+        mesh = pd.DataFrame(vega.find_named(schema["data"], "mesh")["values"])
+        self.assertEqual(500, mesh.size, "Unexpected mesh representation size.")
+        self.assertTrue(
+            all(mesh["__count"].isin(mesh_data[2].ravel())), "Unexpected count found"
+        )
