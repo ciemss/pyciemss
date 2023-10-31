@@ -159,7 +159,7 @@
       "domain": {"data": "source_0", "field": "__count"},
       "range": "heatmap",
       "interpolate": "hcl",
-      "zero": false
+      "zero": true
     }
   ],
   "axes": [
