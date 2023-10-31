@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Callable, Dict, Optional, Union, Iterable
+from typing import Any, Callable, Dict, Iterable, Optional, Union
 
 import pyro
 import torch
@@ -14,6 +14,7 @@ from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.observation import NoiseModel
 
 
 @pyciemss_logging_wrapper
@@ -23,7 +24,8 @@ def sample(
     logging_step_size: float,
     num_samples: int,
     *,
-    solver_method="dopri5",
+    noise_model: Optional[NoiseModel] = None,
+    solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
@@ -102,11 +104,15 @@ def sample(
                         stack.enter_context(handler)
                     model(
                         torch.as_tensor(start_time),
-                        torch.tensor(end_time),
+                        torch.as_tensor(end_time),
                         TorchDiffEq(method=solver_method, options=solver_options),
                     )
         # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
         [pyro.deterministic(f"state_{k}", v) for k, v in lt.trajectory.items()]
+
+        if noise_model is not None:
+            # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+            noise_model(lt.trajectory)
 
     return pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples
@@ -115,7 +121,7 @@ def sample(
 
 def calibrate(
     model_path_or_json: Union[str, Dict],
-    data_path: str,
+    data: dict[str, torch.Tensor],
     start_time: float,
     *,
     noise_model: str = "scaled_normal",
@@ -135,7 +141,7 @@ def calibrate(
     Infer parameters for a DynamicalSystem model conditional on data.
     This uses variational inference with a mean-field variational family to infer the parameters of the model.
     """
-        
+
     model = CompiledDynamics.load(model_path_or_json)
 
     def autoguide(model):
@@ -151,9 +157,9 @@ def calibrate(
             )
         )
         return guide
-    
+
     # TODO
-    # end_time = ...
+    end_time = ...
 
     static_intervention_handlers = [
         StaticIntervention(time, State(**static_intervention_assignment))
@@ -163,7 +169,7 @@ def calibrate(
         DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
-    
+
     def wrapped_model():
         with InterruptionEventLoop():
             with contextlib.ExitStack() as stack:
@@ -171,8 +177,7 @@ def calibrate(
                     static_intervention_handlers + dynamic_intervention_handlers
                 ):
                     stack.enter_context(handler)
-                model(torch.as_tensor(start_time), torch.tensor(end_time))
-
+                model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
     guide = autoguide(wrapped_model)
     optim = pyro.optim.Adam({"lr": lr})
