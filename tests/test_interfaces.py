@@ -4,7 +4,6 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.interfaces import sample
-from pyciemss.observation import NormalNoiseModel
 
 from .fixtures import (
     END_TIMES,
@@ -65,7 +64,8 @@ def test_sample_with_noise(
         logging_step_size,
         num_samples,
         start_time=start_time,
-        noise_model=NormalNoiseModel(scale=scale),
+        noise_model="normal",
+        noise_model_kwargs={"scale": scale},
     )
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -214,11 +214,19 @@ def test_sample_with_static_and_dynamic_interventions(
     )
 
 
-# @pytest.mark.parametrize("model_url", MODEL_URLS)
-# @pytest.mark.parametrize("start_time", START_TIMES)
-# @pytest.mark.parametrize("end_time", END_TIMES)
-# @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-# def test_calibrate(model_url, start_time, end_time, logging_step_size):
-#     model = CompiledDynamics.load(model_url)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+def test_calibrate(model_url, start_time, end_time, logging_step_size):
+    data = sample(
+        model_url,
+        end_time,
+        logging_step_size,
+        1,
+        start_time=start_time,
+        noise_model="normal",
+        noise_model_kwargs={"scale": 0.1},
+    )
 
-#     data = sample(model_url, end_time, logging_step_size, 1, start_time=start_time)
+    assert isinstance(data, dict)

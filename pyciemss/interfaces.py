@@ -14,7 +14,7 @@ from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
-from pyciemss.observation import NoiseModel
+from pyciemss.integration_utils.observation import compile_noise_model
 
 
 @pyciemss_logging_wrapper
@@ -24,7 +24,8 @@ def sample(
     logging_step_size: float,
     num_samples: int,
     *,
-    noise_model: Optional[NoiseModel] = None,
+    noise_model: Optional[str] = None,
+    noise_model_kwargs: Dict[str, Any] = {},
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -111,8 +112,9 @@ def sample(
         [pyro.deterministic(f"state_{k}", v) for k, v in lt.trajectory.items()]
 
         if noise_model is not None:
+            _noise_model = compile_noise_model(noise_model, **noise_model_kwargs)
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            noise_model(lt.trajectory)
+            _noise_model(lt.trajectory)
 
     return pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples
@@ -124,8 +126,8 @@ def calibrate(
     data: dict[str, torch.Tensor],
     start_time: float,
     *,
-    noise_model: str = "scaled_normal",
-    noise_scale: float = 0.1,
+    noise_model: str = "normal",
+    noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
         Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
