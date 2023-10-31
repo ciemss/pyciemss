@@ -1,5 +1,5 @@
 import contextlib
-from typing import Callable, Dict, Optional, Union, Iterable
+from typing import Any, Callable, Dict, Optional, Union, Iterable
 
 import pyro
 import torch
@@ -9,27 +9,74 @@ from chirho.dynamical.handlers import (
     LogTrajectory,
     StaticIntervention,
 )
+from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
+from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 
 
-def simulate(
+@pyciemss_logging_wrapper
+def sample(
     model_path_or_json: Union[str, Dict],
-    start_time: float,
     end_time: float,
     logging_step_size: float,
     num_samples: int,
     *,
+    solver_method="dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
     ] = {},
-) -> State[torch.Tensor]:
+) -> Dict[str, torch.Tensor]:
     """
-    Simulate trajectories from a given `model`, conditional on specified `inferred_parameters` distribution.
-    If `inferred_parameters` is not given, this will sample from the prior distribution.
+    Load a model from a file, compile it into a probabilistic program, and sample from it.
+
+    Args:
+        model_path_or_json: Union[str, Dict]
+            - A path to a AMR model file or JSON containing a model in AMR form.
+        end_time: float
+            - The end time of the sampled simulation.
+        logging_step_size: float
+            - The step size to use for logging the trajectory.
+        num_samples: int
+            - The number of samples to draw from the model.
+        interventions: Optional[Iterable[Tuple[float, str, float]]]
+            - A list of interventions to apply to the model.
+              Each intervention is a tuple of the form (time, parameter_name, value).
+        solver_method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug.
+              If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        solver_options: Dict[str, Any]
+            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` from the
+              AMR model with the simulation timepoints.
+            - By default we set the `start_time` to be 0.
+        inferred_parameters:
+            - A Pyro module that contains the inferred parameters of the model.
+              This is typically the result of `calibrate`.
+            - If not provided, we will use the default values from the AMR model.
+        static_interventions: Dict[float, Dict[str, torch.Tensor]]
+            - A dictionary of static interventions to apply to the model.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+        dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+            - A dictionary of dynamic interventions to apply to the model.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+
+    Returns:
+        result: Dict[str, torch.Tensor]
+            - Dictionary of outputs from the model.
+                - Each key is the name of a parameter or state variable in the model.
+                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+                    and (num_samples,) for parameters.
     """
 
     model = CompiledDynamics.load(model_path_or_json)
@@ -53,7 +100,11 @@ def simulate(
                         static_intervention_handlers + dynamic_intervention_handlers
                     ):
                         stack.enter_context(handler)
-                    model(torch.as_tensor(start_time), torch.tensor(end_time))
+                    model(
+                        torch.as_tensor(start_time),
+                        torch.tensor(end_time),
+                        TorchDiffEq(method=solver_method, options=solver_options),
+                    )
         # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
         [pyro.deterministic(f"state_{k}", v) for k, v in lt.trajectory.items()]
 
