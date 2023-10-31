@@ -111,9 +111,11 @@ def select_traces(
     only_examplary_line = only_examplary_line.drop(
         columns=["sample_id"], errors="ignore"
     )
+    # make rabbit and wolfs it's own column
     examplary_line = only_examplary_line.pivot_table(
         values="value", index="timepoint", columns="trajectory"
     )
+    print(examplary_line)
     examplary_line["timepoint_id"] = examplary_line.index
     return examplary_line
 

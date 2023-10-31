@@ -240,10 +240,19 @@ class TestTrajectory(unittest.TestCase):
             )
 
     def test_mean_traces(self):
-        
         traces = trajectories.select_traces(self.dists,
+                                    select_by = "mean",
                                     keep=".*_sol", 
                                     relabel=self.nice_labels)
+        # check no repeat values for time points
+        self.assertEqual(len(np.unique(traces["timepoint_id"])), len(traces["timepoint_id"]))
+        # check keeping only trajectories for kept columns
+        traces_df = trajectories._nice_df(self.dists)
+        traces_df = trajectories._keep_drop_rename(traces_df, ".*_sol", None, self.nice_labels)
+        # check if equal without the timepoint columns (last column)
+        traces_columns = list(traces.columns)
+        traces_columns.remove('timepoint_id')
+        self.assertCountEqual(traces_columns, list(traces_df.columns))
 
 
 
