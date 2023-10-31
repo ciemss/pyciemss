@@ -41,6 +41,10 @@ def select_traces(
             after keep & drop.
 
     """
+    if select_by not in ["mean", "var", "granger"]:
+        raise ValueError(
+            f"{select_by} not one of allowed values mean, var, granger"
+        )
     traces_df = _nice_df(traces)
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
 
@@ -115,7 +119,7 @@ def select_traces(
     examplary_line = only_examplary_line.pivot_table(
         values="value", index="timepoint", columns="trajectory"
     )
-    print(examplary_line)
+
     examplary_line["timepoint_id"] = examplary_line.index
     return examplary_line
 
@@ -169,7 +173,7 @@ def trajectories(
     """
     if relabel is None:
         relabel = dict()
-
+    
     distributions = _nice_df(distributions)
     traces = _nice_df(traces)
     points = _nice_df(points)
