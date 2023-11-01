@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Union, Optional
+from numbers import Number
 import networkx as nx
 
 from . import vega
@@ -104,10 +105,10 @@ def attributed_graph(
 
 
 def spring_force_graph(
-    graph: nx.Graph, 
+    graph: nx.Graph,
     node_labels: Union[str, None] = "label",
-    input_layout:  bool = True,
-    directed_graph: bool = True
+    layout: Optional[dict[any, (Number, Number)]] = None,
+    directed_graph: bool = True,
 ) -> vega.VegaSchema:
     """Draw a general spring-force graph
 
@@ -117,14 +118,25 @@ def spring_force_graph(
               If it is None, no label is drawn.
     """
     graph = nx.convert_node_labels_to_integers(graph, label_attribute=node_labels)
-
     gjson = nx.json_graph.node_link_data(graph)
-    # use -100 to signify no fixed location. values will update if node is dragged
-    gjson["nodes"] = [dict(item, fixedx = -100, fixedy = -100) for item in gjson["nodes"]]
-
     schema = vega.load_schema("spring_graph.vg.json")
 
-    
+    # use -100 to signify no fixed location. values will update if node is dragged
+    gjson["nodes"] = [dict(item, fixedx=-100, fixedy=-100) for item in gjson["nodes"]]
+
+    if layout:
+
+        def _layout_get(id):
+            return dict(zip(["fx", "fy"], layout.get(id, (None, None))))
+
+        gjson["nodes"] = [
+            {**item, **_layout_get(item[node_labels])} for item in gjson["nodes"]
+        ]
+
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "layoutdata", ["value"], True
+        )
+
     schema["data"] = vega.replace_named_with(
         schema["data"], "node-data", ["values"], gjson["nodes"]
     )
@@ -132,16 +144,6 @@ def spring_force_graph(
     schema["data"] = vega.replace_named_with(
         schema["data"], "link-data", ["values"], gjson["links"]
     )
-    if input_layout:
-
-        if 'fx' not in gjson["nodes"][0].keys():
-            raise ValueError(f"Cannot create graph with fixed layout without fx as key.")
-        if 'fy' not in gjson["nodes"][0].keys():
-            raise ValueError(f"Cannot create graph with fixed layout without fy as key.")
-        
-        schema["signals"] = vega.replace_named_with(
-            schema["signals"], "layoutdata", ["value"], True
-        )
 
     if node_labels is None:
         schema["marks"] = vega.delete_named(schema["marks"], "labels")
