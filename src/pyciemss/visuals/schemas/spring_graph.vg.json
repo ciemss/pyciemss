@@ -109,10 +109,7 @@
       "name": "nodes",
       "type": "symbol",
       "zindex": 1,
-
       "from": {"data": "node-data"},
-      
-
       "transform": [
         {
           "type": "force",
@@ -128,7 +125,6 @@
           ]
         }
       ],
-
       "encode": {
         "enter": {
           "fill": {"scale": "color", "field": "group"},
@@ -149,16 +145,16 @@
       "zindex": 2,
       "interactive": false, 
       "transform": [
-              {
-                "type": "label",
-                "avoidMarks": ["nodes"],
-                "anchor": ["top", "bottom", "right", "left"],
-                "offset": [1],
-                "size": {
-                    "signal": "[width + 60, height]"
-                }
-              }
-          ],
+        {
+          "type": "label",
+          "avoidMarks": ["nodes"],
+          "anchor": ["top", "bottom", "right", "left"],
+          "offset": [1],
+          "size": {
+              "signal": "[width + 60, height]"
+          }
+        }
+      ],
       "encode": {
         "enter": {
           "fill": {"value": "black"},
