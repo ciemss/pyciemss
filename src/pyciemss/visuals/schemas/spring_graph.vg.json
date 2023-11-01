@@ -80,12 +80,12 @@
     },
     {
       "name": "xscale",
-      "domain": {"data": "node-data", "field": "fx"},
+      "domain": {"data": "node-data", "field": "inputX"},
       "range": [10, {"signal": "width - 10"}]
     },
     {
       "name": "yscale",
-      "domain": {"data": "node-data", "field": "fy"},
+      "domain": {"data": "node-data", "field": "inputY"},
       "range": [10, {"signal": "height - 10"}]
     }
   ],
@@ -137,8 +137,8 @@
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fy": {"signal": "datum.inputY != -100 ? datum.inputY : scale('yscale', datum.fy)"},
-          "fx": {"signal": "datum.inputX != -100 ? datum.inputX  : scale('xscale', datum.fx)"}
+          "fx": {"signal": "datum.fx == null ? scale('xscale', datum.inputX) : datum.fx"},
+          "fy": {"signal": "datum.fy == null ? scale('yscale', datum.inputY) : datum.fy"}
         }
       }
     },
@@ -242,17 +242,17 @@
     {
       "name": "node-data",
       "values": [
-        {"id": 4, "label": "Zero", "group": "A", "fx": 2, "fy": 5, "inputX": -100, "inputY": -100},
-        {"id": 1, "label": "One", "group": "A", "fx": 2, "fy": 10, "inputX": -100, "inputY": -100},
-        {"id": 2, "label": "Two", "group": "B", "fx": 2, "fy": 5, "inputX": -100, "inputY": -100},
-        {"id": 3, "label": "Three", "group": "B", "fx": 2, "fy": 3, "inputX": -100, "inputY": -100},
-        {"id": 0, "label": "Four", "group": "C", "fx": 1, "fy": 5, "inputX": -100, "inputY": -100},
-        {"id": 5, "label": "Five", "group": "C", "fx": 2, "fy": 5, "inputX": -100, "inputY": -100},
-        {"id": 6, "label": "Six", "group": "C", "fx": 2, "fy": 5, "inputX": -100, "inputY": -100}
+        {"id": 4, "label": "Zero", "group": "A", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
+        {"id": 1, "label": "One", "group": "A", "inputX": 2, "inputY": 10, "fx": null, "fy": null},
+        {"id": 2, "label": "Two", "group": "B", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
+        {"id": 3, "label": "Three", "group": "B", "inputX": 2, "inputY": 3, "fx": null, "fy": null},
+        {"id": 0, "label": "Four", "group": "C", "inputX": 1, "inputY": 5, "fx": null, "fy": null},
+        {"id": 5, "label": "Five", "group": "C", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
+        {"id": 6, "label": "Six", "group": "C", "inputX": 2, "inputY": 5, "fx": null, "fy": null}
       ],
       "on": [
-        {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{inputX: fix[0], inputY: fix[1]}"},
-        {"trigger": "reset", "modify": "reset", "values": "{inputX: -100, inputY: -100}"}
+        {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fx: fix[0], fy: fix[1]}"},
+        {"trigger": "reset", "modify": "reset", "values": "{fx: null, fy: null}"}
     ]
     },
     {

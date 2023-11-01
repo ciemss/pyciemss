@@ -120,7 +120,7 @@ def spring_force_graph(
 
     def _layout_get(id):
         x, y = layout.get(id, (None, None))
-        return dict(zip(["inputX", "inputY", "fx", "fy"], [-100, -100, x, y]))
+        return dict(zip(["inputX", "inputY", "fx", "fy"], [x, y, None, None]))
 
     graph = nx.convert_node_labels_to_integers(graph, label_attribute=node_labels)
     gjson = nx.json_graph.node_link_data(graph)
@@ -130,9 +130,6 @@ def spring_force_graph(
     # -- Set 'inputX' and 'inputY' to original layout
     # -- Copy 'fx' and 'fy' if present in 'inputX' and 'inputY' OR set based on user action
     # -- Compute force-directed layout for remaning nodes
-
-    # # use -100 to signify no fixed location. values will update if node is dragged
-    # gjson["nodes"] = [dict(item, inputX=-100, inputY=-100) for item in gjson["nodes"]]
 
     if layout:
         gjson["nodes"] = [
