@@ -133,8 +133,8 @@
         "update": {
           "size": {"signal": "2 * nodeRadius * nodeRadius"},
           "cursor": {"value": "pointer"},
-          "fx": {"signal": "datum.fx == null ? scale('xscale', datum.inputX) : datum.fx"},
-          "fy": {"signal": "datum.fy == null ? scale('yscale', datum.inputY) : datum.fy"}
+          "fx": {"signal": "datum.interactionX == null ? scale('xscale', datum.inputX) : datum.interactionX"},
+          "fy": {"signal": "datum.interactionY == null ? scale('yscale', datum.inputY) : datum.interactionY"}
         }
       }
     },
@@ -238,17 +238,17 @@
     {
       "name": "node-data",
       "values": [
-        {"id": 4, "label": "Zero", "group": "A", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
-        {"id": 1, "label": "One", "group": "A", "inputX": 2, "inputY": 10, "fx": null, "fy": null},
-        {"id": 2, "label": "Two", "group": "B", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
-        {"id": 3, "label": "Three", "group": "B", "inputX": 2, "inputY": 3, "fx": null, "fy": null},
-        {"id": 0, "label": "Four", "group": "C", "inputX": 1, "inputY": 5, "fx": null, "fy": null},
-        {"id": 5, "label": "Five", "group": "C", "inputX": 2, "inputY": 5, "fx": null, "fy": null},
-        {"id": 6, "label": "Six", "group": "C", "inputX": 2, "inputY": 5, "fx": null, "fy": null}
+        {"id": 4, "label": "Zero", "group": "A", "inputX": 2, "inputY": 5, "interactionX": null, "interactionY": null},
+        {"id": 1, "label": "One", "group": "A", "inputX": 2, "inputY": 10, "interactionX": null, "interactionY": null},
+        {"id": 2, "label": "Two", "group": "B", "inputX": 2, "inputY": 5, "interactionX": null, "interactionY": null},
+        {"id": 3, "label": "Three", "group": "B", "inputX": 2, "inputY": 3, "interactionX": null, "interactionY": null},
+        {"id": 0, "label": "Four", "group": "C", "inputX": 1, "inputY": 5, "interactionX": null, "interactionY": null},
+        {"id": 5, "label": "Five", "group": "C", "inputX": 2, "inputY": 5, "interactionX": null, "interactionY": null},
+        {"id": 6, "label": "Six", "group": "C", "inputX": 2, "inputY": 5, "interactionX": null, "interactionY": null}
       ],
       "on": [
-        {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{fx: fix[0], fy: fix[1]}"},
-        {"trigger": "reset", "modify": "reset", "values": "{fx: null, fy: null}"}
+        {"trigger": "fix.length == 2", "modify": "node.datum", "values": "{interactionX: fix[0], interactionY: fix[1]}"},
+        {"trigger": "reset", "modify": "reset", "values": "{interactionX: null, interactionY: null}"}
     ]
     },
     {

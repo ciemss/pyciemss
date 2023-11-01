@@ -126,11 +126,6 @@ def spring_force_graph(
     gjson = nx.json_graph.node_link_data(graph)
     schema = vega.load_schema("spring_graph.vg.json")
 
-    # TODO:
-    # -- Set 'inputX' and 'inputY' to original layout
-    # -- Copy 'fx' and 'fy' if present in 'inputX' and 'inputY' OR set based on user action
-    # -- Compute force-directed layout for remaning nodes
-
     if layout:
         gjson["nodes"] = [
             {**item, **_layout_get(item[node_labels])} for item in gjson["nodes"]
