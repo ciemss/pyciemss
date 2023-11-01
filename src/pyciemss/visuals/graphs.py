@@ -117,25 +117,27 @@ def spring_force_graph(
     labels -- If it is a string, that field name is used ('label' is the default; 'id' will give the networkx node-id).
               If it is None, no label is drawn.
     """
+
+    def _layout_get(id):
+        x, y = layout.get(id, (None, None))
+        return dict(zip(["inputX", "inputY", "fx", "fy"], [-100, -100, x, y]))
+
     graph = nx.convert_node_labels_to_integers(graph, label_attribute=node_labels)
     gjson = nx.json_graph.node_link_data(graph)
     schema = vega.load_schema("spring_graph.vg.json")
 
-    # use -100 to signify no fixed location. values will update if node is dragged
-    gjson["nodes"] = [dict(item, fixedx=-100, fixedy=-100) for item in gjson["nodes"]]
+    # TODO:
+    # -- Set 'inputX' and 'inputY' to original layout
+    # -- Copy 'fx' and 'fy' if present in 'inputX' and 'inputY' OR set based on user action
+    # -- Compute force-directed layout for remaning nodes
+
+    # # use -100 to signify no fixed location. values will update if node is dragged
+    # gjson["nodes"] = [dict(item, inputX=-100, inputY=-100) for item in gjson["nodes"]]
 
     if layout:
-
-        def _layout_get(id):
-            return dict(zip(["fx", "fy"], layout.get(id, (None, None))))
-
         gjson["nodes"] = [
             {**item, **_layout_get(item[node_labels])} for item in gjson["nodes"]
         ]
-
-        schema["signals"] = vega.replace_named_with(
-            schema["signals"], "layoutdata", ["value"], True
-        )
 
     schema["data"] = vega.replace_named_with(
         schema["data"], "node-data", ["values"], gjson["nodes"]
