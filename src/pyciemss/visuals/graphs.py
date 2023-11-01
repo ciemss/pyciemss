@@ -4,6 +4,9 @@ import networkx as nx
 
 from . import vega
 
+# TODO: The attributed-graph has more complex node_label logic than the spring-force.
+#        Which one is 'better'?  Use it in both places.
+
 
 def attributed_graph(
     graph: nx.Graph, *, collapse_all: bool = False, node_labels: Union[str, None] = None
