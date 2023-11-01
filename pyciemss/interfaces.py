@@ -8,6 +8,7 @@ from chirho.dynamical.handlers import (
     InterruptionEventLoop,
     LogTrajectory,
     StaticIntervention,
+    StaticBatchObservation,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
@@ -84,7 +85,7 @@ def sample(
 
     model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time, end_time, logging_step_size)
+    timespan = torch.arange(start_time+logging_step_size, end_time, logging_step_size)
 
     static_intervention_handlers = [
         StaticIntervention(time, State(**static_intervention_assignment))
@@ -124,6 +125,7 @@ def sample(
 def calibrate(
     model_path_or_json: Union[str, Dict],
     data: dict[str, torch.Tensor],
+    data_timepoints: torch.Tensor,
     start_time: float,
     *,
     noise_model: str = "normal",
@@ -160,9 +162,6 @@ def calibrate(
         )
         return guide
 
-    # TODO
-    end_time = ...
-
     static_intervention_handlers = [
         StaticIntervention(time, State(**static_intervention_assignment))
         for time, static_intervention_assignment in static_interventions.items()
@@ -173,13 +172,18 @@ def calibrate(
     ]
 
     def wrapped_model():
-        with InterruptionEventLoop():
-            with contextlib.ExitStack() as stack:
-                for handler in (
-                    static_intervention_handlers + dynamic_intervention_handlers
-                ):
-                    stack.enter_context(handler)
-                model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+
+        # TODO: pick up here.
+        obs = chirho.condition()
+
+        with StaticBatchObservation():
+            with InterruptionEventLoop():
+                with contextlib.ExitStack() as stack:
+                    for handler in (
+                        static_intervention_handlers + dynamic_intervention_handlers
+                    ):
+                        stack.enter_context(handler)
+                    model(torch.as_tensor(start_time), torch.as_tensor(data_timepoints[-1]))
 
     guide = autoguide(wrapped_model)
     optim = pyro.optim.Adam({"lr": lr})

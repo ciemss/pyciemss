@@ -67,6 +67,9 @@ def _compile_param_values_mira(
     for param_info in src.parameters.values():
         param_name = get_name(param_info)
 
+        if param_info.placeholder:
+            continue
+
         param_dist = getattr(param_info, "distribution", None)
         if param_dist is None:
             param_value = param_info.value
