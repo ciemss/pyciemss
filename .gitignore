@@ -339,3 +339,4 @@ venv/
 *~
 *_schema.json
 *data_with_missing_entries.csv
+*.nix
