@@ -50,8 +50,7 @@ def _compile_initial_state_mira(
     src: mira.modeling.Model,
 ) -> Callable[..., Tuple[torch.Tensor]]:
     symbolic_initials = {
-        get_name(var): var.data["expression"].args[0]
-        for var in src.variables.values()
+        get_name(var): var.data["expression"].args[0] for var in src.variables.values()
     }
     numeric_initial_state_func = sympytorch.SymPyModule(
         expressions=[symbolic_initials[get_name(var)] for var in src.variables.values()]
