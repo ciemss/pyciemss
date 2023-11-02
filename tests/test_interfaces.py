@@ -1,7 +1,7 @@
+import numpy as np
+import pandas as pd
 import pytest
 import torch
-import pandas as pd
-import numpy as np
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.interfaces import sample
@@ -165,6 +165,7 @@ def test_sample_with_static_and_dynamic_interventions(
         intervened_result, start_time, end_time, logging_step_size, num_samples
     )
 
+
 @pytest.mark.parametrize("url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -175,7 +176,9 @@ def test_output_format(url, start_time, end_time, logging_step_size, num_samples
         url, end_time, logging_step_size, num_samples, start_time=start_time
     )["data"]
     assert isinstance(processed_result, pd.DataFrame)
-    assert processed_result.shape[0] == num_samples * len(torch.arange(start_time+logging_step_size, end_time, logging_step_size))
+    assert processed_result.shape[0] == num_samples * len(
+        torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    )
     assert processed_result.shape[1] >= 2
     assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
     for col_name in processed_result.columns[2:]:
