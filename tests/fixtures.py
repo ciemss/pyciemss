@@ -46,7 +46,7 @@ def check_states_match_in_all_but_values(
     assert check_keys_match(traj1, traj2)
 
     for k in traj1.keys():
-        if k[:5] == "state":
+        if k[-5:] == "state":
             assert not torch.allclose(
                 traj2[k], traj1[k]
             ), f"Trajectories are identical in state trajectory of variable {k}, but should differ."
@@ -65,7 +65,7 @@ def check_result_sizes(
         assert isinstance(k, str)
         assert isinstance(v, torch.Tensor)
 
-        if k[:5] == "state":
+        if k[-5:] == "state":
             assert v.shape == (
                 num_samples,
                 len(torch.arange(start_time, end_time, logging_step_size))
