@@ -66,7 +66,7 @@ class TestExport(unittest.TestCase):
                 content_check(schema_file, image)
             except Exception as e:
                 schema_issues.append({"file": schema_file.stem, "issue": str(e)})
-
+        
         return schema_issues
 
     def test_export_interactive(self):
