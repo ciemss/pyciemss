@@ -12,6 +12,7 @@ from chirho.dynamical.handlers import (
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
+from chirho.observational.handlers import condition
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
@@ -111,9 +112,11 @@ def sample(
         [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
 
         if noise_model is not None:
-            _noise_model = compile_noise_model(noise_model, **noise_model_kwargs)
+            compiled_noise_model = compile_noise_model(
+                noise_model, vars=set(lt.trajectory.keys()), **noise_model_kwargs
+            )
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            _noise_model(lt.trajectory)
+            compiled_noise_model(lt.trajectory)
 
     samples = pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples
@@ -130,6 +133,8 @@ def calibrate(
     *,
     noise_model: str = "normal",
     noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
         Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
@@ -139,7 +144,6 @@ def calibrate(
     verbose: bool = False,
     num_particles: int = 1,
     deterministic_learnable_parameters: Iterable[str] = [],
-    method="dopri5",
 ) -> pyro.nn.PyroModule:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -171,11 +175,17 @@ def calibrate(
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
+    _noise_model = compile_noise_model(
+        noise_model, vars=set(data.keys()), **noise_model_kwargs
+    )
+
+    _data = {f"{k}_observed": v for k, v in data.items()}
+
     def wrapped_model():
         # TODO: pick up here.
-        # obs = chirho.condition()
+        obs = condition(data=_data)(_noise_model)
 
-        with StaticBatchObservation():
+        with StaticBatchObservation(data_timepoints, observation=obs):
             with InterruptionEventLoop():
                 with contextlib.ExitStack() as stack:
                     for handler in (
@@ -185,22 +195,24 @@ def calibrate(
                     model(
                         torch.as_tensor(start_time),
                         torch.as_tensor(data_timepoints[-1]),
+                        TorchDiffEq(method=solver_method, options=solver_options),
                     )
 
-    guide = autoguide(wrapped_model)
+    inferred_parameters = autoguide(wrapped_model)
+
     optim = pyro.optim.Adam({"lr": lr})
     loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
-    svi = pyro.infer.SVI(wrapped_model, guide, optim, loss=loss)
+    svi = pyro.infer.SVI(wrapped_model, inferred_parameters, optim, loss=loss)
 
     pyro.clear_param_store()
 
     for i in range(num_iterations):
-        loss = svi.step(method=method)
+        loss = svi.step()
         if verbose:
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return guide
+    return inferred_parameters
 
 
 # # TODO

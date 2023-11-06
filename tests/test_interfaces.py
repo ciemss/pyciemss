@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.interfaces import sample
+from pyciemss.interfaces import calibrate, sample
 
 from .fixtures import (
     END_TIMES,
@@ -218,7 +218,7 @@ def test_sample_with_static_and_dynamic_interventions(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 def test_calibrate(model_url, start_time, end_time, logging_step_size):
-    data = sample(
+    result = sample(
         model_url,
         end_time,
         logging_step_size,
@@ -226,14 +226,25 @@ def test_calibrate(model_url, start_time, end_time, logging_step_size):
         start_time=start_time,
         noise_model="normal",
         noise_model_kwargs={"scale": 0.1},
+    )["unprocessed_result"]
+
+    data = {k[:-9]: v.squeeze() for k, v in result.items() if k[-8:] == "observed"}
+
+    data_timespan = torch.arange(
+        start_time + logging_step_size, end_time, logging_step_size
     )
 
-    # TODO: pick up here
-    # data_timespan = torch.arange(
-    #     start_time + logging_step_size, end_time, logging_step_size
-    # )
+    calibrated_parameters = calibrate(
+        model_url,
+        data,
+        data_timespan,
+        start_time=start_time,
+        noise_model="normal",
+        noise_model_kwargs={"scale": 0.1},
+        num_iterations=2,
+    )
 
-    assert isinstance(data, dict)
+    assert isinstance(calibrated_parameters, pyro.nn.PyroModule)
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)

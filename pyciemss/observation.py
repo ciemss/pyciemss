@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Set
 
 import pyro
 import torch
@@ -9,22 +9,37 @@ class NoiseModel(pyro.nn.PyroModule):
     An NoiseModel is a function that takes a state and returns a state sampled from some pyro distribution.
     """
 
-    def forward(self, state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def __init__(self, vars: Set[str] = set()):
+        super().__init__()
+        self.vars = vars
+
+    def forward(self, state: Dict[str, torch.Tensor]) -> None:
         raise NotImplementedError
 
 
-class NormalNoiseModel(NoiseModel):
-    def __init__(self, scale: float = 1.0):
-        super().__init__()
+class StateIndependentNoiseModel(NoiseModel):
+    def __init__(self, vars: Set[str] = set()):
+        super().__init__(vars=vars)
+
+    def markov_kernel(
+        self, name: str, val: torch.Tensor
+    ) -> pyro.distributions.Distribution:
+        raise NotImplementedError
+
+    def forward(self, state: Dict[str, torch.Tensor]) -> None:
+        for k in self.vars:
+            pyro.sample(
+                f"{k}_observed",
+                self.markov_kernel(k, state[k]),
+            )
+
+
+class NormalNoiseModel(StateIndependentNoiseModel):
+    def __init__(self, vars: Set[str] = set(), scale: float = 1.0):
+        super().__init__(vars=vars)
         self.scale = scale
 
-    def forward(self, state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        return {
-            k: pyro.sample(
-                f"{k}_observed",
-                pyro.distributions.Normal(
-                    state[k], torch.ones_like(state[k]) * self.scale
-                ),
-            )
-            for k in state.keys()
-        }
+    def markov_kernel(
+        self, name: str, val: torch.Tensor
+    ) -> pyro.distributions.Distribution:
+        return pyro.distributions.Normal(val, self.scale).to_event(1)
