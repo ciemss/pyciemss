@@ -1,6 +1,6 @@
-import pyro
 import numpy as np
 import pandas as pd
+import pyro
 import pytest
 import torch
 
@@ -68,6 +68,7 @@ def test_sample_with_noise(
         start_time=start_time,
         noise_model="normal",
         noise_model_kwargs={"scale": scale},
+    )
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
@@ -230,11 +231,13 @@ def test_calibrate(model_url, start_time, end_time, logging_step_size):
         noise_model_kwargs={"scale": 0.1},
     )
 
-    data_timespan = torch.arange(start_time+logging_step_size, end_time, logging_step_size)
+    data_timespan = torch.arange(
+        start_time + logging_step_size, end_time, logging_step_size
+    )
 
     assert isinstance(data, dict)
-    
-    
+
+
 @pytest.mark.parametrize("url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)

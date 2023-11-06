@@ -1,14 +1,15 @@
 import contextlib
 from typing import Any, Callable, Dict, Iterable, Optional, Union
 
+import chirho
 import pyro
 import torch
 from chirho.dynamical.handlers import (
     DynamicIntervention,
     InterruptionEventLoop,
     LogTrajectory,
-    StaticIntervention,
     StaticBatchObservation,
+    StaticIntervention,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
@@ -83,7 +84,7 @@ def sample(
 
     model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time+logging_step_size, end_time, logging_step_size)
+    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     static_intervention_handlers = [
         StaticIntervention(time, State(**static_intervention_assignment))
@@ -172,7 +173,6 @@ def calibrate(
     ]
 
     def wrapped_model():
-
         # TODO: pick up here.
         obs = chirho.condition()
 
@@ -183,7 +183,10 @@ def calibrate(
                         static_intervention_handlers + dynamic_intervention_handlers
                     ):
                         stack.enter_context(handler)
-                    model(torch.as_tensor(start_time), torch.as_tensor(data_timepoints[-1]))
+                    model(
+                        torch.as_tensor(start_time),
+                        torch.as_tensor(data_timepoints[-1]),
+                    )
 
     guide = autoguide(wrapped_model)
     optim = pyro.optim.Adam({"lr": lr})
