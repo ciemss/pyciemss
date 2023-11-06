@@ -231,9 +231,10 @@ def test_calibrate(model_url, start_time, end_time, logging_step_size):
         noise_model_kwargs={"scale": 0.1},
     )
 
-    data_timespan = torch.arange(
-        start_time + logging_step_size, end_time, logging_step_size
-    )
+    # TODO: pick up here
+    # data_timespan = torch.arange(
+    #     start_time + logging_step_size, end_time, logging_step_size
+    # )
 
     assert isinstance(data, dict)
 

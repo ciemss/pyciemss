@@ -1,7 +1,6 @@
 import contextlib
 from typing import Any, Callable, Dict, Iterable, Optional, Union
 
-import chirho
 import pyro
 import torch
 from chirho.dynamical.handlers import (
@@ -174,7 +173,7 @@ def calibrate(
 
     def wrapped_model():
         # TODO: pick up here.
-        obs = chirho.condition()
+        # obs = chirho.condition()
 
         with StaticBatchObservation():
             with InterruptionEventLoop():
