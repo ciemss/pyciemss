@@ -148,6 +148,57 @@ def calibrate(
     """
     Infer parameters for a DynamicalSystem model conditional on data.
     This uses variational inference with a mean-field variational family to infer the parameters of the model.
+
+    Args:
+        - model_path_or_json: Union[str, Dict]
+            - A path to a AMR model file or JSON containing a model in AMR form.
+        - data: Dict[str, torch.Tensor]
+            - A dictionary of data to condition the model on.
+            - Each key is the name of a state variable in the model.
+            - Each value is a tensor of shape (num_timepoints,) for state variables.
+        - data_timepoints: torch.Tensor
+            - A tensor of shape (num_timepoints,) containing the timepoints for the data.
+        - noise_model: str
+            - The noise model to use for the data.
+            - Currently we only support the normal distribution.
+        - noise_model_kwargs: Dict[str, Any]
+            - Keyword arguments to pass to the noise model.
+            - Currently we only support the `scale` keyword argument for the normal distribution.
+        - solver_method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug.
+              If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        - solver_options: Dict[str, Any]
+            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - start_time: float
+            - The start time of the model. This is used to align the `start_state` from the
+              AMR model with the simulation timepoints.
+            - By default we set the `start_time` to be 0.
+        - static_interventions: Dict[float, Dict[str, torch.Tensor]]
+            - A dictionary of static interventions to apply to the model.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+        - dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+            - A dictionary of dynamic interventions to apply to the model.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+        - num_iterations: int
+            - The number of iterations to run the inference algorithm for.
+        - lr: float
+            - The learning rate to use for the inference algorithm.
+        - verbose: bool
+            - Whether to print out the loss at each iteration.
+        - num_particles: int
+            - The number of particles to use for the inference algorithm.
+        - deterministic_learnable_parameters: Iterable[str]
+            - A list of parameter names that should be learned deterministically.
+            - By default, all parameters are learned probabilistically.
+
+    Returns:
+        - inferred_parameters: pyro.nn.PyroModule
+            - A Pyro module that contains the inferred parameters of the model.
+            - This can be passed to `sample` to sample from the model conditional on the data.
     """
 
     model = CompiledDynamics.load(model_path_or_json)
