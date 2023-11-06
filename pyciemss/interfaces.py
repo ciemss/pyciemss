@@ -124,7 +124,7 @@ def sample(
 
 def calibrate(
     model_path_or_json: Union[str, Dict],
-    data: dict[str, torch.Tensor],
+    data: Dict[str, torch.Tensor],
     data_timepoints: torch.Tensor,
     start_time: float,
     *,
