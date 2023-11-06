@@ -159,11 +159,19 @@ def calibrate(
                 pyro.poutine.block(model, expose=deterministic_learnable_parameters)
             )
         )
-        guide.append(
-            pyro.infer.autoguide.AutoLowRankMultivariateNormal(
+
+        try:
+            mvn_guide = pyro.infer.autoguide.AutoLowRankMultivariateNormal(
                 pyro.poutine.block(model, hide=deterministic_learnable_parameters)
             )
-        )
+            mvn_guide._setup_prototype()
+            guide.append(mvn_guide)
+        except RuntimeError as re:
+            assert (
+                re.args[0]
+                == "AutoLowRankMultivariateNormal found no latent variables; Use an empty guide instead"
+            )
+
         return guide
 
     static_intervention_handlers = [

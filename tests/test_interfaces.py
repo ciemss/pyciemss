@@ -217,34 +217,81 @@ def test_sample_with_static_and_dynamic_interventions(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate(model_url, start_time, end_time, logging_step_size):
+def test_calibrate_and_sample(model_url, start_time, end_time, logging_step_size):
     result = sample(
         model_url,
         end_time,
         logging_step_size,
         1,
         start_time=start_time,
-        noise_model="normal",
-        noise_model_kwargs={"scale": 0.1},
     )["unprocessed_result"]
 
-    data = {k[:-9]: v.squeeze() for k, v in result.items() if k[-8:] == "observed"}
+    data = {k[:-6]: v.squeeze() for k, v in result.items() if k[-5:] == "state"}
+    parameter_names = [
+        k for k in result.keys() if k[-5:] != "state"
+    ]
 
     data_timespan = torch.arange(
         start_time + logging_step_size, end_time, logging_step_size
     )
 
-    calibrated_parameters = calibrate(
+    inferred_parameters_1 = calibrate(
         model_url,
         data,
         data_timespan,
         start_time=start_time,
         noise_model="normal",
-        noise_model_kwargs={"scale": 0.1},
+        noise_model_kwargs={"scale": 1.},
         num_iterations=2,
     )
 
-    assert isinstance(calibrated_parameters, pyro.nn.PyroModule)
+    inferred_parameters_2 = calibrate(
+        model_url,
+        data,
+        data_timespan,
+        start_time=start_time,
+        noise_model="normal",
+        noise_model_kwargs={"scale": 1.},
+        num_iterations=2,
+        deterministic_learnable_parameters=parameter_names,
+    )
+
+    assert isinstance(inferred_parameters_1, pyro.nn.PyroModule)
+    assert isinstance(inferred_parameters_2, pyro.nn.PyroModule)
+
+    with pyro.poutine.seed(rng_seed=0):
+        calibrated_result_1 = sample(
+            model_url,
+            end_time,
+            logging_step_size,
+            1,
+            start_time=start_time,
+            inferred_parameters=inferred_parameters_1,
+        )["unprocessed_result"]
+
+    with pyro.poutine.seed(rng_seed=0):
+        calibrated_result_2 = sample(
+            model_url,
+            end_time,
+            logging_step_size,
+            1,
+            start_time=start_time,
+            inferred_parameters=inferred_parameters_2,
+        )["unprocessed_result"]
+
+    with pyro.poutine.seed(rng_seed=1):
+        calibrated_result_3 = sample(
+            model_url,
+            end_time,
+            logging_step_size,
+            1,
+            start_time=start_time,
+            inferred_parameters=inferred_parameters_2,
+        )["unprocessed_result"]
+
+    check_states_match_in_all_but_values(calibrated_result_1, result)
+    check_states_match_in_all_but_values(calibrated_result_2, result)
+    check_states_match(calibrated_result_2, calibrated_result_3)
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)

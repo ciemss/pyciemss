@@ -24,7 +24,7 @@ REGNET_URLS = [
 
 STOCKFLOW_URLS = [
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/84f7cbda63c88c36e1fd91b22669bc7f6200d4c0/stockflow/examples/sir.json"  # noqa
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/49af5168ada2ce96b46e6173375cecdf25a28aa3/stockflow/examples/sir.json"  # noqa
 ]
 
 MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
