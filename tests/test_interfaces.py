@@ -227,9 +227,7 @@ def test_calibrate_and_sample(model_url, start_time, end_time, logging_step_size
     )["unprocessed_result"]
 
     data = {k[:-6]: v.squeeze() for k, v in result.items() if k[-5:] == "state"}
-    parameter_names = [
-        k for k in result.keys() if k[-5:] != "state"
-    ]
+    parameter_names = [k for k in result.keys() if k[-5:] != "state"]
 
     data_timespan = torch.arange(
         start_time + logging_step_size, end_time, logging_step_size
@@ -241,7 +239,7 @@ def test_calibrate_and_sample(model_url, start_time, end_time, logging_step_size
         data_timespan,
         start_time=start_time,
         noise_model="normal",
-        noise_model_kwargs={"scale": 1.},
+        noise_model_kwargs={"scale": 1.0},
         num_iterations=2,
     )
 
@@ -251,7 +249,7 @@ def test_calibrate_and_sample(model_url, start_time, end_time, logging_step_size
         data_timespan,
         start_time=start_time,
         noise_model="normal",
-        noise_model_kwargs={"scale": 1.},
+        noise_model_kwargs={"scale": 1.0},
         num_iterations=2,
         deterministic_learnable_parameters=parameter_names,
     )
