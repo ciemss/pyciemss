@@ -129,12 +129,12 @@ def calibrate(
     model_path_or_json: Union[str, Dict],
     data: Dict[str, torch.Tensor],
     data_timepoints: torch.Tensor,
-    start_time: float,
     *,
     noise_model: str = "normal",
     noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
         Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
