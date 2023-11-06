@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Callable, Optional, Tuple
 
 from numbers import Number
 
@@ -81,3 +81,91 @@ def histogram_multi(
         return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
     else:
         return schema
+
+
+def heatmap_scatter(
+    points: pd.DataFrame,
+    mesh: Optional[Tuple] = None,
+    *,
+    x_name: Optional[str] = None,
+    y_name: Optional[str] = None,
+    max_x_bins: int = 10,
+    max_y_bins: int = 10,
+) -> vega.VegaSchema:
+    """
+    Render a heatmap with points overlaid.
+
+    The heatmap can be IMPLICIT and derived from the points or it can EXPLICIT
+    and supplied as 'mesh'. If it implicit, then a binning function is used at
+    render time that does bin-boundry 'nciing.  If specific bin-count or bin-boundries
+    are needed, use an explicit mesh.
+
+    points -- Set of points to render as a scatterplot.
+    mesh -- (Optional) Tripple of x-indicies, y-indicies and values.
+        `x-indicies` and `y-indicies` as-produced by numpy meshgrid.
+        `values` as a numpy array with shape compatible with x- and y-indicies
+    x_name: str name of column in dataset for x axis, (defaults to first column)
+    y_name: str, name of column in dataset for y axis (defaults to second column)
+    max_x_bins: int = 10, maximum number bins for the x axis (ignored for explicit mesh)
+    max_y_bins: int = 10, maximum number bins for the y axis (ignored for explicit mesh)
+    """
+
+    def _mesh_to_heatmap(mesh_data):
+        """
+        **mesh_data -- input as mesh data, will be converted to grids
+        adding half the difference in grid spacing to each coordinate
+        so point becomes center of a grid for heatmap
+        """
+        xv, yv, zz = mesh_data
+        half_spacing_x = (xv[0, 1] - xv[0, 0]) / 2
+        half_spacing_y = (yv[1, 0] - yv[0, 0]) / 2
+        dataset = pd.DataFrame(
+            {
+                "x_start": xv.ravel() - half_spacing_x,
+                "x_end": xv.ravel() + half_spacing_x,
+                "y_start": yv.ravel() - half_spacing_y,
+                "y_end": yv.ravel() + half_spacing_y,
+                "__count": zz.ravel(),
+            }
+        )
+        return dataset.to_dict(orient="records")
+
+    json_points = points.to_dict(orient="records")
+
+    if x_name is None:
+        x_name = points.columns[0]
+    if y_name is None:
+        y_name = points.columns[1]
+
+    if mesh is None:
+        schema = vega.load_schema("heatmap_scatter.vg.json")
+
+        schema["data"] = vega.replace_named_with(
+            schema["data"], "points", ["values"], json_points
+        )
+
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "max_x_bins", ["value"], max_x_bins
+        )
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "max_y_bins", ["value"], max_y_bins
+        )
+
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "x_name", ["value"], x_name
+        )
+
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "y_name", ["value"], y_name
+        )
+    else:
+        schema = vega.load_schema("mesh_scatter.vg.json")
+        json_heatmap = _mesh_to_heatmap(mesh)
+        schema["data"] = vega.replace_named_with(
+            schema["data"], "points", ["values"], json_points
+        )
+        schema["data"] = vega.replace_named_with(
+            schema["data"], "mesh", ["values"], json_heatmap
+        )
+
+    return schema

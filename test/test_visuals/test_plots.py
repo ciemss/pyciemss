@@ -2,10 +2,13 @@ import unittest
 import pandas as pd
 import xarray as xr
 import numpy as np
+import networkx as nx
 import json
 import torch
+import random
 
 from pathlib import Path
+from itertools import chain
 
 from pyciemss.visuals import plots, vega, trajectories
 from pyciemss.utils import get_tspan
@@ -372,3 +375,116 @@ class TestHistograms(unittest.TestCase):
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30)
         data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         self.assertEqual({"s30", "r30"}, set(data["label"].values))
+
+
+class TestHeatmapScatter(unittest.TestCase):
+    def test_implicit_heatmap(self):
+        df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
+        schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
+
+        points = vega.find_named(schema["data"], "points")["values"]
+        self.assertTrue(
+            all(pd.DataFrame(points) == df), "Unexpected points values found"
+        )
+
+    def test_explicit_heatmap(self):
+        def create_fake_data():
+            nx, ny = (10, 10)
+            x = np.linspace(0, 10, nx)
+            y, a = np.linspace(0, 10, ny, retstep=True)
+
+            # create mesh data
+            xv, yv = np.meshgrid(x, y)
+            zz = xv**2 + yv**2
+
+            # create scatter plot
+            df = pd.DataFrame(
+                10 * np.random.random((100, 2)), columns=["alpha", "gamma"]
+            )
+            return (xv, yv, zz), df
+
+        mesh_data, scatter_data = create_fake_data()
+        schema = plots.heatmap_scatter(scatter_data, mesh_data)
+
+        points = vega.find_named(schema["data"], "points")["values"]
+        self.assertTrue(
+            all(pd.DataFrame(points) == scatter_data), "Unexpected points values found"
+        )
+
+        mesh = pd.DataFrame(vega.find_named(schema["data"], "mesh")["values"])
+        self.assertEqual(500, mesh.size, "Unexpected mesh representation size.")
+        self.assertTrue(
+            all(mesh["__count"].isin(mesh_data[2].ravel())), "Unexpected count found"
+        )
+
+
+class TestGraph(unittest.TestCase):
+    def setUp(self):
+        def rand_attributions():
+            possible = "ABCD"
+            return random.sample(possible, random.randint(1, len(possible)))
+
+        def rand_label():
+            possible = "TUVWXYZ"
+            return random.randint(1, 10)
+            return random.sample(possible, 1)[0]
+
+        self.g = nx.generators.barabasi_albert_graph(5, 3)
+        node_properties = {
+            n: {"attribution": rand_attributions(), "label": rand_label()}
+            for n in self.g.nodes()
+        }
+
+        edge_attributions = {
+            e: {"attribution": rand_attributions()} for e in self.g.edges()
+        }
+
+        nx.set_node_attributes(self.g, node_properties)
+        nx.set_edge_attributes(self.g, edge_attributions)
+
+    def test_multigraph(self):
+        uncollapsed = plots.attributed_graph(self.g)
+        nodes = vega.find_named(uncollapsed["data"], "node-data")["values"]
+        edges = vega.find_named(uncollapsed["data"], "link-data")["values"]
+        self.assertEqual(len(self.g.nodes), len(nodes), "Nodes issue in conversion")
+        self.assertEqual(len(self.g.edges), len(edges), "Edges issue in conversion")
+
+        all_attributions = set(
+            chain(*nx.get_node_attributes(self.g, "attribution").values())
+        )
+        nx.set_node_attributes(self.g, {0: {"attribution": all_attributions}})
+        collapsed = plots.attributed_graph(self.g, collapse_all=True)
+        nodes = vega.find_named(collapsed["data"], "node-data")["values"]
+        edges = vega.find_named(collapsed["data"], "link-data")["values"]
+        self.assertEqual(
+            len(self.g.nodes), len(nodes), "Nodes issue in conversion (collapse-case)"
+        )
+        self.assertEqual(
+            len(self.g.edges), len(edges), "Edges issue in conversion (collapse-case)"
+        )
+        self.assertEqual(
+            [["*all*"]],
+            [n["attribution"] for n in nodes if n["label"] == 0],
+            "All tag not found as expected",
+        )
+
+    def test_springgraph(self):
+        schema = plots.spring_force_graph(self.g, node_labels="label")
+        nodes = vega.find_named(schema["data"], "node-data")["values"]
+        edges = vega.find_named(schema["data"], "link-data")["values"]
+        self.assertEqual(len(self.g.nodes), len(nodes), "Nodes issue in conversion")
+        self.assertEqual(len(self.g.edges), len(edges), "Edges issue in conversion")
+
+    def test_provided_layout(self):
+        pos = nx.fruchterman_reingold_layout(self.g)
+        schema = plots.spring_force_graph(self.g, node_labels="label", layout=pos)
+
+        nodes = vega.find_named(schema["data"], "node-data")["values"]
+        edges = vega.find_named(schema["data"], "link-data")["values"]
+        self.assertEqual(len(self.g.nodes), len(nodes), "Nodes issue in conversion")
+        self.assertEqual(len(self.g.edges), len(edges), "Edges issue in conversion")
+
+        for id, (x, y) in pos.items():
+            n = [n for n in nodes if n["label"] == id][0]
+            self.assertEqual(n["inputX"], x, f"Layout lost for {id}")
+            self.assertEqual(n["inputY"], y, f"Layout lost for {id}")

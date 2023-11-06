@@ -1,0 +1,124 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 300,
+  "height": 200,
+  "data": [
+      {
+      "name": "points",
+      "values": [
+          {"gamma": 2, "alpha": 10},
+          {"gamma": 3, "alpha": 5},
+          {"gamma": 3, "alpha": 5},
+          {"gamma": 10, "alpha": 6},
+          {"gamma": 2, "alpha": 3},
+          {"gamma": 4, "alpha": 10},
+          {"gamma": 3, "alpha": 1}
+        ]
+      },
+    {
+      "name": "mesh",
+      "values": [
+        {"x_start":-0.5555555556,"x_end":0.5555555556,"y_start":0.5555555556, "y_end": 1, "__count":0.0},
+        {"x_start":0.5555555556,"x_end":1.6666666667,"y_start":0.5555555556, "y_end": 1, "__count":1.1111111111},
+        {"x_start":1.6666666667,"x_end":2.7777777778,"y_start":0.5555555556, "y_end": 1, "__count":2.2222222222}
+        ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "mesh"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "__count"},
+          "x2": {
+            "scale": "x",
+            "field": "x_start"
+          },
+          "x": {
+            "scale": "x",
+            "field": "x_end"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "y_start"
+          },
+          "y": {
+            "scale": "y",
+            "field": "y_end"
+          }
+        }
+      }
+    },
+        {
+      "type": "symbol",
+      "from": {"data": "points"},
+      "encode": {
+        "enter": {
+          "fillOpacity": {"value": 1},
+          "fill": {"value": "black"}
+        },
+        "update": {
+          "x": {"scale": "x", "field" : "gamma"},
+          "y": {"scale": "y", "field" : "alpha"},
+          "size": {"value": 10}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": 
+      {"fields": [
+        {"data": "points", "field": "gamma"},
+        {"data": "mesh", "field": "x_start"},
+        {"data": "mesh", "field": "y_end"}]},
+      "range": [0, {"signal": "width"}]
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain":
+      {"fields": [
+        {"data": "points", "field": "alpha"},
+        {"data": "mesh", "field": "y_start"},
+        {"data": "mesh", "field": "y_end"}]},
+      "range": [{"signal": "height"}, 0]
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "mesh", "field": "__count"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "title": "gamma",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/3)"}
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "title": "alpha",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/3)"}
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "height - 16"},
+      "title": "Histogram Values"
+    }
+  ]
+}
