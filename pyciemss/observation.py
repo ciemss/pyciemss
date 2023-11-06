@@ -21,7 +21,7 @@ class NormalNoiseModel(NoiseModel):
     def forward(self, state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         return {
             k: pyro.sample(
-                f"observed_{k}",
+                f"{k}_observed",
                 pyro.distributions.Normal(
                     state[k], torch.ones_like(state[k]) * self.scale
                 ),

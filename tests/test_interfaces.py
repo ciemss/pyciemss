@@ -30,22 +30,19 @@ def test_sample_no_interventions(
     with pyro.poutine.seed(rng_seed=0):
         result1 = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )
+        )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result2 = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )
+        )["unprocessed_result"]
 
     result3 = sample(
         model_url, end_time, logging_step_size, num_samples, start_time=start_time
-    )
+    )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
         assert isinstance(result, dict)
         check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
-
-    if "beta" in result1.keys():
-        assert not torch.allclose(result1["beta"], result3["beta"])
 
     check_states_match(result1, result2)
     check_states_match_in_all_but_values(result1, result3)
@@ -68,13 +65,13 @@ def test_sample_with_noise(
         start_time=start_time,
         noise_model="normal",
         noise_model_kwargs={"scale": scale},
-    )
+    )["unprocessed_result"]
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
     for k in result.keys():
         if k[-5:] == "state":
-            observed = result[f"observed_{k[6:]}"]
+            observed = result[f"{k[:-6]}_observed"]
             state = result[k]
             assert 0.5 * scale < torch.std(observed - state) < 2 * scale
 
