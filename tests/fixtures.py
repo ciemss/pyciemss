@@ -17,7 +17,7 @@ PETRI_URLS = [
 ]
 
 REGNET_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/syntax_edge_cases.json",
 ]
 
@@ -41,12 +41,12 @@ def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):
 
 
 def check_states_match(
-    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], prefix="state"
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], postfix="state"
 ):
     assert check_keys_match(traj1, traj2)
 
     for k in traj1.keys():
-        if k[: len(prefix)] == prefix:
+        if k[-len(postfix):] == postfix:
             assert torch.allclose(
                 traj2[k], traj1[k]
             ), f"Trajectories differ in state trajectory of variable {k}."
@@ -55,12 +55,12 @@ def check_states_match(
 
 
 def check_states_match_in_all_but_values(
-    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], prefix="state"
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], postfix="state"
 ):
     assert check_keys_match(traj1, traj2)
 
     for k in traj1.keys():
-        if k[: len(prefix)] == prefix:
+        if k[-len(postfix):] == postfix:
             assert not torch.allclose(
                 traj2[k], traj1[k]
             ), f"Trajectories are identical in state trajectory of variable {k}, but should differ."
@@ -79,11 +79,10 @@ def check_result_sizes(
         assert isinstance(k, str)
         assert isinstance(v, torch.Tensor)
 
-        if k[:5] == "state" or k[:8] == "observed":
+        if k[-5:] == "state" or k[-8:] == "observed":
             assert v.shape == (
                 num_samples,
-                len(torch.arange(start_time, end_time, logging_step_size))
-                - 1,  # Does not include start_time
+                len(torch.arange(start_time+logging_step_size, end_time, logging_step_size))
             )
         else:
             assert v.shape == (num_samples,)

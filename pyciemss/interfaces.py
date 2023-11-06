@@ -16,6 +16,7 @@ from chirho.dynamical.ops import State
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.observation import compile_noise_model
+from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 
 
 @pyciemss_logging_wrapper
@@ -48,9 +49,6 @@ def sample(
             - The step size to use for logging the trajectory.
         num_samples: int
             - The number of samples to draw from the model.
-        interventions: Optional[Iterable[Tuple[float, str, float]]]
-            - A list of interventions to apply to the model.
-              Each intervention is a tuple of the form (time, parameter_name, value).
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
@@ -61,7 +59,7 @@ def sample(
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        inferred_parameters:
+        inferred_parameters: Optional[pyro.nn.PyroModule]
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
@@ -110,16 +108,18 @@ def sample(
                         TorchDiffEq(method=solver_method, options=solver_options),
                     )
         # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-        [pyro.deterministic(f"state_{k}", v) for k, v in lt.trajectory.items()]
+        [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
 
         if noise_model is not None:
             _noise_model = compile_noise_model(noise_model, **noise_model_kwargs)
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
             _noise_model(lt.trajectory)
 
-    return pyro.infer.Predictive(
+    samples = pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples
     )()
+
+    return prepare_interchange_dictionary(samples)
 
 
 def calibrate(

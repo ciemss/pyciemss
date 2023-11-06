@@ -1,4 +1,6 @@
 import pyro
+import numpy as np
+import pandas as pd
 import pytest
 import torch
 
@@ -66,12 +68,11 @@ def test_sample_with_noise(
         start_time=start_time,
         noise_model="normal",
         noise_model_kwargs={"scale": scale},
-    )
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
     for k in result.keys():
-        if k[:5] == "state":
+        if k[-5:] == "state":
             observed = result[f"observed_{k[6:]}"]
             state = result[k]
             assert 0.5 * scale < torch.std(observed - state) < 2 * scale
@@ -105,12 +106,12 @@ def test_sample_with_static_interventions(
             num_samples,
             start_time=start_time,
             static_interventions=static_interventions,
-        )
+        )["unprocessed_result"]
 
     with pyro.poutine.seed(rng_seed=0):
         result = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )
+        )["unprocessed_result"]
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -155,12 +156,12 @@ def test_sample_with_dynamic_interventions(
             num_samples,
             start_time=start_time,
             dynamic_interventions=dynamic_interventions,
-        )
+        )["unprocessed_result"]
 
     with pyro.poutine.seed(rng_seed=0):
         result = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )
+        )["unprocessed_result"]
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -201,11 +202,11 @@ def test_sample_with_static_and_dynamic_interventions(
             start_time=start_time,
             static_interventions=static_interventions,
             dynamic_interventions=dynamic_interventions,
-        )
+        )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )
+        )["unprocessed_result"]
 
     check_states_match_in_all_but_values(result, intervened_result)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
@@ -232,3 +233,26 @@ def test_calibrate(model_url, start_time, end_time, logging_step_size):
     data_timespan = torch.arange(start_time+logging_step_size, end_time, logging_step_size)
 
     assert isinstance(data, dict)
+    
+    
+@pytest.mark.parametrize("url", MODEL_URLS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_output_format(url, start_time, end_time, logging_step_size, num_samples):
+    processed_result = sample(
+        url, end_time, logging_step_size, num_samples, start_time=start_time
+    )["data"]
+    assert isinstance(processed_result, pd.DataFrame)
+    assert processed_result.shape[0] == num_samples * len(
+        torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    )
+    assert processed_result.shape[1] >= 2
+    assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
+    for col_name in processed_result.columns[2:]:
+        assert col_name.split("_")[-1] in ("param", "state", "(unknown)")
+        assert processed_result[col_name].dtype == np.float64
+
+    assert processed_result["timepoint_id"].dtype == np.int64
+    assert processed_result["sample_id"].dtype == np.int64
