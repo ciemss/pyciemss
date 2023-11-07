@@ -2,6 +2,7 @@ from typing import Callable, Any
 import unittest
 import json
 from pathlib import Path
+import re
 
 import IPython
 from pyciemss.visuals import plots
@@ -108,9 +109,12 @@ class TestExport(unittest.TestCase):
 
             reference_file = saved_images.get(schema_file.stem, None)
             if reference_file is not None:
-                with open(reference_file) as f:
-                    reference = "".join(f.readlines(f))
-                content = "".join(wrapped.data)
+                with open(reference_file, 'r') as f:
+                    reference = f.read()
+                    reference = re.sub('gradient_[0-9]*', "gradient_REPLACED", reference)
+                    reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
+                content = re.sub('gradient_[0-9]*', "gradient_REPLACED", wrapped.data)
+                content = re.sub('clip[0-9]*', "clipREPLACED", content)
                 if content != reference:
                     raise ValueError("SVG content does not match")
 
