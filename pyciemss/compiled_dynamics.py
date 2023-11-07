@@ -81,16 +81,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @load.register(mira.metamodel.TemplateModel)
     @classmethod
     def _load_from_template_model(cls, template: mira.metamodel.TemplateModel):
-        model = cls.load(mira.modeling.Model(template))
-        # assert False
-        return model
-
-        # Check if all parameter names are strings
-        if all(isinstance(param.key, str) for param in model.src.parameters.values()):
-            return model
-        else:
-            new_template = mira.metamodel.ops.aggregate_parameters(template)
-            return cls.load(mira.modeling.Model(new_template))
+        return cls.load(mira.modeling.Model(template))
 
     @load.register(mira.modeling.Model)
     @classmethod
