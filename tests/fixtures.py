@@ -17,22 +17,20 @@ PETRI_URLS = [
 ]
 
 REGNET_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/f2dc640df6d0ac5f31798501aeaa367011dadb32/regnet/examples/lotka_volterra.json",  # noqa
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/syntax_edge_cases.json",
 ]
 
 STOCKFLOW_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/49af5168ada2ce96b46e6173375cecdf25a28aa3/stockflow/examples/sir.json"  # noqa
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
 ]
 
 MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
 
-START_TIMES = [0.0, 1.0, 2.0]
-END_TIMES = [3.0, 4.0, 5.0]
+START_TIMES = [0.0, 10.0, 20.0]
+END_TIMES = [30.0, 40.0, 50.0]
 
-LOGGING_STEP_SIZES = [0.1]
+LOGGING_STEP_SIZES = [1.0]
 
 NUM_SAMPLES = [2]
 
