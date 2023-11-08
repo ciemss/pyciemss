@@ -53,7 +53,7 @@ def ensemble_sample(
         # We need to interleave the LogTrajectory and the solutions from the models.
         # This because each contituent model will have its own LogTrajectory.
 
-        solutions = [None] * len(model_paths_or_jsons)
+        solutions = [State()] * len(model_paths_or_jsons)
 
         for i, dynamics in enumerate(model.dynamics_models):
             with scope(prefix=f"model_{i}"):
