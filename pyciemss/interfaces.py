@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Callable, Dict, Iterable, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import pyro
 import torch
@@ -13,11 +13,83 @@ from chirho.dynamical.handlers import (
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
 from chirho.observational.handlers import condition
+from pyro.contrib.autoname import scope
 
 from pyciemss.compiled_dynamics import CompiledDynamics
+from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.observation import compile_noise_model
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
+
+
+@pyciemss_logging_wrapper
+def ensemble_sample(
+    model_paths_or_jsons: List[Union[str, Dict]],
+    solution_mappings: List[
+        Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+    ],
+    end_time: float,
+    logging_step_size: float,
+    num_samples: int,
+    *,
+    dirichlet_alpha: Optional[torch.Tensor] = None,
+    noise_model: Optional[str] = None,
+    noise_model_kwargs: Dict[str, Any] = {},
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
+    inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+):
+    if dirichlet_alpha is None:
+        dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
+
+    model = EnsembleCompiledDynamics.load(
+        model_paths_or_jsons, dirichlet_alpha, solution_mappings
+    )
+
+    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    def wrapped_model():
+        # We need to interleave the LogTrajectory and the solutions from the models.
+        # This because each contituent model will have its own LogTrajectory.
+
+        solutions = [None] * len(model_paths_or_jsons)
+
+        for i, dynamics in enumerate(model.dynamics_models):
+            with scope(prefix=f"model_{i}"):
+                with LogTrajectory(timespan) as lt:
+                    dynamics(
+                        torch.as_tensor(start_time),
+                        torch.as_tensor(end_time),
+                        TorchDiffEq(method=solver_method, options=solver_options),
+                    )
+
+                solutions[i] = lt.trajectory
+
+                # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
+                [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
+
+                if noise_model is not None:
+                    compiled_noise_model = compile_noise_model(
+                        noise_model,
+                        vars=set(lt.trajectory.keys()),
+                        **noise_model_kwargs,
+                    )
+                    # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+                    compiled_noise_model(lt.trajectory)
+
+        return State(
+            **{
+                k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
+                for k in solutions[0].keys()
+            }
+        )
+
+    samples = pyro.infer.Predictive(
+        wrapped_model, guide=inferred_parameters, num_samples=num_samples
+    )()
+
+    return prepare_interchange_dictionary(samples)
 
 
 @pyciemss_logging_wrapper
@@ -143,7 +215,7 @@ def calibrate(
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
-    deterministic_learnable_parameters: Iterable[str] = [],
+    deterministic_learnable_parameters: List[str] = [],
 ) -> pyro.nn.PyroModule:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -191,7 +263,7 @@ def calibrate(
             - Whether to print out the loss at each iteration.
         - num_particles: int
             - The number of particles to use for the inference algorithm.
-        - deterministic_learnable_parameters: Iterable[str]
+        - deterministic_learnable_parameters: List[str]
             - A list of parameter names that should be learned deterministically.
             - By default, all parameters are learned probabilistically.
 

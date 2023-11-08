@@ -7,6 +7,7 @@ import pyro
 import torch
 from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
 from chirho.dynamical.ops import State
+from pyro.contrib.autoname import scope
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
@@ -18,8 +19,9 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
         self,
         dynamics_models: List[CompiledDynamics],
         dirichlet_alpha: torch.Tensor,
-        solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]],
-        **kwargs,
+        solution_mappings: List[
+            Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+        ],
     ):
         super().__init__()
         self.dynamics_models = dynamics_models
@@ -36,18 +38,17 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
         end_time: torch.Tensor,
         solver: Solver = TorchDiffEq(),
     ) -> State[torch.Tensor]:
+        solutions = [State()] * len(self.dynamics_models)
+        for i, dynamics in enumerate(self.dynamics_models):
+            with scope(prefix=f"model_{i}"):
+                solutions[i] = dynamics(start_time, end_time, solver)
 
-        solutions = [
-            mapping(dynamics(start_time, end_time, solver))
-            for dynamics, mapping in zip(self.dynamics_models, self.solution_mappings)
-        ]
-
-        solution = State(**{
-            k: sum([self.model_weights[i] * v[k] for i, v in enumerate(solutions)])
-            for k in solutions[0].keys()
-        })
-
-        return solution
+        return State(
+            **{
+                k: sum([self.model_weights[i] * v[k] for i, v in enumerate(solutions)])
+                for k in solutions[0].keys()
+            }
+        )
 
     @functools.singledispatchmethod
     @classmethod
@@ -56,8 +57,6 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
 
     @load.register
     @classmethod
-    def _load_from_list(
-        cls, srcs: list, dirichlet_alpha, solution_mappings
-    ):
+    def _load_from_list(cls, srcs: list, dirichlet_alpha, solution_mappings):
         dynamics_models = [CompiledDynamics.load(src) for src in srcs]
         return cls(dynamics_models, dirichlet_alpha, solution_mappings)
