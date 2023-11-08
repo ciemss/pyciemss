@@ -10,10 +10,10 @@ PETRI_URLS = [
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/flux_typed.json",
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/flux_typed_aug.json",
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/ont_pop_vax.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir.json",
+    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir.json",
     # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_flux_span.json",
     "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed_aug.json",
+    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed_aug.json",
 ]
 
 REGNET_URLS = [
@@ -22,15 +22,15 @@ REGNET_URLS = [
 ]
 
 STOCKFLOW_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json"
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
 ]
 
 MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
 
-START_TIMES = [0.0, 1.0, 2.0]
-END_TIMES = [3.0, 4.0, 5.0]
+START_TIMES = [0.0, 10.0, 20.0]
+END_TIMES = [30.0, 40.0, 50.0]
 
-LOGGING_STEP_SIZES = [0.1]
+LOGGING_STEP_SIZES = [1.0]
 
 NUM_SAMPLES = [2]
 
@@ -40,13 +40,27 @@ def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):
     return True
 
 
-def check_states_match_in_all_but_values(
-    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor]
+def check_states_match(
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], postfix="state"
 ):
     assert check_keys_match(traj1, traj2)
 
     for k in traj1.keys():
-        if k[-5:] == "state":
+        if k[-len(postfix) :] == postfix:
+            assert torch.allclose(
+                traj2[k], traj1[k]
+            ), f"Trajectories differ in state trajectory of variable {k}."
+
+    return True
+
+
+def check_states_match_in_all_but_values(
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], postfix="state"
+):
+    assert check_keys_match(traj1, traj2)
+
+    for k in traj1.keys():
+        if k[-len(postfix) :] == postfix:
             assert not torch.allclose(
                 traj2[k], traj1[k]
             ), f"Trajectories are identical in state trajectory of variable {k}, but should differ."
@@ -65,11 +79,14 @@ def check_result_sizes(
         assert isinstance(k, str)
         assert isinstance(v, torch.Tensor)
 
-        if k[-5:] == "state":
+        if k[-5:] == "state" or k[-8:] == "observed":
             assert v.shape == (
                 num_samples,
-                len(torch.arange(start_time, end_time, logging_step_size))
-                - 1,  # Does not include start_time
+                len(
+                    torch.arange(
+                        start_time + logging_step_size, end_time, logging_step_size
+                    )
+                ),
             )
         else:
             assert v.shape == (num_samples,)

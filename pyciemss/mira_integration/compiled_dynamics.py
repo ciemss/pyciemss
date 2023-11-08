@@ -96,6 +96,7 @@ def _eval_deriv_mira(
     parameters = {
         get_name(param_info): getattr(param_module, get_name(param_info))
         for param_info in src.parameters.values()
+        if not param_info.placeholder
     }
 
     numeric_deriv = param_module.numeric_deriv_func(**X, **parameters)
@@ -115,6 +116,7 @@ def _eval_initial_state_mira(
     parameters = {
         get_name(param_info): getattr(param_module, get_name(param_info))
         for param_info in src.parameters.values()
+        if not param_info.placeholder
     }
 
     numeric_initial_state = param_module.numeric_initial_state_func(**parameters)
