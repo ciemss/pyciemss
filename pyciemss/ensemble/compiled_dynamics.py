@@ -55,7 +55,7 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
     def load(cls, obj, *args, **kwargs) -> "EnsembleCompiledDynamics":
         raise NotImplementedError(f"Cannot load object of type {type(obj)}.")
 
-    @load.register
+    @load.register(list)
     @classmethod
     def _load_from_list(cls, srcs: list, dirichlet_alpha, solution_mappings):
         dynamics_models = [CompiledDynamics.load(src) for src in srcs]
