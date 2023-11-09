@@ -41,14 +41,16 @@ def ensemble_sample(
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
 ):
     """
-    Load a collection of models from files, compile them into an ensemble probabilistic program, and sample from the ensemble.
+    Load a collection of models from files, compile them into an ensemble probabilistic program, 
+    and sample from the ensemble.
 
     Args:
     model_paths_or_jsons: List[Union[str, Dict]]
         - A list of paths to AMR model files or JSONs containing models in AMR form.
     solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]]
         - A list of functions that map the solution of each model to a common solution space.
-        - Each function takes in a dictionary of the form {state_variable_name: value} and returns a dictionary of the same form.
+        - Each function takes in a dictionary of the form {state_variable_name: value} 
+            and returns a dictionary of the same form.
     end_time: float
         - The end time of the sampled simulation.
     logging_step_size: float
