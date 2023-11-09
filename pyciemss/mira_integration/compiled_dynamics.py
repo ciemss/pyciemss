@@ -18,9 +18,11 @@ from chirho.dynamical.ops import State
 from pyciemss.compiled_dynamics import (
     _compile_deriv,
     _compile_initial_state,
+    _compile_observables,
     _compile_param_values,
     eval_deriv,
     eval_initial_state,
+    eval_observables,
     get_name,
 )
 from pyciemss.mira_integration.distributions import mira_distribution_to_pyro
@@ -56,6 +58,23 @@ def _compile_initial_state_mira(
         expressions=[symbolic_initials[get_name(var)] for var in src.variables.values()]
     )
     return numeric_initial_state_func
+
+
+@_compile_observables.register(mira.modeling.Model)
+def _compile_observables_mira(
+    src: mira.modeling.Model,
+) -> Callable[..., Tuple[torch.Tensor]]:
+    symbolic_observables = {
+        get_name(obs): obs.observable.expression.args[0]
+        for obs in src.observables.values()
+    }
+
+    numeric_observables_func = sympytorch.SymPyModule(
+        expressions=[
+            symbolic_observables[get_name(obs)] for obs in src.observables.values()
+        ]
+    )
+    return numeric_observables_func
 
 
 @_compile_param_values.register(mira.modeling.Model)
@@ -128,6 +147,23 @@ def _eval_initial_state_mira(
     return X
 
 
+@eval_observables.register(mira.modeling.Model)
+def _eval_observables_mira(
+    src: mira.modeling.Model,
+    param_module: pyro.nn.PyroModule,
+    X: State[torch.Tensor],
+) -> State[torch.Tensor]:
+    
+    numeric_observables = param_module.numeric_observables_func(**X)
+
+    observables = State()
+    for i, obs in enumerate(src.observables.values()):
+        k = get_name(obs)
+        observables[k] = numeric_observables[i]
+
+    return observables
+
+
 @get_name.register
 def _get_name_mira_variable(var: mira.modeling.Variable) -> str:
     return var.data["name"]
@@ -141,3 +177,12 @@ def _get_name_mira_transition(trans: mira.modeling.Transition) -> str:
 @get_name.register
 def _get_name_mira_modelparameter(param: mira.modeling.ModelParameter) -> str:
     return str(param.key)
+
+@get_name.register
+def _get_name_mira_model_observable(obs: mira.modeling.ModelObservable) -> str:
+    return obs.observable.name
+
+@get_name.register
+def _get_name_mira_observable(obs: mira.modeling.Observable) -> str:
+    return obs.name
+

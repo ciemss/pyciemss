@@ -29,7 +29,7 @@ class StateIndependentNoiseModel(NoiseModel):
     def forward(self, state: Dict[str, torch.Tensor]) -> None:
         for k in self.vars:
             pyro.sample(
-                f"{k}_observed",
+                f"{k}_noisy",
                 self.markov_kernel(k, state[k]),
             )
 
