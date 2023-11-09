@@ -40,6 +40,52 @@ def ensemble_sample(
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
 ):
+    """
+    Load a collection of models from files, compile them into an ensemble probabilistic program, and sample from the ensemble.
+
+    Args:
+    model_paths_or_jsons: List[Union[str, Dict]]
+        - A list of paths to AMR model files or JSONs containing models in AMR form.
+    solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]]
+        - A list of functions that map the solution of each model to a common solution space.
+        - Each function takes in a dictionary of the form {state_variable_name: value} and returns a dictionary of the same form.
+    end_time: float
+        - The end time of the sampled simulation.
+    logging_step_size: float
+        - The step size to use for logging the trajectory.
+    num_samples: int
+        - The number of samples to draw from the model.
+    dirichlet_alpha: Optional[torch.Tensor]
+        - A tensor of shape (num_models,) containing the Dirichlet alpha values for the ensemble.
+        - If not provided, we will use a uniform Dirichlet prior.
+    noise_model: Optional[str]
+        - The noise model to use for the data.
+        - Currently we only support the normal distribution.
+    noise_model_kwargs: Dict[str, Any]
+        - Keyword arguments to pass to the noise model.
+        - Currently we only support the `scale` keyword argument for the normal distribution.
+    solver_method: str
+        - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+        - If performance is incredibly slow, we suggest using `euler` to debug.
+          If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+    solver_options: Dict[str, Any]
+        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+    start_time: float
+        - The start time of the model. This is used to align the `start_state` from the
+          AMR model with the simulation timepoints.
+        - By default we set the `start_time` to be 0.
+    inferred_parameters: Optional[pyro.nn.PyroModule]
+        - A Pyro module that contains the inferred parameters of the model.
+          This is typically the result of `calibrate`.
+        - If not provided, we will use the default values from the AMR model.
+
+    Returns:
+        result: Dict[str, torch.Tensor]
+            - Dictionary of outputs from the model.
+                - Each key is the name of a parameter or state variable in the model.
+                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+                    and (num_samples,) for parameters.
+    """
     if dirichlet_alpha is None:
         dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
 
