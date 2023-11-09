@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import numbers
-from typing import Callable, Dict, Tuple, TypeVar, Union
+from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -63,7 +63,10 @@ def _compile_initial_state_mira(
 @_compile_observables.register(mira.modeling.Model)
 def _compile_observables_mira(
     src: mira.modeling.Model,
-) -> Callable[..., Tuple[torch.Tensor]]:
+) -> Optional[Callable[..., Tuple[torch.Tensor]]]:
+    if len(src.observables) == 0:
+        return None
+
     symbolic_observables = {
         get_name(obs): obs.observable.expression.args[0]
         for obs in src.observables.values()
@@ -153,6 +156,9 @@ def _eval_observables_mira(
     param_module: pyro.nn.PyroModule,
     X: State[torch.Tensor],
 ) -> State[torch.Tensor]:
+    if len(src.observables) == 0:
+        return State()
+
     numeric_observables = param_module.numeric_observables_func(**X)
 
     observables = State()

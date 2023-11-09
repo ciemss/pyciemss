@@ -308,7 +308,7 @@ def test_output_format(url, start_time, end_time, logging_step_size, num_samples
     assert processed_result.shape[1] >= 2
     assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
     for col_name in processed_result.columns[2:]:
-        assert col_name.split("_")[-1] in ("param", "state", "(unknown)")
+        assert col_name.split("_")[-1] in ("param", "state")
         assert processed_result[col_name].dtype == np.float64
 
     assert processed_result["timepoint_id"].dtype == np.int64
