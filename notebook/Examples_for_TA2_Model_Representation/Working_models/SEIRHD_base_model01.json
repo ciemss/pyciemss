@@ -325,7 +325,32 @@
      }
     }
    ],
-   "observables": [],
+   "observables": [    
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I",
+     "expression_mathml": "<ci>I</ci>"
+    },
+    {
+     "id": "exposed",
+     "name": "exposed",
+     "expression": "E",
+     "expression_mathml": "<ci>E</ci>"
+    },
+    {
+     "id": "hospitalized",
+     "name": "hospitalized",
+     "expression": "H",
+     "expression_mathml": "<ci>H</ci>"
+    },
+    {
+     "id": "dead",
+     "name": "dead",
+     "expression": "D",
+     "expression_mathml": "<ci>D</ci>"
+    }
+   ],
    "time": {
     "id": "t",
     "units": {
