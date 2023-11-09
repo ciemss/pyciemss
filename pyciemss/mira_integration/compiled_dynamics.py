@@ -158,7 +158,7 @@ def _eval_observables_mira(
     observables = State()
     for i, obs in enumerate(src.observables.values()):
         k = get_name(obs)
-        observables[k] = numeric_observables[i]
+        observables[k] = numeric_observables[..., i]
 
     return observables
 
