@@ -106,6 +106,7 @@ def _compile_deriv(src) -> Callable[..., Tuple[torch.Tensor]]:
 def _compile_initial_state(src) -> Callable[..., Tuple[torch.Tensor]]:
     raise NotImplementedError
 
+
 @functools.singledispatch
 def _compile_observables(src) -> Callable[..., Tuple[torch.Tensor]]:
     raise NotImplementedError

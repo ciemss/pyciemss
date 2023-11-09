@@ -153,7 +153,6 @@ def _eval_observables_mira(
     param_module: pyro.nn.PyroModule,
     X: State[torch.Tensor],
 ) -> State[torch.Tensor]:
-    
     numeric_observables = param_module.numeric_observables_func(**X)
 
     observables = State()
@@ -178,11 +177,12 @@ def _get_name_mira_transition(trans: mira.modeling.Transition) -> str:
 def _get_name_mira_modelparameter(param: mira.modeling.ModelParameter) -> str:
     return str(param.key)
 
+
 @get_name.register
 def _get_name_mira_model_observable(obs: mira.modeling.ModelObservable) -> str:
     return obs.observable.name
 
+
 @get_name.register
 def _get_name_mira_observable(obs: mira.modeling.Observable) -> str:
     return obs.name
-
