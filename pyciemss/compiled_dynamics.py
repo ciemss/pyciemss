@@ -35,6 +35,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
         # Compile the numeric derivative of the model from the transition rate laws.
         setattr(self, "numeric_deriv_func", _compile_deriv(src))
         setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
+        setattr(self, "numeric_observables_func", _compile_observables(src))
 
     @pyro.nn.pyro_method
     def deriv(self, X: State[torch.Tensor]) -> None:
@@ -43,6 +44,11 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @pyro.nn.pyro_method
     def initial_state(self) -> State[torch.Tensor]:
         return eval_initial_state(self.src, self)
+
+    @pyro.nn.pyro_method
+    def add_observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
+        observables = eval_observables(self.src, self, X)
+        return State(**X, **observables)
 
     def forward(
         self,
@@ -55,9 +61,11 @@ class CompiledDynamics(pyro.nn.PyroModule):
         for k in _compile_param_values(self.src).keys():
             getattr(self, get_name(k))
 
-        return simulate(
+        result = simulate(
             self.deriv, self.initial_state(), start_time, end_time, solver=solver
         )
+
+        return self.add_observables(result)
 
     @functools.singledispatchmethod
     @classmethod
@@ -100,6 +108,11 @@ def _compile_initial_state(src) -> Callable[..., Tuple[torch.Tensor]]:
 
 
 @functools.singledispatch
+def _compile_observables(src) -> Callable[..., Tuple[torch.Tensor]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
 def _compile_param_values(
     src,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
@@ -113,6 +126,11 @@ def eval_deriv(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
 
 @functools.singledispatch
 def eval_initial_state(src, param_module: pyro.nn.PyroModule) -> State[T]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def eval_observables(src, param_module: pyro.nn.PyroModule, X: State[T]) -> State[T]:
     raise NotImplementedError
 
 

@@ -88,9 +88,9 @@ def test_sample_with_noise(
 
     for k in result.keys():
         if k[-5:] == "state":
-            observed = result[f"{k[:-6]}_observed"]
+            noisy = result[f"{k[:-6]}_noisy"]
             state = result[k]
-            assert 0.5 * scale < torch.std(observed / state - 1) < 2 * scale
+            assert 0.5 * scale < torch.std(noisy / state - 1) < 2 * scale
 
 
 @pytest.mark.parametrize("model_url", MODEL_URLS)
@@ -328,7 +328,7 @@ def test_output_format(
     assert processed_result.shape[1] >= 2
     assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
     for col_name in processed_result.columns[2:]:
-        assert col_name.split("_")[-1] in ("param", "state", "(unknown)")
+        assert col_name.split("_")[-1] in ("param", "state")
         assert processed_result[col_name].dtype == np.float64
 
     assert processed_result["timepoint_id"].dtype == np.int64

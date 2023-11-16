@@ -228,15 +228,18 @@ def sample(
                         torch.as_tensor(end_time),
                         TorchDiffEq(method=solver_method, options=solver_options),
                     )
+
+        trajectory = model.add_observables(lt.trajectory)
+
         # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-        [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
+        [pyro.deterministic(k, v) for k, v in trajectory.items()]
 
         if noise_model is not None:
             compiled_noise_model = compile_noise_model(
-                noise_model, vars=set(lt.trajectory.keys()), **noise_model_kwargs
+                noise_model, vars=set(trajectory.keys()), **noise_model_kwargs
             )
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            compiled_noise_model(lt.trajectory)
+            compiled_noise_model(trajectory)
 
     samples = pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples

@@ -34,6 +34,7 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
         else:
+            name = name + "_state"
             pyciemss_results["states"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
