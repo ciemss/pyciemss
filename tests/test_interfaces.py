@@ -90,7 +90,7 @@ def test_sample_with_noise(
         if k[-5:] == "state":
             observed = result[f"{k[:-6]}_observed"]
             state = result[k]
-            assert 0.5 * scale < torch.std(observed - state) < 2 * scale
+            assert 0.5 * scale < torch.std(observed / state - 1) < 2 * scale
 
 
 @pytest.mark.parametrize("model_url", MODEL_URLS)

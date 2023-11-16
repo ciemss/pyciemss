@@ -4,21 +4,20 @@ import torch
 
 T = TypeVar("T")
 
-# SEE https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
+# See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
 PETRI_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/flux_typed.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/flux_typed_aug.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/ont_pop_vax.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_flux_span.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/petrinet/examples/sir_typed_aug.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type1.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type2.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_base_model01.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_three_beta.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_two_beta.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_with_reinfection01.json",  # noqa: E501
 ]
 
 REGNET_URLS = [
     "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/syntax_edge_cases.json",
 ]
 
 STOCKFLOW_URLS = [
@@ -61,11 +60,11 @@ def check_states_match_in_all_but_values(
 
     for k in traj1.keys():
         if k[-len(postfix) :] == postfix:
-            assert not torch.allclose(
-                traj2[k], traj1[k]
-            ), f"Trajectories are identical in state trajectory of variable {k}, but should differ."
+            if not torch.allclose(traj2[k], traj1[k]):
+                # early return, as we've already confirmed they're not identical
+                return True
 
-    return True
+    assert False, "Trajectories have identical values."
 
 
 def check_result_sizes(
