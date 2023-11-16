@@ -34,7 +34,7 @@ jobs:
         - name: Install dependencies
           run: |
             python -m pip install --upgrade pip
-            pip install .[tests]
+            pip install -e .[tests]
     
         - name: Run Notebook Test
-          run: CI=1 pytest --nbval-lax --dist loadscope docs/source/interfaces.ipynb
+          run: python -m pytest --nbval-lax docs/source/interfaces.ipynb
