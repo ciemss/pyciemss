@@ -88,9 +88,9 @@ def test_sample_with_noise(
 
     for k in result.keys():
         if k[-5:] == "state":
-            observed = result[f"{k[:-6]}_noisy"]
+            noisy = result[f"{k[:-6]}_noisy"]
             state = result[k]
-            assert 0.5 * scale < torch.std(observed / state - 1) < 2 * scale
+            assert 0.5 * scale < torch.std(noisy / state - 1) < 2 * scale
 
 
 @pytest.mark.parametrize("model_url", MODEL_URLS)
