@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.interfaces import calibrate, sample
+from pyciemss.interfaces import calibrate, ensemble_sample, sample
 
 from .fixtures import (
     END_TIMES,
@@ -19,24 +19,34 @@ from .fixtures import (
 )
 
 
+def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
+    model_paths_or_jsons = [model_path_or_json, model_path_or_json]
+    solution_mappings = [lambda x: x, lambda x: {k: 2 * v for k, v in x.items()}]
+    return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
+
+
+SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
 def test_sample_no_interventions(
-    model_url, start_time, end_time, logging_step_size, num_samples
+    sample_method, model_url, start_time, end_time, logging_step_size, num_samples
 ):
     with pyro.poutine.seed(rng_seed=0):
-        result1 = sample(
+        result1 = sample_method(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
         )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
-        result2 = sample(
+        result2 = sample_method(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
         )["unprocessed_result"]
 
-    result3 = sample(
+    result3 = sample_method(
         model_url, end_time, logging_step_size, num_samples, start_time=start_time
     )["unprocessed_result"]
 
@@ -48,6 +58,7 @@ def test_sample_no_interventions(
     check_states_match_in_all_but_values(result1, result3)
 
 
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -55,9 +66,15 @@ def test_sample_no_interventions(
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
 @pytest.mark.parametrize("scale", [0.1, 10.0])
 def test_sample_with_noise(
-    model_url, start_time, end_time, logging_step_size, num_samples, scale
+    sample_method,
+    model_url,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+    scale,
 ):
-    result = sample(
+    result = sample_method(
         model_url,
         end_time,
         logging_step_size,
@@ -73,7 +90,7 @@ def test_sample_with_noise(
         if k[-5:] == "state":
             observed = result[f"{k[:-6]}_observed"]
             state = result[k]
-            assert 0.5 * scale < torch.std(observed - state) < 2 * scale
+            assert 0.5 * scale < torch.std(observed / state - 1) < 2 * scale
 
 
 @pytest.mark.parametrize("model_url", MODEL_URLS)
@@ -292,13 +309,16 @@ def test_calibrate_and_sample(model_url, start_time, end_time, logging_step_size
     check_states_match(calibrated_result_2, calibrated_result_3)
 
 
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_output_format(url, start_time, end_time, logging_step_size, num_samples):
-    processed_result = sample(
+def test_output_format(
+    sample_method, url, start_time, end_time, logging_step_size, num_samples
+):
+    processed_result = sample_method(
         url, end_time, logging_step_size, num_samples, start_time=start_time
     )["data"]
     assert isinstance(processed_result, pd.DataFrame)
