@@ -4,7 +4,7 @@ import torch
 
 T = TypeVar("T")
 
-# SEE https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
+# See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
 PETRI_URLS = [
     "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
