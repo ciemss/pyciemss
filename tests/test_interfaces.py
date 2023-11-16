@@ -88,7 +88,7 @@ def test_sample_with_noise(
 
     for k in result.keys():
         if k[-5:] == "state":
-            observed = result[f"{k[:-6]}_observed"]
+            observed = result[f"{k[:-6]}_noisy"]
             state = result[k]
             assert 0.5 * scale < torch.std(observed / state - 1) < 2 * scale
 
