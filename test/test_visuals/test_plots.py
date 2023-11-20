@@ -26,10 +26,12 @@ save_png = (
     Path(__file__).parent.parent /  "test_visuals" / "reference_images" 
 )
 
-# True if want to save png and svg files
+# True if want to save png and svg files to be tested with test_schemas
 create_modified_schemas = False
 
 def save_schema_png_svg(schema, name):
+    """Save the schema, png, and svg if output is correct to use as future check 
+    in test_schemas"""
     plots.save_schema(schema, os.path.join(save_schema, name + ".vg.json"))
     png_image = plots.ipy_display(schema)
 
@@ -42,6 +44,7 @@ def save_schema_png_svg(schema, name):
         f.write(svg_image.data)
 
 def tensor_load(path):
+    """Load tensor data """
     with open(path) as f:
         data = json.load(f)
 
@@ -51,6 +54,7 @@ def tensor_load(path):
 
 
 def by_key_value(targets, key, value):
+    """Return entry by key value from target if equals value"""
     for entry in targets:
         if entry[key] == value:
             return entry
@@ -58,6 +62,7 @@ def by_key_value(targets, key, value):
 
 class TestTrajectory(unittest.TestCase):
     def setUp(self):
+        """ Get starting values for trajectory plot with rabbits and wolves"""
         self.tspan = get_tspan(1, 50, 500).detach().numpy()
         self.nice_labels = {"Rabbits_sol": "Rabbits", "Wolves_sol": "Wolves"}
 
@@ -97,6 +102,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
     def test_base(self):
+        """test basic trajectory command"""
         schema = plots.trajectories(self.dists)
         # save schemas so can check if created svg and png files match
         if create_modified_schemas:
@@ -108,6 +114,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
     def test_rename(self):
+        """ test trajectory rename"""
         schema = plots.trajectories(self.dists, relabel=self.nice_labels)
         # save schemas so can check if created svg and png files match
         if create_modified_schemas:
@@ -120,6 +127,7 @@ class TestTrajectory(unittest.TestCase):
         self.assertNotIn("Wolves_sol", df["trajectory"].unique())
 
     def test_keep(self):
+        """ test trajectory with keeping the names by regex"""
         schema = plots.trajectories(self.dists, keep=".*_sol")
         # save schemas so can check if created svg and png files match
         if create_modified_schemas:
@@ -155,6 +163,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
     def test_keep_drop(self):
+        """ test trajectory with dropping and keeping a trajectory """
         self.assertIn(
             "Rabbits_sol",
             self.dists.columns,
@@ -184,6 +193,7 @@ class TestTrajectory(unittest.TestCase):
         self.assertEqual(0, len(kept), "Kept unexpexted columns in keep & drop case")
 
     def test_drop(self):
+        """ test trajectory  with dropping a trajectory"""
         self.assertIn(
             "Rabbits_sol",
             self.dists.columns,
@@ -251,6 +261,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
     def test_points(self):
+        """ Test adding points to trajectory"""
         schema = plots.trajectories(
             self.dists,
             keep=".*_sol",
@@ -274,6 +285,7 @@ class TestTrajectory(unittest.TestCase):
         )
 
     def test_traces(self):
+        """ test adding traces to a trajectory"""
         schema = plots.trajectories(
             self.dists,
             keep=".*_sol",
@@ -300,6 +312,7 @@ class TestTrajectory(unittest.TestCase):
             )
 
     def test_mean_traces(self):
+        """ test adding the mean trace to a plot"""
         traces = trajectories.select_traces(self.dists,
                                     select_by = "mean",
                                     keep=".*_sol", 
@@ -326,6 +339,8 @@ class TestTrajectory(unittest.TestCase):
 
 class TestHistograms(unittest.TestCase):
     def setUp(self):
+
+        """Start by loading the datacube"""
         def read_cube(file):
             ds = xr.open_mfdataset([file])
             real_data = ds.to_dataframe().reset_index()
@@ -352,6 +367,7 @@ class TestHistograms(unittest.TestCase):
         ]
 
     def test_histogram(self):
+        """ test histogram, with bins returned"""
         hist, bins = plots.histogram_multi(s30=self.s30, return_bins=True)
 
         # save schemas so can check if created svg and png files match
@@ -370,6 +386,7 @@ class TestHistograms(unittest.TestCase):
         self.assertEqual(0, len(by_key_value(hist["data"], "name", "yref")["values"]))
 
     def test_histogram_empty_refs(self):
+        """ test histogram with empty refs"""
         xrefs = []
         yrefs = []
         hist, bins = plots.histogram_multi(
@@ -389,6 +406,7 @@ class TestHistograms(unittest.TestCase):
         self.assertEqual(0, len(by_key_value(hist["data"], "name", "yref")["values"]))
 
     def test_histogram_refs(self):
+        """ test histogram with yrefs and xrefs"""
         for num_refs in range(1, 20):
             xrefs = [*range(num_refs)]
             yrefs = [*range(num_refs)]
@@ -451,6 +469,7 @@ class TestHistograms(unittest.TestCase):
             )
 
     def test_histogram_multi(self):
+        """ test histogram with mutliple values"""
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30, i30=self.i30)
 
         # save schemas so can check if created svg and png files match
@@ -472,6 +491,7 @@ class TestHistograms(unittest.TestCase):
 
 class TestHeatmapScatter(unittest.TestCase):
     def test_implicit_heatmap(self):
+        """test heatmap created without fake data """
         df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
         # save schemas so can check if created svg and png files match
@@ -484,7 +504,9 @@ class TestHeatmapScatter(unittest.TestCase):
         )
 
     def test_explicit_heatmap(self):
+        """test heatmap created without fake data """
         def create_fake_data():
+            """ fake data for heampa"""
             nx, ny = (10, 10)
             x = np.linspace(0, 10, nx)
             y, a = np.linspace(0, 10, ny, retstep=True)
@@ -520,6 +542,7 @@ class TestHeatmapScatter(unittest.TestCase):
 
 class TestGraph(unittest.TestCase):
     def setUp(self):
+        """make a fake graph data with labeled nodes """
         def rand_attributions():
             possible = "ABCD"
             return random.sample(possible, random.randint(1, len(possible)))
@@ -543,6 +566,7 @@ class TestGraph(unittest.TestCase):
         nx.set_edge_attributes(self.g, edge_attributions)
 
     def test_multigraph(self):
+        """test graph with multiple coloring of outlines of graphs"""
         uncollapsed = plots.attributed_graph(self.g)
         # save schemas so can check if created svg and png files match
         if create_modified_schemas:
@@ -578,6 +602,7 @@ class TestGraph(unittest.TestCase):
         )
 
     def test_springgraph(self):
+        """test basic spring graph """
         schema = plots.spring_force_graph(self.g, node_labels="label")
         # save schemas so can check if created svg and png files match
         if create_modified_schemas:
@@ -589,6 +614,7 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(len(self.g.edges), len(edges), "Edges issue in conversion")
 
     def test_provided_layout(self):
+        """ test spring graph with a input layout """
         pos = nx.fruchterman_reingold_layout(self.g)
         schema = plots.spring_force_graph(self.g, node_labels="label", layout=pos)
         # save schemas so can check if created svg and png files match
