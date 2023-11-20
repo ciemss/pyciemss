@@ -6,6 +6,7 @@ import networkx as nx
 import json
 import torch
 import random
+import os
 
 from pathlib import Path
 from itertools import chain
@@ -17,6 +18,27 @@ from pyciemss.utils.interface_utils import convert_to_output_format
 
 _data_root = Path(__file__).parent.parent / "data"
 
+save_schema = (
+        Path(__file__).parent.parent / "test_visuals" / "modified_schemas" 
+    )
+
+save_png = (
+    Path(__file__).parent.parent /  "test_visuals" / "reference_images" 
+)
+
+create_modified_schemas = True
+
+def save_schema_png_svg(schema, name):
+    plots.save_schema(schema, os.path.join(save_schema, name + "vg.json"))
+    png_image = plots.ipy_display(schema)
+
+    with open(os.path.join(save_png, name + ".png"), "wb") as f:
+        f.write(png_image.data)
+
+    svg_image = plots.ipy_display(schema, format = "SVG")
+
+    with open(os.path.join(save_png, name + ".svg"), "w") as f:
+        f.write(svg_image.data)
 
 def tensor_load(path):
     with open(path) as f:
@@ -75,6 +97,9 @@ class TestTrajectory(unittest.TestCase):
 
     def test_base(self):
         schema = plots.trajectories(self.dists)
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_base")
 
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertSetEqual(
@@ -83,6 +108,9 @@ class TestTrajectory(unittest.TestCase):
 
     def test_rename(self):
         schema = plots.trajectories(self.dists, relabel=self.nice_labels)
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_rename")
 
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertIn("Rabbits", df["trajectory"].unique())
@@ -92,6 +120,10 @@ class TestTrajectory(unittest.TestCase):
 
     def test_keep(self):
         schema = plots.trajectories(self.dists, keep=".*_sol")
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_keep")
+
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
@@ -99,7 +131,6 @@ class TestTrajectory(unittest.TestCase):
             "Keeping by regex",
         )
 
-        schema = plots.trajectories(self.dists, keep=["Rabbits_sol", "Wolves_sol"])
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits_sol", "Wolves_sol"],
@@ -110,6 +141,11 @@ class TestTrajectory(unittest.TestCase):
         schema = plots.trajectories(
             self.dists, relabel=self.nice_labels, keep=["Rabbits_sol", "Wolves_sol"]
         )
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_keep_nice_labels")
+
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertEqual(
             ["Rabbits", "Wolves"],
@@ -130,6 +166,11 @@ class TestTrajectory(unittest.TestCase):
         )
 
         schema = plots.trajectories(self.dists, keep=".*_.*", drop=".*_param")
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_keep_drop")
+            
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         self.assertIn(
@@ -148,13 +189,17 @@ class TestTrajectory(unittest.TestCase):
             "Exepected trajectory not found in pre-test",
         )
 
-        print(self.dists.columns)
         should_drop = [p for p in self.dists.columns if "_param" in p]
         self.assertGreater(
             len(should_drop), 0, "Exepected trajectory not found in pre-test"
         )
 
         schema = plots.trajectories(self.dists, drop=should_drop)
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_drop")
+
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         self.assertIn(
@@ -181,6 +226,12 @@ class TestTrajectory(unittest.TestCase):
             self.fail("Error dropping non-existent trajectory")
 
         schema = plots.trajectories(self.dists, drop="gam.*")
+
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_drop_gam")
+
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         self.assertIn(
             "Rabbits_sol",
@@ -206,8 +257,11 @@ class TestTrajectory(unittest.TestCase):
             points=self.observed_points,
         )
 
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_points")
+
         points = pd.DataFrame(vega.find_named(schema["data"], "points")["values"])
-        print(points.columns)
 
         self.assertEqual(
             1, len(points["trajectory"].unique()), "Unexpected number of exemplars"
@@ -225,10 +279,12 @@ class TestTrajectory(unittest.TestCase):
             relabel=self.nice_labels,
             traces=self.traces,
         )
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_traces")
 
         traces = pd.DataFrame(vega.find_named(schema["data"], "traces")["values"])
-        plots.save_schema(schema, "_schema.json")
-
+        
         self.assertEqual(
             sorted(self.traces.columns.unique()),
             sorted(traces["trajectory"].unique()),
@@ -297,6 +353,10 @@ class TestHistograms(unittest.TestCase):
     def test_histogram(self):
         hist, bins = plots.histogram_multi(s30=self.s30, return_bins=True)
 
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(hist, "test_histogram")
+
         bins = bins.reset_index()
 
         self.assertTrue(all(bins["bin0"].value_counts() == 1), "Duplicated bins found")
@@ -315,6 +375,15 @@ class TestHistograms(unittest.TestCase):
             s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
         )
 
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(hist, "test_histogram_empty_refs")
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(hist, "test_histogram")
+
+
         self.assertEqual(0, len(by_key_value(hist["data"], "name", "xref")["values"]))
         self.assertEqual(0, len(by_key_value(hist["data"], "name", "yref")["values"]))
 
@@ -325,6 +394,10 @@ class TestHistograms(unittest.TestCase):
             hist, bins = plots.histogram_multi(
                 s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
             )
+
+            # save schemas so can check if created svg and png files match
+            if create_modified_schemas:
+                save_schema_png_svg(hist, "test_histogram_refs")
 
             self.assertEqual(
                 num_refs,
@@ -341,6 +414,10 @@ class TestHistograms(unittest.TestCase):
                 s30=self.s30, xrefs=xrefs, yrefs=[], return_bins=True
             )
 
+            # save schemas so can check if created svg and png files match
+            if create_modified_schemas:
+                save_schema_png_svg(hist, "test_histogram_refs_xrefs")
+
             self.assertEqual(
                 num_refs,
                 len(by_key_value(hist["data"], "name", "xref")["values"]),
@@ -356,6 +433,11 @@ class TestHistograms(unittest.TestCase):
                 s30=self.s30, xrefs=[], yrefs=yrefs, return_bins=True
             )
 
+            # save schemas so can check if created svg and png files match
+            if create_modified_schemas:
+                save_schema_png_svg(hist, "test_histogram_refs_yrefs")
+
+
             self.assertEqual(
                 0,
                 len(by_key_value(hist["data"], "name", "xref")["values"]),
@@ -369,10 +451,20 @@ class TestHistograms(unittest.TestCase):
 
     def test_histogram_multi(self):
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30, i30=self.i30)
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(hist, "test_histogram_multi_sri")
+
         data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         self.assertEqual({"s30", "i30", "r30"}, set(data["label"].values))
 
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30)
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(hist, "test_histogram_multi_sr")
+            
         data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         self.assertEqual({"s30", "r30"}, set(data["label"].values))
 
@@ -381,7 +473,10 @@ class TestHeatmapScatter(unittest.TestCase):
     def test_implicit_heatmap(self):
         df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
-
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_implicit_heatmap")
+            
         points = vega.find_named(schema["data"], "points")["values"]
         self.assertTrue(
             all(pd.DataFrame(points) == df), "Unexpected points values found"
@@ -405,6 +500,10 @@ class TestHeatmapScatter(unittest.TestCase):
 
         mesh_data, scatter_data = create_fake_data()
         schema = plots.heatmap_scatter(scatter_data, mesh_data)
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_explicit_heatmap")
+            
 
         points = vega.find_named(schema["data"], "points")["values"]
         self.assertTrue(
@@ -444,6 +543,10 @@ class TestGraph(unittest.TestCase):
 
     def test_multigraph(self):
         uncollapsed = plots.attributed_graph(self.g)
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(uncollapsed, "test_multigraph")
+
         nodes = vega.find_named(uncollapsed["data"], "node-data")["values"]
         edges = vega.find_named(uncollapsed["data"], "link-data")["values"]
         self.assertEqual(len(self.g.nodes), len(nodes), "Nodes issue in conversion")
@@ -454,6 +557,11 @@ class TestGraph(unittest.TestCase):
         )
         nx.set_node_attributes(self.g, {0: {"attribution": all_attributions}})
         collapsed = plots.attributed_graph(self.g, collapse_all=True)
+
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(collapsed, "test_multigraph_collapsed")
+
         nodes = vega.find_named(collapsed["data"], "node-data")["values"]
         edges = vega.find_named(collapsed["data"], "link-data")["values"]
         self.assertEqual(
@@ -470,6 +578,10 @@ class TestGraph(unittest.TestCase):
 
     def test_springgraph(self):
         schema = plots.spring_force_graph(self.g, node_labels="label")
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_springgraph")
+
         nodes = vega.find_named(schema["data"], "node-data")["values"]
         edges = vega.find_named(schema["data"], "link-data")["values"]
         self.assertEqual(len(self.g.nodes), len(nodes), "Nodes issue in conversion")
@@ -478,6 +590,9 @@ class TestGraph(unittest.TestCase):
     def test_provided_layout(self):
         pos = nx.fruchterman_reingold_layout(self.g)
         schema = plots.spring_force_graph(self.g, node_labels="label", layout=pos)
+        # save schemas so can check if created svg and png files match
+        if create_modified_schemas:
+            save_schema_png_svg(schema, "test_provided_layout")
 
         nodes = vega.find_named(schema["data"], "node-data")["values"]
         edges = vega.find_named(schema["data"], "link-data")["values"]

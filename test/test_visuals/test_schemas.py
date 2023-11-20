@@ -86,7 +86,7 @@ class TestExport(unittest.TestCase):
             if not isinstance(wrapped, IPython.display.Image):
                 raise ValueError("Expected wrapped PNG")
 
-            reference_file = saved_images.get(schema_file.stem, None)
+            reference_file = saved_images.get(schema_file.name.split('.')[0], None)
             if reference_file is not None:
                 with open(reference_file, "b") as f:
                     reference = f.read()
@@ -111,8 +111,10 @@ class TestExport(unittest.TestCase):
             if reference_file is not None:
                 with open(reference_file, 'r') as f:
                     reference = f.read()
+                    # replace what seems to be random numbers for gradient and cliip in svg
                     reference = re.sub('gradient_[0-9]*', "gradient_REPLACED", reference)
                     reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
+                    
                 content = re.sub('gradient_[0-9]*', "gradient_REPLACED", wrapped.data)
                 content = re.sub('clip[0-9]*', "clipREPLACED", content)
                 if content != reference:
