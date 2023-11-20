@@ -26,10 +26,11 @@ save_png = (
     Path(__file__).parent.parent /  "test_visuals" / "reference_images" 
 )
 
-create_modified_schemas = True
+# True if want to save png and svg files
+create_modified_schemas = False
 
 def save_schema_png_svg(schema, name):
-    plots.save_schema(schema, os.path.join(save_schema, name + "vg.json"))
+    plots.save_schema(schema, os.path.join(save_schema, name + ".vg.json"))
     png_image = plots.ipy_display(schema)
 
     with open(os.path.join(save_png, name + ".png"), "wb") as f:

@@ -18,6 +18,10 @@ _schema_root = (
     Path(__file__).parent.parent.parent / "src" / "pyciemss" / "visuals" / "schemas"
 )
 
+_modified_schema_root = (
+        Path(__file__).parent.parent / "test_visuals" / "modified_schemas" 
+    )
+
 
 def find_scale_applications(schema, target_properties, found=None):
     if found is None:
@@ -44,6 +48,9 @@ def find_scale_applications(schema, target_properties, found=None):
 class TestExport(unittest.TestCase):
     def setUp(self):
         self.schemas = [*_schema_root.glob("*.vg.json")]
+        self.schemas_modified = [*_modified_schema_root.glob("*.vg.json")]
+        self.all_schemas = self.schemas + self.schemas_modified
+        
         self.assertGreater(len(self.schemas), 0, "No schemas found")
 
     def format_checker(self, format: str, content_check: Callable[[str, Any], None]):
@@ -58,9 +65,10 @@ class TestExport(unittest.TestCase):
             _type_: _description_
         """
         schema_issues = []
-        for schema_file in self.schemas:
+        for schema_file in self.all_schemas:
             with open(schema_file) as f:
                 schema = json.load(f)
+                print(schema_file.name)
 
             try:
                 image = plots.ipy_display(schema, format=format)
@@ -88,7 +96,7 @@ class TestExport(unittest.TestCase):
 
             reference_file = saved_images.get(schema_file.name.split('.')[0], None)
             if reference_file is not None:
-                with open(reference_file, "b") as f:
+                with open(reference_file, "rb") as f:
                     reference = f.read()
 
                 content = wrapped.data

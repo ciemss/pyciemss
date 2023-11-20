@@ -1,0 +1,301 @@
+{
+   "$schema": "https://vega.github.io/schema/vega/v5.json",
+   "description": "Histogram for visualizing a univariate distribution using static bins.",
+   "width": 500,
+   "height": 100,
+   "padding": 5,
+   "data": [
+      {
+         "name": "binned",
+         "values": [
+            {
+               "bin0": 394.3480224609375,
+               "bin1": 7290.91015625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 7290.91015625,
+               "bin1": 14187.47265625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 14187.47265625,
+               "bin1": 21084.03515625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 21084.03515625,
+               "bin1": 27980.59765625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 27980.59765625,
+               "bin1": 34877.16015625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 34877.16015625,
+               "bin1": 41773.72265625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 41773.72265625,
+               "bin1": 48670.28515625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 48670.28515625,
+               "bin1": 55566.84375,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 55566.84375,
+               "bin1": 62463.40625,
+               "count": 0,
+               "label": "s30"
+            },
+            {
+               "bin0": 62463.40625,
+               "bin1": 69359.96875,
+               "count": 29,
+               "label": "s30"
+            },
+            {
+               "bin0": 69359.96875,
+               "bin1": 76256.53125,
+               "count": 213,
+               "label": "s30"
+            },
+            {
+               "bin0": 76256.53125,
+               "bin1": 83153.09375,
+               "count": 854,
+               "label": "s30"
+            },
+            {
+               "bin0": 83153.09375,
+               "bin1": 90049.65625,
+               "count": 1245,
+               "label": "s30"
+            },
+            {
+               "bin0": 90049.65625,
+               "bin1": 96946.21875,
+               "count": 158,
+               "label": "s30"
+            },
+            {
+               "bin0": 394.3480224609375,
+               "bin1": 7290.91015625,
+               "count": 2500,
+               "label": "r30"
+            }
+         ]
+      },
+      {
+         "name": "xref",
+         "values": []
+      },
+      {
+         "name": "yref",
+         "values": []
+      },
+      {
+         "name": "_ranges",
+         "source": [
+            "binned"
+         ],
+         "transform": [
+            {
+               "type": "aggregate",
+               "fields": [
+                  "bin0",
+                  "bin1"
+               ],
+               "ops": [
+                  "min",
+                  "max"
+               ],
+               "as": [
+                  "min",
+                  "max"
+               ]
+            }
+         ]
+      }
+   ],
+   "legends": [
+      {
+         "fill": "color"
+      }
+   ],
+   "scales": [
+      {
+         "name": "xscale",
+         "type": "linear",
+         "range": "width",
+         "domain": {
+            "data": "_ranges",
+            "fields": [
+               "min",
+               "max"
+            ]
+         }
+      },
+      {
+         "name": "yscale",
+         "type": "linear",
+         "range": "height",
+         "round": true,
+         "domain": {
+            "data": "binned",
+            "field": "count"
+         },
+         "zero": true,
+         "nice": true
+      },
+      {
+         "name": "color",
+         "type": "ordinal",
+         "domain": {
+            "data": "binned",
+            "field": "label"
+         },
+         "range": {
+            "scheme": "dark2"
+         }
+      }
+   ],
+   "axes": [
+      {
+         "orient": "bottom",
+         "scale": "xscale",
+         "zindex": 1
+      },
+      {
+         "orient": "left",
+         "scale": "yscale",
+         "tickCount": 5,
+         "zindex": 1
+      }
+   ],
+   "title": {
+      "text": "Histogram",
+      "orient": "top",
+      "anchor": "start",
+      "frame": "group"
+   },
+   "marks": [
+      {
+         "name": "bins",
+         "type": "rect",
+         "from": {
+            "data": "binned"
+         },
+         "encode": {
+            "update": {
+               "x": {
+                  "scale": "xscale",
+                  "field": "bin0"
+               },
+               "x2": {
+                  "scale": "xscale",
+                  "field": "bin1",
+                  "offset": -0.5
+               },
+               "y": {
+                  "scale": "yscale",
+                  "field": "count"
+               },
+               "y2": {
+                  "scale": "yscale",
+                  "value": 0
+               },
+               "tooltip": {
+                  "field": "count"
+               },
+               "fill": {
+                  "scale": "color",
+                  "field": "label"
+               },
+               "opacity": {
+                  "value": 0.7
+               }
+            },
+            "hover": {
+               "fill": {
+                  "value": "firebrick"
+               }
+            }
+         }
+      },
+      {
+         "name": "x_highlights",
+         "type": "rule",
+         "clip": true,
+         "from": {
+            "data": "xref"
+         },
+         "encode": {
+            "enter": {
+               "stroke": {
+                  "value": "red"
+               }
+            },
+            "update": {
+               "x": {
+                  "scale": "xscale",
+                  "field": "value"
+               },
+               "y2": {
+                  "value": 0
+               },
+               "y": {
+                  "signal": "height"
+               },
+               "opacity": {
+                  "value": 1
+               }
+            }
+         }
+      },
+      {
+         "name": "y_highlights",
+         "type": "rule",
+         "clip": true,
+         "from": {
+            "data": "yref"
+         },
+         "encode": {
+            "enter": {
+               "stroke": {
+                  "value": "red"
+               }
+            },
+            "update": {
+               "y": {
+                  "scale": "yscale",
+                  "field": "value"
+               },
+               "x2": {
+                  "value": 0
+               },
+               "x": {
+                  "signal": "width"
+               },
+               "opacity": {
+                  "value": 1
+               }
+            }
+         }
+      }
+   ]
+}

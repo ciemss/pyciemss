@@ -1,0 +1,496 @@
+{
+   "$schema": "https://vega.github.io/schema/vega/v5.json",
+   "description": "A node-link diagram with force-directed layout.",
+   "width": 500,
+   "height": 500,
+   "padding": 0,
+   "signals": [
+      {
+         "name": "cx",
+         "update": "width / 2"
+      },
+      {
+         "name": "cy",
+         "update": "height / 2"
+      },
+      {
+         "name": "nodeRadius",
+         "value": 15
+      },
+      {
+         "name": "nodeCharge",
+         "value": -80
+      },
+      {
+         "name": "linkDistance",
+         "value": 80
+      },
+      {
+         "description": "State variable for active node fix status.",
+         "name": "fix",
+         "value": false,
+         "on": [
+            {
+               "events": "symbol:mouseout[!event.buttons], window:mouseup",
+               "update": "false"
+            },
+            {
+               "events": "symbol:mouseover",
+               "update": "fix || true"
+            },
+            {
+               "events": "[symbol:mousedown, window:mouseup] > window:mousemove!",
+               "update": "xy()",
+               "force": true
+            }
+         ]
+      },
+      {
+         "description": "Unfix node",
+         "name": "reset",
+         "value": null,
+         "on": [
+            {
+               "events": "symbol:dblclick",
+               "update": "item().datum"
+            }
+         ]
+      },
+      {
+         "description": "Graph node most recently interacted with.",
+         "name": "node",
+         "value": null,
+         "on": [
+            {
+               "events": "symbol:mouseover",
+               "update": "fix === true ? item() : node"
+            }
+         ]
+      },
+      {
+         "description": "Flag to restart Force simulation upon data changes.",
+         "name": "restart",
+         "value": false,
+         "on": [
+            {
+               "events": {
+                  "signal": "fix"
+               },
+               "update": "fix && fix.length"
+            },
+            {
+               "events": {
+                  "signal": "reset"
+               },
+               "update": "true"
+            }
+         ]
+      }
+   ],
+   "scales": [
+      {
+         "name": "color",
+         "type": "ordinal",
+         "domain": {
+            "data": "node-data",
+            "field": "group"
+         },
+         "range": {
+            "scheme": "category20c"
+         }
+      },
+      {
+         "name": "colorlink",
+         "type": "ordinal",
+         "domain": {
+            "data": "link-data",
+            "field": "group"
+         },
+         "range": {
+            "scheme": "category20c"
+         }
+      },
+      {
+         "name": "xscale",
+         "domain": {
+            "data": "node-data",
+            "field": "inputX"
+         },
+         "range": [
+            10,
+            {
+               "signal": "width - 10"
+            }
+         ]
+      },
+      {
+         "name": "yscale",
+         "domain": {
+            "data": "node-data",
+            "field": "inputY"
+         },
+         "range": [
+            10,
+            {
+               "signal": "height - 10"
+            }
+         ]
+      }
+   ],
+   "legends": [
+      {
+         "title": "Group",
+         "stroke": "color",
+         "symbolType": "stroke"
+      },
+      {
+         "title": "Link Group",
+         "stroke": "colorlink",
+         "symbolType": "stroke"
+      }
+   ],
+   "marks": [
+      {
+         "name": "nodes",
+         "type": "symbol",
+         "zindex": 1,
+         "from": {
+            "data": "node-data"
+         },
+         "transform": [
+            {
+               "type": "force",
+               "iterations": 300,
+               "restart": {
+                  "signal": "restart"
+               },
+               "static": true,
+               "signal": "force",
+               "forces": [
+                  {
+                     "force": "center",
+                     "x": {
+                        "signal": "cx"
+                     },
+                     "y": {
+                        "signal": "cy"
+                     }
+                  },
+                  {
+                     "force": "collide",
+                     "radius": {
+                        "signal": "nodeRadius"
+                     }
+                  },
+                  {
+                     "force": "nbody",
+                     "strength": {
+                        "signal": "nodeCharge"
+                     }
+                  },
+                  {
+                     "force": "link",
+                     "links": "link-data",
+                     "distance": {
+                        "signal": "linkDistance"
+                     }
+                  }
+               ]
+            }
+         ],
+         "encode": {
+            "enter": {
+               "fill": {
+                  "scale": "color",
+                  "field": "group"
+               },
+               "stroke": {
+                  "value": "white"
+               }
+            },
+            "update": {
+               "size": {
+                  "signal": "2 * nodeRadius * nodeRadius"
+               },
+               "cursor": {
+                  "value": "pointer"
+               },
+               "fx": {
+                  "signal": "datum.interactionX == null ? scale('xscale', datum.inputX) : datum.interactionX"
+               },
+               "fy": {
+                  "signal": "datum.interactionY == null ? scale('yscale', datum.inputY) : datum.interactionY"
+               }
+            }
+         }
+      },
+      {
+         "type": "text",
+         "name": "labels",
+         "from": {
+            "data": "nodes"
+         },
+         "zindex": 2,
+         "interactive": false,
+         "transform": [
+            {
+               "type": "label",
+               "avoidMarks": [
+                  "nodes"
+               ],
+               "anchor": [
+                  "top",
+                  "bottom",
+                  "right",
+                  "left"
+               ],
+               "offset": [
+                  1
+               ],
+               "size": {
+                  "signal": "[width + 60, height]"
+               }
+            }
+         ],
+         "encode": {
+            "enter": {
+               "fill": {
+                  "value": "black"
+               },
+               "align": {
+                  "value": "center"
+               },
+               "baseline": {
+                  "value": "middle"
+               },
+               "fontSize": {
+                  "value": 10
+               },
+               "text": {
+                  "field": "datum.label"
+               }
+            },
+            "update": {
+               "x": {
+                  "field": "x"
+               },
+               "y": {
+                  "field": "y"
+               }
+            }
+         }
+      },
+      {
+         "type": "path",
+         "from": {
+            "data": "link-data"
+         },
+         "interactive": false,
+         "encode": {
+            "update": {
+               "stroke": {
+                  "scale": "colorlink",
+                  "field": "group"
+               },
+               "strokeWidth": {
+                  "value": 0.5
+               }
+            }
+         },
+         "transform": [
+            {
+               "type": "linkpath",
+               "require": {
+                  "signal": "force"
+               },
+               "shape": "line",
+               "sourceX": "datum.source.x",
+               "sourceY": "datum.source.y",
+               "targetX": "datum.target.x",
+               "targetY": "datum.target.y"
+            }
+         ]
+      },
+      {
+         "name": "arrows",
+         "type": "symbol",
+         "from": {
+            "data": "link-data"
+         },
+         "zindex": {
+            "value": 40
+         },
+         "encode": {
+            "enter": {
+               "fill": {
+                  "scale": "colorlink",
+                  "field": "group"
+               },
+               "stroke": {
+                  "scale": "colorlink",
+                  "field": "group"
+               },
+               "shape": {
+                  "value": "triangle-right"
+               },
+               "size": {
+                  "value": 40
+               }
+            },
+            "update": {
+               "x": {
+                  "field": "target.x"
+               },
+               "y": {
+                  "field": "target.y"
+               }
+            },
+            "hover": {
+               "opacity": {
+                  "value": 1
+               }
+            }
+         },
+         "transform": [
+            {
+               "type": "formula",
+               "as": "tan",
+               "expr": "atan2((datum.datum.target.y-datum.datum.source.y),(datum.datum.target.x-datum.datum.source.x))"
+            },
+            {
+               "type": "formula",
+               "as": "angle",
+               "expr": "datum.tan*180/PI"
+            },
+            {
+               "type": "formula",
+               "as": "y",
+               "expr": "datum.datum.target.y - nodeRadius*sin(datum.tan)"
+            },
+            {
+               "type": "formula",
+               "as": "x",
+               "expr": "datum.datum.target.x - nodeRadius*cos(datum.tan)"
+            }
+         ]
+      }
+   ],
+   "data": [
+      {
+         "name": "node-data",
+         "values": [
+            {
+               "attribution": [
+                  "D",
+                  "C",
+                  "A",
+                  "B"
+               ],
+               "label": 0,
+               "id": 0
+            },
+            {
+               "attribution": [
+                  "A",
+                  "D",
+                  "B",
+                  "C"
+               ],
+               "label": 1,
+               "id": 1
+            },
+            {
+               "attribution": [
+                  "C"
+               ],
+               "label": 2,
+               "id": 2
+            },
+            {
+               "attribution": [
+                  "A"
+               ],
+               "label": 3,
+               "id": 3
+            },
+            {
+               "attribution": [
+                  "A",
+                  "C"
+               ],
+               "label": 4,
+               "id": 4
+            }
+         ],
+         "on": [
+            {
+               "trigger": "fix.length == 2",
+               "modify": "node.datum",
+               "values": "{interactionX: fix[0], interactionY: fix[1]}"
+            },
+            {
+               "trigger": "reset",
+               "modify": "reset",
+               "values": "{interactionX: null, interactionY: null}"
+            }
+         ]
+      },
+      {
+         "name": "link-data",
+         "values": [
+            {
+               "attribution": [
+                  "B",
+                  "C"
+               ],
+               "source": 0,
+               "target": 1
+            },
+            {
+               "attribution": [
+                  "A"
+               ],
+               "source": 0,
+               "target": 2
+            },
+            {
+               "attribution": [
+                  "A",
+                  "B"
+               ],
+               "source": 0,
+               "target": 3
+            },
+            {
+               "attribution": [
+                  "D",
+                  "B",
+                  "A",
+                  "C"
+               ],
+               "source": 0,
+               "target": 4
+            },
+            {
+               "attribution": [
+                  "D",
+                  "A",
+                  "C",
+                  "B"
+               ],
+               "source": 2,
+               "target": 4
+            },
+            {
+               "attribution": [
+                  "C",
+                  "B",
+                  "D"
+               ],
+               "source": 3,
+               "target": 4
+            }
+         ]
+      }
+   ]
+}
