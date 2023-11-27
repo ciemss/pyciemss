@@ -615,6 +615,7 @@ class TestGraph(unittest.TestCase):
 
     def test_provided_layout(self):
         """ test spring graph with a input layout """
+        ##TODO not deterministic for spring, try circular layout, maybe hard code layout
         pos = nx.fruchterman_reingold_layout(self.g)
         schema = plots.spring_force_graph(self.g, node_labels="label", layout=pos)
         # save schemas so can check if created svg and png files match
