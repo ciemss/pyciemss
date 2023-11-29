@@ -20,6 +20,10 @@ from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.observation import compile_noise_model
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
+from pyciemss.ouu.ouu import computeRisk, solveOUU
+from pyciemss.ouu.risk_measures import alpha_superquantile
+
+import numpy as np
 
 
 @pyciemss_logging_wrapper
@@ -410,3 +414,152 @@ def calibrate(
 #     Optimize the objective function subject to the constraints.
 #     """
 #     raise NotImplementedError
+def optimize(
+    model_path_or_json: Union[str, Dict],
+    end_time: float,
+    qoi: callable,
+    risk_bound: float,
+    objfun: callable = lambda x: np.abs(x),
+    initial_guess: List[float] = 0.5,
+    bounds: List[List[float]] = [[0.0], [1.0]],
+    *,
+    noise_model: str = "normal",
+    noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
+    inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    n_samples_ouu: int = int(1e2),
+    maxiter: int = 2,
+    maxfeval: int = 25,
+    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
+    dynamic_interventions: Dict[
+        Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+    ] = {},
+    verbose: bool = False,
+    # petri: PetriNetODESystem,
+    # timepoints: Iterable,
+    # interventions: dict,
+    # method="dopri5",
+    roundup_decimal: int = 4,
+    postprocess: bool = False,
+) -> Dict:
+    """
+    Optimization under uncertainty with risk-based constraints over ODE models.
+    """
+    # maxfeval: Maximum number of function evaluations for each local optimization step
+    # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
+    timepoints = [float(x) for x in list(timepoints)]
+    bounds = np.atleast_2d(bounds)
+    u_min = bounds[0, :]
+    u_max = bounds[1, :]
+    # Set up risk estimation
+    control_model = copy.deepcopy(petri)
+    RISK = computeRisk(
+        model=control_model,
+        interventions=interventions,
+        qoi=qoi,
+        tspan=timepoints,
+        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+        num_samples=1,
+        guide=inferred_parameters,
+        method=method,
+    )
+
+    # Run one sample to estimate model evaluation time
+    start_time = time.time()
+    init_prediction = RISK.propagate_uncertainty(initial_guess)
+    RISK.qoi(init_prediction)
+    end_time = time.time()
+    forward_time = end_time - start_time
+    time_per_eval = forward_time / 1.0
+    if verbose:
+        print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
+
+    # Assign the required number of MC samples for each OUU iteration
+    control_model = copy.deepcopy(petri)
+    RISK = computeRisk(
+        model=control_model,
+        interventions=interventions,
+        qoi=qoi,
+        tspan=timepoints,
+        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+        num_samples=n_samples_ouu,
+        guide=inferred_parameters,
+        method=method,
+    )
+    # Define problem constraints
+    constraints = (
+        # risk constraint
+        {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+        # bounds on control
+        {"type": "ineq", "fun": lambda x: x - u_min},
+        {"type": "ineq", "fun": lambda x: u_max - x},
+    )
+    if verbose:
+        print(
+            "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+        )
+        print(
+            f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
+        )
+    start_time = time.time()
+    opt_results = solveOUU(
+        x0=initial_guess,
+        objfun=objfun,
+        constraints=constraints,
+        maxiter=maxiter,
+        maxfeval=maxfeval,
+    ).solve()
+
+    # Rounding up to given number of decimal places
+    # TODO: move to utilities
+    def round_up(num, dec=roundup_decimal):
+        return ceil(num * 10**dec) / (10**dec)
+
+    opt_results.x = round_up(opt_results.x)
+    if verbose:
+        print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
+        print(f"Optimal policy:\t{opt_results.x}")
+
+    # Check for some interventions that lead to no feasible solutions
+    if opt_results.x < 0:
+        if verbose:
+            print("No solution found")
+
+    # Post-process OUU results
+    if postprocess:
+        if verbose:
+            print("Post-processing optimal policy...")
+        # TODO: check best way to set tspan for plotting
+        tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
+        control_model = copy.deepcopy(petri)
+        RISK = computeRisk(
+            model=control_model,
+            interventions=interventions,
+            qoi=qoi,
+            tspan=tspan_plot,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=int(5e2),
+            guide=inferred_parameters,
+            method=method,
+        )
+        sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
+        qois_sq = RISK.qoi(sq_optimal_prediction)
+        sq_est = round_up(RISK.risk_measure(qois_sq))
+        ouu_results = {
+            "policy": opt_results.x,
+            "risk": [sq_est],
+            "samples": sq_optimal_prediction,
+            "qoi": qois_sq,
+            "tspan": RISK.tspan,
+            "OptResults": opt_results,
+        }
+        if verbose:
+            print("Estimated risk at optimal policy", ouu_results["risk"])
+    else:
+        ouu_results = {
+            "policy": opt_results.x,
+            "OptResults": opt_results,
+        }
+    return ouu_results
