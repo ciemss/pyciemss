@@ -416,7 +416,8 @@ def calibrate(
 #     raise NotImplementedError
 def optimize(
     model_path_or_json: Union[str, Dict],
-    end_time: float,
+    end_time: float,    
+    logging_step_size: float,
     qoi: callable,
     risk_bound: float,
     objfun: callable = lambda x: np.abs(x),
@@ -449,7 +450,12 @@ def optimize(
     """
     # maxfeval: Maximum number of function evaluations for each local optimization step
     # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
-    timepoints = [float(x) for x in list(timepoints)]
+
+    model = CompiledDynamics.load(model_path_or_json)
+
+    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    # timepoints = [float(x) for x in list(timepoints)]
     bounds = np.atleast_2d(bounds)
     u_min = bounds[0, :]
     u_max = bounds[1, :]

@@ -4,8 +4,8 @@ from pyro.infer import Predictive
 import pyro
 # TODO: generalize to other models also
 from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
-from pyciemss.risk.risk_measures import alpha_superquantile
-from typing import Iterable, Optional, Tuple, Union
+from pyciemss.ouu.risk_measures import alpha_superquantile
+from typing import List, Optional, Tuple, Union
 from tqdm import tqdm
 
 class RandomDisplacementBounds():
@@ -25,15 +25,17 @@ class computeRisk():
     '''
     Implements necessary forward uncertainty propagation, quantity of interest and risk measure computation.
     '''
-    def __init__(self,
-                 model: callable,
-                 interventions: Iterable[Tuple[float, str]],
-                 qoi: callable,
-                 tspan: np.ndarray,
-                 risk_measure: callable = alpha_superquantile,
-                 num_samples: int = 1000,
-                 guide=None,
-                 method="dopri5"):
+    def __init__(
+        self,
+        model: callable,
+        interventions: List[Tuple[float, str]],
+        qoi: callable,
+        tspan: np.ndarray,
+        risk_measure: callable = alpha_superquantile,
+        num_samples: int = 1000,
+        guide=None,
+        method="dopri5",
+    ):
         self.model = model
         self.interventions = interventions
         self.qoi = qoi
@@ -45,7 +47,6 @@ class computeRisk():
         self.model.load_events(logging_events)
         self.method = method
 
-
     def __call__(self, x):
         # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
@@ -53,7 +54,6 @@ class computeRisk():
         sample_qoi = self.qoi(samples)
         # Estimate risk measure
         return self.risk_measure(sample_qoi)
-
 
     def propagate_uncertainty(self, x):
         '''
@@ -69,6 +69,43 @@ class computeRisk():
             count=count+1
         # Apply intervention to model
         self.model.load_events(interventions)
+
+        # # TODO: update interventions
+        # static_intervention_handlers = [
+        # StaticIntervention(time, State(**static_intervention_assignment))
+        # for time, static_intervention_assignment in static_interventions.items()
+        # ]
+        # # dynamic_intervention_handlers = [
+        # #     DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        # #     for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
+        # # ]
+
+        # def wrapped_model():
+        #     with LogTrajectory(timespan) as lt:
+        #         with InterruptionEventLoop():
+        #             with contextlib.ExitStack() as stack:
+        #                 for handler in (
+        #                     static_intervention_handlers
+        #                 ):
+        #                     stack.enter_context(handler)
+        #                 model(
+        #                     torch.as_tensor(start_time),
+        #                     torch.as_tensor(end_time),
+        #                     TorchDiffEq(method=solver_method, options=solver_options),
+        #                 )
+
+        #     trajectory = model.add_observables(lt.trajectory)
+
+        #     # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
+        #     [pyro.deterministic(k, v) for k, v in trajectory.items()]
+
+        #     if noise_model is not None:
+        #         compiled_noise_model = compile_noise_model(
+        #             noise_model, vars=set(trajectory.keys()), **noise_model_kwargs
+        #         )
+        #         # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+        #         compiled_noise_model(trajectory)
+
         # Sample from intervened model
         samples = Predictive(self.model, guide=self.guide, num_samples=self.num_samples)(method=self.method)
         # Remove intervention events
@@ -80,19 +117,19 @@ class solveOUU():
     '''
     Solve the optimization under uncertainty problem. The core of this class is a wrapper around an appropriate SciPy optimization algorithm.
     '''
-    def __init__(self,
-                 x0: np.ndarray,
-                 objfun: callable,
-                 constraints: tuple,
-                 minimizer_kwargs: dict = dict(
-                        method="COBYLA",
-                        tol=1e-5, options={'disp': False, 'maxiter':  10},
-                       ),
-                 optimizer_algorithm: str = "basinhopping",
-                 maxfeval: int = 100,
-                 maxiter: int = 100,
-                 **kwargs
-                ):
+    def __init__(
+        self,
+        x0: np.ndarray,
+        objfun: callable,
+        constraints: tuple,
+        minimizer_kwargs: dict = dict(
+            method="COBYLA",
+            tol=1e-5, options={'disp': False, 'maxiter':  10},
+            ),
+        optimizer_algorithm: str = "basinhopping",
+        maxfeval: int = 100,
+        maxiter: int = 100,
+    ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
         self.constraints = constraints
