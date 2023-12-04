@@ -14,7 +14,7 @@ from pyciemss.utils import get_tspan
 from pyciemss.utils.interface_utils import convert_to_output_format
 import json
 
-create_png_plots = True
+create_png_plots = False
 
 def tensor_load(path):
     """Load tensor data """
@@ -22,6 +22,7 @@ def tensor_load(path):
         data = json.load(f)
 
     data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
+
 
     return data
 
@@ -32,11 +33,27 @@ save_png = (
     Path(__file__).parent.parent /  "test_utils" / "reference_images" 
 )
 
+test_png = (
+    Path(__file__).parent.parent /  "test_utils" / "test_images" 
+)
+
+
 class TestPlotUtils(unittest.TestCase):
     def setUp(self):
         """ Get starting values for trajectory plot with rabbits and wolves"""
         self.tspan = get_tspan(1, 50, 500).detach().numpy()
+        if not os.path.exists(test_png):
+            os.makedirs(test_png)
+        torch.manual_seed(0)
 
+    def compare_png(self, ax, filename):
+        with open(os.path.join(test_png,  filename), "wb") as f:
+            ax.figure.savefig(f)
+        with open(os.path.join(test_png,  filename), "rb") as f:
+                    current_png = f.read()
+        with open(os.path.join(save_png, filename), "rb") as f:
+                    reference = f.read()
+        return current_png  == reference
 
     def test_plot_all(self):
         ##TODO requires tensor input, should that be the case?
@@ -46,31 +63,41 @@ class TestPlotUtils(unittest.TestCase):
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_all.png"), "wb") as f:
                 ax.figure.savefig(f)
+        self.assertTrue(self.compare_png(ax, "plot_all.png"))
 
     def test_plot_predictive(self):
         ax = plot_utils.plot_predictive(tensor_load(_data_root / "prior_samples.json"), torch.tensor(self.tspan),  tmin=10, alpha=1, color="green", ptiles=[0.10,0.90], vars=["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_predictive.png"), "wb") as f:
                 ax.figure.savefig(f)
+        self.assertTrue(self.compare_png(ax, "plot_predictive.png"))
 
     def test_plot_trajectory(self):
-        ax = plot_utils.plot_trajectory(tensor_load(_data_root / "observed_trajectory.json"), torch.tensor(self.tspan),  color='red', alpha=2, lw=2, marker='-', label="My label",  vars=["Rabbits_sol"])
+        ax = plot_utils.plot_trajectory(tensor_load(_data_root / "observed_trajectory.json"), torch.tensor(self.tspan),  color='red', alpha=.3, lw=2, marker='.', label="My label",  vars=["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_trajectory.png"), "wb") as f:
                 ax.figure.savefig(f)
+        self.assertTrue(self.compare_png(ax, "plot_trajectory.png"))
 
     def test_plot_intervention_line(self):
         ax = plot_utils.plot_intervention_line(10)
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_intervention_line.png"), "wb") as f:
                 ax.figure.savefig(f)
+        self.assertTrue(self.compare_png(ax, "plot_intervention_line.png"))
 
     def test_plot_ouu_risk(self):
-        [ax, cax] = plot_utils.plot_ouu_risk(tensor_load(_data_root / "prior_samples.json"))
+        '''using fake data, test just the plotting of '''
+        
+        risk_results = {"risk": [10], "samples": tensor_load(_data_root / "prior_samples.json"), "qoi": 500*torch.rand(10), "tspan":  torch.tensor(self.tspan)}
+        [ax, cax] = plot_utils.plot_ouu_risk(risk_results, vars = ["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_ouu_risk_ax.png"), "wb") as f:
                 ax.figure.savefig(f)
             with open(os.path.join(save_png,  "plot_ouu_risk_cax.png"), "wb") as f:
                 cax.figure.savefig(f)
+        self.assertTrue(self.compare_png(ax, "plot_ouu_risk_ax.png"))
+        self.assertTrue(self.compare_png(cax, "plot_ouu_risk_cax.png"))
+
             
 

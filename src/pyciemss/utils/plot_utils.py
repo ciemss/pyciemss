@@ -59,10 +59,10 @@ def plot_intervention_line(t, ax=None):
     return ax
 
 def plot_ouu_risk(datacube, ax=None, xlabel: str='7-day average infectious at 90 days', color: list=['#377eb8', '#ff7f00', '#984ea3', '#ffd92f', '#a65628'], 
-                  alpha=0.5, label: list=['alpha-superquantile'], tmin=None):
+                  alpha=0.5, label: list=['alpha-superquantile'], tmin=None, vars=["I_obs"]):
     if not ax:
         ax = setup_ax()
-    ax = plot_predictive(datacube["samples"], torch.tensor(datacube["tspan"]), ax=ax, color='#a65628', ptiles=[0.,1.], alpha=alpha, tmin=tmin)
+    ax = plot_predictive(datacube["samples"], torch.tensor(datacube["tspan"]), ax=ax, color='#a65628', ptiles=[0.,1.], alpha=alpha, tmin=tmin, vars = vars)
 
     bins_hist = 50
     plt.figure()

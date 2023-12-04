@@ -23,15 +23,20 @@ save_png = (
     Path(__file__).parent.parent /  "test_utils" / "reference_images" 
 )
 
+data_folder = (
+    Path(__file__).parent.parent /  "test_utils" / "data" 
+)
+
 class TestPetri(unittest.TestCase):
     """Tests for the Petri Utils."""
 
     # Setup for the tests
     def setUp(self):
-        self.petri_file = "test/test_utils/BIOMD0000000971_petri_orig.json"
+        self.petri_file = os.path.join(data_folder, "BIOMD0000000971_petri_orig.json")
         self.G = petri_utils.load(self.petri_file)
         self.url = 'https://raw.githubusercontent.com/indralab/mira/main/notebooks/evaluation_2023.01/scenario2_sidarthe_mira.json'
-
+        self.json_file = os.path.join(data_folder, 'petri_file.json')
+        
     #certificate error SSL   
     # def test_convert_mira_template_to_askenet_json(self):
     #     '''test returns dictionary object and
@@ -53,7 +58,7 @@ class TestPetri(unittest.TestCase):
     
     def test_load_file_url(self):
         '''test if load will load with json file'''
-        G = petri_utils.load('test/test_utils/petri_file.json')
+        G = petri_utils.load(self.json_file)
         self.assertTrue(G.is_multigraph())
 
     def test_seq_id_suffix(self):
@@ -118,7 +123,7 @@ class TestPetri(unittest.TestCase):
 
     #TODO should this be multipliying the nodes and edges
     def test_duplicate_petri_net(self):
-        'check new networkx is duplicate of input networkx'
+        '''check new networkx is duplicate of input networkx'''
         dup_G = petri_utils.duplicate_petri_net(self.G)
         self.assertEqual(2*len(self.G.nodes), len(dup_G.nodes))
         self.assertEqual(2*len(self.G.edges), len(dup_G.edges))

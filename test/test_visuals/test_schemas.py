@@ -120,7 +120,7 @@ class TestExport(unittest.TestCase):
                 with open(reference_file, 'r') as f:
                     reference = f.read()
                     # replace what seems to be random numbers for gradient and cliip in svg
-                    reference = re.sub('gradient_[0-9]*', "gradient_REPLACED", reference)
+                    reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
                     reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
                     
                 content = re.sub('gradient_[0-9]*', "gradient_REPLACED", wrapped.data)
