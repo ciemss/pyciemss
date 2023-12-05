@@ -72,7 +72,7 @@ class TestExport(unittest.TestCase):
 
             try:
                 if format == "png":
-                    image = plots.ipy_display(schema, format=format, ppi=200)
+                    image = plots.ipy_display(schema, format=format, dpi = 144)
                 else:
                     image = plots.ipy_display(schema, format=format) 
                 content_check(schema_file, image)
