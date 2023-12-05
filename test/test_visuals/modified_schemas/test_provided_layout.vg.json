@@ -381,49 +381,41 @@
          "values": [
             {
                "attribution": [
+                  "A",
                   "C",
-                  "A"
+                  "D",
+                  "B"
                ],
                "label": 0,
                "id": 0,
-               "inputX": -0.06867368186985953,
-               "inputY": -0.15111102503269402,
+               "inputX": 0.14647744096265322,
+               "inputY": -0.07978100496191844,
                "fx": null,
                "fy": null
             },
             {
                "attribution": [
-                  "B"
+                  "B",
+                  "C",
+                  "A"
                ],
                "label": 1,
                "id": 1,
-               "inputX": -0.46596989615476,
-               "inputY": 0.5787728583640117,
+               "inputX": 0.01933050558234984,
+               "inputY": 0.7742197592730374,
                "fx": null,
                "fy": null
             },
             {
                "attribution": [
-                  "D",
                   "A",
-                  "B"
+                  "B",
+                  "C"
                ],
                "label": 2,
                "id": 2,
-               "inputX": 0.7400895490354207,
-               "inputY": 0.043753756223267715,
-               "fx": null,
-               "fy": null
-            },
-            {
-               "attribution": [
-                  "D",
-                  "A"
-               ],
-               "label": 3,
-               "id": 3,
-               "inputX": -0.43868257255618737,
-               "inputY": -1.0,
+               "inputX": -0.6399389330553805,
+               "inputY": -0.4362003343504214,
                "fx": null,
                "fy": null
             },
@@ -432,10 +424,22 @@
                   "C",
                   "D"
                ],
+               "label": 3,
+               "id": 3,
+               "inputX": 0.9999999999999999,
+               "inputY": -0.5446586336159855,
+               "fx": null,
+               "fy": null
+            },
+            {
+               "attribution": [
+                  "D",
+                  "A"
+               ],
                "label": 4,
                "id": 4,
-               "inputX": 0.23323660154538656,
-               "inputY": 0.5285844104454148,
+               "inputX": -0.5258690134896226,
+               "inputY": 0.2864202136552882,
                "fx": null,
                "fy": null
             }
@@ -459,16 +463,13 @@
             {
                "attribution": [
                   "C",
-                  "D",
-                  "B"
+                  "A"
                ],
                "source": 0,
                "target": 1
             },
             {
                "attribution": [
-                  "C",
-                  "B",
                   "A"
                ],
                "source": 0,
@@ -476,8 +477,6 @@
             },
             {
                "attribution": [
-                  "A",
-                  "C",
                   "D"
                ],
                "source": 0,
@@ -485,13 +484,17 @@
             },
             {
                "attribution": [
-                  "B"
+                  "A",
+                  "D",
+                  "C"
                ],
                "source": 0,
                "target": 4
             },
             {
                "attribution": [
+                  "C",
+                  "D",
                   "B",
                   "A"
                ],
@@ -500,6 +503,8 @@
             },
             {
                "attribution": [
+                  "C",
+                  "B",
                   "A",
                   "D"
                ],

@@ -71,7 +71,7 @@ class TestExport(unittest.TestCase):
                 print(schema_file.name)
 
             try:
-                image = plots.ipy_display(schema, format=format)
+                image = plots.ipy_display(schema, format=format, dpi=200)
                 content_check(schema_file, image)
             except Exception as e:
                 schema_issues.append({"file": schema_file.stem, "issue": str(e)})

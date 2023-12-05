@@ -70,7 +70,7 @@ class TestPlotUtils(unittest.TestCase):
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_all.png"), "wb") as f:
                 ax.figure.savefig(f, dpi=199)
-        self.assertTrue(self.compare_png(ax, "plot_all.png"))
+        self.assertTrue(self.compare_png(ax, "plot_all.png"), "PNG files don't match")
 
     def test_plot_predictive(self):
         '''test ploting upper and lower bounds, without default arguments
@@ -79,7 +79,7 @@ class TestPlotUtils(unittest.TestCase):
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_predictive.png"), "wb") as f:
                 ax.figure.savefig(f, dpi=199)
-        self.assertTrue(self.compare_png(ax, "plot_predictive.png"))
+        self.assertTrue(self.compare_png(ax, "plot_predictive.png"), "PNG files don't match")
 
     def test_plot_trajectory(self):
         '''test plotting just the trajectory line
@@ -88,7 +88,7 @@ class TestPlotUtils(unittest.TestCase):
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_trajectory.png"), "wb") as f:
                 ax.figure.savefig(f, dpi=199)
-        self.assertTrue(self.compare_png(ax, "plot_trajectory.png"))
+        self.assertTrue(self.compare_png(ax, "plot_trajectory.png"), "PNG files don't match")
 
     def test_plot_intervention_line(self):
         '''test plotting just the intervention line
@@ -97,7 +97,7 @@ class TestPlotUtils(unittest.TestCase):
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_intervention_line.png"), "wb") as f:
                 ax.figure.savefig(f, dpi=199)
-        self.assertTrue(self.compare_png(ax, "plot_intervention_line.png"))
+        self.assertTrue(self.compare_png(ax, "plot_intervention_line.png"), "PNG files don't match")
 
     def test_plot_ouu_risk(self):
         '''using fake data, test just the plotting of '''
@@ -109,8 +109,8 @@ class TestPlotUtils(unittest.TestCase):
                 ax.figure.savefig(f, dpi=199)
             with open(os.path.join(save_png,  "plot_ouu_risk_cax.png"), "wb") as f:
                 cax.figure.savefig(f, dpi=199)
-        self.assertTrue(self.compare_png(ax, "plot_ouu_risk_ax.png"))
-        self.assertTrue(self.compare_png(cax, "plot_ouu_risk_cax.png"))
+        self.assertTrue(self.compare_png(ax, "plot_ouu_risk_ax.png"), "PNG files don't match")
+        self.assertTrue(self.compare_png(cax, "plot_ouu_risk_cax.png"), "PNG files don't match")
 
             
 

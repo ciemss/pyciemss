@@ -29,7 +29,7 @@ save_png = (
 
 create_modified_schemas = True
 # True if want to save png and svg files to be tested with test_schemas
-create_new_reference_images = False
+create_new_reference_images = True
 
 def save_schema_png_svg(schema, name):
     """Save the schema, png, and svg if output is correct to use as future check 
@@ -38,12 +38,12 @@ def save_schema_png_svg(schema, name):
 
 
     if create_new_reference_images:
-        png_image = plots.ipy_display(schema)
+        png_image = plots.ipy_display(schema, dpi=200)
 
         with open(os.path.join(save_png, name + ".png"), "wb") as f:
             f.write(png_image.data)
 
-        svg_image = plots.ipy_display(schema, format = "SVG")
+        svg_image = plots.ipy_display(schema, format = "SVG", dpi=200)
 
         with open(os.path.join(save_png, name + ".svg"), "w") as f:
             f.write(svg_image.data)

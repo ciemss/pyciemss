@@ -36,7 +36,7 @@ class TestPetri(unittest.TestCase):
         self.G = petri_utils.load(self.petri_file)
         self.url = 'https://raw.githubusercontent.com/indralab/mira/main/notebooks/evaluation_2023.01/scenario2_sidarthe_mira.json'
         self.json_file = os.path.join(data_folder, 'petri_file.json')
-        
+
     #certificate error SSL   
     # def test_convert_mira_template_to_askenet_json(self):
     #     '''test returns dictionary object and
@@ -107,7 +107,7 @@ class TestPetri(unittest.TestCase):
         '''check that add_state_indices return a new node attribute
         that matches with the natural order function output
         both new_order and new_index should be in form Dict[str, T]
-        i.e. {'Susceptible': 0, 'Exposed': 1, 'Infected': 2}
+        i.e. {'Susceptible': 0, 'Exposed': 1, 'Infected': 2} returns (0, 1)
         '''
         new_order = petri_utils.natural_order(self.G)
         G_state_idx = petri_utils.add_state_indicies(self.G)
