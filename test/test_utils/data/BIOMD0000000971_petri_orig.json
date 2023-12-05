@@ -1,0 +1,272 @@
+{
+ "S": [
+  {
+   "sname": "Susceptible",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Exposed",
+   "mira_ids": "[('identity', 'ido:0000514')]",
+   "mira_context": "[('property', 'ido:0000597')]"
+  },
+  {
+   "sname": "Infected",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Asymptomatic",
+   "mira_ids": "[('identity', 'ido:0000511')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Susceptible_quarantined",
+   "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C71902')]",
+   "mira_context": "[]"
+  },
+  {
+   "sname": "Hospitalised",
+   "mira_ids": "[('identity', 'ido:0000511'), ('identity', 'ncit:C171133')]",
+   "mira_context": "[('property', 'ncit:C25179')]"
+  },
+  {
+   "sname": "Recovered",
+   "mira_ids": "[]",
+   "mira_context": "[('property', 'ido:0000621')]"
+  },
+  {
+   "sname": "Exposed_quarantined",
+   "mira_ids": "[('identity', 'ido:0000514'), ('identity', 'ncit:C71902')]",
+   "mira_context": "[('property', 'ido:0000597')]"
+  }
+ ],
+ "T": [
+  {
+   "tname": "(('Susceptible', ('identity', 'ido:0000514')), ('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion')",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "(('Susceptible', ('identity', 'ido:0000514')), ('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion', 'rate')",
+   "parameter_value": null
+  },
+  {
+   "tname": "(('Susceptible', ('identity', 'ido:0000514')), ('Susceptible_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion')",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "(('Susceptible', ('identity', 'ido:0000514')), ('Susceptible_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion', 'rate')",
+   "parameter_value": null
+  },
+  {
+   "tname": "(('Susceptible_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902')), ('Susceptible', ('identity', 'ido:0000514')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "lambda",
+   "parameter_value": 0.0714285
+  },
+  {
+   "tname": "(('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), ('Infected', ('identity', 'ido:0000511')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "(('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), ('Infected', ('identity', 'ido:0000511')), 'NaturalConversion', 'rate')",
+   "parameter_value": null
+  },
+  {
+   "tname": "(('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), ('Asymptomatic', ('identity', 'ido:0000511')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "(('Exposed', ('identity', 'ido:0000514'), ('property', 'ido:0000597')), ('Asymptomatic', ('identity', 'ido:0000511')), 'NaturalConversion', 'rate')",
+   "parameter_value": null
+  },
+  {
+   "tname": "(('Infected', ('identity', 'ido:0000511')), ('Hospitalised', ('identity', 'ido:0000511'), ('identity', 'ncit:C171133'), ('property', 'ncit:C25179')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "delta_I",
+   "parameter_value": 0.13266
+  },
+  {
+   "tname": "(('Infected', ('identity', 'ido:0000511')), ('Recovered', ('property', 'ido:0000621')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_I",
+   "parameter_value": 0.33029
+  },
+  {
+   "tname": "(('Asymptomatic', ('identity', 'ido:0000511')), ('Recovered', ('property', 'ido:0000621')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_A",
+   "parameter_value": 0.13978
+  },
+  {
+   "tname": "(('Hospitalised', ('identity', 'ido:0000511'), ('identity', 'ncit:C171133'), ('property', 'ncit:C25179')), ('Recovered', ('property', 'ido:0000621')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "gamma_H",
+   "parameter_value": 0.11624
+  },
+  {
+   "tname": "(('Infected', ('identity', 'ido:0000511')), (), 'NaturalDegradation')",
+   "template_type": "NaturalDegradation",
+   "parameter_name": "alpha",
+   "parameter_value": 1.7826e-05
+  },
+  {
+   "tname": "(('Hospitalised', ('identity', 'ido:0000511'), ('identity', 'ncit:C171133'), ('property', 'ncit:C25179')), (), 'NaturalDegradation')",
+   "template_type": "NaturalDegradation",
+   "parameter_name": "alpha",
+   "parameter_value": 1.7826e-05
+  },
+  {
+   "tname": "(('Susceptible', ('identity', 'ido:0000514')), ('Exposed_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902'), ('property', 'ido:0000597')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion')",
+   "template_type": "GroupedControlledConversion",
+   "parameter_name": "(('Susceptible', ('identity', 'ido:0000514')), ('Exposed_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902'), ('property', 'ido:0000597')), (('Infected', ('identity', 'ido:0000511')), ('Asymptomatic', ('identity', 'ido:0000511'))), 'GroupedControlledConversion', 'rate')",
+   "parameter_value": null
+  },
+  {
+   "tname": "(('Exposed_quarantined', ('identity', 'ido:0000514'), ('identity', 'ncit:C71902'), ('property', 'ido:0000597')), ('Hospitalised', ('identity', 'ido:0000511'), ('identity', 'ncit:C171133'), ('property', 'ncit:C25179')), 'NaturalConversion')",
+   "template_type": "NaturalConversion",
+   "parameter_name": "delta_q",
+   "parameter_value": 0.1259
+  }
+ ],
+ "I": [
+  {
+   "is": 3,
+   "it": 1
+  },
+  {
+   "is": 4,
+   "it": 1
+  },
+  {
+   "is": 1,
+   "it": 1
+  },
+  {
+   "is": 3,
+   "it": 2
+  },
+  {
+   "is": 4,
+   "it": 2
+  },
+  {
+   "is": 1,
+   "it": 2
+  },
+  {
+   "is": 5,
+   "it": 3
+  },
+  {
+   "is": 2,
+   "it": 4
+  },
+  {
+   "is": 2,
+   "it": 5
+  },
+  {
+   "is": 3,
+   "it": 6
+  },
+  {
+   "is": 3,
+   "it": 7
+  },
+  {
+   "is": 4,
+   "it": 8
+  },
+  {
+   "is": 6,
+   "it": 9
+  },
+  {
+   "is": 3,
+   "it": 10
+  },
+  {
+   "is": 6,
+   "it": 11
+  },
+  {
+   "is": 3,
+   "it": 12
+  },
+  {
+   "is": 4,
+   "it": 12
+  },
+  {
+   "is": 1,
+   "it": 12
+  },
+  {
+   "is": 8,
+   "it": 13
+  }
+ ],
+ "O": [
+  {
+   "os": 3,
+   "ot": 1
+  },
+  {
+   "os": 4,
+   "ot": 1
+  },
+  {
+   "os": 2,
+   "ot": 1
+  },
+  {
+   "os": 3,
+   "ot": 2
+  },
+  {
+   "os": 4,
+   "ot": 2
+  },
+  {
+   "os": 5,
+   "ot": 2
+  },
+  {
+   "os": 1,
+   "ot": 3
+  },
+  {
+   "os": 3,
+   "ot": 4
+  },
+  {
+   "os": 4,
+   "ot": 5
+  },
+  {
+   "os": 6,
+   "ot": 6
+  },
+  {
+   "os": 7,
+   "ot": 7
+  },
+  {
+   "os": 7,
+   "ot": 8
+  },
+  {
+   "os": 7,
+   "ot": 9
+  },
+  {
+   "os": 3,
+   "ot": 12
+  },
+  {
+   "os": 4,
+   "ot": 12
+  },
+  {
+   "os": 8,
+   "ot": 12
+  },
+  {
+   "os": 6,
+   "ot": 13
+  }
+ ]
+}
