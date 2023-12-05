@@ -26,22 +26,27 @@ save_png = (
     Path(__file__).parent.parent /  "test_visuals" / "reference_images" 
 )
 
+
+create_modified_schemas = True
 # True if want to save png and svg files to be tested with test_schemas
-create_modified_schemas = False
+create_new_reference_images = False
 
 def save_schema_png_svg(schema, name):
     """Save the schema, png, and svg if output is correct to use as future check 
     in test_schemas"""
     plots.save_schema(schema, os.path.join(save_schema, name + ".vg.json"))
-    png_image = plots.ipy_display(schema)
 
-    with open(os.path.join(save_png, name + ".png"), "wb") as f:
-        f.write(png_image.data)
 
-    svg_image = plots.ipy_display(schema, format = "SVG")
+    if create_new_reference_images:
+        png_image = plots.ipy_display(schema)
 
-    with open(os.path.join(save_png, name + ".svg"), "w") as f:
-        f.write(svg_image.data)
+        with open(os.path.join(save_png, name + ".png"), "wb") as f:
+            f.write(png_image.data)
+
+        svg_image = plots.ipy_display(schema, format = "SVG")
+
+        with open(os.path.join(save_png, name + ".svg"), "w") as f:
+            f.write(svg_image.data)
 
 def tensor_load(path):
     """Load tensor data """
