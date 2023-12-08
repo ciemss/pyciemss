@@ -434,9 +434,9 @@ def optimize(
     maxiter: int = 2,
     maxfeval: int = 25,
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
-    dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
-    ] = {},
+    # dynamic_interventions: Dict[
+    #     Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+    # ] = {},
     verbose: bool = False,
     # petri: PetriNetODESystem,
     # timepoints: Iterable,
@@ -446,7 +446,41 @@ def optimize(
     postprocess: bool = False,
 ) -> Dict:
     """
-    Optimization under uncertainty with risk-based constraints over ODE models.
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based constraints over dynamical models.
+    Args:
+        model_path_or_json: Union[str, Dict]
+            - A path to a AMR model file or JSON containing a model in AMR form.
+        end_time: float
+            - The end time of the sampled simulation.
+        logging_step_size: float
+            - The step size to use for logging the trajectory.
+        num_samples: int
+            - The number of samples to draw from the model.
+        solver_method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug.
+              If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        solver_options: Dict[str, Any]
+            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` from the
+              AMR model with the simulation timepoints.
+            - By default we set the `start_time` to be 0.
+        inferred_parameters: Optional[pyro.nn.PyroModule]
+            - A Pyro module that contains the inferred parameters of the model.
+              This is typically the result of `calibrate`.
+            - If not provided, we will use the default values from the AMR model.
+        static_interventions: Dict[float, Dict[str, torch.Tensor]]
+            - A dictionary of static interventions to apply to the model.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+
+    Returns:
+        result: Dict[str, torch.Tensor]
+            - Dictionary of outputs from the model.
+                - Each key is the name of a parameter or state variable in the model.
+                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+                    and (num_samples,) for parameters.
     """
     # maxfeval: Maximum number of function evaluations for each local optimization step
     # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
@@ -460,16 +494,16 @@ def optimize(
     u_min = bounds[0, :]
     u_max = bounds[1, :]
     # Set up risk estimation
-    control_model = copy.deepcopy(petri)
+    control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
-        interventions=interventions,
+        interventions=static_interventions,
         qoi=qoi,
-        tspan=timepoints,
+        tspan=timespan,
         risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples=1,
         guide=inferred_parameters,
-        method=method,
+        method=solver_method,
     )
 
     # Run one sample to estimate model evaluation time
@@ -486,13 +520,13 @@ def optimize(
     control_model = copy.deepcopy(petri)
     RISK = computeRisk(
         model=control_model,
-        interventions=interventions,
+        interventions=static_interventions,
         qoi=qoi,
-        tspan=timepoints,
+        tspan=timespan,
         risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples=n_samples_ouu,
         guide=inferred_parameters,
-        method=method,
+        method=solver_method,
     )
     # Define problem constraints
     constraints = (
@@ -542,13 +576,13 @@ def optimize(
         control_model = copy.deepcopy(petri)
         RISK = computeRisk(
             model=control_model,
-            interventions=interventions,
+            interventions=static_interventions,
             qoi=qoi,
             tspan=tspan_plot,
             risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
             num_samples=int(5e2),
             guide=inferred_parameters,
-            method=method,
+            method=solver_method,
         )
         sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
         qois_sq = RISK.qoi(sq_optimal_prediction)
