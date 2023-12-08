@@ -24,6 +24,8 @@ from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
 import numpy as np
+import time
+from math import ceil
 
 
 @pyciemss_logging_wrapper
@@ -487,7 +489,7 @@ def optimize(
 
     model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     # timepoints = [float(x) for x in list(timepoints)]
     bounds = np.atleast_2d(bounds)
@@ -499,11 +501,14 @@ def optimize(
         model=control_model,
         interventions=static_interventions,
         qoi=qoi,
-        tspan=timespan,
+        end_time=end_time,
+        logging_step_size=logging_step_size,
+        start_time=start_time,
         risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples=1,
         guide=inferred_parameters,
-        method=solver_method,
+        solver_method=solver_method,
+        solver_options=solver_options,
     )
 
     # Run one sample to estimate model evaluation time
@@ -522,11 +527,14 @@ def optimize(
         model=control_model,
         interventions=static_interventions,
         qoi=qoi,
-        tspan=timespan,
+        end_time=end_time,
+        logging_step_size=logging_step_size,
+        start_time=start_time,
         risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples=n_samples_ouu,
         guide=inferred_parameters,
-        method=solver_method,
+        solver_method=solver_method,
+        solver_options=solver_options,
     )
     # Define problem constraints
     constraints = (
@@ -578,11 +586,14 @@ def optimize(
             model=control_model,
             interventions=static_interventions,
             qoi=qoi,
-            tspan=tspan_plot,
+            end_time=end_time,
+            logging_step_size=logging_step_size,
+            start_time=start_time,
             risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
             num_samples=int(5e2),
             guide=inferred_parameters,
-            method=solver_method,
+            solver_method=solver_method,
+            solver_options=solver_options,
         )
         sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
         qois_sq = RISK.qoi(sq_optimal_prediction)
