@@ -15,6 +15,7 @@ from pyro.contrib.autoname import scope
 
 # from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.ouu.risk_measures import alpha_superquantile
+
 # from typing import List, Optional, Tuple, Union, Dict
 from typing import Any, Callable, Dict, List, Optional, Union
 from tqdm import tqdm
@@ -72,7 +73,9 @@ class computeRisk:
         # self.model.load_events(logging_events)
         self.solver_method = solver_method
         self.solver_options = solver_options
-        self.timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+        self.timespan = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
     def __call__(self, x):
         # Apply intervention and perform forward uncertainty propagation
@@ -99,22 +102,22 @@ class computeRisk:
 
         # TODO: update interventions
         static_intervention_handlers = [
-        StaticIntervention(time, State(**static_intervention_assignment))
-        for time, static_intervention_assignment in self.interventions.items()
+            StaticIntervention(time, State(**static_intervention_assignment))
+            for time, static_intervention_assignment in self.interventions.items()
         ]
 
         def wrapped_model():
             with LogTrajectory(self.timespan) as lt:
                 with InterruptionEventLoop():
                     with contextlib.ExitStack() as stack:
-                        for handler in (
-                            static_intervention_handlers
-                        ):
+                        for handler in static_intervention_handlers:
                             stack.enter_context(handler)
                         self.model(
                             torch.as_tensor(self.start_time),
                             torch.as_tensor(self.end_time),
-                            TorchDiffEq(method=self.solver_method, options=self.solver_options),
+                            TorchDiffEq(
+                                method=self.solver_method, options=self.solver_options
+                            ),
                         )
 
             trajectory = self.model.add_observables(lt.trajectory)
