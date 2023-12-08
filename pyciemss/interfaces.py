@@ -26,6 +26,7 @@ from pyciemss.ouu.risk_measures import alpha_superquantile
 import numpy as np
 import time
 from math import ceil
+import copy
 
 
 @pyciemss_logging_wrapper
@@ -522,7 +523,7 @@ def optimize(
         print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
     # Assign the required number of MC samples for each OUU iteration
-    control_model = copy.deepcopy(petri)
+    control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
         interventions=static_interventions,
@@ -580,8 +581,8 @@ def optimize(
         if verbose:
             print("Post-processing optimal policy...")
         # TODO: check best way to set tspan for plotting
-        tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
-        control_model = copy.deepcopy(petri)
+        # tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
+        control_model = copy.deepcopy(model)
         RISK = computeRisk(
             model=control_model,
             interventions=static_interventions,
