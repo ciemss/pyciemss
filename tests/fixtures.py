@@ -7,13 +7,11 @@ T = TypeVar("T")
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
 PETRI_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type1.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type2.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_base_model01.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_three_beta.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_two_beta.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_with_reinfection01.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRD_base_model01_petrinet.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type2_petrinet.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_base_model01_petrinet.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_with_reinfection01_petrinet.json",  # noqa: E501
 ]
 
 REGNET_URLS = [
@@ -21,7 +19,11 @@ REGNET_URLS = [
 ]
 
 STOCKFLOW_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRD_stockflow.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHDS_stockflow.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_stockflow.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIR_stockflow.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SIR_stockflow.json",  # noqa: E501
 ]
 
 MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
