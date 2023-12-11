@@ -1,8 +1,8 @@
 import pytest
 import torch
+from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
-from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
 

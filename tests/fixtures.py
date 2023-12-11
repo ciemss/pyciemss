@@ -88,6 +88,7 @@ def check_result_sizes(
 
     return True
 
+
 def check_is_state(state: torch.Tensor, value_type):
     assert isinstance(state, Mapping)
 

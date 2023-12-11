@@ -5,7 +5,6 @@ from typing import Callable, Dict, List, TypeVar
 
 import pyro
 import torch
-from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
 from chirho.dynamical.ops import State
 from pyro.contrib.autoname import scope
 
@@ -37,7 +36,7 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
         start_time: torch.Tensor,
         end_time: torch.Tensor,
     ) -> State[torch.Tensor]:
-        solutions = [dict()] * len(self.dynamics_models)
+        solutions: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)
         for i, dynamics in enumerate(self.dynamics_models):
             with scope(prefix=f"model_{i}"):
                 solutions[i] = dynamics(start_time, end_time)

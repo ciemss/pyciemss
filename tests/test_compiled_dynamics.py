@@ -17,7 +17,7 @@ from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
 def test_compiled_dynamics_load_url(url, start_time, end_time):
     model = CompiledDynamics.load(url)
     assert isinstance(model, CompiledDynamics)
-    
+
     with TorchDiffEq():
         simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
     check_is_state(simulation, torch.Tensor)
