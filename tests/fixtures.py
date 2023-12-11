@@ -8,17 +8,17 @@ T = TypeVar("T")
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
 PETRI_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type1.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type2.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_base_model01.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_three_beta.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_two_beta.json",
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_with_reinfection01.json",  # noqa: E501
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type1.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type2.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_base_model01.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_three_beta.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_two_beta.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_with_reinfection01.json",  # noqa: E501
 ]
 
 REGNET_URLS = [
-    # "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
+    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
 ]
 
 STOCKFLOW_URLS = [
