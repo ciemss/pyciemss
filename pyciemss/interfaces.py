@@ -5,7 +5,6 @@ import pyro
 import torch
 from chirho.dynamical.handlers import (
     DynamicIntervention,
-    InterruptionEventLoop,
     LogTrajectory,
     StaticBatchObservation,
     StaticIntervention,
@@ -26,7 +25,7 @@ from pyciemss.integration_utils.result_processing import prepare_interchange_dic
 def ensemble_sample(
     model_paths_or_jsons: List[Union[str, Dict]],
     solution_mappings: List[
-        Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+        Callable[[State[torch.Tensor]], State[torch.Tensor]]
     ],
     end_time: float,
     logging_step_size: float,
@@ -47,7 +46,7 @@ def ensemble_sample(
     Args:
     model_paths_or_jsons: List[Union[str, Dict]]
         - A list of paths to AMR model files or JSONs containing models in AMR form.
-    solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]]
+    solution_mappings: List[Callable[[State[torch.Tensor]], State[torch.Tensor]]]
         - A list of functions that map the solution of each model to a common solution space.
         - Each function takes in a dictionary of the form {state_variable_name: value}
             and returns a dictionary of the same form.
@@ -82,7 +81,7 @@ def ensemble_sample(
         - If not provided, we will use the default values from the AMR model.
 
     Returns:
-        result: Dict[str, torch.Tensor]
+        result: State[torch.Tensor]
             - Dictionary of outputs from the model.
                 - Each key is the name of a parameter or state variable in the model.
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
@@ -101,32 +100,29 @@ def ensemble_sample(
         # We need to interleave the LogTrajectory and the solutions from the models.
         # This because each contituent model will have its own LogTrajectory.
 
-        solutions = [State()] * len(model_paths_or_jsons)
+        solutions = [dict()] * len(model_paths_or_jsons)
 
         for i, dynamics in enumerate(model.dynamics_models):
-            with scope(prefix=f"model_{i}"):
-                with LogTrajectory(timespan) as lt:
-                    dynamics(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        TorchDiffEq(method=solver_method, options=solver_options),
-                    )
+            with TorchDiffEq(method=solver_method, options=solver_options):
+                with scope(prefix=f"model_{i}"):
+                    with LogTrajectory(timespan) as lt:
+                        dynamics(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
-                solutions[i] = lt.trajectory
+                    solutions[i] = lt.trajectory
 
-                # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-                [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
+                    # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
+                    [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
 
-                if noise_model is not None:
-                    compiled_noise_model = compile_noise_model(
-                        noise_model,
-                        vars=set(lt.trajectory.keys()),
-                        **noise_model_kwargs,
-                    )
-                    # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-                    compiled_noise_model(lt.trajectory)
+                    if noise_model is not None:
+                        compiled_noise_model = compile_noise_model(
+                            noise_model,
+                            vars=set(lt.trajectory.keys()),
+                            **noise_model_kwargs,
+                        )
+                        # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+                        compiled_noise_model(lt.trajectory)
 
-        return State(
+        return dict(
             **{
                 k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
                 for k in solutions[0].keys()
@@ -153,11 +149,11 @@ def sample(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
+    static_interventions: Dict[float, State[torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+        Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]
     ] = {},
-) -> Dict[str, torch.Tensor]:
+) -> State[torch.Tensor]:
     """
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
@@ -184,18 +180,18 @@ def sample(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        static_interventions: Dict[float, Dict[str, torch.Tensor]]
+        static_interventions: Dict[float, State[torch.Tensor]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
-        dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+        dynamic_interventions: Dict[Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
 
     Returns:
-        result: Dict[str, torch.Tensor]
+        result: State[torch.Tensor]
             - Dictionary of outputs from the model.
                 - Each key is the name of a parameter or state variable in the model.
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
@@ -207,27 +203,23 @@ def sample(
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     static_intervention_handlers = [
-        StaticIntervention(time, State(**static_intervention_assignment))
+        StaticIntervention(time, dict(**static_intervention_assignment))
         for time, static_intervention_assignment in static_interventions.items()
     ]
     dynamic_intervention_handlers = [
-        DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
     def wrapped_model():
         with LogTrajectory(timespan) as lt:
-            with InterruptionEventLoop():
+            with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
                     for handler in (
                         static_intervention_handlers + dynamic_intervention_handlers
                     ):
                         stack.enter_context(handler)
-                    model(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        TorchDiffEq(method=solver_method, options=solver_options),
-                    )
+                    model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
         trajectory = model.add_observables(lt.trajectory)
 
@@ -250,7 +242,7 @@ def sample(
 
 def calibrate(
     model_path_or_json: Union[str, Dict],
-    data: Dict[str, torch.Tensor],
+    data: State[torch.Tensor],
     data_timepoints: torch.Tensor,
     *,
     noise_model: str = "normal",
@@ -258,9 +250,9 @@ def calibrate(
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
+    static_interventions: Dict[float, State[torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+        Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]
     ] = {},
     num_iterations: int = 1000,
     lr: float = 0.03,
@@ -275,7 +267,7 @@ def calibrate(
     Args:
         - model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
-        - data: Dict[str, torch.Tensor]
+        - data: State[torch.Tensor]
             - A dictionary of data to condition the model on.
             - Each key is the name of a state variable in the model.
             - Each value is a tensor of shape (num_timepoints,) for state variables.
@@ -297,11 +289,11 @@ def calibrate(
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        - static_interventions: Dict[float, Dict[str, torch.Tensor]]
+        - static_interventions: Dict[float, State[torch.Tensor]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
-        - dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+        - dynamic_interventions: Dict[Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
@@ -349,11 +341,11 @@ def calibrate(
         return guide
 
     static_intervention_handlers = [
-        StaticIntervention(time, State(**static_intervention_assignment))
+        StaticIntervention(time, dict(**static_intervention_assignment))
         for time, static_intervention_assignment in static_interventions.items()
     ]
     dynamic_intervention_handlers = [
-        DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
@@ -368,7 +360,7 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with InterruptionEventLoop():
+            with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
                     for handler in (
                         static_intervention_handlers + dynamic_intervention_handlers
@@ -377,7 +369,6 @@ def calibrate(
                     model(
                         torch.as_tensor(start_time),
                         torch.as_tensor(data_timepoints[-1]),
-                        TorchDiffEq(method=solver_method, options=solver_options),
                     )
 
     inferred_parameters = autoguide(wrapped_model)
