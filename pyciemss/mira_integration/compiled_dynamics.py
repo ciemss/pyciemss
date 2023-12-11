@@ -123,7 +123,7 @@ def _eval_deriv_mira(
 
     numeric_deriv = param_module.numeric_deriv_func(**X, **parameters)
 
-    dX = State()
+    dX: State[torch.Tensor] = dict()
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
         dX[k] = numeric_deriv[i]
@@ -143,7 +143,7 @@ def _eval_initial_state_mira(
 
     numeric_initial_state = param_module.numeric_initial_state_func(**parameters)
 
-    X = State()
+    X: State[torch.Tensor] = dict()
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
         X[k] = numeric_initial_state[i]
@@ -157,11 +157,11 @@ def _eval_observables_mira(
     X: State[torch.Tensor],
 ) -> State[torch.Tensor]:
     if len(src.observables) == 0:
-        return State()
+        return dict()
 
     numeric_observables = param_module.numeric_observables_func(**X)
 
-    observables = State()
+    observables: State[torch.Tensor] = dict()
     for i, obs in enumerate(src.observables.values()):
         k = get_name(obs)
         observables[k] = numeric_observables[..., i]

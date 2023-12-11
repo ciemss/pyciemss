@@ -10,7 +10,6 @@ import mira.sources
 import mira.sources.amr
 import pyro
 import torch
-from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
 from chirho.dynamical.ops import State, simulate
 
 S = TypeVar("S")
@@ -48,22 +47,19 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @pyro.nn.pyro_method
     def add_observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
         observables = eval_observables(self.src, self, X)
-        return State(**X, **observables)
+        return dict(**X, **observables)
 
     def forward(
         self,
         start_time: torch.Tensor,
         end_time: torch.Tensor,
-        solver: Solver = TorchDiffEq(),
     ):
         # Initialize random parameters once before simulating.
         # This is necessary because the parameters are PyroSample objects.
         for k in _compile_param_values(self.src).keys():
             getattr(self, get_name(k))
 
-        result = simulate(
-            self.deriv, self.initial_state(), start_time, end_time, solver=solver
-        )
+        result = simulate(self.deriv, self.initial_state(), start_time, end_time)
 
         return self.add_observables(result)
 
