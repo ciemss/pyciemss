@@ -24,7 +24,7 @@ from pyciemss.integration_utils.result_processing import prepare_interchange_dic
 @pyciemss_logging_wrapper
 def ensemble_sample(
     model_paths_or_jsons: List[Union[str, Dict]],
-    solution_mappings: List[Callable[[State[torch.Tensor]], State[torch.Tensor]]],
+    solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]],
     end_time: float,
     logging_step_size: float,
     num_samples: int,
@@ -44,7 +44,7 @@ def ensemble_sample(
     Args:
     model_paths_or_jsons: List[Union[str, Dict]]
         - A list of paths to AMR model files or JSONs containing models in AMR form.
-    solution_mappings: List[Callable[[State[torch.Tensor]], State[torch.Tensor]]]
+    solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]]
         - A list of functions that map the solution of each model to a common solution space.
         - Each function takes in a dictionary of the form {state_variable_name: value}
             and returns a dictionary of the same form.
@@ -79,7 +79,7 @@ def ensemble_sample(
         - If not provided, we will use the default values from the AMR model.
 
     Returns:
-        result: State[torch.Tensor]
+        result: Dict[str, torch.Tensor]
             - Dictionary of outputs from the model.
                 - Each key is the name of a parameter or state variable in the model.
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
@@ -150,11 +150,11 @@ def sample(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    static_interventions: Dict[float, State[torch.Tensor]] = {},
+    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]
+        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
     ] = {},
-) -> State[torch.Tensor]:
+) -> Dict[str, torch.Tensor]:
     """
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
@@ -181,18 +181,18 @@ def sample(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        static_interventions: Dict[float, State[torch.Tensor]]
+        static_interventions: Dict[float, Dict[str, torch.Tensor]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
-        dynamic_interventions: Dict[Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]]
+        dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
 
     Returns:
-        result: State[torch.Tensor]
+        result: Dict[str, torch.Tensor]
             - Dictionary of outputs from the model.
                 - Each key is the name of a parameter or state variable in the model.
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
@@ -243,7 +243,7 @@ def sample(
 
 def calibrate(
     model_path_or_json: Union[str, Dict],
-    data: State[torch.Tensor],
+    data: Dict[str, torch.Tensor],
     data_timepoints: torch.Tensor,
     *,
     noise_model: str = "normal",
@@ -251,9 +251,9 @@ def calibrate(
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
-    static_interventions: Dict[float, State[torch.Tensor]] = {},
+    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]
+        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
     ] = {},
     num_iterations: int = 1000,
     lr: float = 0.03,
@@ -268,7 +268,7 @@ def calibrate(
     Args:
         - model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
-        - data: State[torch.Tensor]
+        - data: Dict[str, torch.Tensor]
             - A dictionary of data to condition the model on.
             - Each key is the name of a state variable in the model.
             - Each value is a tensor of shape (num_timepoints,) for state variables.
@@ -290,11 +290,11 @@ def calibrate(
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        - static_interventions: Dict[float, State[torch.Tensor]]
+        - static_interventions: Dict[float, Dict[str, torch.Tensor]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
-        - dynamic_interventions: Dict[Callable[[State[torch.Tensor]], torch.Tensor], State[torch.Tensor]]
+        - dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
