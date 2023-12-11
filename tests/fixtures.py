@@ -6,12 +6,14 @@ T = TypeVar("T")
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
+SIM_INT_DIR = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main"
+
 PETRI_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRD_base_model01_petrinet.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type2_petrinet.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_base_model01_petrinet.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_with_reinfection01_petrinet.json",  # noqa: E501
+    f"{SIM_INT_DIR}/data/models/SEIRD_base_model01_petrinet.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHD_NPI_Type1_petrinet.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHD_NPI_Type2_petrinet.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHD_base_model01_petrinet.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHD_with_reinfection01_petrinet.json",  # noqa: E501
 ]
 
 REGNET_URLS = [
@@ -19,11 +21,11 @@ REGNET_URLS = [
 ]
 
 STOCKFLOW_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRD_stockflow.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHDS_stockflow.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_stockflow.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIR_stockflow.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SIR_stockflow.json",
+    f"{SIM_INT_DIR}/data/models/SEIRD_stockflow.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHDS_stockflow.json",
+    f"{SIM_INT_DIR}/data/models/SEIRHD_stockflow.json",
+    f"{SIM_INT_DIR}/data/models/SEIR_stockflow.json",
+    f"{SIM_INT_DIR}/data/models/SIR_stockflow.json",
 ]
 
 MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
