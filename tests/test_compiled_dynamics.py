@@ -4,11 +4,11 @@ import tempfile
 import pytest
 import requests
 import torch
-from chirho.dynamical.ops import State
+from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
-from .fixtures import END_TIMES, MODEL_URLS, START_TIMES
+from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -17,9 +17,10 @@ from .fixtures import END_TIMES, MODEL_URLS, START_TIMES
 def test_compiled_dynamics_load_url(url, start_time, end_time):
     model = CompiledDynamics.load(url)
     assert isinstance(model, CompiledDynamics)
-
-    simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-    assert isinstance(simulation, State)
+    
+    with TorchDiffEq():
+        simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+    check_is_state(simulation, torch.Tensor)
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -35,8 +36,9 @@ def test_compiled_dynamics_load_path(url, start_time, end_time):
         model = CompiledDynamics.load(tf.name)
     assert isinstance(model, CompiledDynamics)
 
-    simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-    assert isinstance(simulation, State)
+    with TorchDiffEq():
+        simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+    check_is_state(simulation, torch.Tensor)
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -50,5 +52,6 @@ def test_compiled_dynamics_load_json(url, start_time, end_time):
     model = CompiledDynamics.load(model_json)
     assert isinstance(model, CompiledDynamics)
 
-    simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-    assert isinstance(simulation, State)
+    with TorchDiffEq():
+        simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+    check_is_state(simulation, torch.Tensor)
