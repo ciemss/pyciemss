@@ -24,9 +24,7 @@ from pyciemss.integration_utils.result_processing import prepare_interchange_dic
 @pyciemss_logging_wrapper
 def ensemble_sample(
     model_paths_or_jsons: List[Union[str, Dict]],
-    solution_mappings: List[
-        Callable[[State[torch.Tensor]], State[torch.Tensor]]
-    ],
+    solution_mappings: List[Callable[[State[torch.Tensor]], State[torch.Tensor]]],
     end_time: float,
     logging_step_size: float,
     num_samples: int,
@@ -110,8 +108,11 @@ def ensemble_sample(
 
                     solutions[i] = lt.trajectory
 
-                    # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-                    [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
+                    # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
+                    [
+                        pyro.deterministic(f"{k}_state", v)
+                        for k, v in lt.trajectory.items()
+                    ]
 
                     if noise_model is not None:
                         compiled_noise_model = compile_noise_model(
