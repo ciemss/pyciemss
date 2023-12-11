@@ -120,7 +120,7 @@ def ensemble_sample(
                             vars=set(lt.trajectory.keys()),
                             **noise_model_kwargs,
                         )
-                        # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+                        # Adding noise to the model so that we can access the noisy trajectory in the trace.
                         compiled_noise_model(lt.trajectory)
 
         return dict(
