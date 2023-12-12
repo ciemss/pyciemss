@@ -39,12 +39,13 @@ def DynamicParameterIntervention(
     intervention,
 ):
     """
-    This effect handler interrupts a simulation when an `event_fn` crosses 0, and applies an intervention to the parameter
+    This effect handler interrupts a simulation `event_fn` crosses 0, and applies an intervention to the parameter
     at that time. Importantly, this only works for `CompiledDynamics`, which constructs parameters as class attributes.
 
     .. code-block:: python
 
-        def event_fn(state: State[torch.Tensor]) -> torch.Tensor:
+        def event_fn(time: torch.Tensor, state: State[torch.Tensor]) -> torch.Tensor:
+            # Triggers when x crosses 1.5 from above or below.
             return state["x"] - 1.5
 
         intervention = {"x": torch.tensor(1.0)}

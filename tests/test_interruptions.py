@@ -2,7 +2,6 @@ import pyro
 import pytest
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.interruptions import (
@@ -74,7 +73,7 @@ def test_parameter_intervention_before_end(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("intervention", INTERVENTIONS)
 @pytest.mark.parametrize("intervention_handler_type", INTERVENTION_HANDLER_TYPES)
-def test_parameter_intervention_before_end(
+def test_parameter_intervention_after_end(
     model_fixture, start_time, end_time, intervention, intervention_handler_type
 ):
     model = CompiledDynamics.load(model_fixture.url)
