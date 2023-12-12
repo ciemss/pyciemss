@@ -1,11 +1,10 @@
+from types import MethodType
 from typing import Tuple
 
 import torch
 from chirho.dynamical.handlers.interruption import StaticEvent
 from chirho.dynamical.ops import State, on
 from chirho.interventional.ops import intervene
-
-from pyciemss.compiled_dynamics import CompiledDynamics
 
 
 def StaticParameterIntervention(time: torch.Tensor, parameter: str, intervention):
@@ -34,8 +33,8 @@ def StaticParameterIntervention(time: torch.Tensor, parameter: str, intervention
 
     @on(StaticEvent(time))
     def callback(
-        dynamics: CompiledDynamics, state: State[torch.Tensor]
-    ) -> Tuple[CompiledDynamics, State[torch.Tensor]]:
+        dynamics: MethodType, state: State[torch.Tensor]
+    ) -> Tuple[MethodType, State[torch.Tensor]]:
         dynamics_obj = dynamics.__self__
         old_parameter = getattr(dynamics_obj, parameter)
         new_parameter = intervene(old_parameter, intervention)

@@ -21,7 +21,9 @@ PETRI_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRD_base_model01_petrinet.json"), "beta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"), "gamma"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
-    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_base_model01_petrinet.json"), "beta"),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_base_model01_petrinet.json"), "beta"
+    ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
     ),
