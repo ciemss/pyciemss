@@ -2,9 +2,13 @@ import pyro
 import pytest
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.dynamical.ops import State
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.interruptions import StaticParameterIntervention
+from pyciemss.interruptions import (
+    DynamicParameterIntervention,
+    StaticParameterIntervention,
+)
 
 from .fixtures import (
     END_TIMES,
@@ -16,14 +20,16 @@ from .fixtures import (
 )
 
 INTERVENTIONS = [torch.tensor(2.0), lambda x: x * 2.0]
+INTERVENTION_HANDLER_TYPES = ["static", "dynamic"]
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("intervention", INTERVENTIONS)
-def test_static_parameter_intervention_before_end(
-    model_fixture, start_time, end_time, intervention
+@pytest.mark.parametrize("intervention_handler_type", INTERVENTION_HANDLER_TYPES)
+def test_parameter_intervention_before_end(
+    model_fixture, start_time, end_time, intervention, intervention_handler_type
 ):
     model = CompiledDynamics.load(model_fixture.url)
     assert isinstance(model, CompiledDynamics)
@@ -31,14 +37,25 @@ def test_static_parameter_intervention_before_end(
     intervention_time = start_time + (end_time - start_time) / 2.0
     parameter = model_fixture.important_parameter
 
+    if intervention_handler_type == "static":
+        intervention_handler = StaticParameterIntervention(
+            time=intervention_time, parameter=parameter, intervention=intervention
+        )
+    elif intervention_handler_type == "dynamic":
+
+        def event_fn(time: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+            return time - intervention_time
+
+        intervention_handler = DynamicParameterIntervention(
+            event_fn=event_fn, parameter=parameter, intervention=intervention
+        )
+
     if parameter is None:
         pytest.skip("Model does not have an important parameter.")
 
     with pyro.poutine.seed(rng_seed=0):
         with TorchDiffEq():
-            with StaticParameterIntervention(
-                time=intervention_time, parameter=parameter, intervention=intervention
-            ):
+            with intervention_handler:
                 simulation1 = model(
                     torch.as_tensor(start_time), torch.as_tensor(end_time)
                 )
@@ -56,8 +73,9 @@ def test_static_parameter_intervention_before_end(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("intervention", INTERVENTIONS)
-def test_static_parameter_intervention_after_end(
-    model_fixture, start_time, end_time, intervention
+@pytest.mark.parametrize("intervention_handler_type", INTERVENTION_HANDLER_TYPES)
+def test_parameter_intervention_before_end(
+    model_fixture, start_time, end_time, intervention, intervention_handler_type
 ):
     model = CompiledDynamics.load(model_fixture.url)
     assert isinstance(model, CompiledDynamics)
@@ -65,14 +83,25 @@ def test_static_parameter_intervention_after_end(
     intervention_time = end_time + 1.0
     parameter = model_fixture.important_parameter
 
+    if intervention_handler_type == "static":
+        intervention_handler = StaticParameterIntervention(
+            time=intervention_time, parameter=parameter, intervention=intervention
+        )
+    elif intervention_handler_type == "dynamic":
+
+        def event_fn(time: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+            return time - intervention_time
+
+        intervention_handler = DynamicParameterIntervention(
+            event_fn=event_fn, parameter=parameter, intervention=intervention
+        )
+
     if parameter is None:
         pytest.skip("Model does not have an important parameter.")
 
     with pyro.poutine.seed(rng_seed=0):
         with TorchDiffEq():
-            with StaticParameterIntervention(
-                time=intervention_time, parameter=parameter, intervention=intervention
-            ):
+            with intervention_handler:
                 simulation1 = model(
                     torch.as_tensor(start_time), torch.as_tensor(end_time)
                 )
