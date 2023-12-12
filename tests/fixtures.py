@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from typing import Dict, TypeVar
 
 import torch
@@ -86,5 +87,15 @@ def check_result_sizes(
             assert v.shape == (num_samples, num_timesteps)
         else:
             assert v.shape == (num_samples,)
+
+    return True
+
+
+def check_is_state(state: torch.Tensor, value_type):
+    assert isinstance(state, Mapping)
+
+    assert all(isinstance(key, str) for key in state.keys())
+
+    assert all(isinstance(value, value_type) for value in state.values())
 
     return True

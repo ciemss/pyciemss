@@ -5,7 +5,6 @@ import pyro
 import torch
 from chirho.dynamical.handlers import (
     DynamicIntervention,
-    InterruptionEventLoop,
     LogTrajectory,
     StaticBatchObservation,
     StaticIntervention,
@@ -101,32 +100,32 @@ def ensemble_sample(
         # We need to interleave the LogTrajectory and the solutions from the models.
         # This because each contituent model will have its own LogTrajectory.
 
-        solutions = [State()] * len(model_paths_or_jsons)
+        solutions: List[State[torch.Tensor]] = [dict()] * len(model_paths_or_jsons)
 
         for i, dynamics in enumerate(model.dynamics_models):
-            with scope(prefix=f"model_{i}"):
-                with LogTrajectory(timespan) as lt:
-                    dynamics(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        TorchDiffEq(method=solver_method, options=solver_options),
-                    )
+            with TorchDiffEq(method=solver_method, options=solver_options):
+                with scope(prefix=f"model_{i}"):
+                    with LogTrajectory(timespan) as lt:
+                        dynamics(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
-                solutions[i] = lt.trajectory
+                    solutions[i] = lt.trajectory
 
-                # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-                [pyro.deterministic(f"{k}_state", v) for k, v in lt.trajectory.items()]
+                    # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
+                    [
+                        pyro.deterministic(f"{k}_state", v)
+                        for k, v in lt.trajectory.items()
+                    ]
 
-                if noise_model is not None:
-                    compiled_noise_model = compile_noise_model(
-                        noise_model,
-                        vars=set(lt.trajectory.keys()),
-                        **noise_model_kwargs,
-                    )
-                    # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-                    compiled_noise_model(lt.trajectory)
+                    if noise_model is not None:
+                        compiled_noise_model = compile_noise_model(
+                            noise_model,
+                            vars=set(lt.trajectory.keys()),
+                            **noise_model_kwargs,
+                        )
+                        # Adding noise to the model so that we can access the noisy trajectory in the trace.
+                        compiled_noise_model(lt.trajectory)
 
-        return State(
+        return dict(
             **{
                 k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
                 for k in solutions[0].keys()
@@ -207,27 +206,23 @@ def sample(
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     static_intervention_handlers = [
-        StaticIntervention(time, State(**static_intervention_assignment))
+        StaticIntervention(time, dict(**static_intervention_assignment))
         for time, static_intervention_assignment in static_interventions.items()
     ]
     dynamic_intervention_handlers = [
-        DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
     def wrapped_model():
         with LogTrajectory(timespan) as lt:
-            with InterruptionEventLoop():
+            with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
                     for handler in (
                         static_intervention_handlers + dynamic_intervention_handlers
                     ):
                         stack.enter_context(handler)
-                    model(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        TorchDiffEq(method=solver_method, options=solver_options),
-                    )
+                    model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
         trajectory = model.add_observables(lt.trajectory)
 
@@ -260,7 +255,7 @@ def calibrate(
     start_time: float = 0.0,
     static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     dynamic_interventions: Dict[
-        Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
     ] = {},
     num_iterations: int = 1000,
     lr: float = 0.03,
@@ -349,11 +344,11 @@ def calibrate(
         return guide
 
     static_intervention_handlers = [
-        StaticIntervention(time, State(**static_intervention_assignment))
+        StaticIntervention(time, dict(**static_intervention_assignment))
         for time, static_intervention_assignment in static_interventions.items()
     ]
     dynamic_intervention_handlers = [
-        DynamicIntervention(event_fn, State(**dynamic_intervention_assignment))
+        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
         for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
     ]
 
@@ -368,7 +363,7 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with InterruptionEventLoop():
+            with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
                     for handler in (
                         static_intervention_handlers + dynamic_intervention_handlers
@@ -377,7 +372,6 @@ def calibrate(
                     model(
                         torch.as_tensor(start_time),
                         torch.as_tensor(data_timepoints[-1]),
-                        TorchDiffEq(method=solver_method, options=solver_options),
                     )
 
     inferred_parameters = autoguide(wrapped_model)
