@@ -53,7 +53,7 @@ class TestPlotUtils(unittest.TestCase):
 
         # save new image
         with open(os.path.join(test_png,  filename), "wb") as f:
-            ax.figure.savefig(f, dpi=199)
+            ax.figure.savefig(f, dpi=200)
         with open(os.path.join(test_png,  filename), "rb") as f:
                     current_png = f.read()
         # load old image
@@ -69,7 +69,7 @@ class TestPlotUtils(unittest.TestCase):
         ax = plot_utils.plot_intervention_line(3, ax=ax)
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_all.png"), "wb") as f:
-                ax.figure.savefig(f, dpi=199)
+                ax.figure.savefig(f, dpi=200)
         self.assertTrue(self.compare_png(ax, "plot_all.png"), "PNG files don't match")
 
     def test_plot_predictive(self):
@@ -78,7 +78,7 @@ class TestPlotUtils(unittest.TestCase):
         ax = plot_utils.plot_predictive(tensor_load(_data_root / "prior_samples.json"), torch.tensor(self.tspan),  tmin=10, alpha=1, color="green", ptiles=[0.10,0.90], vars=["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_predictive.png"), "wb") as f:
-                ax.figure.savefig(f, dpi=199)
+                ax.figure.savefig(f, dpi=200)
         self.assertTrue(self.compare_png(ax, "plot_predictive.png"), "PNG files don't match")
 
     def test_plot_trajectory(self):
@@ -87,7 +87,7 @@ class TestPlotUtils(unittest.TestCase):
         ax = plot_utils.plot_trajectory(tensor_load(_data_root / "observed_trajectory.json"), torch.tensor(self.tspan),  color='red', alpha=.3, lw=2, marker='.', label="My label",  vars=["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_trajectory.png"), "wb") as f:
-                ax.figure.savefig(f, dpi=199)
+                ax.figure.savefig(f, dpi=200)
         self.assertTrue(self.compare_png(ax, "plot_trajectory.png"), "PNG files don't match")
 
     def test_plot_intervention_line(self):
@@ -96,7 +96,7 @@ class TestPlotUtils(unittest.TestCase):
         ax = plot_utils.plot_intervention_line(10)
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_intervention_line.png"), "wb") as f:
-                ax.figure.savefig(f, dpi=199)
+                ax.figure.savefig(f, dpi=200)
         self.assertTrue(self.compare_png(ax, "plot_intervention_line.png"), "PNG files don't match")
 
     def test_plot_ouu_risk(self):
@@ -106,9 +106,9 @@ class TestPlotUtils(unittest.TestCase):
         [ax, cax] = plot_utils.plot_ouu_risk(risk_results, vars = ["Rabbits_sol"])
         if create_png_plots:
             with open(os.path.join(save_png,  "plot_ouu_risk_ax.png"), "wb") as f:
-                ax.figure.savefig(f, dpi=199)
+                ax.figure.savefig(f, dpi=200)
             with open(os.path.join(save_png,  "plot_ouu_risk_cax.png"), "wb") as f:
-                cax.figure.savefig(f, dpi=199)
+                cax.figure.savefig(f, dpi=200)
         self.assertTrue(self.compare_png(ax, "plot_ouu_risk_ax.png"), "PNG files don't match")
         self.assertTrue(self.compare_png(cax, "plot_ouu_risk_cax.png"), "PNG files don't match")
 

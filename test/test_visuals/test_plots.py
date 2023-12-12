@@ -29,7 +29,7 @@ save_png = (
 
 create_modified_schemas = True
 # True if want to save png and svg files to be tested with test_schemas
-create_new_reference_images = True
+create_new_reference_images = False
 
 def save_schema_png_svg(schema, name):
     """Save the schema, png, and svg if output is correct to use as future check 
@@ -38,12 +38,12 @@ def save_schema_png_svg(schema, name):
 
 
     if create_new_reference_images:
-        png_image = plots.ipy_display(schema, dpi = 144)
+        png_image = plots.ipy_display(schema, dpi = 200)
 
         with open(os.path.join(save_png, name + ".png"), "wb") as f:
             f.write(png_image.data)
 
-        svg_image = plots.ipy_display(schema, format = "SVG")
+        svg_image = plots.ipy_display(schema, format = "SVG", dpi=200)
 
         with open(os.path.join(save_png, name + ".svg"), "w") as f:
             f.write(svg_image.data)
@@ -497,6 +497,7 @@ class TestHistograms(unittest.TestCase):
 class TestHeatmapScatter(unittest.TestCase):
     def test_implicit_heatmap(self):
         """test heatmap created without fake data """
+        np.random.seed(10)
         df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
         # save schemas so can check if created svg and png files match
@@ -511,6 +512,7 @@ class TestHeatmapScatter(unittest.TestCase):
     def test_explicit_heatmap(self):
         """test heatmap created without fake data """
         def create_fake_data():
+            np.random.seed(10)
             """ fake data for heampa"""
             nx, ny = (10, 10)
             x = np.linspace(0, 10, nx)

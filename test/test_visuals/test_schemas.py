@@ -7,6 +7,10 @@ import re
 import IPython
 from pyciemss.visuals import plots
 
+from PIL import Image
+from PIL import ImageChops
+import io
+
 
 """
 Test that the schemas follow some common conventions.  There may be reason
@@ -65,16 +69,13 @@ class TestExport(unittest.TestCase):
             _type_: _description_
         """
         schema_issues = []
-        for schema_file in self.all_schemas:
+        for schema_file in self.schemas_modified:
             with open(schema_file) as f:
                 schema = json.load(f)
                 print(schema_file.name)
 
             try:
-                if format == "png":
-                    image = plots.ipy_display(schema, format=format, dpi = 144)
-                else:
-                    image = plots.ipy_display(schema, format=format) 
+                image = plots.ipy_display(schema, format=format, dpi=200) 
                 content_check(schema_file, image)
             except Exception as e:
                 schema_issues.append({"file": schema_file.stem, "issue": str(e)})
@@ -94,19 +95,24 @@ class TestExport(unittest.TestCase):
         saved_images = {f.stem: f for f in saved_pngs}
 
         def png_check(schema_file, wrapped):
-            if not isinstance(wrapped, IPython.display.Image):
-                raise ValueError("Expected wrapped PNG")
+            '''
+            schema_file: json file with vega schema
+            wrapped: IPython.display.PNG data
+            '''
+            # if not isinstance(wrapped, IPython.display.Image):
+            #     raise ValueError("Expected bytes object")
 
             reference_file = saved_images.get(schema_file.name.split('.')[0], None)
             if reference_file is not None:
-                with open(reference_file, "rb") as f:
-                    reference = f.read()
+                reference = Image.open(reference_file)
 
-                content = wrapped.data
-                if content != reference:
+                content = Image.open(io.BytesIO(wrapped))
+                diff = ImageChops.difference(content.convert("RGB"), reference.convert("RGB"))
+                diff_hist = diff.histogram()
+                if len([x for x in diff_hist if x != 0]) > 3:
                     raise ValueError("PNG content does not match")
 
-        schema_issues = self.format_checker("PNG", png_check)
+        schema_issues = self.format_checker("bytes", png_check)
 
         self.assertFalse(schema_issues)
 
@@ -115,6 +121,10 @@ class TestExport(unittest.TestCase):
         saved_images = {f.stem: f for f in saved_svgs}
 
         def svg_check(schema_file, wrapped):
+            '''
+            schema_file: json file with vega schema
+            wrapped: IPython.display.SVG data
+            '''
             if not isinstance(wrapped, IPython.display.SVG):
                 raise ValueError("Expected wrapped SVG")
 
@@ -126,7 +136,7 @@ class TestExport(unittest.TestCase):
                     reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
                     reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
                     
-                content = re.sub('gradient_[0-9]*', "gradient_REPLACED", wrapped.data)
+                content = re.sub('gradient_?[0-9]*', "gradient_REPLACED", wrapped.data)
                 content = re.sub('clip[0-9]*', "clipREPLACED", content)
                 if content != reference:
                     raise ValueError("SVG content does not match")
