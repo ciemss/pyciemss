@@ -421,10 +421,10 @@ def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,    
     logging_step_size: float,
-    qoi: callable,
+    qoi: Callable,
     risk_bound: float,
-    objfun: callable = lambda x: np.abs(x),
-    initial_guess: List[float] = 0.5,
+    objfun: Callable = lambda x: np.abs(x),
+    initial_guess: List[float] = [0.5],
     bounds: List[List[float]] = [[0.0], [1.0]],
     *,
     noise_model: str = "normal",
@@ -477,6 +477,8 @@ def optimize(
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: value}.
+        maxfeval: Maximum number of function evaluations for each local optimization step
+        maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
 
     Returns:
         result: Dict[str, torch.Tensor]
@@ -485,10 +487,9 @@ def optimize(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
-    # maxfeval: Maximum number of function evaluations for each local optimization step
-    # maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
+    # 
 
-    model = CompiledDynamics.load(model_path_or_json)
+    control_model = CompiledDynamics.load(model_path_or_json)
 
     # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
@@ -497,7 +498,7 @@ def optimize(
     u_min = bounds[0, :]
     u_max = bounds[1, :]
     # Set up risk estimation
-    control_model = copy.deepcopy(model)
+    # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
         interventions=static_interventions,
@@ -523,7 +524,7 @@ def optimize(
         print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
     # Assign the required number of MC samples for each OUU iteration
-    control_model = copy.deepcopy(model)
+    # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
         interventions=static_interventions,
@@ -582,7 +583,7 @@ def optimize(
             print("Post-processing optimal policy...")
         # TODO: check best way to set tspan for plotting
         # tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
-        control_model = copy.deepcopy(model)
+        # control_model = copy.deepcopy(model)
         RISK = computeRisk(
             model=control_model,
             interventions=static_interventions,
@@ -604,7 +605,7 @@ def optimize(
             "risk": [sq_est],
             "samples": sq_optimal_prediction,
             "qoi": qois_sq,
-            "tspan": RISK.tspan,
+            "tspan": RISK.timespan,
             "OptResults": opt_results,
         }
         if verbose:

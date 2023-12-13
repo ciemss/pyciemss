@@ -17,7 +17,7 @@ from pyro.contrib.autoname import scope
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
 # from typing import List, Optional, Tuple, Union, Dict
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, Tuple
 from tqdm import tqdm
 
 
@@ -101,6 +101,9 @@ class computeRisk:
         # self.model.load_events(interventions)
 
         # TODO: update interventions
+        static_intervention_handlers = []
+        count = 0
+        # for k in self.interventions:
         static_intervention_handlers = [
             StaticIntervention(time, State(**static_intervention_assignment))
             for time, static_intervention_assignment in self.interventions.items()
@@ -148,9 +151,9 @@ class solveOUU:
 
     def __init__(
         self,
-        x0: np.ndarray,
+        x0: List[float],
         objfun: Callable,
-        constraints: List,
+        constraints: Tuple[Dict[str, str], Dict[str, Callable]],
         minimizer_kwargs: Dict = dict(
             method="COBYLA",
             tol=1e-5,
