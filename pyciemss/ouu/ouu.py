@@ -54,7 +54,7 @@ class computeRisk:
         *,
         start_time: float = 0.0,
         # tspan: np.ndarray,
-        risk_measure: Callable = alpha_superquantile,
+        risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples: int = 1000,
         guide=None,
         solver_method: str = "dopri5",

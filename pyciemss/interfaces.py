@@ -26,7 +26,6 @@ from pyciemss.ouu.risk_measures import alpha_superquantile
 import numpy as np
 import time
 from math import ceil
-import copy
 
 
 @pyciemss_logging_wrapper
