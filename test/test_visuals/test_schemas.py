@@ -128,7 +128,7 @@ class TestExport(unittest.TestCase):
             if not isinstance(wrapped, IPython.display.SVG):
                 raise ValueError("Expected wrapped SVG")
 
-            reference_file = saved_images.get(schema_file.stem, None)
+            reference_file = saved_images.get(schema_file.stem.split(".")[0], None)
             if reference_file is not None:
                 with open(reference_file, 'r') as f:
                     reference = f.read()
