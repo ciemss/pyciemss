@@ -456,9 +456,7 @@
             },
             {
                "attribution": [
-                  "D",
-                  "A",
-                  "B"
+                  "C"
                ],
                "label": 1,
                "id": 1
@@ -466,7 +464,7 @@
             {
                "attribution": [
                   "A",
-                  "D",
+                  "C",
                   "B"
                ],
                "label": 2,
@@ -474,17 +472,15 @@
             },
             {
                "attribution": [
-                  "C",
-                  "A",
-                  "D"
+                  "D",
+                  "A"
                ],
                "label": 3,
                "id": 3
             },
             {
                "attribution": [
-                  "D",
-                  "B"
+                  "*all*"
                ],
                "label": 4,
                "id": 4
@@ -496,46 +492,48 @@
          "values": [
             {
                "attribution": [
-                  "*all*"
+                  "D",
+                  "B",
+                  "A"
                ],
                "source": 0,
                "target": 1
             },
             {
                "attribution": [
-                  "D"
+                  "*all*"
                ],
                "source": 0,
                "target": 2
             },
             {
                "attribution": [
-                  "C",
-                  "B"
+                  "*all*"
                ],
                "source": 0,
                "target": 3
             },
             {
                "attribution": [
-                  "B",
-                  "C",
-                  "D"
+                  "B"
                ],
                "source": 0,
                "target": 4
             },
             {
                "attribution": [
-                  "*all*"
+                  "D",
+                  "B",
+                  "C"
                ],
-               "source": 2,
+               "source": 1,
                "target": 4
             },
             {
                "attribution": [
                   "B",
-                  "A"
+                  "C",
+                  "D"
                ],
                "source": 3,
                "target": 4

@@ -95,10 +95,16 @@ class TestExport(unittest.TestCase):
         saved_images = {f.stem: f for f in saved_pngs}
 
         def png_check(schema_file, wrapped):
-            '''
-            schema_file: json file with vega schema
-            wrapped: IPython.display.PNG data
-            '''
+            """
+            Runs through all json files in modified_schemas and checks if the created png matches
+            the reference svg (created if tests are run with create_new_reference_images == True
+            in test_plots.py
+            Args:
+                schema_file (str): json file with vega schema
+                Wrapped (IPython.display.PNG data): current file to compare reference png to        
+            Returns:
+                Value Error if png content does not match
+            """
             # if not isinstance(wrapped, IPython.display.Image):
             #     raise ValueError("Expected bytes object")
 
@@ -121,10 +127,16 @@ class TestExport(unittest.TestCase):
         saved_images = {f.stem: f for f in saved_svgs}
 
         def svg_check(schema_file, wrapped):
-            '''
-            schema_file: json file with vega schema
-            wrapped: IPython.display.SVG data
-            '''
+            """
+            Runs through all json files in modified_schemas and checks if the created svg matches
+            the reference svg (created if tests are run with create_new_reference_images == True
+            in test_plots.py
+            Args:
+                schema_file (str): json file with vega schema
+                Wrapped (IPython.display.SVG data): current svg  to compare reference svg to        
+            Returns:
+                Value Error if svg content does not match
+            """
             if not isinstance(wrapped, IPython.display.SVG):
                 raise ValueError("Expected wrapped SVG")
 

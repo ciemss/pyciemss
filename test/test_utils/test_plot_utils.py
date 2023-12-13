@@ -50,7 +50,6 @@ class TestPlotUtils(unittest.TestCase):
 
     def compare_png(self, ax, filename):
         '''check if created png still matches file in reference_images'''
-
         # save new image
         with open(os.path.join(test_png,  filename), "wb") as f:
             ax.figure.savefig(f, dpi=200)

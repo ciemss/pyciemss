@@ -80,7 +80,7 @@ class TestPetri(unittest.TestCase):
 
     def test_order_state(self):
         '''
-        returns states with new integer keys
+        returns keys in states as a tuple of the dictionary values
         i.e.
         input states =  {'Susceptible': 0, 'Exposed': 1} returns
         (0, 1)'''
@@ -92,7 +92,7 @@ class TestPetri(unittest.TestCase):
 
     def test_unorder_state(self):
         '''
-        returns states with new integer keys
+        returns states dictionary with reordered integer values based on states input
         i.e.
         input states = [0, 3, 2, 4, 1, 5, 6, 7] returns
         {'Susceptible': 0, 'Exposed': 3, 'Infected': 2, 
@@ -106,8 +106,9 @@ class TestPetri(unittest.TestCase):
     def test_natural_order(self):
         '''check that add_state_indices return a new node attribute
         that matches with the natural order function output
+
         both new_order and new_index should be in form Dict[str, T]
-        i.e. {'Susceptible': 0, 'Exposed': 1, 'Infected': 2} returns (0, 1)
+        i.e. {'Susceptible': 0, 'Exposed': 1, 'Infected': 2}
         '''
         new_order = petri_utils.natural_order(self.G)
         G_state_idx = petri_utils.add_state_indicies(self.G)
@@ -121,7 +122,6 @@ class TestPetri(unittest.TestCase):
         
         self.assertTrue(all(isinstance(x, int) for x in new_indixes))
 
-    #TODO should this be multipliying the nodes and edges
     def test_duplicate_petri_net(self):
         '''check new networkx is duplicate of input networkx'''
         dup_G = petri_utils.duplicate_petri_net(self.G)
