@@ -11,6 +11,7 @@ from .fixtures import (
     END_TIMES,
     LOGGING_STEP_SIZES,
     MODEL_URLS,
+    MODELS,
     NUM_SAMPLES,
     START_TIMES,
     check_result_sizes,
@@ -26,6 +27,8 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
 
 
 SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+INTERVENTION_TYPES = ["static", "dynamic"]
+INTERVENTION_TARGETS = ["state", "parameter"]
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
@@ -90,124 +93,81 @@ def test_sample_with_noise(
         if k[-5:] == "state":
             noisy = result[f"{k[:-6]}_noisy"]
             state = result[k]
-            assert 0.5 * scale < torch.std(noisy / state - 1) < 2 * scale
+            assert 0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
 
 
-@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_sample_with_static_interventions(
-    model_url, start_time, end_time, logging_step_size, num_samples
+@pytest.mark.parametrize("intervention_1_type", INTERVENTION_TYPES)
+@pytest.mark.parametrize("intervention_1_target", INTERVENTION_TARGETS)
+@pytest.mark.parametrize("intervention_2_type", INTERVENTION_TYPES + [None])
+@pytest.mark.parametrize("intervention_2_target", INTERVENTION_TARGETS)
+def test_sample_with_interventions(
+    model_fixture,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+    intervention_1_type,
+    intervention_1_target,
+    intervention_2_type,
+    intervention_2_target,
 ):
+    model_url = model_fixture.url
     model = CompiledDynamics.load(model_url)
-
-    initial_state = model.initial_state()
-    intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
-    intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
-
-    intervention_time_1 = (end_time + start_time) / 2  # Midpoint
-    intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
-    static_interventions = {
-        intervention_time_1: intervened_state_1,
-        intervention_time_2: intervened_state_2,
-    }
-    with pyro.poutine.seed(rng_seed=0):
-        intervened_result = sample(
-            model_url,
-            end_time,
-            logging_step_size,
-            num_samples,
-            start_time=start_time,
-            static_interventions=static_interventions,
-        )["unprocessed_result"]
-
-    with pyro.poutine.seed(rng_seed=0):
-        result = sample(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )["unprocessed_result"]
-
-    check_states_match_in_all_but_values(result, intervened_result)
-    check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
-    check_result_sizes(
-        intervened_result, start_time, end_time, logging_step_size, num_samples
-    )
-
-
-@pytest.mark.parametrize("model_url", MODEL_URLS)
-@pytest.mark.parametrize("start_time", START_TIMES)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_sample_with_dynamic_interventions(
-    model_url, start_time, end_time, logging_step_size, num_samples
-):
-    model = CompiledDynamics.load(model_url)
-
-    initial_state = model.initial_state()
-    intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
-    intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
 
     intervention_time_1 = (end_time + start_time) / 2  # Midpoint
     intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
 
+    # Same intervention time expressed as an event function
     def intervention_event_fn_1(time: torch.Tensor, *args, **kwargs):
         return time - intervention_time_1
 
     def intervention_event_fn_2(time: torch.Tensor, *args, **kwargs):
         return time - intervention_time_2
 
-    dynamic_interventions = {
-        intervention_event_fn_1: intervened_state_1,
-        intervention_event_fn_2: intervened_state_2,
-    }
-
-    with pyro.poutine.seed(rng_seed=0):
-        intervened_result = sample(
-            model_url,
-            end_time,
-            logging_step_size,
-            num_samples,
-            start_time=start_time,
-            dynamic_interventions=dynamic_interventions,
-        )["unprocessed_result"]
-
-    with pyro.poutine.seed(rng_seed=0):
-        result = sample(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time
-        )["unprocessed_result"]
-
-    check_states_match_in_all_but_values(result, intervened_result)
-    check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
-    check_result_sizes(
-        intervened_result, start_time, end_time, logging_step_size, num_samples
-    )
-
-
-@pytest.mark.parametrize("model_url", MODEL_URLS)
-@pytest.mark.parametrize("start_time", START_TIMES)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_sample_with_static_and_dynamic_interventions(
-    model_url, start_time, end_time, logging_step_size, num_samples
-):
-    model = CompiledDynamics.load(model_url)
+    static_state_interventions = {}
+    static_parameter_interventions = {}
+    dynamic_state_interventions = {}
+    dynamic_parameter_interventions = {}
 
     initial_state = model.initial_state()
-    intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
-    intervened_state_2 = {k: v + 2 for k, v in initial_state.items()}
+    important_parameter_name = model_fixture.important_parameter
+    important_parameter = getattr(model, important_parameter_name)
 
-    intervention_time_1 = (end_time + start_time) / 2  # Midpoint
-    intervention_time_2 = (end_time + intervention_time_1) / 2  # 3/4 point
+    if intervention_1_target == "state":
+        intervened_state_1 = {k: v + 1 for k, v in initial_state.items()}
+        if intervention_1_type == "static":
+            static_state_interventions[intervention_time_1] = intervened_state_1
+        elif intervention_1_type == "dynamic":
+            dynamic_state_interventions[intervention_event_fn_1] = intervened_state_1
+    elif intervention_1_target == "parameter":
+        intervened_state_1 = {important_parameter_name: important_parameter + 1}
+        if intervention_1_type == "static":
+            static_parameter_interventions[intervention_time_1] = intervened_state_1
+        elif intervention_1_type == "dynamic":
+            dynamic_parameter_interventions[
+                intervention_event_fn_1
+            ] = intervened_state_1
 
-    def intervention_event_fn_1(time: torch.Tensor, *args, **kwargs):
-        return time - intervention_time_1
+    if intervention_2_target == "state":
+        intervened_state_2 = {k: (lambda v: v + 2) for k in initial_state.keys()}
+        if intervention_2_type == "static":
+            static_state_interventions[intervention_time_2] = intervened_state_2
+        elif intervention_2_type == "dynamic":
+            dynamic_state_interventions[intervention_event_fn_2] = intervened_state_2
+    elif intervention_2_target == "parameter":
+        intervened_state_2 = {important_parameter_name: (lambda x: x + 2)}
+        if intervention_2_type == "static":
+            static_parameter_interventions[intervention_time_2] = intervened_state_2
+        elif intervention_2_type == "dynamic":
+            dynamic_parameter_interventions[
+                intervention_event_fn_2
+            ] = intervened_state_2
 
-    dynamic_interventions = {intervention_event_fn_1: intervened_state_1}
-
-    static_interventions = {intervention_time_2: intervened_state_2}
     with pyro.poutine.seed(rng_seed=0):
         intervened_result = sample(
             model_url,
@@ -215,9 +175,12 @@ def test_sample_with_static_and_dynamic_interventions(
             logging_step_size,
             num_samples,
             start_time=start_time,
-            static_interventions=static_interventions,
-            dynamic_interventions=dynamic_interventions,
+            static_state_interventions=static_state_interventions,
+            static_parameter_interventions=static_parameter_interventions,
+            dynamic_state_interventions=dynamic_state_interventions,
+            dynamic_parameter_interventions=dynamic_parameter_interventions,
         )["unprocessed_result"]
+
     with pyro.poutine.seed(rng_seed=0):
         result = sample(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time

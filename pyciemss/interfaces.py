@@ -11,6 +11,7 @@ from chirho.dynamical.handlers import (
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
+from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from pyro.contrib.autoname import scope
 
@@ -19,6 +20,10 @@ from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.observation import compile_noise_model
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
+from pyciemss.interruptions import (
+    DynamicParameterIntervention,
+    StaticParameterIntervention,
+)
 
 
 @pyciemss_logging_wrapper
@@ -152,9 +157,15 @@ def sample(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
-    dynamic_interventions: Dict[
-        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+    static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    dynamic_state_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
+    dynamic_parameter_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
     ] = {},
 ) -> Dict[str, torch.Tensor]:
     """
@@ -183,15 +194,38 @@ def sample(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        static_interventions: Dict[float, Dict[str, torch.Tensor]]
+        static_state_interventions: Dict[float, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
-        dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+            - A dictionary of static interventions to apply to the model.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        dynamic_state_interventions: Dict[
+                                        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                        Dict[str, Intervention]
+                                        ]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        dynamic_parameter_interventions: Dict[
+                                            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                            Dict[str, Intervention]
+                                            ]
+            - A dictionary of dynamic interventions to apply to the model.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
 
     Returns:
         result: Dict[str, torch.Tensor]
@@ -205,22 +239,37 @@ def sample(
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
-    static_intervention_handlers = [
+    static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_interventions.items()
+        for time, static_intervention_assignment in static_state_interventions.items()
     ]
-    dynamic_intervention_handlers = [
+    static_parameter_intervention_handlers = [
+        StaticParameterIntervention(time, dict(**static_intervention_assignment))
+        for time, static_intervention_assignment in static_parameter_interventions.items()
+    ]
+
+    dynamic_state_intervention_handlers = [
         DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
+        for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
     ]
+
+    dynamic_parameter_intervention_handlers = [
+        DynamicParameterIntervention(event_fn, dict(**dynamic_intervention_assignment))
+        for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
+    ]
+
+    intervention_handlers = (
+        static_state_intervention_handlers
+        + static_parameter_intervention_handlers
+        + dynamic_state_intervention_handlers
+        + dynamic_parameter_intervention_handlers
+    )
 
     def wrapped_model():
         with LogTrajectory(timespan) as lt:
             with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
-                    for handler in (
-                        static_intervention_handlers + dynamic_intervention_handlers
-                    ):
+                    for handler in intervention_handlers:
                         stack.enter_context(handler)
                     model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 

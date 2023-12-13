@@ -27,14 +27,16 @@ class CompiledDynamics(pyro.nn.PyroModule):
             if isinstance(
                 v, (torch.nn.Parameter, pyro.nn.PyroParam, pyro.nn.PyroSample)
             ):
-                setattr(self, get_name(k), v)
+                setattr(self, f"persistent_{get_name(k)}", v)
             elif isinstance(v, torch.Tensor):
-                self.register_buffer(get_name(k), v)
+                self.register_buffer(f"persistent_{get_name(k)}", v)
 
         # Compile the numeric derivative of the model from the transition rate laws.
         setattr(self, "numeric_deriv_func", _compile_deriv(src))
         setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
         setattr(self, "numeric_observables_func", _compile_observables(src))
+
+        self.instantiate_parameters()
 
     @pyro.nn.pyro_method
     def deriv(self, X: State[torch.Tensor]) -> None:
@@ -49,15 +51,24 @@ class CompiledDynamics(pyro.nn.PyroModule):
         observables = eval_observables(self.src, self, X)
         return dict(**X, **observables)
 
+    @pyro.nn.pyro_method
+    def instantiate_parameters(self):
+        # Initialize random parameters once before simulating.
+        # This is necessary because the parameters are PyroSample objects.
+        for k in _compile_param_values(self.src).keys():
+            param_name = get_name(k)
+            # Separating the persistent parameters from the non-persistent ones
+            # is necessary because the persistent parameters are PyroSample objects representing the distribution,
+            # and should not be modified during intervention.
+            param_val = getattr(self, f"persistent_{param_name}")
+            self.register_buffer(get_name(k), param_val)
+
     def forward(
         self,
         start_time: torch.Tensor,
         end_time: torch.Tensor,
     ):
-        # Initialize random parameters once before simulating.
-        # This is necessary because the parameters are PyroSample objects.
-        for k in _compile_param_values(self.src).keys():
-            getattr(self, get_name(k))
+        self.instantiate_parameters()
 
         result = simulate(self.deriv, self.initial_state(), start_time, end_time)
 
