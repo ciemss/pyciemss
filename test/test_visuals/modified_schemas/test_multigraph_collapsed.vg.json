@@ -456,29 +456,35 @@
             },
             {
                "attribution": [
-                  "A"
+                  "D",
+                  "A",
+                  "B"
                ],
                "label": 1,
                "id": 1
             },
             {
                "attribution": [
-                  "C"
+                  "A",
+                  "D",
+                  "B"
                ],
                "label": 2,
                "id": 2
             },
             {
                "attribution": [
-                  "B",
-                  "C"
+                  "C",
+                  "A",
+                  "D"
                ],
                "label": 3,
                "id": 3
             },
             {
                "attribution": [
-                  "A"
+                  "D",
+                  "B"
                ],
                "label": 4,
                "id": 4
@@ -490,47 +496,46 @@
          "values": [
             {
                "attribution": [
-                  "A",
-                  "B"
+                  "*all*"
                ],
                "source": 0,
                "target": 1
             },
             {
                "attribution": [
-                  "*all*"
+                  "D"
                ],
                "source": 0,
                "target": 2
             },
             {
                "attribution": [
-                  "C"
+                  "C",
+                  "B"
                ],
                "source": 0,
                "target": 3
             },
             {
                "attribution": [
-                  "*all*"
+                  "B",
+                  "C",
+                  "D"
                ],
                "source": 0,
                "target": 4
             },
             {
                "attribution": [
-                  "D",
-                  "A",
-                  "C"
+                  "*all*"
                ],
                "source": 2,
                "target": 4
             },
             {
                "attribution": [
-                  "D",
                   "B",
-                  "C"
+                  "A"
                ],
                "source": 3,
                "target": 4
