@@ -18,27 +18,32 @@ from .fixtures import (
     check_states_match_in_all_but_values,
 )
 
-INTERVENTIONS = [torch.tensor(2.0), lambda x: x * 2.0]
+INTERVENTION_ASSIGNMENTS = [torch.tensor(2.0), lambda x: x * 2.0]
 INTERVENTION_HANDLER_TYPES = ["static", "dynamic"]
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("intervention", INTERVENTIONS)
+@pytest.mark.parametrize("intervention_assignment", INTERVENTION_ASSIGNMENTS)
 @pytest.mark.parametrize("intervention_handler_type", INTERVENTION_HANDLER_TYPES)
 def test_parameter_intervention_before_end(
-    model_fixture, start_time, end_time, intervention, intervention_handler_type
+    model_fixture,
+    start_time,
+    end_time,
+    intervention_assignment,
+    intervention_handler_type,
 ):
     model = CompiledDynamics.load(model_fixture.url)
     assert isinstance(model, CompiledDynamics)
 
     intervention_time = start_time + (end_time - start_time) / 2.0
     parameter = model_fixture.important_parameter
+    intervention = {parameter: intervention_assignment}
 
     if intervention_handler_type == "static":
         intervention_handler = StaticParameterIntervention(
-            time=intervention_time, parameter=parameter, intervention=intervention
+            time=intervention_time, intervention=intervention
         )
     elif intervention_handler_type == "dynamic":
 
@@ -46,7 +51,7 @@ def test_parameter_intervention_before_end(
             return time - intervention_time
 
         intervention_handler = DynamicParameterIntervention(
-            event_fn=event_fn, parameter=parameter, intervention=intervention
+            event_fn=event_fn, intervention=intervention
         )
 
     if parameter is None:
@@ -71,20 +76,25 @@ def test_parameter_intervention_before_end(
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("intervention", INTERVENTIONS)
+@pytest.mark.parametrize("intervention_assignment", INTERVENTION_ASSIGNMENTS)
 @pytest.mark.parametrize("intervention_handler_type", INTERVENTION_HANDLER_TYPES)
 def test_parameter_intervention_after_end(
-    model_fixture, start_time, end_time, intervention, intervention_handler_type
+    model_fixture,
+    start_time,
+    end_time,
+    intervention_assignment,
+    intervention_handler_type,
 ):
     model = CompiledDynamics.load(model_fixture.url)
     assert isinstance(model, CompiledDynamics)
 
     intervention_time = end_time + 1.0
     parameter = model_fixture.important_parameter
+    intervention = {parameter: intervention_assignment}
 
     if intervention_handler_type == "static":
         intervention_handler = StaticParameterIntervention(
-            time=intervention_time, parameter=parameter, intervention=intervention
+            time=intervention_time, intervention=intervention
         )
     elif intervention_handler_type == "dynamic":
 
@@ -92,7 +102,7 @@ def test_parameter_intervention_after_end(
             return time - intervention_time
 
         intervention_handler = DynamicParameterIntervention(
-            event_fn=event_fn, parameter=parameter, intervention=intervention
+            event_fn=event_fn, intervention=intervention
         )
 
     if parameter is None:
