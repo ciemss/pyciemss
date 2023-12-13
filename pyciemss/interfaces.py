@@ -494,9 +494,9 @@ def optimize(
     # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     # timepoints = [float(x) for x in list(timepoints)]
-    bounds = np.atleast_2d(bounds)
-    u_min = bounds[0, :]
-    u_max = bounds[1, :]
+    bounds_np = np.atleast_2d(bounds)
+    u_min = bounds_np[0, :]
+    u_max = bounds_np[1, :]
     # Set up risk estimation
     # control_model = copy.deepcopy(model)
     RISK = computeRisk(
