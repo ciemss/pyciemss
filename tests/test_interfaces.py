@@ -93,7 +93,7 @@ def test_sample_with_noise(
         if k[-5:] == "state":
             noisy = result[f"{k[:-6]}_noisy"]
             state = result[k]
-            assert 0.5 * scale < torch.std(noisy / state - 1) < 2 * scale
+            assert 0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)

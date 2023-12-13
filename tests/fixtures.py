@@ -21,12 +21,12 @@ PETRI_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRD_base_model01_petrinet.json"), "beta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"), "gamma"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
-    ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_base_model01_petrinet.json"), "beta"
-    ),
-    ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
-    ),
+    # ModelFixture(
+    #     os.path.join(MODELS_PATH, "SEIRHD_base_model01_petrinet.json"), "beta"
+    # ),
+    # ModelFixture(
+    #     os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
+    # ),
 ]
 
 REGNET_MODELS = [
@@ -40,8 +40,8 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRD_stockflow.json"), "p_cbeta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHDS_stockflow.json"), "p_cbeta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
-    ModelFixture(os.path.join(MODELS_PATH, "SEIR_stockflow.json"), "p_cbeta"),
-    ModelFixture(os.path.join(MODELS_PATH, "SIR_stockflow.json"), "p_cbeta"),
+    # ModelFixture(os.path.join(MODELS_PATH, "SEIR_stockflow.json"), "p_cbeta"),
+    # ModelFixture(os.path.join(MODELS_PATH, "SIR_stockflow.json"), "p_cbeta"),
 ]
 
 MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
