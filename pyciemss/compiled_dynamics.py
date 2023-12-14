@@ -47,9 +47,8 @@ class CompiledDynamics(pyro.nn.PyroModule):
         return eval_initial_state(self.src, self)
 
     @pyro.nn.pyro_method
-    def add_observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
-        observables = eval_observables(self.src, self, X)
-        return dict(**X, **observables)
+    def observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
+        return eval_observables(self.src, self, X)
 
     @pyro.nn.pyro_method
     def instantiate_parameters(self):
@@ -70,9 +69,11 @@ class CompiledDynamics(pyro.nn.PyroModule):
     ):
         self.instantiate_parameters()
 
-        result = simulate(self.deriv, self.initial_state(), start_time, end_time)
+        state = simulate(self.deriv, self.initial_state(), start_time, end_time)
 
-        return self.add_observables(result)
+        observables = self.observables(state)
+
+        return {**state, **observables}
 
     @functools.singledispatchmethod
     @classmethod
