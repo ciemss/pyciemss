@@ -58,8 +58,7 @@
       "type": "ordinal",
       "range": {"scheme": "category20"},
       "domain": {
-          "sort": {"order": "ascending"},
-          "fields": [
+        "fields": [
           {"data": "node-attributions", "field": "attribution"},
           {"data": "link-attributions", "field": "attribution"}
         ]
@@ -223,17 +222,14 @@
       "from": {"data": "nodes"},
       "encode": {
         "enter": {
+          "fill": {"value": "black"},
           "text": {"field": "datum.label"},
           "align": {"value": "center"},
           "baseline": {"value": "middle"}
         },
         "update": {
           "x": {"field": "x"},
-          "y": {"field": "y"},
-          "fill": [
-              {"test": "indexof(datum.datum.attribution, '*all*')>=0", "value": "lightgray"},
-              {"value": "gray"}
-          ]
+          "y": {"field": "y"}
         }
       }
     }
