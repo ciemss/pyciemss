@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import pyro
 import torch
@@ -273,17 +273,24 @@ def sample(
                         stack.enter_context(handler)
                     model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
-        trajectory = model.add_observables(lt.trajectory)
+        trajectory = lt.trajectory
+        [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
 
-        # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-        [pyro.deterministic(k, v) for k, v in trajectory.items()]
+        # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
+        trajectory_observables = model.observables(trajectory)
+        [
+            pyro.deterministic(f"{k}_observable", v)
+            for k, v in trajectory_observables.items()
+        ]
+
+        full_trajectory = {**trajectory, **trajectory_observables}
 
         if noise_model is not None:
             compiled_noise_model = compile_noise_model(
-                noise_model, vars=set(trajectory.keys()), **noise_model_kwargs
+                noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
             )
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            compiled_noise_model(trajectory)
+            compiled_noise_model(full_trajectory)
 
     samples = pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples
@@ -302,16 +309,22 @@ def calibrate(
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
-    dynamic_interventions: Dict[
-        Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
+    static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    dynamic_state_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
+    dynamic_parameter_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
     ] = {},
     num_iterations: int = 1000,
     lr: float = 0.03,
     verbose: bool = False,
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
-) -> pyro.nn.PyroModule:
+) -> Tuple[pyro.nn.PyroModule, float]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
     This uses variational inference with a mean-field variational family to infer the parameters of the model.
@@ -341,15 +354,38 @@ def calibrate(
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        - static_interventions: Dict[float, Dict[str, torch.Tensor]]
+        static_state_interventions: Dict[float, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
-        - dynamic_interventions: Dict[Callable[[Dict[str, torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]]
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+            - A dictionary of static interventions to apply to the model.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        dynamic_state_interventions: Dict[
+                                        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                        Dict[str, Intervention]
+                                        ]
             - A dictionary of dynamic interventions to apply to the model.
             - Each key is a function that takes in the current state of the model and returns a tensor.
               When this function crosses 0, the dynamic intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        dynamic_parameter_interventions: Dict[
+                                            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                            Dict[str, Intervention]
+                                            ]
+            - A dictionary of dynamic interventions to apply to the model.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
         - num_iterations: int
             - The number of iterations to run the inference algorithm for.
         - lr: float
@@ -366,7 +402,11 @@ def calibrate(
         - inferred_parameters: pyro.nn.PyroModule
             - A Pyro module that contains the inferred parameters of the model.
             - This can be passed to `sample` to sample from the model conditional on the data.
+        - loss: float
+            - The final loss value of the approximate ELBO loss.
     """
+
+    pyro.clear_param_store()
 
     model = CompiledDynamics.load(model_path_or_json)
 
@@ -392,31 +432,47 @@ def calibrate(
 
         return guide
 
-    static_intervention_handlers = [
+    static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_interventions.items()
+        for time, static_intervention_assignment in static_state_interventions.items()
     ]
-    dynamic_intervention_handlers = [
-        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_interventions.items()
+    static_parameter_intervention_handlers = [
+        StaticParameterIntervention(time, dict(**static_intervention_assignment))
+        for time, static_intervention_assignment in static_parameter_interventions.items()
     ]
 
-    _noise_model = compile_noise_model(
-        noise_model, vars=set(data.keys()), **noise_model_kwargs
+    dynamic_state_intervention_handlers = [
+        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
+        for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
+    ]
+
+    dynamic_parameter_intervention_handlers = [
+        DynamicParameterIntervention(event_fn, dict(**dynamic_intervention_assignment))
+        for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
+    ]
+
+    intervention_handlers = (
+        static_state_intervention_handlers
+        + static_parameter_intervention_handlers
+        + dynamic_state_intervention_handlers
+        + dynamic_parameter_intervention_handlers
     )
 
-    _data = {f"{k}_observed": v for k, v in data.items()}
+    _noise_model = compile_noise_model(
+        noise_model,
+        vars=set(data.keys()),
+        **noise_model_kwargs,
+    )
+
+    _data = {f"{k}_noisy": v for k, v in data.items()}
 
     def wrapped_model():
-        # TODO: pick up here.
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
             with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
-                    for handler in (
-                        static_intervention_handlers + dynamic_intervention_handlers
-                    ):
+                    for handler in intervention_handlers:
                         stack.enter_context(handler)
                     model(
                         torch.as_tensor(start_time),
@@ -437,7 +493,7 @@ def calibrate(
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return inferred_parameters
+    return inferred_parameters, loss
 
 
 # # TODO
