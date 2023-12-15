@@ -242,8 +242,8 @@ def test_calibrate_deterministic(model_url, start_time, end_time, logging_step_s
 
     calibrate_kwargs = {
         "start_time": start_time,
-        "deterministic_learnable_parameters": deterministic_learnable_parameters
-        ** CALIBRATE_KWARGS,
+        "deterministic_learnable_parameters": deterministic_learnable_parameters,
+        **CALIBRATE_KWARGS,
     }
 
     with pyro.poutine.seed(rng_seed=0):
