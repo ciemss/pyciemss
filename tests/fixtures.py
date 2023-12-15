@@ -29,9 +29,9 @@ REGNET_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "LV_rabbits_wolves_model02_regnet.json"), "beta"
     ),
-    # ModelFixture(
-    #     os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
-    # ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
+    ),
     ModelFixture(os.path.join(MODELS_PATH, "LV_goat_chupacabra_regnet.json"), "beta"),
 ]
 

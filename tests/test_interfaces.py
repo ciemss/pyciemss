@@ -309,11 +309,10 @@ def test_calibrate_interventions(
 
     if intervention_target == "state":
         initial_state = model.initial_state()
-        intervention = {k: v.detach() + 1 for k, v in initial_state.items()}
+        intervention = {k: (lambda x: 0.9 * x) for k in initial_state.keys()}
     elif intervention_target == "parameter":
         important_parameter_name = model_fixture.important_parameter
-        important_parameter = getattr(model, important_parameter_name)
-        intervention = {important_parameter_name: important_parameter.detach() + 1}
+        intervention = {important_parameter_name: (lambda x: 0.9 * x)}
 
     if intervention_type == "static":
         time_key = intervention_time
