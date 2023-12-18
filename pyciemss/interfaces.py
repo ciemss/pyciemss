@@ -521,9 +521,10 @@ def optimize(
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
-    objfun: Callable = lambda x: np.abs(x),
-    initial_guess: List[float] = [0.5],
-    bounds: List[List[float]] = [[0.0], [1.0]],
+    static_interventions: Dict[float, Dict[str, torch.Tensor]],
+    objfun: Callable,
+    initial_guess_interventions: List[float],
+    bounds_interventions: List[List[float]],
     *,
     noise_model: str = "normal",
     noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
@@ -534,7 +535,6 @@ def optimize(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]] = {},
     # dynamic_interventions: Dict[
     #     Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
     # ] = {},
@@ -555,8 +555,20 @@ def optimize(
             - The end time of the sampled simulation.
         logging_step_size: float
             - The step size to use for logging the trajectory.
-        num_samples: int
-            - The number of samples to draw from the model.
+        qoi: Callable
+            - 
+        risk_bounds: float
+            -
+        static_interventions: Dict[float, Dict[str, torch.Tensor]]
+            - A dictionary of static interventions that are optimized under uncertainty.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: value}.
+        objfun: Callable
+            -
+        initial_guess_interventions: List[float]
+            -
+        bounds_interventions: List[List[float]]
+            -
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
@@ -571,12 +583,12 @@ def optimize(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        static_interventions: Dict[float, Dict[str, torch.Tensor]]
-            - A dictionary of static interventions to apply to the model.
-            - Each key is the time at which the intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
-        maxfeval: Maximum number of function evaluations for each local optimization step
-        maxiter: Maximum number of basinhopping iterations: >0 leads to multi-start
+        n_samples_ouu: int
+            - 
+        maxiter: int = 2
+            - Maximum number of basinhopping iterations: >0 leads to multi-start
+        maxfeval: int
+            - Maximum number of function evaluations for each local optimization step
 
     Returns:
         result: Dict[str, torch.Tensor]
@@ -592,7 +604,7 @@ def optimize(
     # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     # timepoints = [float(x) for x in list(timepoints)]
-    bounds_np = np.atleast_2d(bounds)
+    bounds_np = np.atleast_2d(bounds_interventions)
     u_min = bounds_np[0, :]
     u_max = bounds_np[1, :]
     # Set up risk estimation
@@ -613,7 +625,7 @@ def optimize(
 
     # Run one sample to estimate model evaluation time
     start_time = time.time()
-    init_prediction = RISK.propagate_uncertainty(initial_guess)
+    init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
     RISK.qoi(init_prediction)
     end_time = time.time()
     forward_time = end_time - start_time
@@ -653,7 +665,7 @@ def optimize(
         )
     start_time = time.time()
     opt_results = solveOUU(
-        x0=initial_guess,
+        x0=initial_guess_interventions,
         objfun=objfun,
         constraints=constraints,
         maxiter=maxiter,
