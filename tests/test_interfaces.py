@@ -1,3 +1,5 @@
+import tempfile
+
 import numpy as np
 import pandas as pd
 import pyro
@@ -5,6 +7,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
+from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import calibrate, ensemble_sample, sample
 
 from .fixtures import (
@@ -26,26 +29,24 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
-def setup_calibrate(model_url, start_time, end_time, logging_step_size):
-    sample_args = [model_url, end_time, logging_step_size, 1]
+def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
+    if model_fixture.data_path is None:
+        pytest.skip("TODO: create temporary file")
 
-    sample_kwargs = {
-        "start_time": start_time,
-    }
+    data_timepoints = load_data(model_fixture.data_path)[0]
+
+    calibrate_end_time = data_timepoints[-1]
+
+    model_url = model_fixture.url
+
+    sample_args = [model_url, end_time, logging_step_size, 1]
+    sample_kwargs = {"start_time": start_time}
 
     result = sample(*sample_args, **sample_kwargs)["unprocessed_result"]
 
-    data = {
-        k[:-6]: v.squeeze().detach() for k, v in result.items() if k[-5:] == "state"
-    }
-
-    data_timespan = torch.arange(
-        start_time + logging_step_size, end_time, logging_step_size
-    )
-
     parameter_names = [k for k, v in result.items() if v.ndim == 1]
 
-    return data, data_timespan, parameter_names, sample_args, sample_kwargs
+    return parameter_names, calibrate_end_time, sample_args, sample_kwargs
 
 
 SAMPLE_METHODS = [sample, dummy_ensemble_sample]
@@ -192,18 +193,23 @@ def test_sample_with_interventions(
     )
 
 
-@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_no_kwargs(model_url, start_time, end_time, logging_step_size):
-    data, data_timespan, _, sample_args, sample_kwargs = setup_calibrate(
-        model_url, start_time, end_time, logging_step_size
+def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_size):
+    model_url = model_fixture.url
+    _, _, sample_args, sample_kwargs = setup_calibrate(
+        model_fixture, start_time, end_time, logging_step_size
     )
 
-    calibrate_args = [model_url, data, data_timespan]
+    calibrate_args = [model_url, model_fixture.data_path]
 
-    calibrate_kwargs = {"start_time": start_time, **CALIBRATE_KWARGS}
+    calibrate_kwargs = {
+        "data_mapping": model_fixture.data_mapping,
+        "start_time": start_time,
+        **CALIBRATE_KWARGS,
+    }
 
     with pyro.poutine.seed(rng_seed=0):
         inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
@@ -226,21 +232,25 @@ def test_calibrate_no_kwargs(model_url, start_time, end_time, logging_step_size)
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
 
 
-@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_deterministic(model_url, start_time, end_time, logging_step_size):
+def test_calibrate_deterministic(
+    model_fixture, start_time, end_time, logging_step_size
+):
+    model_url = model_fixture.url
     (
-        data,
-        data_timespan,
         deterministic_learnable_parameters,
+        _,
         sample_args,
         sample_kwargs,
-    ) = setup_calibrate(model_url, start_time, end_time, logging_step_size)
-    calibrate_args = [model_url, data, data_timespan]
+    ) = setup_calibrate(model_fixture, start_time, end_time, logging_step_size)
+
+    calibrate_args = [model_url, model_fixture.data_path]
 
     calibrate_kwargs = {
+        "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
         **CALIBRATE_KWARGS,
@@ -284,15 +294,15 @@ def test_calibrate_interventions(
     model_url = model_fixture.url
 
     (
-        data,
-        data_timespan,
         deterministic_learnable_parameters,
+        calibrate_end_time,
         sample_args,
         sample_kwargs,
-    ) = setup_calibrate(model_url, start_time, end_time, logging_step_size)
-    calibrate_args = [model_url, data, data_timespan]
+    ) = setup_calibrate(model_fixture, start_time, end_time, logging_step_size)
+    calibrate_args = [model_url, model_fixture.data_path]
 
     calibrate_kwargs = {
+        "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
         **CALIBRATE_KWARGS,
@@ -305,7 +315,7 @@ def test_calibrate_interventions(
 
     model = CompiledDynamics.load(model_url)
 
-    intervention_time = (end_time + start_time) / 2  # Half way through
+    intervention_time = (calibrate_end_time + start_time) / 2  # Half way through
 
     if intervention_target == "state":
         initial_state = model.initial_state()
