@@ -18,7 +18,7 @@ from pyro.contrib.autoname import scope
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
-from pyciemss.integration_utils.observation import compile_noise_model
+from pyciemss.integration_utils.observation import compile_noise_model, load_data
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 from pyciemss.interruptions import (
     DynamicParameterIntervention,
@@ -301,9 +301,9 @@ def sample(
 
 def calibrate(
     model_path_or_json: Union[str, Dict],
-    data: Dict[str, torch.Tensor],
-    data_timepoints: torch.Tensor,
+    data_path: str,
     *,
+    data_mapping: Dict[str, str] = {},
     noise_model: str = "normal",
     noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
     solver_method: str = "dopri5",
@@ -332,12 +332,13 @@ def calibrate(
     Args:
         - model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
-        - data: Dict[str, torch.Tensor]
-            - A dictionary of data to condition the model on.
-            - Each key is the name of a state variable in the model.
-            - Each value is a tensor of shape (num_timepoints,) for state variables.
-        - data_timepoints: torch.Tensor
-            - A tensor of shape (num_timepoints,) containing the timepoints for the data.
+        - data_path: str
+            - A path to the data file.
+        - data_mapping: Dict[str, str]
+            - A mapping from column names in the data file to state variable names in the model.
+                - keys: str name of column in dataset
+                - values: str name of state/observable in model
+            - If not provided, we will assume that the column names in the data file match the state variable names.
         - noise_model: str
             - The noise model to use for the data.
             - Currently we only support the normal distribution.
@@ -410,6 +411,8 @@ def calibrate(
 
     model = CompiledDynamics.load(model_path_or_json)
 
+    data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -425,10 +428,11 @@ def calibrate(
             mvn_guide._setup_prototype()
             guide.append(mvn_guide)
         except RuntimeError as re:
-            assert (
+            if (
                 re.args[0]
-                == "AutoLowRankMultivariateNormal found no latent variables; Use an empty guide instead"
-            )
+                != "AutoLowRankMultivariateNormal found no latent variables; Use an empty guide instead"
+            ):
+                raise re
 
         return guide
 
