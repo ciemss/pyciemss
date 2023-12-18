@@ -19,7 +19,7 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 extensions += ['sphinx.ext.autodoc', 'autoapi.extension']
-autoapi_dirs = ['../../src']
+autoapi_dirs = ['../../pyciemss']
 
 
 # -- Options for HTML output -------------------------------------------------
