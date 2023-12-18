@@ -1,35 +1,54 @@
-from typing import Dict, TypeVar
+import os
+from collections.abc import Mapping
+from typing import Dict, Optional, TypeVar
 
 import torch
 
 T = TypeVar("T")
 
+MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
+
+
+class ModelFixture:
+    def __init__(self, url: str, important_parameter: Optional[str] = None):
+        self.url = url
+        self.important_parameter = important_parameter
+
+
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
-PETRI_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRD_base_model01.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type1.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_NPI_Type2.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_base_model01.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_three_beta.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_two_beta.json",
-    "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/raw_models/SEIRHD_with_reinfection01.json",  # noqa: E501
+PETRI_MODELS = [
+    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"), "gamma"),
+    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
+    ),
 ]
 
-REGNET_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/regnet/examples/lotka_volterra.json",
+REGNET_MODELS = [
+    ModelFixture(
+        os.path.join(MODELS_PATH, "LV_rabbits_wolves_model02_regnet.json"), "beta"
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
+    ),
+    ModelFixture(os.path.join(MODELS_PATH, "LV_goat_chupacabra_regnet.json"), "beta"),
 ]
 
-STOCKFLOW_URLS = [
-    "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/main/stockflow/examples/sir.json",
+STOCKFLOW_MODELS = [
+    ModelFixture(os.path.join(MODELS_PATH, "SEIRD_stockflow.json"), "p_cbeta"),
+    ModelFixture(os.path.join(MODELS_PATH, "SEIRHDS_stockflow.json"), "p_cbeta"),
+    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
-MODEL_URLS = PETRI_URLS + REGNET_URLS + STOCKFLOW_URLS
+MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
 
-START_TIMES = [0.0, 10.0]
-END_TIMES = [30.0, 40.0]
+MODEL_URLS = [model.url for model in MODELS]
 
-LOGGING_STEP_SIZES = [1.0]
+START_TIMES = [0.0]
+END_TIMES = [40.0]
+
+LOGGING_STEP_SIZES = [5.0]
 
 NUM_SAMPLES = [2]
 
@@ -52,12 +71,12 @@ def check_states_match(traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Te
 
 
 def check_states_match_in_all_but_values(
-    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor]
+    traj1: Dict[str, torch.Tensor], traj2: Dict[str, torch.Tensor], state_ndim: int = 2
 ):
     assert check_keys_match(traj1, traj2)
 
     for k, val in traj1.items():
-        if val.ndim == 2:
+        if val.ndim == state_ndim:
             if not torch.allclose(traj2[k], traj1[k]):
                 # early return, as we've already confirmed they're not identical
                 return True
@@ -84,5 +103,15 @@ def check_result_sizes(
             assert v.shape == (num_samples, num_timesteps)
         else:
             assert v.shape == (num_samples,)
+
+    return True
+
+
+def check_is_state(state: torch.Tensor, value_type):
+    assert isinstance(state, Mapping)
+
+    assert all(isinstance(key, str) for key in state.keys())
+
+    assert all(isinstance(value, value_type) for value in state.values())
 
     return True

@@ -1,10 +1,10 @@
 import pytest
 import torch
-from chirho.dynamical.ops import State
+from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 
-from .fixtures import END_TIMES, MODEL_URLS, START_TIMES
+from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -18,6 +18,6 @@ def test_ensemble_compiled_dynamics_load_url(url, start_time, end_time):
         [lambda x: x, lambda x: {k: 2 * v for k, v in x.items()}],
     )
     assert isinstance(model, EnsembleCompiledDynamics)
-
-    simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-    assert isinstance(simulation, State)
+    with TorchDiffEq():
+        simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+    check_is_state(simulation, torch.Tensor)
