@@ -521,7 +521,7 @@ def optimize(
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
-    static_interventions: Dict[float, Dict[str, torch.Tensor]],
+    static_parameter_interventions: List[Tuple(float, str)],
     objfun: Callable,
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
@@ -535,14 +535,7 @@ def optimize(
     n_samples_ouu: int = int(1e2),
     maxiter: int = 2,
     maxfeval: int = 25,
-    # dynamic_interventions: Dict[
-    #     Callable[[State[torch.Tensor]], torch.Tensor], Dict[str, torch.Tensor]
-    # ] = {},
     verbose: bool = False,
-    # petri: PetriNetODESystem,
-    # timepoints: Iterable,
-    # interventions: dict,
-    # method="dopri5",
     roundup_decimal: int = 4,
     postprocess: bool = False,
 ) -> Dict:
@@ -559,10 +552,12 @@ def optimize(
             - 
         risk_bounds: float
             -
-        static_interventions: Dict[float, Dict[str, torch.Tensor]]
-            - A dictionary of static interventions that are optimized under uncertainty.
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+            - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
-            - Each value is a dictionary of the form {state_variable_name: value}.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
         objfun: Callable
             -
         initial_guess_interventions: List[float]
@@ -597,8 +592,6 @@ def optimize(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
-    # 
-
     control_model = CompiledDynamics.load(model_path_or_json)
 
     # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
@@ -611,7 +604,7 @@ def optimize(
     # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
-        interventions=static_interventions,
+        interventions=static_parameter_interventions,
         qoi=qoi,
         end_time=end_time,
         logging_step_size=logging_step_size,
@@ -637,7 +630,7 @@ def optimize(
     # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
-        interventions=static_interventions,
+        interventions=static_parameter_interventions,
         qoi=qoi,
         end_time=end_time,
         logging_step_size=logging_step_size,
@@ -696,7 +689,7 @@ def optimize(
         # control_model = copy.deepcopy(model)
         RISK = computeRisk(
             model=control_model,
-            interventions=static_interventions,
+            interventions=static_parameter_interventions,
             qoi=qoi,
             end_time=end_time,
             logging_step_size=logging_step_size,

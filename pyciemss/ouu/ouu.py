@@ -10,11 +10,15 @@ from chirho.dynamical.handlers import (
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.dynamical.ops import State
+from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from pyro.contrib.autoname import scope
 
 # from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.ouu.risk_measures import alpha_superquantile
+from pyciemss.interruptions import (
+    StaticParameterIntervention,
+)
 
 # from typing import List, Optional, Tuple, Union, Dict
 from typing import Any, Callable, Dict, List, Optional, Union, Tuple
@@ -47,7 +51,7 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Dict[float, Dict[str, torch.Tensor]],
+        interventions: Dict[torch.Tensor, Dict[str, Intervention]],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
@@ -101,19 +105,23 @@ class computeRisk:
         # self.model.load_events(interventions)
 
         # TODO: update interventions
-        static_intervention_handlers = []
+        # static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
+        #         StaticParameterIntervention(time, dict(**static_intervention_assignment))
+        #         for time, static_intervention_assignment in self.interventions.items()
+        #     ]
+        static_parameter_intervention_handlers = []
         count = 0
-        # for k in self.interventions:
-        static_intervention_handlers = [
-            StaticIntervention(time, State(**static_intervention_assignment))
-            for time, static_intervention_assignment in self.interventions.items()
-        ]
+        for k in self.interventions:
+            static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
+                StaticParameterIntervention(k[0], dict(k[1], x[count]))
+            ]
+            count = count + 1
 
         def wrapped_model():
             with LogTrajectory(self.timespan) as lt:
                 with InterruptionEventLoop():
                     with contextlib.ExitStack() as stack:
-                        for handler in static_intervention_handlers:
+                        for handler in static_parameter_intervention_handlers:
                             stack.enter_context(handler)
                         self.model(
                             torch.as_tensor(self.start_time),
