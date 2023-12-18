@@ -7,18 +7,32 @@ import torch
 T = TypeVar("T")
 
 MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
+DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
 
 
 class ModelFixture:
-    def __init__(self, url: str, important_parameter: Optional[str] = None):
+    def __init__(
+        self,
+        url: str,
+        important_parameter: Optional[str] = None,
+        data_path: Optional[str] = None,
+        data_mapping: Dict[str, str] = {},
+    ):
         self.url = url
         self.important_parameter = important_parameter
+        self.data_path = data_path
+        self.data_mapping = data_mapping
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 
 PETRI_MODELS = [
-    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"), "gamma"),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
+        "gamma",
+        os.path.join(DATA_PATH, "traditional.csv"),
+        {"Infected": "I"},
+    ),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
