@@ -502,19 +502,6 @@ def calibrate(
     return inferred_parameters, loss
 
 
-# # TODO
-# def optimize(
-#     model: CompiledDynamics,
-#     objective_function: ObjectiveFunction,
-#     constraints: Constraints,
-#     optimization_algorithm: OptimizationAlgorithm,
-#     *args,
-#     **kwargs
-# ) -> OptimizationResult:
-#     """
-#     Optimize the objective function subject to the constraints.
-#     """
-#     raise NotImplementedError
 def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,    
@@ -684,9 +671,7 @@ def optimize(
     if postprocess:
         if verbose:
             print("Post-processing optimal policy...")
-        # TODO: check best way to set tspan for plotting
-        # tspan_plot = [float(x) for x in list(range(0, int(timepoints[-1])))]
-        # control_model = copy.deepcopy(model)
+        # TODO: change num_samples to a user-input
         RISK = computeRisk(
             model=control_model,
             interventions=static_parameter_interventions,
@@ -695,7 +680,7 @@ def optimize(
             logging_step_size=logging_step_size,
             start_time=start_time,
             risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-            num_samples=int(5e2),
+            num_samples=int(1e3),
             guide=inferred_parameters,
             solver_method=solver_method,
             solver_options=solver_options,
