@@ -578,15 +578,10 @@ def optimize(
                     and (num_samples,) for parameters.
     """
     control_model = CompiledDynamics.load(model_path_or_json)
-
-    # timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
-
-    # timepoints = [float(x) for x in list(timepoints)]
     bounds_np = np.atleast_2d(bounds_interventions)
     u_min = bounds_np[0, :]
     u_max = bounds_np[1, :]
     # Set up risk estimation
-    # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
         interventions=static_parameter_interventions,
@@ -612,7 +607,6 @@ def optimize(
         print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
     # Assign the required number of MC samples for each OUU iteration
-    # control_model = copy.deepcopy(model)
     RISK = computeRisk(
         model=control_model,
         interventions=static_parameter_interventions,
@@ -651,7 +645,6 @@ def optimize(
     ).solve()
 
     # Rounding up to given number of decimal places
-    # TODO: move to utilities
     def round_up(num, dec=roundup_decimal):
         return ceil(num * 10**dec) / (10**dec)
 

@@ -5,22 +5,16 @@ import pyro
 import torch
 from chirho.dynamical.handlers import (
     LogTrajectory,
-    StaticIntervention,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.dynamical.ops import State
 from chirho.interventional.ops import Intervention
-from chirho.observational.handlers import condition
-from pyro.contrib.autoname import scope
 
-# from pyciemss.PetriNetODE.events import LoggingEvent, StaticParameterInterventionEvent
 from pyciemss.ouu.risk_measures import alpha_superquantile
 from pyciemss.interruptions import (
     StaticParameterIntervention,
 )
 
-# from typing import List, Optional, Tuple, Union, Dict
-from typing import Any, Callable, Dict, List, Optional, Union, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 from tqdm import tqdm
 
 
@@ -56,7 +50,6 @@ class computeRisk:
         logging_step_size: float,
         *,
         start_time: float = 0.0,
-        # tspan: np.ndarray,
         risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples: int = 1000,
         guide=None,
@@ -72,8 +65,6 @@ class computeRisk:
         self.start_time = start_time
         self.end_time = end_time
         self.guide = guide
-        # logging_events = [LoggingEvent(timepoint) for timepoint in self.tspan]
-        # self.model.load_events(logging_events)
         self.solver_method = solver_method
         self.solver_options = solver_options
         print(start_time + logging_step_size, end_time, logging_step_size)
@@ -93,20 +84,7 @@ class computeRisk:
         """
         pyro.set_rng_seed(0)
         x = np.atleast_1d(x)
-        # # TODO: generalize for more sophisticated interventions.
-        # interventions = []
-        # count = 0
-        # for k in self.interventions:
-        #     interventions.append(StaticParameterInterventionEvent(k[0], k[1], x[count]))
-        #     count = count + 1
-        # # Apply intervention to model
-        # self.model.load_events(interventions)
-
-        # TODO: update interventions
-        # static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
-        #         StaticParameterIntervention(time, dict(**static_intervention_assignment))
-        #         for time, static_intervention_assignment in self.interventions.items()
-        #     ]
+        # Create intervention handlers
         static_parameter_intervention_handlers = []
         count = 0
         for time, param in self.interventions.items():
