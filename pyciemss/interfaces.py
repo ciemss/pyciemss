@@ -508,13 +508,11 @@ def optimize(
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
-    static_parameter_interventions: List[Tuple(float, str)],
+    static_parameter_interventions: Dict[torch.Tensor, str],
     objfun: Callable,
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
-    noise_model: str = "normal",
-    noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -604,11 +602,11 @@ def optimize(
     )
 
     # Run one sample to estimate model evaluation time
-    start_time = time.time()
+    start_t = time.time()
     init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
     RISK.qoi(init_prediction)
-    end_time = time.time()
-    forward_time = end_time - start_time
+    end_t = time.time()
+    forward_time = end_t - start_t
     time_per_eval = forward_time / 1.0
     if verbose:
         print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")

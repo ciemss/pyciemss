@@ -4,7 +4,6 @@ import contextlib
 import pyro
 import torch
 from chirho.dynamical.handlers import (
-    InterruptionEventLoop,
     LogTrajectory,
     StaticIntervention,
 )
@@ -77,9 +76,8 @@ class computeRisk:
         # self.model.load_events(logging_events)
         self.solver_method = solver_method
         self.solver_options = solver_options
-        self.timespan = torch.arange(
-            start_time + logging_step_size, end_time, logging_step_size
-        )
+        print(start_time + logging_step_size, end_time, logging_step_size)
+        self.timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     def __call__(self, x):
         # Apply intervention and perform forward uncertainty propagation
@@ -94,8 +92,8 @@ class computeRisk:
         Perform forward uncertainty propagation.
         """
         pyro.set_rng_seed(0)
+        x = np.atleast_1d(x)
         # # TODO: generalize for more sophisticated interventions.
-        # x = np.atleast_1d(x)
         # interventions = []
         # count = 0
         # for k in self.interventions:
@@ -111,44 +109,34 @@ class computeRisk:
         #     ]
         static_parameter_intervention_handlers = []
         count = 0
-        for k in self.interventions:
+        for time, param in self.interventions.items():
             static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
-                StaticParameterIntervention(k[0], dict(k[1], x[count]))
+                StaticParameterIntervention(time, dict([(param, torch.as_tensor(x[count]))]))
             ]
             count = count + 1
 
         def wrapped_model():
             with LogTrajectory(self.timespan) as lt:
-                with InterruptionEventLoop():
+                with TorchDiffEq(method=self.solver_method, options=self.solver_options):
                     with contextlib.ExitStack() as stack:
                         for handler in static_parameter_intervention_handlers:
                             stack.enter_context(handler)
-                        self.model(
-                            torch.as_tensor(self.start_time),
-                            torch.as_tensor(self.end_time),
-                            TorchDiffEq(
-                                method=self.solver_method, options=self.solver_options
-                            ),
-                        )
+                        self.model(torch.as_tensor(self.start_time), torch.as_tensor(self.end_time))
 
-            trajectory = self.model.add_observables(lt.trajectory)
+            trajectory = lt.trajectory
+            [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
 
-            # Adding deterministic nodes to the model so that we can access the trajectory in the Predictive object.
-            [pyro.deterministic(k, v) for k, v in trajectory.items()]
-
-            # if noise_model is not None:
-            #     compiled_noise_model = compile_noise_model(
-            #         noise_model, vars=set(trajectory.keys()), **noise_model_kwargs
-            #     )
-            #     # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            #     compiled_noise_model(trajectory)
-
+            # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
+            trajectory_observables = self.model.observables(trajectory)
+            [
+                pyro.deterministic(f"{k}_observable", v)
+                for k, v in trajectory_observables.items()
+            ]
+        
         # Sample from intervened model
         samples = pyro.infer.Predictive(
             wrapped_model, guide=self.guide, num_samples=self.num_samples
         )()
-        # # Remove intervention events
-        # self.model.remove_static_parameter_intervention_events()
         return samples
 
 
