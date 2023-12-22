@@ -499,7 +499,7 @@ def calibrate(
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return { "parameters": inferred_parameters, "loss": loss}
+    return { "inferred_parameters": inferred_parameters, "loss": loss}
 
 
 # # TODO
