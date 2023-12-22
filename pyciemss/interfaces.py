@@ -400,11 +400,13 @@ def calibrate(
             - By default, all parameters are learned probabilistically.
 
     Returns:
-        - inferred_parameters: pyro.nn.PyroModule
-            - A Pyro module that contains the inferred parameters of the model.
-            - This can be passed to `sample` to sample from the model conditional on the data.
-        - loss: float
-            - The final loss value of the approximate ELBO loss.
+        result: Dict[str, torch.Tensor]
+            - Dictionary with the following key-value pairs.
+                - inferred_parameters: pyro.nn.PyroModule
+                    - A Pyro module that contains the inferred parameters of the model.
+                    - This can be passed to `sample` to sample from the model conditional on the data.
+                - loss: float
+                    - The final loss value of the approximate ELBO loss.
     """
 
     pyro.clear_param_store()
@@ -497,7 +499,7 @@ def calibrate(
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return inferred_parameters, loss
+    return { "parameters": inferred_parameters, "loss": loss}
 
 
 # # TODO

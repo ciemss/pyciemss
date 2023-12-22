@@ -255,7 +255,8 @@ def test_calibrate_deterministic(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters= output["inferred_parameters"]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
