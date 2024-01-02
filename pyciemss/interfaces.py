@@ -299,6 +299,7 @@ def sample(
     return prepare_interchange_dictionary(samples)
 
 
+@pyciemss_logging_wrapper
 def calibrate(
     model_path_or_json: Union[str, Dict],
     data_path: str,
