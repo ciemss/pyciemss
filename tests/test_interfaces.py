@@ -351,7 +351,9 @@ def test_calibrate_interventions(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_progress_hook(model_fixture, start_time, end_time, logging_step_size):
+def test_calibrate_progress_hook(
+    model_fixture, start_time, end_time, logging_step_size
+):
     model_url = model_fixture.url
 
     (
