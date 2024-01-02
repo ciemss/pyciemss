@@ -295,7 +295,10 @@ def sample(
     parallel = False if len(intervention_handlers) > 0 else True
 
     samples = pyro.infer.Predictive(
-        wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=parallel
+        wrapped_model,
+        guide=inferred_parameters,
+        num_samples=num_samples,
+        parallel=parallel,
     )()
 
     return prepare_interchange_dictionary(samples)
