@@ -325,6 +325,7 @@ def calibrate(
     verbose: bool = False,
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
+    progress_hook: Callable = lambda i, loss: None,
 ) -> Tuple[pyro.nn.PyroModule, float]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -399,6 +400,11 @@ def calibrate(
         - deterministic_learnable_parameters: List[str]
             - A list of parameter names that should be learned deterministically.
             - By default, all parameters are learned probabilistically.
+        - progress_hook: Callable[[int, float], None]
+            - A function that takes in the current iteration and the current loss.
+            - This is called at the beginning of each iteration.
+            - By default, this is a no-op.
+            - This can be used to implement custom progress bars.
 
     Returns:
         - inferred_parameters: pyro.nn.PyroModule
@@ -493,6 +499,8 @@ def calibrate(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        # Call a progress hook at the beginning of each iteration. This is used to implement custom progress bars.
+        progress_hook(i, loss)
         loss = svi.step()
         if verbose:
             if i % 25 == 0:
