@@ -210,7 +210,9 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+            "inferred_parameters"
+        ]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -255,7 +257,8 @@ def test_calibrate_deterministic(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = output["inferred_parameters"]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -307,7 +310,7 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        _, loss = calibrate(*calibrate_args, **calibrate_kwargs)
+        loss = calibrate(*calibrate_args, **calibrate_kwargs)["loss"]
 
     # SETUP INTERVENTION
 
@@ -334,8 +337,11 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        intervened_parameters, intervened_loss = calibrate(
-            *calibrate_args, **calibrate_kwargs
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+
+        intervened_parameters, intervened_loss = (
+            output["inferred_parameters"],
+            output["loss"],
         )
 
     assert intervened_loss != loss
