@@ -210,7 +210,9 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+            "inferred_parameters"
+        ]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -255,7 +257,8 @@ def test_calibrate_deterministic(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = output["inferred_parameters"]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -307,7 +310,7 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        _, loss = calibrate(*calibrate_args, **calibrate_kwargs)
+        loss = calibrate(*calibrate_args, **calibrate_kwargs)["loss"]
 
     # SETUP INTERVENTION
 
@@ -334,8 +337,11 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        intervened_parameters, intervened_loss = calibrate(
-            *calibrate_args, **calibrate_kwargs
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+
+        intervened_parameters, intervened_loss = (
+            output["inferred_parameters"],
+            output["loss"],
         )
 
     assert intervened_loss != loss
@@ -345,6 +351,49 @@ def test_calibrate_interventions(
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+def test_calibrate_progress_hook(
+    model_fixture, start_time, end_time, logging_step_size
+):
+    model_url = model_fixture.url
+
+    (
+        _,
+        calibrate_end_time,
+        sample_args,
+        sample_kwargs,
+    ) = setup_calibrate(model_fixture, start_time, end_time, logging_step_size)
+
+    calibrate_args = [model_url, model_fixture.data_path]
+
+    class TestProgressHook:
+        def __init__(self):
+            self.iterations = []
+            self.losses = []
+
+        def __call__(self, iteration, loss):
+            # Log the loss and iteration number
+            self.iterations.append(iteration)
+            self.losses.append(loss)
+
+    progress_hook = TestProgressHook()
+
+    calibrate_kwargs = {
+        "data_mapping": model_fixture.data_mapping,
+        "start_time": start_time,
+        "progress_hook": progress_hook,
+        **CALIBRATE_KWARGS,
+    }
+
+    calibrate(*calibrate_args, **calibrate_kwargs)
+
+    assert len(progress_hook.iterations) == CALIBRATE_KWARGS["num_iterations"]
+    assert len(progress_hook.losses) == CALIBRATE_KWARGS["num_iterations"]
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)

@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import pyro
 import torch
@@ -138,7 +138,7 @@ def ensemble_sample(
         )
 
     samples = pyro.infer.Predictive(
-        wrapped_model, guide=inferred_parameters, num_samples=num_samples
+        wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=True
     )()
 
     return prepare_interchange_dictionary(samples)
@@ -292,13 +292,19 @@ def sample(
             # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
             compiled_noise_model(full_trajectory)
 
+    parallel = False if len(intervention_handlers) > 0 else True
+
     samples = pyro.infer.Predictive(
-        wrapped_model, guide=inferred_parameters, num_samples=num_samples
+        wrapped_model,
+        guide=inferred_parameters,
+        num_samples=num_samples,
+        parallel=parallel,
     )()
 
     return prepare_interchange_dictionary(samples)
 
 
+@pyciemss_logging_wrapper
 def calibrate(
     model_path_or_json: Union[str, Dict],
     data_path: str,
@@ -324,7 +330,8 @@ def calibrate(
     verbose: bool = False,
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
-) -> Tuple[pyro.nn.PyroModule, float]:
+    progress_hook: Callable = lambda i, loss: None,
+) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
     This uses variational inference with a mean-field variational family to infer the parameters of the model.
@@ -398,13 +405,20 @@ def calibrate(
         - deterministic_learnable_parameters: List[str]
             - A list of parameter names that should be learned deterministically.
             - By default, all parameters are learned probabilistically.
+        - progress_hook: Callable[[int, float], None]
+            - A function that takes in the current iteration and the current loss.
+            - This is called at the beginning of each iteration.
+            - By default, this is a no-op.
+            - This can be used to implement custom progress bars.
 
     Returns:
-        - inferred_parameters: pyro.nn.PyroModule
-            - A Pyro module that contains the inferred parameters of the model.
-            - This can be passed to `sample` to sample from the model conditional on the data.
-        - loss: float
-            - The final loss value of the approximate ELBO loss.
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - inferred_parameters: pyro.nn.PyroModule
+                    - A Pyro module that contains the inferred parameters of the model.
+                    - This can be passed to `sample` to sample from the model conditional on the data.
+                - loss: float
+                    - The final loss value of the approximate ELBO loss.
     """
 
     pyro.clear_param_store()
@@ -492,12 +506,14 @@ def calibrate(
     pyro.clear_param_store()
 
     for i in range(num_iterations):
+        # Call a progress hook at the beginning of each iteration. This is used to implement custom progress bars.
+        progress_hook(i, loss)
         loss = svi.step()
         if verbose:
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return inferred_parameters, loss
+    return {"inferred_parameters": inferred_parameters, "loss": loss}
 
 
 # # TODO
