@@ -100,6 +100,9 @@ def ensemble_sample(
     )
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    
+    # Check that num_samples is a positive integer
+    assert isinstance(num_samples, int) and num_samples > 0, "num_samples must be a positive integer."
 
     def wrapped_model():
         # We need to interleave the LogTrajectory and the solutions from the models.
@@ -238,6 +241,9 @@ def sample(
     model = CompiledDynamics.load(model_path_or_json)
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    
+    # Check that num_samples is a positive integer
+    assert isinstance(num_samples, int) and num_samples > 0, "num_samples must be a positive integer."
 
     static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
