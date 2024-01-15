@@ -10,6 +10,7 @@ MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integrat
 DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
 DATA_PATH2 = "https://raw.githubusercontent.com/ciemss/pyciemss/sa-load-data-tests/docs/source/sa-testing-notebooks/"
 
+
 class ModelFixture:
     def __init__(
         self,
@@ -36,14 +37,14 @@ PETRI_MODELS = [
         False,
     ),
     ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), 
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"),
         "kappa",
         os.path.join(DATA_PATH2, "SIR_data_case_hosp.csv"),
         {"case": "infected", "hosp": "hospitalized"},
         True,
     ),
     ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), 
+        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"),
         "beta",
         os.path.join(DATA_PATH2, "SIR_data_case_hosp.csv"),
         {"case": "infected", "hosp": "hospitalized"},

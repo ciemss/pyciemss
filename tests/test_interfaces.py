@@ -28,7 +28,10 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
 
 
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
-    if model_fixture.data_path is None or model_fixture.data_mapped_to_observable==True:
+    if (
+        model_fixture.data_path is None
+        or model_fixture.data_mapped_to_observable == True
+    ):
         pytest.skip("TODO: create temporary file")
 
     data_timepoints = load_data(model_fixture.data_path)[0]
@@ -414,6 +417,7 @@ def test_output_format(
 
     assert processed_result["timepoint_id"].dtype == np.int64
     assert processed_result["sample_id"].dtype == np.int64
+
 
 # Failing test for calibration when data is mapped to observables
 @pytest.skip("Skip this test if not specifically requested")
