@@ -25,18 +25,24 @@ def load_data(
         # This function checks a dataset formatting errors, and returns a dataframe
         data_df = pd.read_csv(path)
         print(data_df.head())
-        
+
         # Check that the first column name is "Timestamp"
-        assert data_df.columns[0] == "Timestamp", "The column of timepoints must be first, and named 'Timestamp'."
-        
+        assert (
+            data_df.columns[0] == "Timestamp"
+        ), "The column of timepoints must be first, and named 'Timestamp'."
+
         # Check that there are no NaN values or empty entries
-        assert not data_df.isna().any().any(), "Dataset cannot contain NaN or empty entries"
-        
+        assert (
+            not data_df.isna().any().any()
+        ), "Dataset cannot contain NaN or empty entries"
+
         # Check that there is no missing data in the form of None type or char values
-        assert data_df.applymap(lambda x: isinstance(x, (int, float))).all().all(), "Dataset cannot contain None type or char values. All entries must be of type `int` or `float`." 
-        
+        assert (
+            data_df.applymap(lambda x: isinstance(x, (int, float))).all().all()
+        ), "Dataset cannot contain None type or char values. All entries must be of type `int` or `float`."
+
         return data_df
-    
+
     df = check_data(path)
 
     data_timepoints = torch.tensor(df["Timestamp"].values, dtype=torch.float32)
