@@ -426,6 +426,9 @@ def calibrate(
     model = CompiledDynamics.load(model_path_or_json)
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
+    
+    # Check that num_iterations is a positive integer
+    assert isinstance(num_iterations, int) and num_iterations > 0, "num_iterations must be a positive integer."
 
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
