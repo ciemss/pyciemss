@@ -420,12 +420,12 @@ def test_output_format(
 
 
 # Failing test for calibration when data is mapped to observables
-@pytest.skip("Skip this test if not specifically requested")
+@pytest.mark.skip("Failing test for calibration when data is mapped to observables")
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_with_observalbes(
+def test_calibrate_with_observables(
     model_fixture, start_time, end_time, logging_step_size
 ):
     model_url = model_fixture.url
