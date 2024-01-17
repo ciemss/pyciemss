@@ -24,6 +24,7 @@ class ModelFixture:
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
+        self.data_mapped_to_observable = data_mapped_to_observable
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
