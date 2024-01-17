@@ -1,0 +1,191 @@
+{
+ "id": "advection-petrinet-backward-10013",
+ "header": {
+  "name": "Advection Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.1/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Advection as Petrinet model created by Dan Bryce and Drisana Mosiphir",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+            {
+                "id": "a_0",
+                "name": "a_0",
+                "description": "a at [-1.5]",
+                "grounding": {},
+                "units": null
+            },
+            {
+                "id": "a_1",
+                "name": "a_1",
+                "description": "a at [0.0]",
+                "grounding": {},
+                "units": {}
+            },
+            {
+                "id": "a_2",
+                "name": "a_2",
+                "description": "a at [1.5]",
+                "grounding": {},
+                "units": {}
+            }
+  ],
+  "transitions": [
+            {
+                "id": "r_a_0_0_boundary",
+                "input": [
+                    "a_0"
+                ],
+                "output": [],
+                "grounding": {},
+                "properties": {
+                    "name": "r_a_0_0_boundary",
+                    "description": {},
+                    "grounding": {}
+                }
+            },
+            {
+                "id": "r_a_0_1_0",
+                "input": [
+                    "a_1"
+                ],
+                "output": [
+                    "a_0"
+                ],
+                "grounding": {},
+                "properties": {
+                    "name": "r_a_0_1_0",
+                    "description": {},
+                    "grounding": {}
+                }
+            },
+            {
+                "id": "r_a_0_2_1",
+                "input": [
+                    "a_2"
+                ],
+                "output": [
+                    "a_1"
+                ],
+                "grounding": {},
+                "properties": {
+                    "name": "r_a_0_2_1",
+                    "description": {},
+                    "grounding": {}
+                }
+            },
+            {
+                "id": "r_a_0_boundary_2",
+                "input": [],
+                "output": [
+                    "a_2"
+                ],
+                "grounding": {},
+                "properties": {
+                    "name": "r_a_0_boundary_2",
+                    "description": {},
+                    "grounding": {}
+                }
+            }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+                {
+                    "target": "r_a_0_0_boundary",
+                    "expression": "(0.01*t)",
+                    "expression_mathml": null
+                },
+                {
+                    "target": "r_a_0_1_0",
+                    "expression": "(-u/dx)*(a_0)",
+                    "expression_mathml": null
+                },
+                {
+                    "target": "r_a_0_2_1",
+                    "expression": "(-u/dx)*(a_1)",
+                    "expression_mathml": null
+                },
+                {
+                    "target": "r_a_0_boundary_2",
+                    "expression": "(-u/dx)*(a_2)",
+                    "expression_mathml": null
+                }
+   ],
+   "initials": [
+                {
+                    "target": "a_0",
+                    "expression": "0.4",
+                    "expression_mathml": null
+                },
+                {
+                    "target": "a_1",
+                    "expression": "1.0",
+                    "expression_mathml": null
+                },
+                {
+                    "target": "a_2",
+                    "expression": "0.4",
+                    "expression_mathml": null
+                }
+   ],
+   "parameters": [
+                {
+                    "id": "u",
+                    "name": null,
+                    "description": null,
+                    "value": 1.0,
+                    "grounding": null,
+                    "distribution": {
+                        "type": "StandardUniform1",
+                        "parameters": {
+                            "minimum": 0.0,
+                            "maximum": 1.0
+                        }
+                    },
+                    "units": null
+                },
+                {
+                    "id": "dx",
+                    "name": null,
+                    "description": null,
+                    "value": 1.0,
+                    "grounding": null,
+                    "distribution": {
+                        "type": "StandardUniform1",
+                        "parameters": {
+                            "minimum": 0,
+                            "maximum": 1
+                        }
+                    },
+                    "units": null
+                }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": {},
+   "authors": [],
+   "references": [],
+   "time_scale": {},
+   "time_start": {},
+   "time_end": {},
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
