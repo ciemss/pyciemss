@@ -1,3 +1,5 @@
+import unittest
+
 import numpy as np
 import pandas as pd
 import pyro
@@ -420,3 +422,63 @@ def test_output_format(
 
     assert processed_result["timepoint_id"].dtype == np.int64
     assert processed_result["sample_id"].dtype == np.int64
+
+
+# Unit test to assert that incorrect input to calibrate is caught
+@pytest.mark.parametrize("model_fixture", MODELS)
+class TestCalibrateErrorMessages(UnitTest.TestCase):
+    def test_positive_int(self):
+        # Assert that providing a positive int does not raise an error
+        try:
+            calibrate(
+                model_fixture.url,
+                model_fixture.data_path,
+                data_mapping=model_fixture.data_mapping,
+                num_iterations=3,
+            )
+        except ValueError:
+            self.fail("Providing a positive integer erroneously raised a ValueError")
+
+    def test_float(self):
+        # Assert that providing a float raises a ValueError
+        with self.assertRaises(ValueError):
+            calibrate(
+                model_fixture.url,
+                model_fixture.data_path,
+                data_mapping=model_fixture.data_mapping,
+                num_iterations=3.5,
+            )
+
+    def test_negative_int(self):
+        # Assert that providing a negative integer raises a ValueError
+        with self.assertRaises(ValueError):
+            calibrate(
+                model_fixture.url,
+                model_fixture.data_path,
+                data_mapping=model_fixture.data_mapping,
+                num_iterations=-3,
+            )
+
+    def test_zero(self):
+        # Assert that providing 0 raises a ValueError
+        with self.assertRaises(ValueError):
+            calibrate(
+                model_fixture.url,
+                model_fixture.data_path,
+                data_mapping=model_fixture.data_mapping,
+                num_iterations=0,
+            )
+
+    def test_tensor_int(self):
+        # Assert that providing a tensor with an int raises a ValueError
+        with self.assertRaises(ValueError):
+            calibrate(
+                model_fixture.url,
+                model_fixture.data_path,
+                data_mapping=model_fixture.data_mapping,
+                num_iterations=torch.tensor(5),
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()
