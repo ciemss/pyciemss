@@ -435,6 +435,10 @@ def calibrate(
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
