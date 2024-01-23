@@ -425,7 +425,7 @@ def test_output_format(
 # Tests to assert that incorrect input to calibrate is caught
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_positive_int_calibrate(model_fixture):
-    # Assert that providing a positive int does NOT raise an error
+    # Assert that providing a positive integer does NOT raise an error
     if model_fixture.data_path is None or model_fixture.data_mapping is None:
         pytest.skip("Skip models with no data attached")
     calibrate(
@@ -466,7 +466,7 @@ def test_negative_int_calibrate(model_fixture):
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_zero_calibrate(model_fixture):
-    # Assert that providing 0 raises a ValueError
+    # Assert that providing zero raises a ValueError
     if model_fixture.data_path is None or model_fixture.data_mapping is None:
         pytest.skip("Skip models with no data attached")
     with pytest.raises(ValueError):
@@ -480,7 +480,7 @@ def test_zero_calibrate(model_fixture):
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_tensor_int_calibrate(model_fixture):
-    # Assert that providing a tensor with an int raises a ValueError
+    # Assert that providing a tensor with an integer raises a ValueError
     if model_fixture.data_path is None or model_fixture.data_mapping is None:
         pytest.skip("Skip models with no data attached")
     with pytest.raises(ValueError):
@@ -492,150 +492,75 @@ def test_tensor_int_calibrate(model_fixture):
         )
 
 
-# Tests to assert that incorrect input to sample is caught
-@pytest.mark.parametrize("model_fixture", MODELS)
+# Tests to assert that incorrect input to sample methods is caught
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_positive_int_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a positive int does NOT raise an error
-    sample(
-        model_fixture.url,
+def test_positive_int_sample(sample_method, model_url, end_time, logging_step_size):
+    # Assert that providing a positive integer does NOT raise an error
+    sample_method(
+        model_url,
         end_time,
         logging_step_size,
         num_samples=10,
     )
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_float_sample(model_fixture, end_time, logging_step_size):
+def test_float_sample(sample_method, model_url, end_time, logging_step_size):
     # Assert that providing a float raises a ValueError
     with pytest.raises(ValueError):
-        sample(
-            model_fixture.url,
+        sample_method(
+            model_url,
             end_time,
             logging_step_size,
             num_samples=10.5,
         )
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_negative_int_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
+def test_negative_int_sample(sample_method, model_url, end_time, logging_step_size):
+    # Assert that providing a negative integer raises a ValueError
     with pytest.raises(ValueError):
-        sample(
-            model_fixture.url,
+        sample_method(
+            model_url,
             end_time,
             logging_step_size,
             num_samples=-10,
         )
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_zero_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
+def test_zero_sample(sample_method, model_url, end_time, logging_step_size):
+    # Assert that providing zero raises a ValueError
     with pytest.raises(ValueError):
-        sample(
-            model_fixture.url,
+        sample_method(
+            model_url,
             end_time,
             logging_step_size,
             num_samples=0,
         )
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_tensor_int_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
+def test_tensor_int_sample(sample_method, model_url, end_time, logging_step_size):
+    # Assert that providing a tensor with an integer raises a ValueError
     with pytest.raises(ValueError):
-        sample(
-            model_fixture.url,
-            end_time,
-            logging_step_size,
-            num_samples=torch.tensor(10),
-        )
-
-
-# Tests to assert that incorrect input to ensemble_sample is caught
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_positive_int_ensemble_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a positive int does NOT raise an error
-    solution_mapping = [{"I": "I"}]
-    ensemble_sample(
-        [model_fixture.url],
-        solution_mapping,
-        end_time,
-        logging_step_size,
-        num_samples=10,
-    )
-
-
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_float_ensemble_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
-    solution_mapping = [{"I": "I"}]
-    with pytest.raises(ValueError):
-        ensemble_sample(
-            [model_fixture.url],
-            solution_mapping,
-            end_time,
-            logging_step_size,
-            num_samples=10.5,
-        )
-
-
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_negative_int_ensemble_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
-    solution_mapping = [{"I": "I"}]
-    with pytest.raises(ValueError):
-        ensemble_sample(
-            [model_fixture.url],
-            solution_mapping,
-            end_time,
-            logging_step_size,
-            num_samples=-10,
-        )
-
-
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_zero_ensemble_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
-    solution_mapping = [{"I": "I"}]
-    with pytest.raises(ValueError):
-        ensemble_sample(
-            [model_fixture.url],
-            solution_mapping,
-            end_time,
-            logging_step_size,
-            num_samples=0,
-        )
-
-
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_tensor_int_ensemble_sample(model_fixture, end_time, logging_step_size):
-    # Assert that providing a float raises a ValueError
-    solution_mapping = [{"I": "I"}]
-    with pytest.raises(ValueError):
-        ensemble_sample(
-            [model_fixture.url],
-            solution_mapping,
+        sample_method(
+            model_url,
             end_time,
             logging_step_size,
             num_samples=torch.tensor(10),
