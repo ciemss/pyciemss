@@ -13,6 +13,7 @@ from .fixtures import (
     LOGGING_STEP_SIZES,
     MODEL_URLS,
     MODELS,
+    NON_POS_INTS,
     NUM_SAMPLES,
     START_TIMES,
     check_result_sizes,
@@ -420,3 +421,36 @@ def test_output_format(
 
     assert processed_result["timepoint_id"].dtype == np.int64
     assert processed_result["sample_id"].dtype == np.int64
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
+def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
+    # Assert that a ValueError is raised when num_iterations is not a positive integer
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            num_iterations=bad_num_iterations,
+        )
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("bad_num_samples", NON_POS_INTS)
+def test_non_pos_int_sample(
+    sample_method, model_url, end_time, logging_step_size, bad_num_samples
+):
+    # Assert that a ValueError is raised when num_samples is not a positive integer
+    with pytest.raises(ValueError):
+        sample_method(
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples=bad_num_samples,
+        )
