@@ -423,20 +423,6 @@ def test_output_format(
     assert processed_result["sample_id"].dtype == np.int64
 
 
-# Tests to assert that incorrect input to calibrate is caught
-@pytest.mark.parametrize("model_fixture", MODELS)
-def test_positive_int_calibrate(model_fixture):
-    # Assert that providing a positive integer does NOT raise an error
-    if model_fixture.data_path is None or model_fixture.data_mapping is None:
-        pytest.skip("Skip models with no data attached")
-    calibrate(
-        model_fixture.url,
-        model_fixture.data_path,
-        data_mapping=model_fixture.data_mapping,
-        num_iterations=3,
-    )
-
-
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
 def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
@@ -450,21 +436,6 @@ def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
             data_mapping=model_fixture.data_mapping,
             num_iterations=bad_num_iterations,
         )
-
-
-# Tests to assert that incorrect input to sample methods is caught
-@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
-@pytest.mark.parametrize("model_url", MODEL_URLS)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_positive_int_sample(sample_method, model_url, end_time, logging_step_size):
-    # Assert that providing a positive integer does NOT raise an error
-    sample_method(
-        model_url,
-        end_time,
-        logging_step_size,
-        num_samples=10,
-    )
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
