@@ -1,3 +1,4 @@
+from typing import Dict, Union, Any, Optional, Literal, List
 from pyciemss.visuals import plots, vega
 from pathlib import Path
 import pytest

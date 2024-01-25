@@ -83,7 +83,7 @@ def JS(max_acceptable: float, *, verbose: bool = False) -> Callable[[Any, Any], 
     max_acceptable -- Threshold for the returned check
     returns -- Returns a function that checks if JS distance of two lists of bin-counts is less than max_acceptable.
                Returned function takes two lists of bins-counts and returns a boolean result.  The signature
-               is roughly (list[Number], list[Number]) -> bool.
+               is roughly (List[Number], List[Number]) -> bool.
     """
 
     def _inner(a, b):

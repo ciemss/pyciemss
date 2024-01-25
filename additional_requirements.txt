@@ -4,5 +4,6 @@ xarray
 matplotlib
 statsmodels
 netCDF4 
+dask
 #remove Optional[Dict[str, Number]] = None Type not subscriptable
 #: List[dict]

@@ -1,4 +1,4 @@
-from typing import Dict, Union, Any, Optional, Literal
+from typing import Dict, Union, Any, Optional, Literal, List
 
 from numbers import Integral, Number
 import pandas as pd
@@ -125,7 +125,7 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, all] = all,
     drop: Union[str, list, None] = None,
-    markers: Optional[dict[str, Number]] = None,
+    markers: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[dict] = None,
     qlow: float = 0.05,
@@ -145,7 +145,7 @@ def trajectories(
            These will be plotted as spans based on the qlow/qhigh parameters
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
-        markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
+        markers (None, List[Number]): Timepoint markers. Key is the label, value is the timepoint
         keep (str, list, all): Only keep some of the 'distributions' based on keys/values.
            - Default is the 'all' function, and it keeps all columns
            - If a string is present, it is treated as a regex and matched against the columns. Matches are kept.
@@ -313,13 +313,13 @@ def _nice_df(df):
 
 
 def _clean_nans(
-    entries: list[dict], *, parent: bool = True, replace: Optional[Any] = None
-) -> list[dict]:
+    entries: List[dict], *, parent: bool = True, replace: Optional[Any] = None
+) -> List[dict]:
     """Internal Utlitiy. Clean list of entries for json serailizazation.
     ONLY LOOKS ONE LEVEL DOWN.
 
     Args:
-        entries (list[dict]): Entries to clean (list of json dictionaries)
+        entries (List[dict]): Entries to clean (list of json dictionaries)
         parent (bool, optional): Replace parent (default) or key value?
         replace (Any, optional): Replace with this value.  If None, deletes.
     Returns:

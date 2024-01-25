@@ -1,3 +1,4 @@
+from typing import Dict, Union, Any, Optional, Literal, List
 import pytest
 import pandas as pd
 import xarray as xr
@@ -12,6 +13,7 @@ from itertools import chain
 
 from pyciemss.visuals import plots, vega
 from utils import convert_to_output_format, get_tspan
+
 
 _data_root = Path(__file__).parent / "data"
 

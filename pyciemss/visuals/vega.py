@@ -124,12 +124,12 @@ def pad(schema: VegaSchema, qty: Optional[Number] = None) -> VegaSchema:
     return schema
 
 
-def find_named(ls: list[dict], name: str, *, key="name"):
+def find_named(ls: List[dict], name: str, *, key="name"):
     """Find the thing in the list with dict key 'name' equal to the passed string"""
     return find_keyed(ls, key, name)
 
 
-def find_keyed(ls: list[dict], key: str, value: Any):
+def find_keyed(ls: List[dict], key: str, value: Any):
     """In the list of dicts, finds a think where key=value"""
     for e in ls:
         try:
