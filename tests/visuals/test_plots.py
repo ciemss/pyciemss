@@ -291,43 +291,42 @@ class TestHistograms:
         assert len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
         assert len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
 
-    # TODO: Convert to a parameterized test
-    def test_histogram_refs(self, load_data):
-        for num_refs in range(1, 20):
-            xrefs = [*range(num_refs)]
-            yrefs = [*range(num_refs)]
-            hist, bins = plots.histogram_multi(
-                s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
-            )
+    @pytest.mark.parametrize("num_refs", range(1, 20))
+    def test_histogram_refs(self, num_refs, load_data):
+        xrefs = [*range(num_refs)]
+        yrefs = [*range(num_refs)]
+        hist, bins = plots.histogram_multi(
+            s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
+        )
 
-            assert num_refs == len(
-                by_key_value(hist["data"], "name", "xref")["values"]
-            ), "Nonzero xrefs not as expected"
-            assert num_refs == len(
-                by_key_value(hist["data"], "name", "yref")["values"]
-            ), "Nonzero yrefs not as expected"
+        assert num_refs == len(
+            by_key_value(hist["data"], "name", "xref")["values"]
+        ), "Nonzero xrefs not as expected"
+        assert num_refs == len(
+            by_key_value(hist["data"], "name", "yref")["values"]
+        ), "Nonzero yrefs not as expected"
 
-            hist, bins = plots.histogram_multi(
-                s30=self.s30, xrefs=xrefs, yrefs=[], return_bins=True
-            )
+        hist, bins = plots.histogram_multi(
+            s30=self.s30, xrefs=xrefs, yrefs=[], return_bins=True
+        )
 
-            assert num_refs == len(
-                by_key_value(hist["data"], "name", "xref")["values"]
-            ), "Nonzero xrefs not as expected when there are zero yrefs"
-            assert (
-                len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
-            ), "Zero yrefs not as expected when there are nonzero xrefs"
+        assert num_refs == len(
+            by_key_value(hist["data"], "name", "xref")["values"]
+        ), "Nonzero xrefs not as expected when there are zero yrefs"
+        assert (
+            len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
+        ), "Zero yrefs not as expected when there are nonzero xrefs"
 
-            hist, bins = plots.histogram_multi(
-                s30=self.s30, xrefs=[], yrefs=yrefs, return_bins=True
-            )
+        hist, bins = plots.histogram_multi(
+            s30=self.s30, xrefs=[], yrefs=yrefs, return_bins=True
+        )
 
-            assert (
-                len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
-            ), "Zero xrefs not as expected when there are nonzero yrefs"
-            assert num_refs == len(
-                by_key_value(hist["data"], "name", "yref")["values"]
-            ), "Nonzero yrefs not as expected when there are zero xrefs"
+        assert (
+            len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
+        ), "Zero xrefs not as expected when there are nonzero yrefs"
+        assert num_refs == len(
+            by_key_value(hist["data"], "name", "yref")["values"]
+        ), "Nonzero yrefs not as expected when there are zero xrefs"
 
     def test_histogram_multi(self, load_data):
         hist = plots.histogram_multi(s30=self.s30, r30=self.r30, i30=self.i30)
