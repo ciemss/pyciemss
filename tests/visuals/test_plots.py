@@ -11,7 +11,9 @@ from pathlib import Path
 from itertools import chain
 
 from pyciemss.visuals import plots, vega
-from utils import convert_to_output_format, get_tspan
+from pyciemss.integration_utils.result_processing import (
+    convert_to_output_format,
+)
 
 _data_root = Path(__file__).parent / "data"
 
@@ -34,12 +36,12 @@ def by_key_value(targets, key, value):
 class TestTrajectory:
     @pytest.fixture
     def trajectory(self):
-        self.tspan = get_tspan(1, 50, 500).detach().numpy()
+        tspan = np.linspace(1, 50, 500)
         self.nice_labels = {"Rabbits_sol": "Rabbits", "Wolves_sol": "Wolves"}
 
         self.dists = convert_to_output_format(
             tensor_load(_data_root / "prior_samples.json"),
-            self.tspan,
+            tspan,
             time_unit="notional",
         )
 
@@ -54,7 +56,7 @@ class TestTrajectory:
 
         self.observed_trajectory = convert_to_output_format(
             tensor_load(_data_root / "observed_trajectory.json"),
-            self.tspan,
+            tspan,
             time_unit="years",
         )
 

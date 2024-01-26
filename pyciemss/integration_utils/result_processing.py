@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Iterable
 
 import numpy as np
 import pandas as pd
@@ -15,7 +15,11 @@ def prepare_interchange_dictionary(
     return result
 
 
-def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
+def convert_to_output_format(
+    samples: Dict[str, torch.Tensor],
+    time_unit: Optional[str] = "(unknown)",
+    timepoints: Optional[Iterable[float]] = None,
+) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """
@@ -39,7 +43,9 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
 
-    num_samples, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
+    num_samples, num_timepoints = next(
+        iter(pyciemss_results["states"].values())
+    ).shape
     output = {
         "timepoint_id": np.tile(np.array(range(num_timepoints)), num_samples),
         "sample_id": np.repeat(np.array(range(num_samples)), num_timepoints),
@@ -64,4 +70,8 @@ def convert_to_output_format(samples: Dict[str, torch.Tensor]) -> pd.DataFrame:
     }
 
     result = pd.DataFrame(output)
+    if time_unit is not None:
+        all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
+        result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
+
     return result

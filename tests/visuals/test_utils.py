@@ -5,8 +5,9 @@ import torch
 import numpy as np
 import json
 
-from utils import convert_to_output_format, get_tspan
-
+from pyciemss.integration_utils.result_processing import (
+    convert_to_output_format,
+)
 
 _data_root = Path(__file__).parent / "data"
 
@@ -22,10 +23,10 @@ def tensor_load(path):
 
 @pytest.fixture
 def prior_dists():
-    tspan = get_tspan(1, 50, 500).detach().numpy()
+    tspan = np.linspace(1, 50, 500)
     return convert_to_output_format(
         tensor_load(_data_root / "prior_samples.json"),
-        tspan,
+        timepoints=tspan,
         time_unit="notional",
     )
 
