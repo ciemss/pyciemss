@@ -4,6 +4,7 @@ import pytest
 import numpy as np
 import xarray as xr
 
+
 _data_file = Path(__file__).parent / "data" / "ciemss_datacube.nc"
 
 

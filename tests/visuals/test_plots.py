@@ -11,10 +11,44 @@ from pathlib import Path
 from itertools import chain
 
 from pyciemss.visuals import plots, vega
+from test_schemas import png_matches, svg_matches, save_png_svg
 from utils import convert_to_output_format, get_tspan
+import os
 
 _data_root = Path(__file__).parent / "data"
 
+
+_modified_schema_root = (
+    Path(__file__).parent.parent.parent /  "tests" / "visuals" / "modified_schemas"
+)
+
+_reference_root = Path(__file__).parent / "reference_images"
+
+
+# True if want to save reference files for modified schemas
+create_reference_images = False
+
+def save_schema(schema, name):
+    """Save the modified schema to test again reference files"""
+    Path("_modified_schema_root").mkdir(parents=True, exist_ok=True)
+    plots.save_schema(schema, os.path.join(_modified_schema_root, f"{name}.vg.json"))
+
+def check_modified_images(schema, name, ref_ext):
+    image = plots.ipy_display(schema, format=ref_ext, dpi=216)
+    # create reference files if schema is new
+    if create_reference_images:
+        save_png_svg(image, name, ref_ext)
+
+    reference_file = _reference_root / f"{name}.{ref_ext}"
+    if ref_ext == "png":
+        assert png_matches(schema, reference_file), f"PNG failed for {name}"
+    if ref_ext == "svg":
+        assert svg_matches(image, reference_file), f"SVG failed for {name}"
+
+def check_modified_schema_png(schema, name):
+        save_schema(schema, name)
+        check_modified_images(schema,  name, "svg")
+        check_modified_images(schema,  name, "png")
 
 def tensor_load(path):
     with open(path) as f:
@@ -80,10 +114,15 @@ class TestTrajectory:
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_base")
+
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
     def test_rename(self, trajectory):
         schema = plots.trajectories(self.dists, relabel=self.nice_labels)
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_rename")
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -96,6 +135,8 @@ class TestTrajectory:
 
     def test_keep(self, trajectory):
         schema = plots.trajectories(self.dists, keep=".*_sol")
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_keep_sol")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -107,6 +148,9 @@ class TestTrajectory:
         schema = plots.trajectories(
             self.dists, keep=["Rabbits_sol", "Wolves_sol"]
         )
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_keep_named")
+
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -119,6 +163,9 @@ class TestTrajectory:
             relabel=self.nice_labels,
             keep=["Rabbits_sol", "Wolves_sol"],
         )
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_keep_nice_labels")
+
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -137,6 +184,9 @@ class TestTrajectory:
         ), "Exepected trajectory not found in pre-test"
 
         schema = plots.trajectories(self.dists, keep=".*_.*", drop=".*_param")
+
+        # save schemas so can check if created svg and png files match
+        check_modified_schema_png(schema, "test_keep_drop")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -160,6 +210,8 @@ class TestTrajectory:
         ), "Exepected trajectory not found in pre-test"
 
         schema = plots.trajectories(self.dists, drop=should_drop)
+        check_modified_schema_png(schema, "test_should_drop")
+
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -182,6 +234,7 @@ class TestTrajectory:
             assert False, "Error dropping non-existent trajectory"
 
         schema = plots.trajectories(self.dists, drop="gam.*")
+        check_modified_schema_png(schema, "test_drop_gam")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -202,6 +255,7 @@ class TestTrajectory:
             relabel=self.nice_labels,
             points=self.observed_points,
         )
+        check_modified_schema_png(schema, "test_traj_points")
 
         points = pd.DataFrame(
             vega.find_named(schema["data"], "points")["values"]
@@ -221,11 +275,11 @@ class TestTrajectory:
             relabel=self.nice_labels,
             traces=self.traces,
         )
+        check_modified_schema_png(schema, "test_traj_traces")
 
         traces = pd.DataFrame(
             vega.find_named(schema["data"], "traces")["values"]
         )
-        plots.save_schema(schema, "_schema.json")
 
         assert sorted(self.traces.columns.unique()) == sorted(
             traces["trajectory"].unique()
@@ -344,10 +398,13 @@ class TestHistograms:
 
 class TestHeatmapScatter:
     def test_implicit_heatmap(self):
+        random.seed(2)
         df = pd.DataFrame(
             3 * np.random.random((100, 2)), columns=["test4", "test5"]
         )
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
+        # # not matching, checking later
+        #check_modified_schema_png(schema, "test_heatmap")
 
         points = vega.find_named(schema["data"], "points")["values"]
         assert all(
@@ -356,6 +413,7 @@ class TestHeatmapScatter:
 
     def test_explicit_heatmap(self):
         def create_fake_data():
+            random.seed(2)
             nx, ny = (10, 10)
             x = np.linspace(0, 10, nx)
             y, a = np.linspace(0, 10, ny, retstep=True)
@@ -372,6 +430,8 @@ class TestHeatmapScatter:
 
         mesh_data, scatter_data = create_fake_data()
         schema = plots.heatmap_scatter(scatter_data, mesh_data)
+        # # not matching, checking later
+        # check_modified_schema_png(schema, "test_heatmap_explicit")
 
         points = vega.find_named(schema["data"], "points")["values"]
         assert all(
@@ -389,6 +449,7 @@ class TestGraph:
     @staticmethod
     @pytest.fixture
     def test_graph():
+        random.seed(1)
         def rand_attributions():
             possible = "ABCD"
             return random.sample(possible, random.randint(1, len(possible)))
@@ -440,6 +501,7 @@ class TestGraph:
 
     def test_springgraph(self, test_graph):
         schema = plots.spring_force_graph(test_graph, node_labels="label")
+        check_modified_schema_png(schema, "tests_springgraph")
         nodes = vega.find_named(schema["data"], "node-data")["values"]
         edges = vega.find_named(schema["data"], "link-data")["values"]
         assert len(test_graph.nodes) == len(nodes), "Nodes issue in conversion"
@@ -450,6 +512,8 @@ class TestGraph:
         schema = plots.spring_force_graph(
             test_graph, node_labels="label", layout=pos
         )
+        # random layout so can't check sv
+        #check_modified_schema_png(schema, "tests_springgraph_layout")
 
         nodes = vega.find_named(schema["data"], "node-data")["values"]
         edges = vega.find_named(schema["data"], "link-data")["values"]
