@@ -26,7 +26,7 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 
 # True if want to save reference files for modified schemas
-create_reference_images = False
+create_reference_images = True
 
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
@@ -403,8 +403,7 @@ class TestHeatmapScatter:
             3 * np.random.random((100, 2)), columns=["test4", "test5"]
         )
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
-        # # not matching, checking later
-        #check_modified_schema_png(schema, "test_heatmap")
+        check_modified_schema_png(schema, "test_heatmap")
 
         points = vega.find_named(schema["data"], "points")["values"]
         assert all(
@@ -430,8 +429,7 @@ class TestHeatmapScatter:
 
         mesh_data, scatter_data = create_fake_data()
         schema = plots.heatmap_scatter(scatter_data, mesh_data)
-        # # not matching, checking later
-        # check_modified_schema_png(schema, "test_heatmap_explicit")
+        check_modified_schema_png(schema, "test_heatmap_explicit")
 
         points = vega.find_named(schema["data"], "points")["values"]
         assert all(
