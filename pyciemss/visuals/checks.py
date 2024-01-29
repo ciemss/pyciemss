@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Callable
+from typing import List, Dict, Any, Callable, Optional
 from numbers import Number
 
 from . import plots
@@ -28,9 +28,13 @@ class Result:
         schema = "<missing>" if self.schema is None else "<present>"
 
         additional = [
-            f for f in dir(self) if not f.startswith("_") and f not in always_display
+            f
+            for f in dir(self)
+            if not f.startswith("_") and f not in always_display
         ]
-        extras = f"; Additional Fields: {additional}" if len(additional) > 0 else ""
+        extras = (
+            f"; Additional Fields: {additional}" if len(additional) > 0 else ""
+        )
         return f"Result(status:{self.status}, checks:{self.checks}, schema:{schema}{extras})"
 
 
@@ -77,7 +81,9 @@ def contains(
         return simple_test
 
 
-def JS(max_acceptable: float, *, verbose: bool = False) -> Callable[[Any, Any], bool]:
+def JS(
+    max_acceptable: float, *, verbose: bool = False
+) -> Callable[[Any, Any], bool]:
     """Check-generator function. Returns a function that performs a test against jensen-shannon distance.
 
     max_acceptable -- Threshold for the returned check
@@ -98,12 +104,12 @@ def JS(max_acceptable: float, *, verbose: bool = False) -> Callable[[Any, Any], 
 
 
 def check_distribution_range(
-    distribution: pd.DataFrame,
+    distribution: pd.Series,
     lower: Number,
     upper: Number,
     *,
-    label: str = "distribution",
-    tests: Dict[str, Callable[[pd.DataFrame, Number, Number], bool]] = {},
+    label: Optional[str] = None,
+    tests: Dict[str, Callable[[pd.Series, Number, Number], bool]] = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
 ) -> Result:
@@ -122,6 +128,11 @@ def check_distribution_range(
     if isinstance(tests, list):
         tests = dict(enumerate(tests))
 
+    if label is None and distribution.name is not None:
+        label = distribution.name
+    else:
+        label = ""
+
     combined_args = {**{label: distribution}, **kwargs}
     schema, bins = plots.histogram_multi(
         xrefs=[lower, upper], return_bins=True, **combined_args
@@ -130,7 +141,9 @@ def check_distribution_range(
     checks = {label: test(bins) for label, test in tests.items()}
     status = combiner([*checks.values()])
     if not status:
-        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
+        status_msg = (
+            f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
+        )
     else:
         status_msg = "Passed"
 
@@ -168,10 +181,14 @@ def compare_distributions(
 
     groups = dict([*bins.groupby("label")])
     subject_dist = (
-        groups["Subject"].rename(columns={"count": "subject"}).drop(columns=["label"])
+        groups["Subject"]
+        .rename(columns={"count": "subject"})
+        .drop(columns=["label"])
     )
     reference_dist = (
-        groups["Reference"].rename(columns={"count": "ref"}).drop(columns=["label"])
+        groups["Reference"]
+        .rename(columns={"count": "ref"})
+        .drop(columns=["label"])
     )
 
     aligned = subject_dist.join(reference_dist, how="outer").fillna(0)
@@ -183,7 +200,9 @@ def compare_distributions(
     status = combiner([*checks.values()])
 
     if not status:
-        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
+        status_msg = (
+            f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
+        )
     else:
         status_msg = "Passed"
 

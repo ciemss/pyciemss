@@ -1,10 +1,8 @@
 from pyciemss.visuals import checks, plots
+import pandas as pd
 from pathlib import Path
 import pytest
 import numpy as np
-import xarray as xr
-
-_data_file = Path(__file__).parent / "data" / "ciemss_datacube.nc"
 
 
 def test_JS():
@@ -44,7 +42,7 @@ def test_contains_pct():
     #      not many things in the input.
     #      We should look at some better tests for small numbers of data points.
     _, bins = plots.histogram_multi(
-        range=np.linspace(0, 20, num=100), return_bins=True, bins=20
+        range=pd.Series(np.linspace(0, 20, num=100)), return_bins=True
     )
 
     checker = checks.contains(0, 20, 1)
@@ -60,52 +58,22 @@ def test_contains_pct():
     assert checker(bins), ".75 lower"
 
 
-def read_cube(file):
-    ds = xr.open_mfdataset([file])
-    real_data = ds.to_dataframe().reset_index()
-    real_data.rename(
-        columns={
-            "timesteps": "time",
-            "experimental conditions": "conditions",
-            "attributes": "state_names",
-            "__xarray_dataarray_variable__": "state_values",
-        },
-        inplace=True,
-    )
-    return real_data
+@pytest.fixture
+def normal0():
+    return pd.Series(np.random.normal(0, size=200), name="normal-at-0")
 
 
 @pytest.fixture
-def datacube_s30():
-    raw_data = read_cube(_data_file)
-    return raw_data.loc[
-        (raw_data["time"] == 30) & (raw_data["state_names"] == "S")
-    ]
+def normal2():
+    return pd.Series(np.random.normal(2, size=200), name="normal-at-2")
 
 
-@pytest.fixture
-def datacube_r30():
-    raw_data = read_cube(_data_file)
-    return raw_data.loc[
-        (raw_data["time"] == 30) & (raw_data["state_names"] == "R")
-    ]
-
-
-@pytest.fixture
-def datacube_i30():
-    raw_data = read_cube(_data_file)
-    return raw_data.loc[
-        (raw_data["time"] == 30) & (raw_data["state_names"] == "I")
-    ]
-
-
-def test_check_distribution_range(datacube_s30):
-    lower, upper = 70_000, 94_000
+def test_check_distribution_range(normal0):
+    lower, upper = -2.0, 2.0
     result = checks.check_distribution_range(
-        datacube_s30,
+        normal0,
         lower,
         upper,
-        label="s30",
         tests=[
             checks.contains(lower, upper),
             checks.contains(lower, upper, 0.99),
@@ -118,16 +86,16 @@ def test_check_distribution_range(datacube_s30):
     assert "50%" in result.schema["title"]["text"][1]
 
 
-def test_compare_distributions(datacube_s30, datacube_i30):
+def test_compare_distributions(normal0, normal2):
     result = checks.compare_distributions(
-        datacube_s30, datacube_i30, tests=[checks.JS(0)]
+        normal0, normal2, tests=[checks.JS(0)]
     )
 
     assert result.status == False
     assert "0%" in result.schema["title"]["text"][1]
 
     result = checks.compare_distributions(
-        datacube_s30, datacube_s30, tests=[checks.JS(1)]
+        normal0, normal2, tests=[checks.JS(1)]
     )
 
     assert result.status
