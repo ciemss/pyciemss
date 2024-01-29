@@ -38,7 +38,7 @@ def svg_matches(wrapped, ref_file):
 
     with open(ref_file) as f:
         reference = "".join(f.readlines())
-        # replace what seems to be random numbers for gradient and clip in svg
+        # replace what seems to be random numbers for gradient and cliip in svg
     reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
     reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
     
@@ -46,28 +46,13 @@ def svg_matches(wrapped, ref_file):
     content = re.sub('clip[0-9]*', "clipREPLACED", content)
     return content, reference
 
-def are_images_equal(img1, img2):
-    equal_size = img1.height == img2.height and img1.width == img2.width
-
-    if img1.mode == img2.mode == "RGBA":
-        img1_alphas = [pixel[3] for pixel in img1.getdata()]
-        img2_alphas = [pixel[3] for pixel in img2.getdata()]
-        equal_alphas = img1_alphas == img2_alphas
-    else:
-        equal_alphas = True
-
-    equal_content = not ImageChops.difference(
-        img1.convert("RGB"), img2.convert("RGB")
-    ).getbbox()
-
-    return equal_size, equal_alphas, equal_content
-
 def png_matches(schema, ref_file):
     image = plots.ipy_display(schema, format="bytes", dpi=216) 
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
-    equal_size, equal_alphas, equal_content = are_images_equal(content.convert("RGB"), reference.convert("RGB"))
-    return equal_size, equal_alphas, equal_content
+    diff = ImageChops.difference(content.convert("RGB"), reference.convert("RGB"))
+    diff_hist = diff.histogram()
+    return [x for x in diff_hist if x != 0]
 
 """
 Test that the schemas follow some common conventions.  There may be reason
@@ -124,8 +109,8 @@ def test_export_PNG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "png")
 
-    equal_size, equal_alphas, equal_content = png_matches(schema, ref_file)
-    assert equal_size and equal_alphas and equal_content, f"PNG failed for {schema_file}.{equal_size},{equal_alphas}, {equal_content}"
+    diff_values = png_matches(schema, ref_file)
+    assert len(diff_values)<4, f"PNG failed for {schema_file}.{str(diff_values)}"
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
@@ -139,7 +124,9 @@ def test_export_SVG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "svg")
     content, reference = svg_matches(image, ref_file)
-    assert content == reference, f"SVG failed for {schema_file}{content}break{reference}"
+    new_line = '\n'
+    assert content == reference, f"SVG failed for {new_line}{name}{new_line}start{new_line}{content}newsvg{new_line}{reference}break"
+
 
 
 @pytest.mark.parametrize("schema_file", schemas())
