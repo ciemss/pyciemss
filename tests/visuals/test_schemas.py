@@ -51,7 +51,7 @@ def png_matches(schema, ref_file):
     content = Image.open(io.BytesIO(image))
     diff = ImageChops.difference(content.convert("RGB"), reference.convert("RGB"))
     diff_hist = diff.histogram()
-    return len([x for x in diff_hist if x != 0]) <= 3
+    return [x for x in diff_hist if x != 0]
 
 """
 Test that the schemas follow some common conventions.  There may be reason
@@ -60,7 +60,7 @@ to avoid problems"""
 
 
 def schemas(ref_ext=None):
-    """
+    """  
     Find all schema files.  If ref_ext is not None, figure out names for
     """
     schemas = [*_schema_root.glob("*.vg.json")]
@@ -108,7 +108,9 @@ def test_export_PNG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "png")
 
-    assert png_matches(schema, ref_file), f"PNG failed for {schema_file}"
+    diff_values = png_matches(schema, ref_file)
+
+    assert len(diff_values)<4, f"PNG failed for {schema_file}.{str(diff_values)}"
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
