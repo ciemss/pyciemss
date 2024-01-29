@@ -21,7 +21,7 @@ _schema_root = (
 
 _reference_root = Path(__file__).parent / "reference_images"
 
-create_reference_images = True
+create_reference_images = False
 
 def save_png_svg(png_image, name, ref_ext):
     """Save new reference files"""

@@ -25,7 +25,7 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 
 # True if want to save reference files for modified schemas
-create_reference_images = True
+create_reference_images = False
 
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
