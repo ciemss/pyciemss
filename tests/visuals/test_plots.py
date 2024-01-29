@@ -26,11 +26,11 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 
 # True if want to save reference files for modified schemas
-create_reference_images = True
+create_reference_images = False
 
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
-    Path("_modified_schema_root").mkdir(parents=True, exist_ok=True)
+    _modified_schema_root.mkdir(parents=True, exist_ok=True)
     plots.save_schema(schema, os.path.join(_modified_schema_root, f"{name}.vg.json"))
 
 def check_modified_images(schema, name, ref_ext):
@@ -47,8 +47,8 @@ def check_modified_images(schema, name, ref_ext):
 
 def check_modified_schema_png(schema, name):
         save_schema(schema, name)
-        check_modified_images(schema,  name, "svg")
-        check_modified_images(schema,  name, "png")
+        check_modified_images(schema, name, "svg")
+        check_modified_images(schema, name, "png")
 
 def tensor_load(path):
     with open(path) as f:
@@ -398,7 +398,7 @@ class TestHistograms:
 
 class TestHeatmapScatter:
     def test_implicit_heatmap(self):
-        random.seed(2)
+        np.random.seed(2)
         df = pd.DataFrame(
             3 * np.random.random((100, 2)), columns=["test4", "test5"]
         )
@@ -412,7 +412,7 @@ class TestHeatmapScatter:
 
     def test_explicit_heatmap(self):
         def create_fake_data():
-            random.seed(2)
+            np.random.seed(2)
             nx, ny = (10, 10)
             x = np.linspace(0, 10, nx)
             y, a = np.linspace(0, 10, ny, retstep=True)
