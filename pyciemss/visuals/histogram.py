@@ -47,27 +47,34 @@ def histogram_multi(
         counts = np.bincount(assignments)
         spans = [*(zip(edges, edges[1:]))]
         desc = [
-            {"bin0": l.item(), "bin1": h.item(), "count": c.item(), "label": label}
+            {
+                "bin0": l.item(),
+                "bin1": h.item(),
+                "count": c.item(),
+                "label": label,
+            }
             for ((l, h), c) in zip(spans, counts)
         ]
         return desc
 
-    def as_value_list(label, data):
-        try:
-            return data["state_values"].rename(label)
-        except BaseException:
-            return pd.Series(data).rename(label)
+    def as_value_list(data):
+        if len(data.shape) > 1:
+            data = data.ravel()
 
-    data = {k: as_value_list(k, subset) for k, subset in data.items()}
+        return pd.Series(data)
 
-    joint = pd.concat(data)
+    data = {k: as_value_list(subset) for k, subset in data.items()}
+
+    joint = pd.DataFrame(data)
     bins_count = bin_rule(joint)
     _, edges = np.histogram(joint, bins=bins_count)
 
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]
 
-    schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "binned", ["values"], desc
+    )
 
     schema["data"] = vega.replace_named_with(
         schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]

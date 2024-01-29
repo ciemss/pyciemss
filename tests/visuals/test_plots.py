@@ -1,30 +1,15 @@
 import pytest
 import pandas as pd
-import xarray as xr
 import numpy as np
 import networkx as nx
-import json
-import torch
 import random
-
-from pathlib import Path
 from itertools import chain
 
+import pyciemss
 from pyciemss.visuals import plots, vega
 from pyciemss.integration_utils.result_processing import (
     convert_to_output_format,
 )
-
-_data_root = Path(__file__).parent / "data"
-
-
-def tensor_load(path):
-    with open(path) as f:
-        data = json.load(f)
-
-    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
-
-    return data
 
 
 def by_key_value(targets, key, value):
@@ -33,144 +18,177 @@ def by_key_value(targets, key, value):
             return entry
 
 
-class TestTrajectory:
-    @pytest.fixture
-    def trajectory(self):
-        tspan = np.linspace(1, 50, 500)
-        self.nice_labels = {"Rabbits_sol": "Rabbits", "Wolves_sol": "Wolves"}
+def make_nice_labels(labels):
+    """Utility for generally-nice-labels for testing purposes."""
+    return {
+        k: "_".join(k.split("_")[:-1])
+        for k in labels
+        if "_" in k
+        and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
+    }
 
-        self.dists = convert_to_output_format(
-            tensor_load(_data_root / "prior_samples.json"),
-            tspan,
+
+class TestTrajectory:
+    @staticmethod
+    @pytest.fixture
+    def distributions():
+        model_1_path = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        start_time = 0.0
+        end_time = 100.0
+        logging_step_size = 1
+        num_samples = 30
+        sample = pyciemss.sample(
+            model_1_path,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            solver_method="euler",
+        )["unprocessed_result"]
+
+        for e in sample.values():
+            if len(e.shape) > 1:
+                num_timepoints = e.shape[1]
+
+        return convert_to_output_format(
+            sample,
+            timepoints=np.linspace(start_time, end_time, num_timepoints),
             time_unit="notional",
         )
 
-        exemplars = self.dists[self.dists["sample_id"] == 0]
-        wolves = exemplars.set_index("timepoint_notional")[
-            "Wolves_sol"
-        ].rename("Wolves Example")
-        rabbits = exemplars.set_index("timepoint_notional")[
-            "Rabbits_sol"
-        ].rename("Rabbits Example")
-        self.traces = pd.concat([wolves, rabbits], axis="columns")
-
-        self.observed_trajectory = convert_to_output_format(
-            tensor_load(_data_root / "observed_trajectory.json"),
-            tspan,
-            time_unit="years",
+    @staticmethod
+    @pytest.fixture
+    def traces(distributions):
+        return (
+            distributions[distributions["sample_id"] == 0]
+            .set_index("timepoint_notional")[["dead_observable", "I_state"]]
+            .rename(
+                columns={
+                    "dead_observable": "dead_exemplar",
+                    "I_state": "I_exemplar",
+                }
+            )
         )
 
-        self.observed_points = (
-            self.observed_trajectory.rename(
-                columns={"Rabbits_sol": "Rabbits Samples"}
-            )
-            .drop(
-                columns=[
-                    "Wolves_sol",
-                    "alpha_param",
-                    "beta_param",
-                    "delta_param",
-                    "gamma_param",
-                ]
-            )
-            .iloc[::10]
-        )
+    @staticmethod
+    @pytest.fixture
+    def observed_points(traces):
+        return traces.iloc[::10]
 
-    def test_base(self, trajectory):
-        schema = plots.trajectories(self.dists)
+    def test_base(self, distributions):
+        schema = plots.trajectories(distributions)
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
-    def test_rename(self, trajectory):
-        schema = plots.trajectories(self.dists, relabel=self.nice_labels)
+    def test_rename(self, distributions):
+        nice_labels = make_nice_labels(distributions.columns)
+
+        schema = plots.trajectories(distributions, relabel=nice_labels)
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
 
-        assert "Rabbits" in df["trajectory"].unique()
-        assert "Wolves" in df["trajectory"].unique()
-        assert "Rabbits_sol" not in df["trajectory"].unique()
-        assert "Wolves_sol" not in df["trajectory"].unique()
+        kept_names = df["trajectory"].unique()
+        for name in nice_labels.values():
+            assert name in kept_names, f"Nice name '{name}' not found"
 
-    def test_keep(self, trajectory):
-        schema = plots.trajectories(self.dists, keep=".*_sol")
+        for name in nice_labels.keys():
+            assert name not in kept_names, "Bad name unexpectedly found"
+
+    def test_keep(self, distributions):
+        schema = plots.trajectories(distributions, keep=".*_observable")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
 
-        assert ["Rabbits_sol", "Wolves_sol"] == sorted(
-            df["trajectory"].unique()
-        ), "Keeping by regex"
+        kept = sorted(df["trajectory"].unique())
+        assert [
+            "dead_observable",
+            "exposed_observable",
+            "hospitalized_observable",
+            "infected_observable",
+        ] == kept, f"Keeping by regex failed.  Kept {kept}"
 
-        schema = plots.trajectories(
-            self.dists, keep=["Rabbits_sol", "Wolves_sol"]
-        )
+        keep_list = ["dead_observable", "exposed_observable"]
+        schema = plots.trajectories(distributions, keep=keep_list)
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
-        assert ["Rabbits_sol", "Wolves_sol"] == sorted(
+        assert keep_list == sorted(
             df["trajectory"].unique()
         ), "Keeping by list"
 
+        nice_labels = make_nice_labels(distributions.columns)
         schema = plots.trajectories(
-            self.dists,
-            relabel=self.nice_labels,
-            keep=["Rabbits_sol", "Wolves_sol"],
+            distributions,
+            relabel=nice_labels,
+            keep=keep_list,
         )
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
-        assert ["Rabbits", "Wolves"] == sorted(
+        assert ["dead", "exposed"] == sorted(
             df["trajectory"].unique()
-        ), "Rename after Keeping"
+        ), "Rename after jeeping"
 
-    def test_keep_drop(self, trajectory):
+    def test_keep_drop(self, distributions):
         assert (
-            "Rabbits_sol" in self.dists.columns
+            "H_state" in distributions.columns
+        ), "Expected trajectory not found in pre-test"
+
+        should_keep = [
+            p
+            for p in distributions.columns
+            if "_state" not in p
+            and p not in ["sample_id", "timepoint_id", "timepoint_notional"]
+        ]
+        should_drop = [p for p in distributions.columns if "_state" in p]
+
+        assert (
+            len(should_keep) > 0
+        ), "Expected keep trajectories not found in pre-test"
+        assert (
+            len(should_drop) > 0
+        ), "Expected drop trajectories not found in pre-test"
+
+        schema = plots.trajectories(
+            distributions, keep=".*_.*", drop=".*_state"
+        )
+        df = pd.DataFrame(
+            vega.find_named(schema["data"], "distributions")["values"]
+        )
+
+        kept = df["trajectory"].unique()
+        for name in should_keep:
+            assert name in kept, f"Unexpectedly lost '{name}'"
+
+        for name in should_drop:
+            assert name not in kept, f"Unexpectedly kept '{name}'"
+
+    def test_drop(self, distributions):
+        assert (
+            "H_state" in distributions.columns
         ), "Exepected trajectory not found in pre-test"
 
-        should_drop = [p for p in self.dists.columns if "_param" in p]
+        should_drop = [p for p in distributions.columns if "_observable" in p]
         assert (
             len(should_drop) > 0
         ), "Exepected trajectory not found in pre-test"
 
-        schema = plots.trajectories(self.dists, keep=".*_.*", drop=".*_param")
+        schema = plots.trajectories(distributions, drop=should_drop)
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
 
         assert (
-            "Rabbits_sol" in df["trajectory"].unique()
-        ), "Exepected trajectory not retained from list"
-
-        kept = [t for t in df["trajectory"].unique() if "_param" in t]
-        assert len(kept) == 0, "Kept unexpexted columns in keep & drop case"
-
-    def test_drop(self, trajectory):
-        assert (
-            "Rabbits_sol" in self.dists.columns
-        ), "Exepected trajectory not found in pre-test"
-
-        print(self.dists.columns)
-        should_drop = [p for p in self.dists.columns if "_param" in p]
-        assert (
-            len(should_drop) > 0
-        ), "Exepected trajectory not found in pre-test"
-
-        schema = plots.trajectories(self.dists, drop=should_drop)
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
-
-        assert (
-            "Rabbits_sol" in df["trajectory"].unique()
+            "H_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from list"
         assert (
-            "Wolves_sol" in df["trajectory"].unique()
+            "D_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from list"
 
         for t in should_drop:
@@ -179,30 +197,29 @@ class TestTrajectory:
             ), "Trajectory still present after drop from list"
 
         try:
-            schema = plots.trajectories(self.dists, drop="THIS IS NOT HERE")
+            schema = plots.trajectories(distributions, drop="THIS IS NOT HERE")
         except Exception:
             assert False, "Error dropping non-existent trajectory"
 
-        schema = plots.trajectories(self.dists, drop="gam.*")
+        schema = plots.trajectories(distributions, drop=".*_observable")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
         assert (
-            "Rabbits_sol" in df["trajectory"].unique()
+            "E_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from pattern"
         assert (
-            "Wolves_sol" in df["trajectory"].unique()
+            "R_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from pattern"
         assert (
-            "gamma_param" not in df["trajectory"].unique()
+            "hospitalized_observable" not in df["trajectory"].unique()
         ), "Trajectory still present after drop from pattern"
 
-    def test_points(self, trajectory):
+    def test_points(self, distributions, observed_points):
         schema = plots.trajectories(
-            self.dists,
-            keep=".*_sol",
-            relabel=self.nice_labels,
-            points=self.observed_points,
+            distributions,
+            keep=".*_state",
+            points=observed_points,
         )
 
         points = pd.DataFrame(
@@ -210,65 +227,58 @@ class TestTrajectory:
         )
 
         assert (
-            len(points["trajectory"].unique()) == 1
+            len(points["trajectory"].unique()) == 2
         ), "Unexpected number of exemplars"
-        assert len(self.observed_points) == len(
-            points
+
+        assert (
+            len(points) == observed_points.count().sum()
         ), "Unexpected number of exemplar points"
 
-    def test_traces(self, trajectory):
+    def test_traces(self, distributions, traces):
         schema = plots.trajectories(
-            self.dists,
-            keep=".*_sol",
-            relabel=self.nice_labels,
-            traces=self.traces,
+            distributions,
+            keep=".*_state",
+            traces=traces,
         )
 
-        traces = pd.DataFrame(
+        shown_traces = pd.DataFrame(
             vega.find_named(schema["data"], "traces")["values"]
         )
         plots.save_schema(schema, "_schema.json")
 
-        assert sorted(self.traces.columns.unique()) == sorted(
-            traces["trajectory"].unique()
+        assert sorted(traces.columns.unique()) == sorted(
+            shown_traces["trajectory"].unique()
         ), "Unexpected traces"
 
-        for exemplar in traces["trajectory"].unique():
-            assert len(self.traces) == len(
-                traces[traces["trajectory"] == exemplar]
+        for exemplar in shown_traces["trajectory"].unique():
+            assert len(traces) == len(
+                shown_traces[shown_traces["trajectory"] == exemplar]
             ), "Unexpected number of trace data points"
 
 
 class TestHistograms:
+    @staticmethod
     @pytest.fixture
-    def load_data(self):
-        def read_cube(file):
-            ds = xr.open_mfdataset([file])
-            real_data = ds.to_dataframe().reset_index()
-            real_data.rename(
-                columns={
-                    "timesteps": "time",
-                    "experimental conditions": "conditions",
-                    "attributes": "state_names",
-                    "__xarray_dataarray_variable__": "state_values",
-                },
-                inplace=True,
-            )
-            return real_data
+    def simulation_result():
+        model_1_path = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        start_time = 0.0
+        end_time = 100.0
+        logging_step_size = 10.0
+        num_samples = 3
 
-        raw_data = read_cube(_data_root / "ciemss_datacube.nc")
-        self.s30 = raw_data.loc[
-            (raw_data["time"] == 30) & (raw_data["state_names"] == "S")
-        ]
-        self.r30 = raw_data.loc[
-            (raw_data["time"] == 30) & (raw_data["state_names"] == "R")
-        ]
-        self.i30 = raw_data.loc[
-            (raw_data["time"] == 30) & (raw_data["state_names"] == "I")
-        ]
+        return pyciemss.sample(
+            model_1_path,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            solver_method="euler",
+        )["unprocessed_result"]
 
-    def test_histogram(self, load_data):
-        hist, bins = plots.histogram_multi(s30=self.s30, return_bins=True)
+    def test_histogram(self, simulation_result):
+        hist, bins = plots.histogram_multi(
+            D=simulation_result["D_state"], return_bins=True
+        )
 
         bins = bins.reset_index()
 
@@ -278,27 +288,41 @@ class TestHistograms:
         hist_data = pd.DataFrame(
             by_key_value(hist["data"], "name", "binned")["values"]
         )
-        assert all(bins == hist_data)
+        assert all(bins == hist_data), "Bin count not as expected"
 
-        assert len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
-        assert len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
+        assert (
+            len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
+        ), "Missing xrefs"
+        assert (
+            len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
+        ), "Missing yrefs"
 
-    def test_histogram_empty_refs(self, load_data):
+    def test_histogram_empty_refs(self, simulation_result):
         xrefs = []
         yrefs = []
-        hist, bins = plots.histogram_multi(
-            s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
+        hist = plots.histogram_multi(
+            D=simulation_result["D_state"],
+            xrefs=xrefs,
+            yrefs=yrefs,
+            return_bins=False,
         )
 
-        assert len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
-        assert len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
+        assert (
+            len(by_key_value(hist["data"], "name", "xref")["values"]) == 0
+        ), "xrefs found when not expected"
+        assert (
+            len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
+        ), "yrefs found when not expected"
 
     @pytest.mark.parametrize("num_refs", range(1, 20))
-    def test_histogram_refs(self, num_refs, load_data):
+    def test_histogram_refs(self, num_refs, simulation_result):
         xrefs = [*range(num_refs)]
         yrefs = [*range(num_refs)]
-        hist, bins = plots.histogram_multi(
-            s30=self.s30, xrefs=xrefs, yrefs=yrefs, return_bins=True
+        hist = plots.histogram_multi(
+            D=simulation_result["D_state"],
+            xrefs=xrefs,
+            yrefs=yrefs,
+            return_bins=False,
         )
 
         assert num_refs == len(
@@ -308,8 +332,11 @@ class TestHistograms:
             by_key_value(hist["data"], "name", "yref")["values"]
         ), "Nonzero yrefs not as expected"
 
-        hist, bins = plots.histogram_multi(
-            s30=self.s30, xrefs=xrefs, yrefs=[], return_bins=True
+        hist = plots.histogram_multi(
+            D=simulation_result["D_state"],
+            xrefs=xrefs,
+            yrefs=[],
+            return_bins=False,
         )
 
         assert num_refs == len(
@@ -319,8 +346,11 @@ class TestHistograms:
             len(by_key_value(hist["data"], "name", "yref")["values"]) == 0
         ), "Zero yrefs not as expected when there are nonzero xrefs"
 
-        hist, bins = plots.histogram_multi(
-            s30=self.s30, xrefs=[], yrefs=yrefs, return_bins=True
+        hist = plots.histogram_multi(
+            D=simulation_result["D_state"],
+            xrefs=[],
+            yrefs=yrefs,
+            return_bins=False,
         )
 
         assert (
@@ -330,18 +360,25 @@ class TestHistograms:
             by_key_value(hist["data"], "name", "yref")["values"]
         ), "Nonzero yrefs not as expected when there are zero xrefs"
 
-    def test_histogram_multi(self, load_data):
-        hist = plots.histogram_multi(s30=self.s30, r30=self.r30, i30=self.i30)
+    def test_histogram_multi(self, simulation_result):
+        hist = plots.histogram_multi(
+            D=simulation_result["D_state"],
+            E=simulation_result["E_state"],
+            H=simulation_result["R_state"],
+        )
         data = pd.DataFrame(
             by_key_value(hist["data"], "name", "binned")["values"]
         )
-        assert set(data["label"].values) == {"s30", "i30", "r30"}
+        assert set(data["label"].values) == {"D", "E", "H"}
 
-        hist = plots.histogram_multi(s30=self.s30, r30=self.r30)
+        hist = plots.histogram_multi(
+            D_state=simulation_result["D_state"],
+            E_state=simulation_result["E_state"],
+        )
         data = pd.DataFrame(
             by_key_value(hist["data"], "name", "binned")["values"]
         )
-        assert set(data["label"].values) == {"s30", "r30"}
+        assert set(data["label"].values) == {"D_state", "E_state"}
 
 
 class TestHeatmapScatter:
