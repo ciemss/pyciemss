@@ -50,7 +50,7 @@ def png_matches(schema, ref_file):
     image = plots.ipy_display(schema, format="bytes", dpi=72) 
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
-    diff = ImageChops.difference(content.convert("RGB"), reference.convert("RGB"))
+    diff = ImageChops.difference(content.convert('L'), reference.convert('L'))
     diff_hist = diff.histogram()
     return [x for x in diff_hist if x != 0]
 
