@@ -13,7 +13,6 @@ import os
 import io
 import re
 
-import difflib
 
 
 _schema_root = (

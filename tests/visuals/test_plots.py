@@ -6,7 +6,6 @@ import networkx as nx
 import json
 import torch
 import random
-import difflib
 from pathlib import Path
 from itertools import chain
 
