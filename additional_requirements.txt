@@ -1,7 +1,0 @@
-vl-convert-python
-pytest
-xarray
-matplotlib
-statsmodels
-netCDF4 
-dask
