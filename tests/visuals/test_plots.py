@@ -25,7 +25,7 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 
 # True if want to save reference files for modified schemas
-create_reference_images = False
+create_reference_images = True
 
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
@@ -33,7 +33,7 @@ def save_schema(schema, name):
     plots.save_schema(schema, os.path.join(_modified_schema_root, f"{name}.vg.json"))
 
 def check_modified_images(schema, name, ref_ext):
-    image = plots.ipy_display(schema, format=ref_ext, dpi=216)
+    image = plots.ipy_display(schema, format=ref_ext, dpi=72)
     # create reference files if schema is new
     if create_reference_images:
         save_png_svg(image, name, ref_ext)

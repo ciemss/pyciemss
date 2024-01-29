@@ -1,8 +1,8 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "A node-link diagram with force-directed and attributions as arc-segments, multilines.",
-  "width": 300,
-  "height": 300,
+  "width": 100,
+  "height": 100,
   "padding": 0,
 
   "signals": [
