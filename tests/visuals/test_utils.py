@@ -1,41 +1,47 @@
 from pyciemss.visuals import plots, vega
-from pathlib import Path
+import pyciemss
 import pytest
-import torch
 import numpy as np
-import json
 
 from pyciemss.integration_utils.result_processing import (
     convert_to_output_format,
 )
 
-_data_root = Path(__file__).parent / "data"
-
-
-def tensor_load(path):
-    with open(path) as f:
-        data = json.load(f)
-
-    data = {k: torch.from_numpy(np.array(v)) for k, v in data.items()}
-
-    return data
+# TODO: Consider testing some of these utils on raw schemas instead of with-data schemas
 
 
 @pytest.fixture
-def prior_dists():
-    tspan = np.linspace(1, 50, 500)
+def distributions():
+    model_1_path = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+    start_time = 0.0
+    end_time = 100.0
+    logging_step_size = 1
+    num_samples = 30
+    sample = pyciemss.sample(
+        model_1_path,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        solver_method="euler",
+    )["unprocessed_result"]
+
+    for e in sample.values():
+        if len(e.shape) > 1:
+            num_timepoints = e.shape[1]
+
     return convert_to_output_format(
-        tensor_load(_data_root / "prior_samples.json"),
-        timepoints=tspan,
+        sample,
+        timepoints=np.linspace(start_time, end_time, num_timepoints),
         time_unit="notional",
     )
 
 
-def test_resize(prior_dists):
+def test_resize(distributions):
     w = 101
     h = 102
 
-    schema1 = plots.trajectories(prior_dists)
+    schema1 = plots.trajectories(distributions)
     schema2 = plots.resize(schema1, w=w, h=h)
 
     assert schema1 != schema2
@@ -51,8 +57,8 @@ def test_resize(prior_dists):
     assert schema4["height"] == h
 
 
-def test_orient_legend(prior_dists):
-    schema1 = plots.trajectories(prior_dists)
+def test_orient_legend(distributions):
+    schema1 = plots.trajectories(distributions)
 
     new_orientation = "not-really-an-option"
     schema2 = plots.orient_legend(schema1, "color_legend", new_orientation)
@@ -65,8 +71,8 @@ def test_orient_legend(prior_dists):
     assert "orient" not in legend
 
 
-def test_pad(prior_dists):
-    schema1 = plots.trajectories(prior_dists)
+def test_pad(distributions):
+    schema1 = plots.trajectories(distributions)
     schema2 = plots.pad(schema1, 5)
     schema3 = plots.pad(schema1, 20)
     schema4 = plots.pad(schema1, None)
@@ -76,8 +82,8 @@ def test_pad(prior_dists):
     assert "padding" not in schema4
 
 
-def test_title(prior_dists):
-    schema1 = plots.trajectories(prior_dists)
+def test_title(distributions):
+    schema1 = plots.trajectories(distributions)
     schema2 = plots.set_title(schema1, "Main Title")
     schema3 = plots.set_title(schema1, "XTitle", target="x")
     schema4 = plots.set_title(schema1, "YTitle", target="y")
@@ -100,16 +106,16 @@ def test_title(prior_dists):
     assert yaxis["title"] == "YTitle"
 
 
-def test_rescale(prior_dists):
+def test_rescale(distributions):
     pass
 
 
-def test_replace_named_with(prior_dists):
+def test_replace_named_with(distributions):
     pass
 
 
-def test_delete_named(prior_dists):
-    schema1 = plots.trajectories(prior_dists)
+def test_delete_named(distributions):
+    schema1 = plots.trajectories(distributions)
     assert vega.find_keyed(schema1["signals"], "name", "clear") is not None
 
     schema_fragment = vega.delete_named(schema1["signals"], "clear")
@@ -119,8 +125,8 @@ def test_delete_named(prior_dists):
         vega.find_keyed(schema_fragment, "name", "clear")
 
 
-def test_find_keyed(prior_dists):
-    schema1 = plots.trajectories(prior_dists)
+def test_find_keyed(distributions):
+    schema1 = plots.trajectories(distributions)
     assert vega.find_keyed(schema1["signals"], "name", "clear") is not None
     with pytest.raises(ValueError):
         vega.find_keyed(schema1["signals"], "name", "NOT THERE")
