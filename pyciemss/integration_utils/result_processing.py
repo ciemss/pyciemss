@@ -17,7 +17,7 @@ def prepare_interchange_dictionary(
 
 def convert_to_output_format(
     samples: Dict[str, torch.Tensor],
-    time_unit: Optional[str] = "(unknown)",
+    time_unit: Optional[str] = None,
     timepoints: Optional[Iterable[float]] = None,
 ) -> pd.DataFrame:
     """
@@ -33,12 +33,18 @@ def convert_to_output_format(
         if sample.ndim == 1:
             # Any 1D array is a sample from the distribution over parameters.
             # Any 2D array is a sample from the distribution over states, unless it's a model weight.
-            name = name + "_param"
+            name = name + "_param" if not name.endswith("_param") else name
             pyciemss_results["parameters"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
         else:
-            name = name + "_state"
+            name = (
+                name + "_state"
+                if not (
+                    name.endswith("_state") or name.endswith("_observable")
+                )
+                else name
+            )
             pyciemss_results["states"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
