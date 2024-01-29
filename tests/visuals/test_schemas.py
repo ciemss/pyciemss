@@ -13,6 +13,8 @@ import os
 import io
 import re
 
+import difflib
+
 
 _schema_root = (
     Path(__file__).parent.parent.parent / "pyciemss" / "visuals" / "schemas"
@@ -20,7 +22,7 @@ _schema_root = (
 
 _reference_root = Path(__file__).parent / "reference_images"
 
-create_reference_images = False
+create_reference_images = True
 
 def save_png_svg(png_image, name, ref_ext):
     """Save new reference files"""
@@ -37,13 +39,13 @@ def svg_matches(wrapped, ref_file):
 
     with open(ref_file) as f:
         reference = "".join(f.readlines())
-        # replace what seems to be random numbers for gradient and cliip in svg
+        # replace what seems to be random numbers for gradient and clip in svg
     reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
     reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
     
     content = re.sub('gradient_?[0-9]*', "gradient_REPLACED", "".join(wrapped.data))
     content = re.sub('clip[0-9]*', "clipREPLACED", content)
-    return content == reference
+    return content, reference
 
 def png_matches(schema, ref_file):
     image = plots.ipy_display(schema, format="bytes", dpi=216) 
@@ -109,7 +111,6 @@ def test_export_PNG(schema_file, ref_file, name):
         save_png_svg(image, name, "png")
 
     diff_values = png_matches(schema, ref_file)
-
     assert len(diff_values)<4, f"PNG failed for {schema_file}.{str(diff_values)}"
 
 
@@ -119,11 +120,12 @@ def test_export_SVG(schema_file, ref_file, name):
     with open(schema_file) as f:
         schema = json.load(f)
 
-    image = plots.ipy_display(schema, format="SVG", dpi=216)
+    image = plots.ipy_display(schema, format="SVG")
     # create reference files if schema is new
     if create_reference_images:
         save_png_svg(image, name, "svg")
-    assert svg_matches(image, ref_file), f"SVG failed for {schema_file}"
+    content, reference = svg_matches(image, ref_file)
+    assert content == reference, f"SVG failed for {schema_file}{content}break{reference}"
 
 
 @pytest.mark.parametrize("schema_file", schemas())

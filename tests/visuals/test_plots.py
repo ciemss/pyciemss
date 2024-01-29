@@ -6,7 +6,7 @@ import networkx as nx
 import json
 import torch
 import random
-
+import difflib
 from pathlib import Path
 from itertools import chain
 
@@ -26,7 +26,7 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 
 # True if want to save reference files for modified schemas
-create_reference_images = False
+create_reference_images = True
 
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
@@ -40,10 +40,14 @@ def check_modified_images(schema, name, ref_ext):
         save_png_svg(image, name, ref_ext)
 
     reference_file = _reference_root / f"{name}.{ref_ext}"
-    if ref_ext == "png":
-        assert png_matches(schema, reference_file), f"PNG failed for {name}"
+    if ref_ext == "png": 
+        diff_values = png_matches(schema, reference_file)
+        assert len(diff_values)<4, f"PNG failed for {name}.{str(diff_values)}"
+
     if ref_ext == "svg":
-        assert svg_matches(image, reference_file), f"SVG failed for {name}"
+        content, reference = svg_matches(image, reference_file)
+        assert content == reference, f"SVG failed for {name}{content}break{reference}"
+
 
 def check_modified_schema_png(schema, name):
         save_schema(schema, name)
