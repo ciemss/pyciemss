@@ -32,6 +32,13 @@ def save_schema(schema, name):
     plots.save_schema(schema, os.path.join(_modified_schema_root, f"{name}.vg.json"))
 
 def check_modified_images(schema, name, ref_ext):
+    """check if the created images mathc the reference images 
+    for either png or svg files
+
+    schema-- modified schema 
+    name -- name of reference file 
+    ref_ext -- reference file extension 
+    """
     image = plots.ipy_display(schema, format=ref_ext, dpi=72)
     # create reference files if schema is new
     if create_reference_images:
@@ -44,12 +51,18 @@ def check_modified_images(schema, name, ref_ext):
 
     if ref_ext == "svg":
         content, reference = svg_matches(image, reference_file)
-        new_line = '\n'
         assert content == reference, f"SVG failed for {name}"
 
 
 
 def check_modified_schema_png(schema, name):
+        
+        """for each schema tested, save the schema, and check that
+        the resulting svg and png files match the reference png and svg files
+
+        schema-- modified schema 
+        name -- name of reference file 
+        """
         save_schema(schema, name)
         check_modified_images(schema, name, "svg")
         check_modified_images(schema, name, "png")

@@ -35,6 +35,12 @@ def save_png_svg(png_image, name, ref_ext):
             f.write(png_image.data)
 
 def svg_matches(wrapped, ref_file):
+    """Return the reference and svg created from schema
+
+    wrapped -- IPython display SVG, contains the data property
+    ref_file -- path to reference files
+    returns -- Return the content and reference svg files 
+    """
     if not isinstance(wrapped, IPython.display.SVG):
         raise ValueError("Expected wrapped SVG")
 
@@ -49,6 +55,13 @@ def svg_matches(wrapped, ref_file):
     return content, reference
 
 def png_matches(schema, ref_file):
+    """Check how similiar the histograms 
+    of the reference and png created from schema are. 
+
+    schema -- schema to create png file
+    ref_file -- path to reference files
+    returns -- boolean if jenson shannon value is under threshold
+    """
     image = plots.ipy_display(schema, format="bytes", dpi=72) 
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
@@ -105,7 +118,16 @@ def test_export_interactive(schema_file):
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="png"))
 def test_export_PNG(schema_file, ref_file, name):
+    
+    """  
+    Test all default schema files against the reference files for PNG files
 
+    schema_file: default schema files saved within the visuals module
+    ref_file: compare the created  png to this reference file
+    name: stem name of reference file
+
+    If create_reference_image, recreate the reference files
+    """
     with open(schema_file) as f:
         schema = json.load(f)
 
@@ -120,7 +142,15 @@ def test_export_PNG(schema_file, ref_file, name):
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
 def test_export_SVG(schema_file, ref_file, name):
+    """  
+    Test all default schema files against the reference files for SVG files
 
+    schema_file: default schema files saved within the visuals module
+    ref_file: compare the created svg to this reference file
+    name: stem name of reference file
+
+    If create_reference_image, recreate the reference files
+    """
     with open(schema_file) as f:
         schema = json.load(f)
 
@@ -129,7 +159,6 @@ def test_export_SVG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "svg")
     content, reference = svg_matches(image, ref_file)
-    new_line = '\n'
     assert content == reference, f"SVG failed for {name}"
 
 
