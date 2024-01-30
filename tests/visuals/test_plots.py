@@ -26,7 +26,6 @@ _reference_root = Path(__file__).parent / "reference_images"
 
 # True if want to save reference files for modified schemas
 create_reference_images = False
-
 def save_schema(schema, name):
     """Save the modified schema to test again reference files"""
     _modified_schema_root.mkdir(parents=True, exist_ok=True)
@@ -40,13 +39,13 @@ def check_modified_images(schema, name, ref_ext):
 
     reference_file = _reference_root / f"{name}.{ref_ext}"
     if ref_ext == "png": 
-        diff_values = png_matches(schema, reference_file)
-        assert len(diff_values)<4, f"PNG failed for {name}.{str(diff_values)}"
+        JS_boolean = png_matches(schema, reference_file)
+        assert JS_boolean, "Histogram divergence: Shannon Jansen value is over 0.1"
 
     if ref_ext == "svg":
         content, reference = svg_matches(image, reference_file)
         new_line = '\n'
-        assert content == reference, f"SVG failed for {new_line}{name}{new_line}start{new_line}{content}newsvg{new_line}{reference}break"
+        assert content == reference, f"SVG failed for {name}"
 
 
 

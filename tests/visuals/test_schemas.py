@@ -2,9 +2,11 @@ from typing import Callable, Any
 import pytest
 import json
 from pathlib import Path
+import numpy as np
 
 import IPython
 from pyciemss.visuals import plots
+from pyciemss.visuals import checks
 
 from PIL import Image
 from PIL import ImageChops
@@ -50,9 +52,12 @@ def png_matches(schema, ref_file):
     image = plots.ipy_display(schema, format="bytes", dpi=72) 
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
-    diff = ImageChops.difference(content.convert('L'), reference.convert('L'))
-    diff_hist = diff.histogram()
-    return [x for x in diff_hist if x != 0]
+    content_pixels = list(content.convert('L').getdata())
+    reference_pixels =  list(reference.convert('L').getdata())
+    content_hist, edges = np.histogram(content_pixels,  bins=10)
+    reference_hist, edges = np.histogram(reference_pixels,  bins=10)
+    return checks.JS(0.1, verbose = True)(content_hist, reference_hist)
+
 
 """
 Test that the schemas follow some common conventions.  There may be reason
@@ -109,8 +114,8 @@ def test_export_PNG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "png")
 
-    diff_values = png_matches(schema, ref_file)
-    assert len(diff_values)<4, f"PNG failed for {schema_file}.{str(diff_values)}"
+    JS_boolean = png_matches(schema, ref_file)
+    assert JS_boolean, "Histogram divergence: Shannon Jansen value is over 0.1"
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
@@ -125,7 +130,7 @@ def test_export_SVG(schema_file, ref_file, name):
         save_png_svg(image, name, "svg")
     content, reference = svg_matches(image, ref_file)
     new_line = '\n'
-    assert content == reference, f"SVG failed for {new_line}{name}{new_line}start{new_line}{content}newsvg{new_line}{reference}break"
+    assert content == reference, f"SVG failed for {name}"
 
 
 

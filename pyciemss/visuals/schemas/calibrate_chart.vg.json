@@ -1,8 +1,8 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "Line chart with distributiosn.",
-  "width": 100,
-  "height": 100,
+  "width": 500,
+  "height": 200,
   "signals": [
     {
       "name": "Variable",
