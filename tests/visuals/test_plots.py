@@ -46,8 +46,8 @@ def check_modified_images(schema, name, ref_ext):
 
     reference_file = _reference_root / f"{name}.{ref_ext}"
     if ref_ext == "png": 
-        JS_boolean = png_matches(schema, reference_file)
-        assert JS_boolean, "Histogram divergence: Shannon Jansen value is over 0.1"
+        JS_boolean, JS_Score = png_matches(schema, reference_file)
+        assert JS_boolean, f"Histogram divergence: Shannon Jansen value is over {JS_score}"
 
     if ref_ext == "svg":
         content, reference = svg_matches(image, reference_file)
@@ -75,8 +75,8 @@ def check_mismatch_mod_default(schema, default_name):
         name -- name of reference file 
         """
         reference_file = _reference_root / f"{default_name}.png"
-        JS_boolean = png_matches(schema, reference_file)
-        assert not JS_boolean, "Histogram similiarity to default image: Shannon Jansen value is under 0.1"
+        JS_boolean, JS_Score = png_matches(schema, reference_file)
+        assert not JS_boolean, f"Histogram similiarity to default image: Shannon Jansen value is {JS_Score}"
 
 def tensor_load(path):
     with open(path) as f:

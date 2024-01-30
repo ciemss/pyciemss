@@ -7,6 +7,7 @@ import numpy as np
 import IPython
 from pyciemss.visuals import plots
 from pyciemss.visuals import checks
+from scipy.spatial.distance import jensenshannon
 
 from PIL import Image
 from PIL import ImageChops
@@ -79,7 +80,7 @@ def png_matches(schema, ref_file):
     #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
     content_hist, edges = np.histogram(content_pixels,  bins=250)
     reference_hist, edges = np.histogram(reference_pixels,  bins=250)
-    return checks.JS(0.001, verbose = True)(content_hist, reference_hist)
+    return checks.JS(0.001, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
 
 
 """
@@ -146,8 +147,8 @@ def test_export_PNG(schema_file, ref_file, name):
     if create_reference_images:
         save_png_svg(image, name, "png")
 
-    JS_boolean = png_matches(schema, ref_file)
-    assert JS_boolean, "Histogram divergence: Shannon Jansen value is over 0.1"
+    JS_boolean, JS_score = png_matches(schema, ref_file)
+    assert JS_boolean, f"Histogram divergence: Shannon Jansen value is over {JS_score}"
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
