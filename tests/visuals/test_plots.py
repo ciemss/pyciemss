@@ -47,7 +47,7 @@ def check_modified_images(schema, name, ref_ext):
     reference_file = _reference_root / f"{name}.{ref_ext}"
     if ref_ext == "png": 
         JS_boolean, JS_Score = png_matches(schema, reference_file)
-        assert JS_boolean, f"Histogram divergence: Shannon Jansen value is over {JS_score}"
+        assert JS_boolean, f"Histogram divergence: Shannon Jansen value is over {JS_Score}"
 
     if ref_ext == "svg":
         content, reference = svg_matches(image, reference_file)
