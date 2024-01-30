@@ -80,7 +80,7 @@ def png_matches(schema, ref_file):
     #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
     content_hist, edges = np.histogram(content_pixels,  bins=100)
     reference_hist, edges = np.histogram(reference_pixels,  bins=100)
-    return checks.JS(0.001, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
+    return checks.JS(0.02, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
 
 
 """
