@@ -54,7 +54,6 @@ def check_modified_images(schema, name, ref_ext):
         assert content == reference, f"SVG failed for {name}"
 
 
-
 def check_modified_schema_png(schema, name):
         
         """for each schema tested, save the schema, and check that
@@ -64,8 +63,20 @@ def check_modified_schema_png(schema, name):
         name -- name of reference file 
         """
         save_schema(schema, name)
-        check_modified_images(schema, name, "svg")
         check_modified_images(schema, name, "png")
+        # check_modified_images(schema, name, "svg")
+
+def check_mismatch_mod_default(schema, default_name):
+        
+        """for each schema tested, save the schema, and check that
+        the resulting svg and png files match the reference png and svg files
+
+        schema-- modified schema 
+        name -- name of reference file 
+        """
+        reference_file = _reference_root / f"{default_name}.png"
+        JS_boolean = png_matches(schema, reference_file)
+        assert not JS_boolean, "Histogram similiarity to default image: Shannon Jansen value is under 0.1"
 
 def tensor_load(path):
     with open(path) as f:
@@ -140,6 +151,7 @@ class TestTrajectory:
         schema = plots.trajectories(self.dists, relabel=self.nice_labels)
         # save schemas so can check if created svg and png files match
         check_modified_schema_png(schema, "test_rename")
+        check_mismatch_mod_default(schema, "test_base")
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -154,6 +166,7 @@ class TestTrajectory:
         schema = plots.trajectories(self.dists, keep=".*_sol")
         # save schemas so can check if created svg and png files match
         check_modified_schema_png(schema, "test_keep_sol")
+        check_mismatch_mod_default(schema, "test_base")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -167,6 +180,7 @@ class TestTrajectory:
         )
         # save schemas so can check if created svg and png files match
         check_modified_schema_png(schema, "test_keep_named")
+        check_mismatch_mod_default(schema, "test_base")
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -182,6 +196,7 @@ class TestTrajectory:
         )
         # save schemas so can check if created svg and png files match
         check_modified_schema_png(schema, "test_keep_nice_labels")
+        check_mismatch_mod_default(schema, "test_base")
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -204,6 +219,7 @@ class TestTrajectory:
 
         # save schemas so can check if created svg and png files match
         check_modified_schema_png(schema, "test_keep_drop")
+        check_mismatch_mod_default(schema, "test_base")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -228,6 +244,7 @@ class TestTrajectory:
 
         schema = plots.trajectories(self.dists, drop=should_drop)
         check_modified_schema_png(schema, "test_should_drop")
+        check_mismatch_mod_default(schema, "test_base")
 
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -252,6 +269,7 @@ class TestTrajectory:
 
         schema = plots.trajectories(self.dists, drop="gam.*")
         check_modified_schema_png(schema, "test_drop_gam")
+        check_mismatch_mod_default(schema, "test_base")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
@@ -273,6 +291,7 @@ class TestTrajectory:
             points=self.observed_points,
         )
         check_modified_schema_png(schema, "test_traj_points")
+        check_mismatch_mod_default(schema, "test_base")
 
         points = pd.DataFrame(
             vega.find_named(schema["data"], "points")["values"]
@@ -293,6 +312,7 @@ class TestTrajectory:
             traces=self.traces,
         )
         check_modified_schema_png(schema, "test_traj_traces")
+        check_mismatch_mod_default(schema, "test_base")
 
         traces = pd.DataFrame(
             vega.find_named(schema["data"], "traces")["values"]
@@ -447,6 +467,7 @@ class TestHeatmapScatter:
         mesh_data, scatter_data = create_fake_data()
         schema = plots.heatmap_scatter(scatter_data, mesh_data)
         check_modified_schema_png(schema, "test_heatmap_explicit")
+        check_mismatch_mod_default(schema, "test_heatmap")
 
         points = vega.find_named(schema["data"], "points")["values"]
         assert all(

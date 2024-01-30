@@ -54,6 +54,13 @@ def svg_matches(wrapped, ref_file):
     content = re.sub('clip[0-9]*', "clipREPLACED", content)
     return content, reference
 
+def background_white(orig_image):
+    image = orig_image.convert("RGBA")
+    new_image = Image.new("RGBA", image.size, "WHITE")
+    new_image.paste(image, mask=image)
+    new_image.convert('L')
+    return new_image
+
 def png_matches(schema, ref_file):
     """Check how similiar the histograms 
     of the reference and png created from schema are. 
@@ -65,11 +72,14 @@ def png_matches(schema, ref_file):
     image = plots.ipy_display(schema, format="bytes", dpi=72) 
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
-    content_pixels = list(content.convert('L').getdata())
-    reference_pixels =  list(reference.convert('L').getdata())
-    content_hist, edges = np.histogram(content_pixels,  bins=10)
-    reference_hist, edges = np.histogram(reference_pixels,  bins=10)
-    return checks.JS(0.1, verbose = True)(content_hist, reference_hist)
+    new_reference = background_white(reference)
+    new_content = background_white(content)
+    content_pixels = list(new_content.getdata())
+    reference_pixels =  list(new_reference.getdata())
+    #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
+    content_hist, edges = np.histogram(content_pixels,  bins=250)
+    reference_hist, edges = np.histogram(reference_pixels,  bins=250)
+    return checks.JS(0.001, verbose = True)(content_hist, reference_hist)
 
 
 """
