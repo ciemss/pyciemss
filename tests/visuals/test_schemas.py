@@ -56,6 +56,7 @@ def svg_matches(wrapped, ref_file):
     return content, reference
 
 def background_white(orig_image):
+    """Convert transparant background to white"""
     image = orig_image.convert("RGBA")
     new_image = Image.new("RGBA", image.size, "WHITE")
     new_image.paste(image, mask=image)
@@ -71,15 +72,19 @@ def png_matches(schema, ref_file):
     returns -- boolean if jenson shannon value is under threshold
     """
     image = plots.ipy_display(schema, format="bytes", dpi=72) 
+    # open Image
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
+    # background set to white
     new_reference = background_white(reference)
     new_content = background_white(content)
+    # convert to list
     content_pixels = list(new_content.getdata())
     reference_pixels =  list(new_reference.getdata())
     #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
     content_hist, edges = np.histogram(content_pixels,  bins=100)
     reference_hist, edges = np.histogram(reference_pixels,  bins=100)
+    # check if histograms are similiar enough
     return checks.JS(0.02, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
 
 
