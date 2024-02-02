@@ -7,7 +7,7 @@ from chirho.dynamical.handlers import (
     LogTrajectory,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.interventional.ops import Intervention
+# from chirho.interventional.ops import Intervention
 
 from pyciemss.ouu.risk_measures import alpha_superquantile
 from pyciemss.interruptions import (
@@ -30,7 +30,7 @@ class RandomDisplacementBounds:
             self.stepsize = stepsize
         else:
             # stepsize is set to 20% of longest euclidean distance
-            self.stepsize = 0.2*np.linalg.norm(xmax - xmin)
+            self.stepsize = 0.2 * np.linalg.norm(xmax - xmin)
 
     def __call__(self, x):
         return np.clip(
@@ -71,7 +71,9 @@ class computeRisk:
         self.guide = guide
         self.solver_method = solver_method
         self.solver_options = solver_options
-        self.timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+        self.timespan = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
     def __call__(self, x):
         # Apply intervention and perform forward uncertainty propagation
@@ -92,19 +94,29 @@ class computeRisk:
         static_parameter_intervention_handlers = []
         count = 0
         for time, param in self.interventions.items():
-            static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
-                StaticParameterIntervention(time, dict([(param, torch.as_tensor(x[count]))]))
-            ]
+            static_parameter_intervention_handlers = (
+                static_parameter_intervention_handlers
+                + [
+                    StaticParameterIntervention(
+                        time, dict([(param, torch.as_tensor(x[count]))])
+                    )
+                ]
+            )
             print(x, time, dict([(param, torch.as_tensor(x[count]))]))
             count = count + 1
 
         def wrapped_model():
             with LogTrajectory(self.timespan) as lt:
-                with TorchDiffEq(method=self.solver_method, options=self.solver_options):
+                with TorchDiffEq(
+                    method=self.solver_method, options=self.solver_options
+                ):
                     with contextlib.ExitStack() as stack:
                         for handler in static_parameter_intervention_handlers:
                             stack.enter_context(handler)
-                        self.model(torch.as_tensor(self.start_time), torch.as_tensor(self.end_time))
+                        self.model(
+                            torch.as_tensor(self.start_time),
+                            torch.as_tensor(self.end_time),
+                        )
 
             trajectory = lt.trajectory
             [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
@@ -115,7 +127,7 @@ class computeRisk:
                 pyro.deterministic(f"{k}_observable", v)
                 for k, v in trajectory_observables.items()
             ]
-        
+
         # Sample from intervened model
         samples = pyro.infer.Predictive(
             wrapped_model, guide=self.guide, num_samples=self.num_samples
@@ -142,7 +154,7 @@ class solveOUU:
         optimizer_algorithm: str = "basinhopping",
         maxfeval: int = 100,
         maxiter: int = 100,
-        u_bounds: np.ndarray = np.atleast_2d([[0],[1]]),
+        u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -169,9 +181,15 @@ class solveOUU:
             method="COBYLA",
             tol=1e-5,
             callback=update_progress,
-            options={"rhobeg": 0.1*np.linalg.norm(self.u_bounds[1,:] - self.u_bounds[0,:]), "disp": False, "maxiter": self.maxfeval, "catol": 1e-5},
+            options={
+                "rhobeg": 0.1
+                * np.linalg.norm(self.u_bounds[1, :] - self.u_bounds[0, :]),
+                "disp": False,
+                "maxiter": self.maxfeval,
+                "catol": 1e-5,
+            },
         )
-        take_step = RandomDisplacementBounds(self.u_bounds[0,:], self.u_bounds[1,:])
+        take_step = RandomDisplacementBounds(self.u_bounds[0, :], self.u_bounds[1, :])
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
         #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
 

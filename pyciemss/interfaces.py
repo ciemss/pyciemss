@@ -31,6 +31,7 @@ import numpy as np
 import time
 from math import ceil
 
+
 @pyciemss_logging_wrapper
 def ensemble_sample(
     model_paths_or_jsons: List[Union[str, Dict]],
@@ -535,7 +536,7 @@ def calibrate(
 
 def optimize(
     model_path_or_json: Union[str, Dict],
-    end_time: float,    
+    end_time: float,
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
@@ -565,7 +566,7 @@ def optimize(
         logging_step_size: float
             - The step size to use for logging the trajectory.
         qoi: Callable
-            - 
+            -
         risk_bounds: float
             -
         static_parameter_interventions: Dict[float, Dict[str, Intervention]]
@@ -595,7 +596,7 @@ def optimize(
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
         n_samples_ouu: int
-            - 
+            -
         maxiter: int = 2
             - Maximum number of basinhopping iterations: >0 leads to multi-start
         maxfeval: int
