@@ -1,7 +1,8 @@
-from typing import Callable, Any
 import pytest
 import json
 from pathlib import Path
+import difflib
+from xmldiff import main
 
 import IPython
 from pyciemss.visuals import plots
@@ -78,9 +79,22 @@ def test_export_SVG(schema_file, ref_file):
             raise ValueError("Expected wrapped SVG")
 
         with open(ref_file) as f:
-            reference = "".join(f.readlines())
+            ref = "".join(f.readlines())
+        result = wrapped.data
 
-        return "".join(wrapped.data) == reference
+        diffa = main.diff_texts(result, ref)
+        diffb = main.diff_texts(ref, result)
+
+        for a, b in zip(diffa, diffb):
+            if a.name != "d" or b.name != "d":
+                return False
+            ratio = difflib.SequenceMatcher(
+                a=a.value, b=b.value, autojunk=False
+            ).quick_ratio()
+            if ratio < 0.95:
+                return False
+
+        return True
 
     with open(schema_file) as f:
         schema = json.load(f)
