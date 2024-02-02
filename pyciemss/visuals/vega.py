@@ -29,7 +29,7 @@ def load_schema(name: str) -> VegaSchema:
     return json.loads(pkgutil.get_data(__name__, f"schemas/{name}"))
 
 
-def resize(schema: VegaSchema, *, w: int = None, h: int = None) -> VegaSchema:
+def resize(schema: VegaSchema, *, w: Optional[int] = None, h: Optional[int] = None) -> VegaSchema:
     """Utility for changing the size of a schema.
     Always returns a copy of the original schema.
 

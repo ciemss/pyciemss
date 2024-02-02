@@ -1,3 +1,4 @@
+from typing import Optional
 import pandas as pd
 import numpy as np
 import torch
@@ -88,7 +89,7 @@ def triangle_weights(samples, concentration=20, subdiv=7):
 
 
 def triangle_contour(
-    data: pd.DataFrame, *, title: str = None, contour: bool = True
+    data: pd.DataFrame, *, title: Optional[str] = None, contour: bool = True
 ) -> vega.VegaSchema:
     """Create a contour plot from the passed datasource.
 

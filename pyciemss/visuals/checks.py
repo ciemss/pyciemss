@@ -22,6 +22,7 @@ class Result:
     status: bool
     checks: Dict[str, Any]
     schema: Dict
+    aligned: Optional[Any] = None
 
     def __repr__(self):
         always_display = ["status", "checks", "schema"]
@@ -39,7 +40,7 @@ class Result:
 
 
 def contains(
-    ref_lower: Number, ref_upper: Number, pct: float = None
+    ref_lower: Number, ref_upper: Number, pct: Optional[float] = None
 ) -> Callable[[pd.DataFrame], bool]:
     """Check-generator function. Returns a function that performs a test.
 

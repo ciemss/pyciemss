@@ -14,19 +14,19 @@ from .graphs import attributed_graph, spring_force_graph
 
 
 __all__ = [
-    VegaSchema,
-    pad,
-    resize,
-    set_title,
-    rescale,
-    orient_legend,
-    triangle_contour,
-    trajectories,
-    calibration,
-    histogram_multi,
-    attributed_graph,
-    spring_force_graph,
-    heatmap_scatter,
+    "VegaSchema",
+    "pad",
+    "resize",
+    "set_title",
+    "rescale",
+    "orient_legend",
+    "triangle_contour",
+    "trajectories",
+    "calibration",
+    "histogram_multi",
+    "attributed_graph",
+    "spring_force_graph",
+    "heatmap_scatter",
 ]
 
 
@@ -39,7 +39,7 @@ def save_schema(schema: Dict[str, Any], path: str):
 def ipy_display(
     schema: Dict[str, Any],
     *,
-    format: Literal["PNG", "SVG", "interative"] = "PNG",
+    format: Literal["png", "svg", "PNG", "SVG", "interative"] = "PNG",
     force_clear: bool = False,
     dpi: Optional[int] = None,
     **kwargs,

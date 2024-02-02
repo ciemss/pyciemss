@@ -1,4 +1,4 @@
-from typing import Dict, Union, Any, Optional, Literal
+from typing import Dict, Union, Any, Optional, Literal, List
 
 from numbers import Integral, Number
 import pandas as pd
@@ -125,9 +125,9 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, all] = all,
     drop: Union[str, list, None] = None,
-    markers: Optional[dict[str, Number]] = None,
+    base_markers: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
-    colors: Optional[dict] = None,
+    colors: Optional[Dict] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     join_points: bool = True,
@@ -224,7 +224,7 @@ def trajectories(
     else:
         points = []
 
-    if markers is not None:
+    if base_markers is not None:
         markers = [{"timepoint": v, "label": k} for k, v in markers.items()]
     else:
         markers = []
@@ -313,8 +313,8 @@ def _nice_df(df):
 
 
 def _clean_nans(
-    entries: list[dict], *, parent: bool = True, replace: Optional[Any] = None
-) -> list[dict]:
+    entries: List[Dict], *, parent: bool = True, replace: Optional[Any] = None
+) -> List[Dict]:
     """Internal Utlitiy. Clean list of entries for json serailizazation.
     ONLY LOOKS ONE LEVEL DOWN.
 
@@ -354,7 +354,7 @@ def _clean_nans(
         if parent:
             entries = [e for e in entries if not has_nan(e)]
         else:
-            entries = [remove_nan(e, replace) for e in entries]
+            entries = [maybe_replace(e, replace) for e in entries]
     else:
         if parent:
             entries = [replace if has_nan(e) else e for e in entries]

@@ -1,4 +1,4 @@
-from typing import List, Callable, Optional, Tuple
+from typing import List, Callable, Optional, Tuple, Dict, Union, Any
 
 from numbers import Number
 
@@ -22,7 +22,7 @@ def histogram_multi(
     bin_rule: Callable = sturges_bin,
     return_bins: bool = False,
     **data,
-) -> vega.VegaSchema:
+) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, Dict[str, Any]]]:
     """
     Create a histogram with server-side binning.
 

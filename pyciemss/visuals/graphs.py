@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Any, Tuple
 from numbers import Number
 import networkx as nx
 
@@ -110,7 +110,7 @@ def attributed_graph(
 def spring_force_graph(
     graph: nx.Graph,
     node_labels: Union[str, None] = "label",
-    layout: Optional[dict[any, (Number, Number)]] = None,
+    layout: Optional[dict[Any, Tuple[Number, Number]]] = None,
     directed_graph: bool = True,
 ) -> vega.VegaSchema:
     """Draw a general spring-force graph
