@@ -3,15 +3,19 @@ import json
 from pathlib import Path
 import difflib
 from xmldiff import main
+import numpy as np
 
 import IPython
 from pyciemss.visuals import plots
+from pyciemss.visuals import checks
+from scipy.spatial.distance import jensenshannon
 
+from PIL import Image
 
-"""
-Test that the schemas follow some common conventions.  There may be reason
-to violate these conventions, but these are lint-like checks that may help
-to avoid problems"""
+import os
+import io
+import re
+
 
 
 _schema_root = (
@@ -20,21 +24,96 @@ _schema_root = (
 
 _reference_root = Path(__file__).parent / "reference_images"
 
+create_reference_images = False
+
+def save_png_svg(png_image, name, ref_ext):
+    """Save new reference files"""
+    if ref_ext == "png":
+        with open(os.path.join(_reference_root, f"{name}.{ref_ext}"), "wb") as f:
+            f.write(png_image.data)
+    elif ref_ext == "svg":
+        with open(os.path.join(_reference_root, f"{name}.{ref_ext}"), "w") as f:
+            f.write(png_image.data)
+
+def svg_matches(wrapped, ref_file):
+    """Return the reference and svg created from schema
+
+    wrapped -- IPython display SVG, contains the data property
+    ref_file -- path to reference files
+    returns -- Return the content and reference svg files 
+    """
+    if not isinstance(wrapped, IPython.display.SVG):
+        raise ValueError("Expected wrapped SVG")
+
+    with open(ref_file) as f:
+        reference = "".join(f.readlines())
+        # replace what seems to be random numbers for gradient and cliip in svg
+    reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
+    reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
+    
+    content = re.sub('gradient_?[0-9]*', "gradient_REPLACED", "".join(wrapped.data))
+    content = re.sub('clip[0-9]*', "clipREPLACED", content)
+    return content, reference
+
+def background_white(orig_image):
+    """Convert transparant background to white"""
+    image = orig_image.convert("RGBA")
+    new_image = Image.new("RGBA", image.size, "WHITE")
+    new_image.paste(image, mask=image)
+    new_image.convert('L')
+    return new_image
+
+def png_matches(schema, ref_file, threshold):
+    """Check how similiar the histograms 
+    of the reference and png created from schema are. 
+
+    schema -- schema to create png file
+    ref_file -- path to reference files
+    returns -- boolean if jenson shannon value is under threshold
+    """
+    image = plots.ipy_display(schema, format="bytes", dpi=72) 
+    # open Image
+    reference = Image.open(ref_file)
+    content = Image.open(io.BytesIO(image))
+    # background set to white
+    new_reference = background_white(reference)
+    new_content = background_white(content)
+    # convert to list
+    content_pixels = list(new_content.getdata())
+    reference_pixels =  list(new_reference.getdata())
+    #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
+    content_hist, edges = np.histogram(content_pixels,  bins=100)
+    reference_hist, edges = np.histogram(reference_pixels,  bins=100)
+    # check if histograms are similiar enough
+    return checks.JS(threshold, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
+
+
+"""
+Test that the schemas follow some common conventions.  There may be reason
+to violate these conventions, but these are lint-like checks that may help
+to avoid problems"""
+
 
 def schemas(ref_ext=None):
-    """
+    """  
     Find all schema files.  If ref_ext is not None, figure out names for
     """
     schemas = [*_schema_root.glob("*.vg.json")]
     assert len(schemas) > 0, "No schemas found"
 
     if ref_ext is not None:
-        reference_files = [
-            _reference_root / f"{schema.stem.split('.')[0]}.{ref_ext}"
+        reference_names = [f"{schema.stem.split('.')[0]}"
             for schema in schemas
         ]
-        reference_files = [f for f in reference_files if f.exists()]
-        schemas = [*zip(schemas, reference_files)]
+        reference_files = [
+            _reference_root / f"{names}.{ref_ext}"
+            for names in reference_names
+        ]
+        # if creating reference images, okay to keep schemas without pngs
+        if not create_reference_images:
+            reference_files = [f for f in reference_files if f.exists()]
+
+        schemas = [*zip(schemas, reference_files, reference_names)]
         assert (
             len(schemas) > 0
         ), f"No schema with images type '{ref_ext}' found"
@@ -53,27 +132,31 @@ def test_export_interactive(schema_file):
     assert image is None, f"Interactive failed for {schema_file}"
 
 
-@pytest.mark.parametrize("schema_file, ref_file", schemas(ref_ext="png"))
-def test_export_PNG(schema_file, ref_file):
-    def png_matches(wrapped):
-        if not isinstance(wrapped, IPython.display.Image):
-            raise ValueError("Expected wrapped PNG")
+@pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="png"))
+def test_export_PNG(schema_file, ref_file, name):
+    
+    """  
+    Test all default schema files against the reference files for PNG files
 
-        with open(ref_file, mode="rb") as f:
-            reference = f.read()
-
-        return wrapped.data == reference
-
+    schema_file: default schema files saved within the visuals module
+    ref_file: compare the created  png to this reference file
+    name: stem name of reference file
+    """
     with open(schema_file) as f:
         schema = json.load(f)
 
-    image = plots.ipy_display(schema, format="PNG")
+    image = plots.ipy_display(schema, format = "PNG", dpi=72)
+    # create reference files if schema is new
+    if create_reference_images:
+        save_png_svg(image, name, "png")
 
-    assert png_matches(image), f"PNG failed for {schema_file}"
+    test_threshold = 0.02
+    JS_boolean, JS_score = png_matches(schema, ref_file, test_threshold)
+    assert JS_boolean, f"{name}: PNG Histogram divergence: Shannon Jansen value {JS_score} > {test_threshold} "
 
 
-@pytest.mark.parametrize("schema_file, ref_file", schemas(ref_ext="svg"))
-def test_export_SVG(schema_file, ref_file):
+@pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
+def test_export_SVG(schema_file, ref_file, name):
     def svg_matches(wrapped):
         if not isinstance(wrapped, IPython.display.SVG):
             raise ValueError("Expected wrapped SVG")
@@ -100,7 +183,7 @@ def test_export_SVG(schema_file, ref_file):
         schema = json.load(f)
 
     image = plots.ipy_display(schema, format="SVG")
-    assert svg_matches(image), f"SVG failed for {schema_file}"
+    assert svg_matches(image), f"{name}: SVG failed for {schema_file}"
 
 
 @pytest.mark.parametrize("schema_file", schemas())

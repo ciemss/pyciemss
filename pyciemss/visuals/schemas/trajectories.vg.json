@@ -2,7 +2,6 @@
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 500,
   "height": 300,
-
   "scales": [
     {
       "name": "xscale",

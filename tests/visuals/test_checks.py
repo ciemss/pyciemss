@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 import numpy as np
 
-
 def test_JS():
     d1 = [0, 0, 0, 0, 0, 5, 9, 5, 0]
     d2 = [5, 9, 5, 0, 0, 5, 9, 5, 0]
