@@ -41,7 +41,8 @@
           {"data": "distributions", "field": "trajectory"},
           {"data": "traces", "field": "trajectory"},
           {"data": "points", "field": "trajectory"}
-         ]
+         ],
+         "sort": {"order": "ascending"}
       }
     }
   ],
