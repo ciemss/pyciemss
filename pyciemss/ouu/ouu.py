@@ -23,10 +23,14 @@ class RandomDisplacementBounds:
     Callable to take random displacement step within bounds
     """
 
-    def __init__(self, xmin, xmax, stepsize=0.25):
+    def __init__(self, xmin, xmax, stepsize=None):
         self.xmin = xmin
         self.xmax = xmax
-        self.stepsize = stepsize
+        if stepsize:
+            self.stepsize = stepsize
+        else:
+            # stepsize is set to 20% of longest euclidean distance
+            self.stepsize = 0.2*np.linalg.norm(xmax - xmin)
 
     def __call__(self, x):
         return np.clip(
@@ -67,10 +71,11 @@ class computeRisk:
         self.guide = guide
         self.solver_method = solver_method
         self.solver_options = solver_options
-        print(start_time + logging_step_size, end_time, logging_step_size)
+        # print(start_time + logging_step_size, end_time, logging_step_size)
         self.timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     def __call__(self, x):
+        print(x)
         # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
         # Compute quanity of interest
@@ -136,6 +141,7 @@ class solveOUU:
         optimizer_algorithm: str = "basinhopping",
         maxfeval: int = 100,
         maxiter: int = 100,
+        u_bounds: np.ndarray = np.atleast_2d([[0],[1]]),
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -146,6 +152,7 @@ class solveOUU:
         self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
         self.maxfeval = maxfeval
+        self.u_bounds = u_bounds
         # self.kwargs = kwargs
 
     def solve(self):
@@ -160,19 +167,19 @@ class solveOUU:
             method="COBYLA",
             tol=1e-5,
             callback=update_progress,
-            options={"disp": False, "maxiter": self.maxfeval},
+            options={"rhobeg": 0.2*np.linalg.norm(self.u_bounds[1,:] - self.u_bounds[0,:]), "disp": False, "maxiter": self.maxfeval, "catol": 1e-5},
         )
-        # take_step = RandomDisplacementBounds(self.u_bounds[0], self.u_bounds[1], stepsize=stepsize)
+        take_step = RandomDisplacementBounds(self.u_bounds[0,:], self.u_bounds[1,:])
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
         #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
 
         result = basinhopping(
             self.objfun,
             self.x0,
-            stepsize=0.25,
             T=1.5,
             niter=self.maxiter,
             minimizer_kwargs=minimizer_kwargs,
+            take_step=take_step,
             interval=2,
             disp=False,
         )

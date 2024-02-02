@@ -623,7 +623,7 @@ def optimize(
         solver_method=solver_method,
         solver_options=solver_options,
     )
-    # Define problem constraints
+    # Define constraints >= 0
     constraints = (
         # risk constraint
         {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
