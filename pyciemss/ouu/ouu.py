@@ -71,16 +71,15 @@ class computeRisk:
         self.guide = guide
         self.solver_method = solver_method
         self.solver_options = solver_options
-        # print(start_time + logging_step_size, end_time, logging_step_size)
         self.timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
     def __call__(self, x):
-        print(x)
         # Apply intervention and perform forward uncertainty propagation
         samples = self.propagate_uncertainty(x)
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
         # Estimate risk measure
+        print(x, sample_qoi, self.risk_measure(sample_qoi))
         return self.risk_measure(sample_qoi)
 
     def propagate_uncertainty(self, x):
@@ -96,6 +95,7 @@ class computeRisk:
             static_parameter_intervention_handlers = static_parameter_intervention_handlers + [
                 StaticParameterIntervention(time, dict([(param, torch.as_tensor(x[count]))]))
             ]
+            print(x, time, dict([(param, torch.as_tensor(x[count]))]))
             count = count + 1
 
         def wrapped_model():
@@ -120,6 +120,7 @@ class computeRisk:
         samples = pyro.infer.Predictive(
             wrapped_model, guide=self.guide, num_samples=self.num_samples
         )()
+        # print(samples)
         return samples
 
 
@@ -161,13 +162,14 @@ class solveOUU:
         def update_progress(xk):
             pbar.update(1)
 
-        # wrapper around SciPy optimizer(s).
+        # wrapper around SciPy optimizer(s)
+        # rhobeg is set to 10% of longest euclidean distance
         minimizer_kwargs = dict(
             constraints=self.constraints,
             method="COBYLA",
             tol=1e-5,
             callback=update_progress,
-            options={"rhobeg": 0.2*np.linalg.norm(self.u_bounds[1,:] - self.u_bounds[0,:]), "disp": False, "maxiter": self.maxfeval, "catol": 1e-5},
+            options={"rhobeg": 0.1*np.linalg.norm(self.u_bounds[1,:] - self.u_bounds[0,:]), "disp": False, "maxiter": self.maxfeval, "catol": 1e-5},
         )
         take_step = RandomDisplacementBounds(self.u_bounds[0,:], self.u_bounds[1,:])
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,

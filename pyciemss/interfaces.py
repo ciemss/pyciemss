@@ -645,6 +645,7 @@ def optimize(
         constraints=constraints,
         maxiter=maxiter,
         maxfeval=maxfeval,
+        u_bounds=bounds_np,
     ).solve()
 
     # Rounding up to given number of decimal places

@@ -18,6 +18,7 @@ def scenario2dec_nday_average(
             dataQoI = dataCube[contexts[0]].detach().numpy()
         else:
             dataQoI = dataCube[contexts[0]].detach().numpy()
+    print(dataQoI[:, -ndays:], np.mean(dataQoI[:, -ndays:], axis=1))
 
     return np.mean(dataQoI[:, -ndays:], axis=1)
 
