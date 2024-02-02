@@ -133,7 +133,7 @@ class solveOUU:
         self,
         x0: List[float],
         objfun: Callable,
-        constraints: Tuple[Dict[str, object]],
+        constraints: Tuple[Dict[str, object], Dict[str, object], Dict[str, object]],
         minimizer_kwargs: Dict = dict(
             method="COBYLA",
             tol=1e-5,
