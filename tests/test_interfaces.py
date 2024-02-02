@@ -14,6 +14,7 @@ from .fixtures import (
     LOGGING_STEP_SIZES,
     MODEL_URLS,
     MODELS,
+    NON_POS_INTS,
     NUM_SAMPLES,
     START_TIMES,
     check_result_sizes,
@@ -211,7 +212,9 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+            "inferred_parameters"
+        ]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -256,7 +259,8 @@ def test_calibrate_deterministic(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters, _ = calibrate(*calibrate_args, **calibrate_kwargs)
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+        inferred_parameters = output["inferred_parameters"]
 
     assert isinstance(inferred_parameters, pyro.nn.PyroModule)
 
@@ -308,7 +312,7 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        _, loss = calibrate(*calibrate_args, **calibrate_kwargs)
+        loss = calibrate(*calibrate_args, **calibrate_kwargs)["loss"]
 
     # SETUP INTERVENTION
 
@@ -335,8 +339,11 @@ def test_calibrate_interventions(
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        intervened_parameters, intervened_loss = calibrate(
-            *calibrate_args, **calibrate_kwargs
+        output = calibrate(*calibrate_args, **calibrate_kwargs)
+
+        intervened_parameters, intervened_loss = (
+            output["inferred_parameters"],
+            output["loss"],
         )
 
     assert intervened_loss != loss
@@ -346,6 +353,49 @@ def test_calibrate_interventions(
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+def test_calibrate_progress_hook(
+    model_fixture, start_time, end_time, logging_step_size
+):
+    model_url = model_fixture.url
+
+    (
+        _,
+        calibrate_end_time,
+        sample_args,
+        sample_kwargs,
+    ) = setup_calibrate(model_fixture, start_time, end_time, logging_step_size)
+
+    calibrate_args = [model_url, model_fixture.data_path]
+
+    class TestProgressHook:
+        def __init__(self):
+            self.iterations = []
+            self.losses = []
+
+        def __call__(self, iteration, loss):
+            # Log the loss and iteration number
+            self.iterations.append(iteration)
+            self.losses.append(loss)
+
+    progress_hook = TestProgressHook()
+
+    calibrate_kwargs = {
+        "data_mapping": model_fixture.data_mapping,
+        "start_time": start_time,
+        "progress_hook": progress_hook,
+        **CALIBRATE_KWARGS,
+    }
+
+    calibrate(*calibrate_args, **calibrate_kwargs)
+
+    assert len(progress_hook.iterations) == CALIBRATE_KWARGS["num_iterations"]
+    assert len(progress_hook.losses) == CALIBRATE_KWARGS["num_iterations"]
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
@@ -374,6 +424,7 @@ def test_output_format(
     assert processed_result["sample_id"].dtype == np.int64
 
 
+
 @pytest.mark.parametrize("model_url", [MODEL_URLS[0]])
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -395,3 +446,35 @@ def test_optimize(
     
     assert (bounds_interventions[0]<=opt_result.x).all()
     assert (opt_result.x<=bounds_interventions[1]).all()
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
+def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
+    # Assert that a ValueError is raised when num_iterations is not a positive integer
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            num_iterations=bad_num_iterations,
+        )
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("bad_num_samples", NON_POS_INTS)
+def test_non_pos_int_sample(
+    sample_method, model_url, end_time, logging_step_size, bad_num_samples
+):
+    # Assert that a ValueError is raised when num_samples is not a positive integer
+    with pytest.raises(ValueError):
+        sample_method(
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples=bad_num_samples,
+        )
