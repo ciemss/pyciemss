@@ -48,7 +48,7 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Dict[torch.Tensor, Dict[str, Intervention]],
+        interventions: Dict[torch.Tensor, str],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
@@ -133,7 +133,7 @@ class solveOUU:
         self,
         x0: List[float],
         objfun: Callable,
-        constraints: Tuple[Dict],
+        constraints: Tuple[Dict[str, object]],
         minimizer_kwargs: Dict = dict(
             method="COBYLA",
             tol=1e-5,
