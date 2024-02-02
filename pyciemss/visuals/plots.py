@@ -79,12 +79,6 @@ def ipy_display(
         bundle = {"application/vnd.vega.v5+json": schema}
         print("", end=None)
         IPython.display.display(bundle, raw=True)
-
-    elif format == "bytes":
-        if dpi and "scale" not in kwargs:
-            kwargs["scale"] = dpi // 72
-        png_data = vl_convert.vega_to_png(schema, **kwargs)
-        return png_data
     
     elif format == "png":
         if dpi and "scale" not in kwargs:

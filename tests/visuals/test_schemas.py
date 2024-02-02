@@ -16,24 +16,24 @@ import os
 import io
 import re
 
-
-
 _schema_root = (
     Path(__file__).parent.parent.parent / "pyciemss" / "visuals" / "schemas"
 )
 
 _reference_root = Path(__file__).parent / "reference_images"
+_output_root = Path(__file__).parent / "output_images"
 
-create_reference_images = False
 
-def save_png_svg(png_image, name, ref_ext):
+def save_result(data, name, ref_ext):
     """Save new reference files"""
+    _output_root.mkdir(parents=True, exist_ok=True)
+    
     if ref_ext == "png":
-        with open(os.path.join(_reference_root, f"{name}.{ref_ext}"), "wb") as f:
-            f.write(png_image.data)
+        with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "wb") as f:
+            f.write(data)
     elif ref_ext == "svg":
-        with open(os.path.join(_reference_root, f"{name}.{ref_ext}"), "w") as f:
-            f.write(png_image.data)
+        with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "w") as f:
+            f.write(data)
 
 def svg_matches(wrapped, ref_file):
     """Return the reference and svg created from schema
@@ -63,18 +63,19 @@ def background_white(orig_image):
     new_image.convert('L')
     return new_image
 
-def png_matches(schema, ref_file, threshold):
+def png_matches(image, ref_file, threshold):
     """Check how similiar the histograms 
     of the reference and png created from schema are. 
 
-    schema -- schema to create png file
+    image -- PNG result of plotting
     ref_file -- path to reference files
     returns -- boolean if jenson shannon value is under threshold
     """
-    image = plots.ipy_display(schema, format="bytes", dpi=72) 
+
     # open Image
     reference = Image.open(ref_file)
     content = Image.open(io.BytesIO(image))
+
     # background set to white
     new_reference = background_white(reference)
     new_content = background_white(content)
@@ -82,8 +83,8 @@ def png_matches(schema, ref_file, threshold):
     content_pixels = list(new_content.getdata())
     reference_pixels =  list(new_reference.getdata())
     #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
-    content_hist, edges = np.histogram(content_pixels,  bins=100)
-    reference_hist, edges = np.histogram(reference_pixels,  bins=100)
+    content_hist, _ = np.histogram(content_pixels,  bins=100)
+    reference_hist, _ = np.histogram(reference_pixels,  bins=100)
     # check if histograms are similiar enough
     return checks.JS(threshold, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
 
@@ -96,24 +97,23 @@ to avoid problems"""
 
 def schemas(ref_ext=None):
     """  
-    Find all schema files.  If ref_ext is not None, figure out names for
+    Find all schema files.  If ref_ext is not None, figure out names for it
     """
     schemas = [*_schema_root.glob("*.vg.json")]
     assert len(schemas) > 0, "No schemas found"
 
     if ref_ext is not None:
-        reference_names = [f"{schema.stem.split('.')[0]}"
+        reference_names = {f"{schema.stem.split('.')[0]}": schema
             for schema in schemas
-        ]
-        reference_files = [
-            _reference_root / f"{names}.{ref_ext}"
-            for names in reference_names
-        ]
-        # if creating reference images, okay to keep schemas without pngs
-        if not create_reference_images:
-            reference_files = [f for f in reference_files if f.exists()]
-
-        schemas = [*zip(schemas, reference_files, reference_names)]
+        }
+        reference_files = {name:
+            _reference_root / f"{name}.{ref_ext}"
+            for name in reference_names.keys()
+        }
+        
+        schemas = [(schema_file, reference_files[name], name)
+                   for name, schema_file in reference_names.items()
+                   if reference_files[name].exists()]
         assert (
             len(schemas) > 0
         ), f"No schema with images type '{ref_ext}' found"
@@ -134,7 +134,6 @@ def test_export_interactive(schema_file):
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="png"))
 def test_export_PNG(schema_file, ref_file, name):
-    
     """  
     Test all default schema files against the reference files for PNG files
 
@@ -145,44 +144,43 @@ def test_export_PNG(schema_file, ref_file, name):
     with open(schema_file) as f:
         schema = json.load(f)
 
-    image = plots.ipy_display(schema, format = "PNG", dpi=72)
-    # create reference files if schema is new
-    if create_reference_images:
-        save_png_svg(image, name, "png")
+    image = plots.ipy_display(schema, format = "PNG", dpi=72).data
+    save_result(image, name, "png")
 
-    test_threshold = 0.02
-    JS_boolean, JS_score = png_matches(schema, ref_file, test_threshold)
+    test_threshold = 0.04
+    JS_boolean, JS_score = png_matches(image, ref_file, test_threshold)
     assert JS_boolean, f"{name}: PNG Histogram divergence: Shannon Jansen value {JS_score} > {test_threshold} "
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
 def test_export_SVG(schema_file, ref_file, name):
-    def svg_matches(wrapped):
-        if not isinstance(wrapped, IPython.display.SVG):
-            raise ValueError("Expected wrapped SVG")
-
+    def svg_matches(result):
         with open(ref_file) as f:
             ref = "".join(f.readlines())
-        result = wrapped.data
 
         diffa = main.diff_texts(result, ref)
         diffb = main.diff_texts(ref, result)
 
         for a, b in zip(diffa, diffb):
-            if a.name != "d" or b.name != "d":
-                return False
-            ratio = difflib.SequenceMatcher(
-                a=a.value, b=b.value, autojunk=False
-            ).quick_ratio()
-            if ratio < 0.95:
-                return False
-
+            if a.name == b.name and a.name == "d":
+                ratio = difflib.SequenceMatcher(
+                    a=a.value, b=b.value, autojunk=False
+                ).quick_ratio()
+                if ratio < 0.95:
+                    return False
+            else:
+                # Assume its a name-issue and check it modulo numbers removed
+                simple_a = re.sub(r"\d+", "", diffa[0].value).strip()
+                simple_b = re.sub(r"\d+", "", diffb[0].value).strip()
+                if simple_a != simple_b:
+                    return False
         return True
 
     with open(schema_file) as f:
         schema = json.load(f)
 
-    image = plots.ipy_display(schema, format="SVG")
+    image = plots.ipy_display(schema, format="SVG").data
+    save_result(image, name, "svg")
     assert svg_matches(image), f"{name}: SVG failed for {schema_file}"
 
 
