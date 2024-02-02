@@ -61,10 +61,10 @@ class TestTrajectory:
     def traces(distributions):
         return (
             distributions[distributions["sample_id"] == 0]
-            .set_index("timepoint_notional")[["dead_observable", "I_state"]]
+            .set_index("timepoint_notional")[["dead_observable_state", "I_state"]]
             .rename(
                 columns={
-                    "dead_observable": "dead_exemplar",
+                    "dead_observable_state": "dead_exemplar",
                     "I_state": "I_exemplar",
                 }
             )
@@ -100,20 +100,20 @@ class TestTrajectory:
             assert name not in kept_names, "Bad name unexpectedly found"
 
     def test_keep(self, distributions):
-        schema = plots.trajectories(distributions, keep=".*_observable")
+        schema = plots.trajectories(distributions, keep=".*_observable.*")
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
 
         kept = sorted(df["trajectory"].unique())
         assert [
-            "dead_observable",
-            "exposed_observable",
-            "hospitalized_observable",
-            "infected_observable",
+            "dead_observable_state",
+            "exposed_observable_state",
+            "hospitalized_observable_state",
+            "infected_observable_state",
         ] == kept, f"Keeping by regex failed.  Kept {kept}"
 
-        keep_list = ["dead_observable", "exposed_observable"]
+        keep_list = ["dead_observable_state", "exposed_observable_state"]
         schema = plots.trajectories(distributions, keep=keep_list)
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
@@ -131,9 +131,9 @@ class TestTrajectory:
         df = pd.DataFrame(
             vega.find_named(schema["data"], "distributions")["values"]
         )
-        assert ["dead", "exposed"] == sorted(
+        assert ["dead_observable", "exposed_observable"] == sorted(
             df["trajectory"].unique()
-        ), "Rename after jeeping"
+        ), "Rename after keeping"
 
     def test_keep_drop(self, distributions):
         assert (
@@ -174,7 +174,7 @@ class TestTrajectory:
             "H_state" in distributions.columns
         ), "Exepected trajectory not found in pre-test"
 
-        should_drop = [p for p in distributions.columns if "_observable" in p]
+        should_drop = [p for p in distributions.columns if "_observable_state" in p]
         assert (
             len(should_drop) > 0
         ), "Exepected trajectory not found in pre-test"
@@ -212,7 +212,7 @@ class TestTrajectory:
             "R_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from pattern"
         assert (
-            "hospitalized_observable" not in df["trajectory"].unique()
+            "hospitalized_observable_state" not in df["trajectory"].unique()
         ), "Trajectory still present after drop from pattern"
 
     def test_points(self, distributions, observed_points):

@@ -41,7 +41,7 @@ def convert_to_output_format(
             name = (
                 name + "_state"
                 if not (
-                    name.endswith("_state") or name.endswith("_observable")
+                    name.endswith("_state")
                 )
                 else name
             )
