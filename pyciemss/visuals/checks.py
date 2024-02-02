@@ -1,14 +1,12 @@
-from typing import List, Dict, Any, Callable, Optional
+from typing import List, Dict, Any, Callable, Optional, Union
 from numbers import Number
 
 from . import plots
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
-
+from plots import VegaSchema
 from dataclasses import dataclass
-
-# TODO: Look at scipy's KL and JS
 
 
 @dataclass(repr=False)
@@ -21,7 +19,7 @@ class Result:
 
     status: bool
     checks: Dict[str, Any]
-    schema: Dict
+    schema: VegaSchema
     aligned: Optional[Any] = None
 
     def __repr__(self):
@@ -110,7 +108,7 @@ def check_distribution_range(
     upper: Number,
     *,
     label: Optional[str] = None,
-    tests: Dict[str, Callable[[pd.Series, Number, Number], bool]] = {},
+    tests: Dict[str, Callable[[Union[pd.Series, Number, Number]], bool]] = {},
     combiner: Callable[[List[bool]], bool] = all,
     **kwargs,
 ) -> Result:

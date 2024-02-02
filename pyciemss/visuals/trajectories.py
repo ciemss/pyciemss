@@ -13,7 +13,7 @@ def select_traces(
     traces,
     *,
     select_by: Literal["mean", "var", "granger"] = "mean",
-    keep: Union[str, list, all] = all,
+    keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
 ):
@@ -27,9 +27,9 @@ def select_traces(
           - "var" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
           - "granger" -- Trajectory that "best predicts" the mean-line of the envelope (by the grangercausalitytest, maxlag=10)
 
-        keep (str, list, all): Only keep some of the 'distributions' based on keys/values.
-           - Default is the 'all' function, and it keeps all columns
-           - If a string is present, it is treated as a regex and matched against the columns. Matches are kept.
+        keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
+           - Default is the "all" string and it keeps all columns
+           - If any other string is present, it is treated as a regex and matched against the columns. Matches are kept.
            - Otherwise, assumed to be a list-like of columns to keep
            If keep is specified, the color scale ordering follows the kept order.
         drop (str, list, None): Drop specific columns from 'distributions' (applied AFTER keep)
@@ -123,7 +123,7 @@ def trajectories(
     *,
     traces: Optional[pd.DataFrame] = None,
     points: Optional[pd.DataFrame] = None,
-    keep: Union[str, list, all] = all,
+    keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     base_markers: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
@@ -146,9 +146,9 @@ def trajectories(
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
         markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
-        keep (str, list, all): Only keep some of the 'distributions' based on keys/values.
-           - Default is the 'all' function, and it keeps all columns
-           - If a string is present, it is treated as a regex and matched against the columns. Matches are kept.
+        keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
+           - Default is the string "all", and it keeps all columns
+           - If a any other string is present, it is treated as a regex and matched against the columns. Matches are kept.
            - Otherwise, assumed to be a list-like of columns to keep
            If keep is specified, the color scale ordering follows the kept order.
         drop (str, list, None): Drop specific columns from 'distributions' (applied AFTER keep)
@@ -370,7 +370,7 @@ def _keep_drop_rename(df, keep, drop, relabel):
     for use across several utilities
     """
 
-    if keep == all:
+    if keep == "all":
         keep = df.columns
     elif isinstance(keep, str):
         try:

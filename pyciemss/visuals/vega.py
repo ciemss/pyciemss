@@ -26,7 +26,11 @@ def load_schema(name: str) -> VegaSchema:
     Args:
         name -- name of the schema file.
     """
-    return json.loads(pkgutil.get_data(__name__, f"schemas/{name}"))
+    data = pkgutil.get_data(__name__, f"schemas/{name}")
+    if data is None:
+        raise ValueError(f"Could not locate requested schema file: {name}")
+    else:
+        return json.loads(data)
 
 
 def resize(schema: VegaSchema, *, w: Optional[int] = None, h: Optional[int] = None) -> VegaSchema:
