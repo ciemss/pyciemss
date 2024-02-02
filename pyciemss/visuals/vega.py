@@ -124,12 +124,12 @@ def pad(schema: VegaSchema, qty: Optional[Number] = None) -> VegaSchema:
     return schema
 
 
-def find_named(ls: list[dict], name: str, *, key="name"):
+def find_named(ls: List[dict], name: str, *, key="name"):
     """Find the thing in the list with dict key 'name' equal to the passed string"""
     return find_keyed(ls, key, name)
 
 
-def find_keyed(ls: list[dict], key: str, value: Any):
+def find_keyed(ls: List[dict], key: str, value: Any):
     """In the list of dicts, finds a think where key=value"""
     for e in ls:
         try:
@@ -141,7 +141,7 @@ def find_keyed(ls: list[dict], key: str, value: Any):
     raise ValueError(f"Attempted to find, but {key}={value} not found.")
 
 
-def delete_named(ls: list, name: str) -> List:
+def delete_named(ls: List, name: str) -> List:
     "REMOVE the first thing in ls where 'name'==name"
 
     def _maybe_keep(e, found):
@@ -174,7 +174,7 @@ def orient_legend(schema: VegaSchema, name: str, location: Optional[str]):
     return schema
 
 
-def replace_named_with(ls: list, name: str, path: List[Any], new_value: Any) -> List:
+def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> List:
     """Rebuilds the element with the given 'name' entry.
 
     An element is "named" if it has a key named "name".
