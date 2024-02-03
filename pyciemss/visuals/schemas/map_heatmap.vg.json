@@ -25,7 +25,7 @@
     "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0] : longitude"},
     { "name": "latitude", 
     "value": 0, 
-      "bind": {"input": "range", "min": -180, "max": 180, "step": 1}},
+      "bind": {"input": "range", "min": -90, "max": 90, "step": 1}},
     { "name": "center_y", 
     "value":0,
     "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1] : latitude"},    
@@ -180,12 +180,12 @@
         },
         {
           "type": "formula",
-          "expr": "height/zoom_width",
-          "as": "manual_height_ratio"
+          "expr": "geoScale('projection_original')",
+          "as": "orig_scale"
         },
         {
           "type": "formula",
-          "expr": "max(geoScale('projection_original')*datum.manual_height_ratio, geoScale('projection_original')*datum.manual_width_ratio)",
+          "expr": "datum.orig_scale*datum.manual_width_ratio",
           "as": "manual_scale"
         }
       ]
@@ -194,7 +194,7 @@
     {
       "name": "graticule",
       "transform": [
-        { "type": "graticule" }
+        { "type": "graticule", "stepMinor": [50, 5] }
       ]
     }
   ],
@@ -245,6 +245,21 @@
           "field": "datum.contour",
           "projection": "projection_updated"
         }
+      ]
+    },
+    {
+      "type": "shape",
+      "from": {"data": "graticule"},
+      "encode": {
+        "update": {
+          "strokeWidth": {"value": 1},
+          "strokeDash": {"value": 1},
+          "stroke": {"value": "#444"},
+          "fill": {"value": null}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection_updated" }
       ]
     }
   ]
