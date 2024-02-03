@@ -14,27 +14,39 @@
       "bind": {"input": "checkbox"}},
     { "name": "CountryID", "value": 4,
       "update": "pluck(data('SelectedName'),'country-code')[0]" },
+
     { "name": "CountryName", "value": "Afghanistan",
       "bind": {"input": "select", "options": [
         "Austria", "Australia", "Antarctica"
       ]}},
+
     { "name": "longitude", 
-    "value": 0, 
+    "value": 0,    
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "zoom_by_country?pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0]: longitude"}],
       "bind": {"input": "range", "min": -180, "max": 180, "step": 1}},
+
     { "name": "center_x", 
     "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0] : longitude"},
+
     { "name": "latitude", 
-    "value": 0, 
+    "value": 0,    
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "zoom_by_country?pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1]: latitude"}],
       "bind": {"input": "range", "min": -90, "max": 90, "step": 1}},
+
     { "name": "center_y", 
     "value":0,
-    "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1] : latitude"},    
-    { "name": "zoom_width", 
-    "value": 50,
+    "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1] : latitude"},  
+
+    { "name": "longitude_width", 
+    "value": 360,
       "bind": {"input": "range", "min": 1, "max": 360, "step": 1}},
+
     { "name": "scale_projection", 
     "value":50,
     "update": "zoom_by_country? pluck(data('SelectedGeometry'),'scale_country')[0]: pluck(data('SelectedGeometry'),'manual_scale')[0]"},
+
     {
       "name": "opacity", "value": 0.5
     },
@@ -160,7 +172,12 @@
         },
         {
           "type": "formula",
-          "expr": "max(50*datum.country_height_ratio, 50*datum.country_width_ratio)",
+          "expr": "geoScale('projection_original')",
+          "as": "orig_scale"
+        },
+        {
+          "type": "formula",
+          "expr": "max(datum.orig_scale*datum.country_width_ratio, datum.orig_scale*datum.country_height_ratio)",
           "as": "scale_country"
         },
         {
@@ -170,18 +187,13 @@
         },
         {
           "type": "formula",
-          "expr": "scale('projection_original', [-180 + zoom_width, 0])[0]- scale('projection_original', [-180, 0])[0]",
+          "expr": "scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0]",
           "as": "degree_width_pixels"
         },
         {
           "type": "formula",
           "expr": "width/datum.degree_width_pixels",
           "as": "manual_width_ratio"
-        },
-        {
-          "type": "formula",
-          "expr": "geoScale('projection_original')",
-          "as": "orig_scale"
         },
         {
           "type": "formula",
@@ -194,7 +206,7 @@
     {
       "name": "graticule",
       "transform": [
-        { "type": "graticule", "stepMinor": [50, 5] }
+        { "type": "graticule", "stepMinor": [10, 10] }
       ]
     }
   ],
