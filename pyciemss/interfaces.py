@@ -27,9 +27,9 @@ from pyciemss.interruptions import (
 from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
+from math import ceil
 import numpy as np
 import time
-from math import ceil
 
 
 @pyciemss_logging_wrapper
