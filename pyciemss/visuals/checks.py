@@ -5,7 +5,7 @@ from . import plots
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
-from plots import VegaSchema
+from .plots import VegaSchema
 from dataclasses import dataclass
 
 

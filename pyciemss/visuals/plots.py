@@ -73,20 +73,18 @@ def ipy_display(
     if force_clear:
         IPython.display.clear_output(wait=True)
 
-    format = format.lower()
-
-    if format == "interactive":
+    if format in ["interactive", "INTERACTIVE"]:
         bundle = {"application/vnd.vega.v5+json": schema}
         print("", end=None)
         IPython.display.display(bundle, raw=True)
     
-    elif format == "png":
+    elif format in ["png", "PNG"]:
         if dpi and "scale" not in kwargs:
             kwargs["scale"] = dpi // 72
         png_data = vl_convert.vega_to_png(schema, **kwargs)
         return IPython.display.Image(png_data)
     
-    elif format == "svg":
+    elif format in ["svg", "SVG"]:
         png_data = vl_convert.vega_to_svg(schema, **kwargs)
         return IPython.display.SVG(png_data)
     else:
