@@ -10,7 +10,7 @@ def prepare_interchange_dictionary(
     samples: Dict[str, torch.Tensor],
     time_unit: Optional[str] = None,
     timepoints: Optional[Iterable[float]] = None,
-    visual_options: Union[None, bool, dict[str, Any]] = None,
+    visual_options: Union[None, bool, Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     processed_samples = convert_to_output_format(
         samples, time_unit=time_unit, timepoints=timepoints
