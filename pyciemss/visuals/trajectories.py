@@ -225,7 +225,7 @@ def trajectories(
         points = []
 
     if base_markers is not None:
-        markers = [{"timepoint": v, "label": k} for k, v in markers.items()]
+        markers = [{"timepoint": v, "label": k} for k, v in base_markers.items()]
     else:
         markers = []
 

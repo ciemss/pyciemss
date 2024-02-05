@@ -21,6 +21,7 @@ class Result:
     checks: Dict[str, Any]
     schema: VegaSchema
     aligned: Optional[Any] = None
+    bins: Optional[Any] = None
 
     def __repr__(self):
         always_display = ["status", "checks", "schema"]
@@ -110,7 +111,7 @@ def check_distribution_range(
     label: Optional[str] = None,
     tests: Dict[str, Callable[[Union[pd.Series, Number, Number]], bool]] = {},
     combiner: Callable[[List[bool]], bool] = all,
-    **kwargs,
+    **kwargs: Dict[str, Any],
 ) -> Result:
     """
     Checks a single distribution against a lower- and upper-bound.
@@ -146,11 +147,9 @@ def check_distribution_range(
     else:
         status_msg = "Passed"
 
-    schema["title"]["text"] = ["Distribution Check (Histogram)", status_msg]
+    schema = plots.set_title(schema, ["Distribution Check (Histogram)", status_msg])
 
-    rslt = Result(status, checks, schema)
-    rslt.bins = bins
-    return rslt
+    return  Result(status, checks, schema, bins=bins)
 
 
 def compare_distributions(
@@ -205,8 +204,6 @@ def compare_distributions(
     else:
         status_msg = "Passed"
 
-    schema["title"]["text"] = ["Distribution Comparison", status_msg]
+    schema = plots.set_title(schema, ["Distribution Comparison", status_msg])
 
-    rslt = Result(status, checks, schema)
-    rslt.aligned = aligned
-    return rslt
+    return Result(status, checks, schema, aligned=aligned)

@@ -1,6 +1,6 @@
 """Utilities for working with Vega schemas"""
 
-from typing import List, Dict, Any, Literal, Optional
+from typing import List, Dict, Any, Literal, Optional, Union
 from numbers import Number
 
 from itertools import compress
@@ -82,7 +82,7 @@ def rescale(
     return schema
 
 
-def set_title(schema, title: str, *, target: Literal[None, "x", "y"] = None):
+def set_title(schema: VegaSchema, title: Union[str, List[str]], *, target: Literal[None, "x", "y"] = None):
     """
     Sets the title of a plot or axis.
 

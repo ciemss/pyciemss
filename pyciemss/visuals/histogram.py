@@ -1,4 +1,14 @@
-from typing import List, Callable, Optional, Tuple, Dict, Union, Any
+from typing import (
+    List,
+    Callable,
+    Optional,
+    Tuple,
+    Dict,
+    Union,
+    Any,
+    Literal,
+    overload,
+)
 
 from numbers import Number
 
@@ -15,6 +25,42 @@ def sturges_bin(data):
     return int(np.ceil(np.log2(len(data))) + 1)
 
 
+@overload
+def histogram_multi(
+    *,
+    xrefs: List[Number] = [],
+    yrefs: List[Number] = [],
+    bin_rule: Callable = sturges_bin,
+    return_bins: Literal[True],
+    **data,
+) -> Tuple[vega.VegaSchema, pd.DataFrame]:
+    return histogram_multi(
+        xrefs=xrefs,
+        yrefs=yrefs,
+        bin_rule=bin_rule,
+        return_bins=return_bins,
+        **data,
+    )
+
+
+@overload
+def histogram_multi(
+    *,
+    xrefs: List[Number] = [],
+    yrefs: List[Number] = [],
+    bin_rule: Callable = sturges_bin,
+    return_bins: Literal[False],
+    **data,
+) -> vega.VegaSchema:
+    return histogram_multi(
+        xrefs=xrefs,
+        yrefs=yrefs,
+        bin_rule=bin_rule,
+        return_bins=return_bins,
+        **data,
+    )
+
+
 def histogram_multi(
     *,
     xrefs: List[Number] = [],
@@ -22,7 +68,7 @@ def histogram_multi(
     bin_rule: Callable = sturges_bin,
     return_bins: bool = False,
     **data,
-) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, Dict[str, Any]]]:
+) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, pd.DataFrame]]:
     """
     Create a histogram with server-side binning.
 
