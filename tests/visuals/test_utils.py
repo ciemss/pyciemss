@@ -105,6 +105,10 @@ def test_title(distributions):
     assert "title" not in xaxis
     assert yaxis["title"] == "YTitle"
 
+    new_title = ["title", "with", "several", "parts"]
+    schema = vega.set_title(schema1, new_title)
+    assert schema["title"]["text"] == new_title
+
 
 def test_rescale(distributions):
     pass

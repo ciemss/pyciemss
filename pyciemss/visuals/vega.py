@@ -33,7 +33,9 @@ def load_schema(name: str) -> VegaSchema:
         return json.loads(data)
 
 
-def resize(schema: VegaSchema, *, w: Optional[int] = None, h: Optional[int] = None) -> VegaSchema:
+def resize(
+    schema: VegaSchema, *, w: Optional[int] = None, h: Optional[int] = None
+) -> VegaSchema:
     """Utility for changing the size of a schema.
     Always returns a copy of the original schema.
 
@@ -77,12 +79,19 @@ def rescale(
         schema["scales"], scale_name, ["type"], scaletype
     )
 
-    schema["scales"] = replace_named_with(schema["scales"], scale_name, ["zero"], zero)
+    schema["scales"] = replace_named_with(
+        schema["scales"], scale_name, ["zero"], zero
+    )
 
     return schema
 
 
-def set_title(schema: VegaSchema, title: Union[str, List[str]], *, target: Literal[None, "x", "y"] = None):
+def set_title(
+    schema: VegaSchema,
+    title: Union[str, List[str]],
+    *,
+    target: Literal[None, "x", "y"] = None,
+):
     """
     Sets the title of a plot or axis.
 
@@ -96,7 +105,15 @@ def set_title(schema: VegaSchema, title: Union[str, List[str]], *, target: Liter
     """
     schema = deepcopy(schema)
     if target is None:
-        schema["title"] = title
+        if "title" not in schema:
+            schema["title"] = ""
+
+        if isinstance(schema["title"], dict):
+            schema["title"]["text"] = title
+        elif isinstance(title, list):
+            schema["title"] = {"text": title}
+        else:
+            schema["title"] = title
     elif target == "x":
         axis = find_keyed(schema["axes"], "name", "x_axis")
         axis["title"] = title
@@ -178,7 +195,9 @@ def orient_legend(schema: VegaSchema, name: str, location: Optional[str]):
     return schema
 
 
-def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> List:
+def replace_named_with(
+    ls: List, name: str, path: List[Any], new_value: Any
+) -> List:
     """Rebuilds the element with the given 'name' entry.
 
     An element is "named" if it has a key named "name".
