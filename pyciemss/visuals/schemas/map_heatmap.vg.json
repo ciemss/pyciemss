@@ -3,7 +3,7 @@
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "A configurable map of countries of the world.",
   "width": 400,
-  "height": 200,
+  "height": 400,
   "autosize": "none",
 
   "signals": [
@@ -23,29 +23,25 @@
     { "name": "longitude", 
     "value": 0,    
     "on": [
-      {"events": {"signal": "zoom_by_country"}, "update": "zoom_by_country?pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0]: longitude"}],
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0]"}],
       "bind": {"input": "range", "min": -180, "max": 180, "step": 1}},
 
-    { "name": "center_x", 
-    "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0] : longitude"},
 
     { "name": "latitude", 
     "value": 0,    
     "on": [
-      {"events": {"signal": "zoom_by_country"}, "update": "zoom_by_country?pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1]: latitude"}],
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1]"}],
       "bind": {"input": "range", "min": -90, "max": 90, "step": 1}},
 
-    { "name": "center_y", 
-    "value":0,
-    "update": "zoom_by_country? pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1] : latitude"},  
-
     { "name": "longitude_width", 
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'scale_px')"}],
     "value": 360,
       "bind": {"input": "range", "min": 1, "max": 360, "step": 1}},
 
     { "name": "scale_projection", 
     "value":50,
-    "update": "zoom_by_country? pluck(data('SelectedGeometry'),'scale_country')[0]: pluck(data('SelectedGeometry'),'manual_scale')[0]"},
+    "update": "pluck(data('SelectedGeometry'),'manual_scale')[0]"},
 
     {
       "name": "opacity", "value": 0.5
@@ -80,8 +76,8 @@
       "name": "projection_updated",
       "scale": {"signal": "scale_projection"},
       "center": [
-        {"signal": "center_x"},
-        {"signal": "center_y"}
+        {"signal": "longitude"},
+        {"signal": "latitude"}
       ],
       "translate": [
         {"signal": "translate0"},
@@ -157,18 +153,26 @@
         },
         {
           "type": "formula",
+          "expr": "invert('projection_original', datum.centroid_country_px)",
+          "as": "centroid_country_degree"
+        },
+        {
+          "type": "formula",
           "expr": "geoBounds('projection_original', datum)",
           "as": "bounds_country_px"
         },
+
         {
           "type": "formula",
-          "expr": "width/(datum.bounds_country_px[1][0] - datum.bounds_country_px[0][0])",
-          "as": "country_width_ratio"
+          "expr": "max(datum.bounds_country_px[1][0] - datum.bounds_country_px[0][0], datum.bounds_country_px[1][1] - datum.bounds_country_px[0][1])",
+          "as": "country_scale_px"
         },
+
+
         {
           "type": "formula",
-          "expr": "height/(datum.bounds_country_px[1][1] - datum.bounds_country_px[0][1])",
-          "as": "country_height_ratio"
+          "expr": " invert('projection_original', [height,width])",
+          "as": "country_scale_degrees"
         },
         {
           "type": "formula",
@@ -177,18 +181,14 @@
         },
         {
           "type": "formula",
-          "expr": "max(datum.orig_scale*datum.country_width_ratio, datum.orig_scale*datum.country_height_ratio)",
-          "as": "scale_country"
-        },
-        {
-          "type": "formula",
-          "expr": "invert('projection_original', datum.centroid_country_px)",
-          "as": "centroid_country_degree"
-        },
-        {
-          "type": "formula",
           "expr": "scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0]",
           "as": "degree_width_pixels"
+        },
+
+        {
+          "type": "formula",
+          "expr": "invert('projection_original', [datum.country_scale_px + scale('projection_original', [-180, 0])[0], 0])[0] + 180",
+          "as": "country_width_degrees"
         },
         {
           "type": "formula",
