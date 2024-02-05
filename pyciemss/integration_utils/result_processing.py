@@ -1,28 +1,45 @@
-from typing import Any, Dict, Optional, Iterable
+from typing import Any, Dict, Optional, Iterable, Union, Any
 
 import numpy as np
 import pandas as pd
 import torch
+from pyciemss.visuals import plots
 
 
 def prepare_interchange_dictionary(
     samples: Dict[str, torch.Tensor],
+    time_unit: Optional[str] = None,
+    timepoints: Optional[Iterable[float]] = None,
+    visual_options: Union[None, bool, dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    processed_samples = convert_to_output_format(samples)
+    processed_samples = convert_to_output_format(
+        samples, time_unit=time_unit, timepoints=timepoints
+    )
 
     result = {"data": processed_samples, "unprocessed_result": samples}
+
+    if visual_options:
+        visual_options = {} if visual_options is True else visual_options
+        schema = plots.trajectories(processed_samples, **visual_options)
+        result["schema"] = schema
 
     return result
 
 
 def convert_to_output_format(
     samples: Dict[str, torch.Tensor],
+    *,
     time_unit: Optional[str] = None,
     timepoints: Optional[Iterable[float]] = None,
 ) -> pd.DataFrame:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """
+
+    if time_unit is not None and timepoints is None:
+        raise ValueError(
+            "`timeponts` must be supplied when a `time_unit` is supplied"
+        )
 
     pyciemss_results: Dict[str, Dict[str, torch.Tensor]] = {
         "parameters": {},
@@ -38,13 +55,7 @@ def convert_to_output_format(
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
         else:
-            name = (
-                name + "_state"
-                if not (
-                    name.endswith("_state")
-                )
-                else name
-            )
+            name = name + "_state" if not (name.endswith("_state")) else name
             pyciemss_results["states"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
@@ -76,7 +87,8 @@ def convert_to_output_format(
     }
 
     result = pd.DataFrame(output)
-    if time_unit is not None:
+    if time_unit is not None and timepoints is not None:
+        timepoints = [*timepoints]
         all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
         result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
 
