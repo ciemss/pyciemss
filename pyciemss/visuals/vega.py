@@ -1,12 +1,11 @@
 """Utilities for working with Vega schemas"""
 
-from typing import List, Dict, Any, Literal, Optional, Union
-from numbers import Number
-
-from itertools import compress
-from copy import deepcopy
-import pkgutil
 import json
+import pkgutil
+from copy import deepcopy
+from itertools import compress
+from numbers import Number
+from typing import Any, Dict, List, Literal, Optional, Union
 
 VegaSchema = Dict[str, Any]
 
@@ -79,9 +78,7 @@ def rescale(
         schema["scales"], scale_name, ["type"], scaletype
     )
 
-    schema["scales"] = replace_named_with(
-        schema["scales"], scale_name, ["zero"], zero
-    )
+    schema["scales"] = replace_named_with(schema["scales"], scale_name, ["zero"], zero)
 
     return schema
 
@@ -195,9 +192,7 @@ def orient_legend(schema: VegaSchema, name: str, location: Optional[str]):
     return schema
 
 
-def replace_named_with(
-    ls: List, name: str, path: List[Any], new_value: Any
-) -> List:
+def replace_named_with(ls: List, name: str, path: List[Any], new_value: Any) -> List:
     """Rebuilds the element with the given 'name' entry.
 
     An element is "named" if it has a key named "name".
