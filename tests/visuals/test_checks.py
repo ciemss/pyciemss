@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -22,9 +20,7 @@ def test_JS():
 
 
 def test_contains():
-    _, bins = plots.histogram_multi(
-        range=np.linspace(0, 20, num=100), return_bins=True
-    )
+    _, bins = plots.histogram_multi(range=np.linspace(0, 20, num=100), return_bins=True)
 
     checker = checks.contains(3, 10)
     assert checker(bins), "In range"
@@ -89,16 +85,12 @@ def test_check_distribution_range(normal0):
 
 
 def test_compare_distributions(normal0, normal2):
-    result = checks.compare_distributions(
-        normal0, normal2, tests=[checks.JS(0)]
-    )
+    result = checks.compare_distributions(normal0, normal2, tests=[checks.JS(0)])
 
     assert result.status == False
     assert "0%" in result.schema["title"]["text"][1]
 
-    result = checks.compare_distributions(
-        normal0, normal2, tests=[checks.JS(1)]
-    )
+    result = checks.compare_distributions(normal0, normal2, tests=[checks.JS(1)])
 
     assert result.status
     assert "Pass" in result.schema["title"]["text"][1]

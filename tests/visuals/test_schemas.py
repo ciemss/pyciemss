@@ -14,9 +14,7 @@ from xmldiff import main
 
 from pyciemss.visuals import checks, plots
 
-_schema_root = (
-    Path(__file__).parent.parent.parent / "pyciemss" / "visuals" / "schemas"
-)
+_schema_root = Path(__file__).parent.parent.parent / "pyciemss" / "visuals" / "schemas"
 
 _reference_root = Path(__file__).parent / "reference_images"
 _output_root = Path(__file__).parent / "output_images"
@@ -47,9 +45,7 @@ def svg_matches(wrapped, ref_file):
     reference = re.sub("gradient_?[0-9]*", "gradient_REPLACED", reference)
     reference = re.sub("clip[0-9]*", "clipREPLACED", reference)
 
-    content = re.sub(
-        "gradient_?[0-9]*", "gradient_REPLACED", "".join(wrapped.data)
-    )
+    content = re.sub("gradient_?[0-9]*", "gradient_REPLACED", "".join(wrapped.data))
     content = re.sub("clip[0-9]*", "clipREPLACED", content)
     return content, reference
 
@@ -105,9 +101,7 @@ def schemas(ref_ext=None):
     assert len(schemas) > 0, "No schemas found"
 
     if ref_ext is not None:
-        reference_names = {
-            f"{schema.stem.split('.')[0]}": schema for schema in schemas
-        }
+        reference_names = {f"{schema.stem.split('.')[0]}": schema for schema in schemas}
         reference_files = {
             name: _reference_root / f"{name}.{ref_ext}"
             for name in reference_names.keys()
@@ -118,9 +112,7 @@ def schemas(ref_ext=None):
             for name, schema_file in reference_names.items()
             if reference_files[name].exists()
         ]
-        assert (
-            len(schemas) > 0
-        ), f"No schema with images type '{ref_ext}' found"
+        assert len(schemas) > 0, f"No schema with images type '{ref_ext}' found"
 
     return schemas
 
@@ -206,13 +198,9 @@ def test_color_legend_exists(schema_file):
                     elif isinstance(value, str):
                         found.append(value)
                     else:
-                        find_scale_applications(
-                            value, target_properties, found=found
-                        )
+                        find_scale_applications(value, target_properties, found=found)
                 else:
-                    find_scale_applications(
-                        value, target_properties, found=found
-                    )
+                    find_scale_applications(value, target_properties, found=found)
         elif isinstance(schema, list):
             for entry in schema:
                 find_scale_applications(entry, target_properties, found=found)
@@ -224,13 +212,9 @@ def test_color_legend_exists(schema_file):
     with open(schema_file) as f:
         schema = json.load(f)
 
-    color_applications = find_scale_applications(
-        schema["marks"], color_properties
-    )
+    color_applications = find_scale_applications(schema["marks"], color_properties)
 
-    color_legends = find_scale_applications(
-        schema.get("legends", []), color_properties
-    )
+    color_legends = find_scale_applications(schema.get("legends", []), color_properties)
 
     if "trajectories.vg.json" == schema_file.name:
         assert (

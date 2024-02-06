@@ -37,9 +37,7 @@ def attributed_graph(
     """
 
     if node_labels is None:
-        graph = nx.convert_node_labels_to_integers(
-            graph, label_attribute="label"
-        )
+        graph = nx.convert_node_labels_to_integers(graph, label_attribute="label")
     elif node_labels == "label":
         nx.set_node_attributes(
             graph, nx.get_node_attributes(graph, node_labels), "label"
@@ -131,16 +129,13 @@ def spring_force_graph(
         x, y = layout.get(id, (None, None))
         return dict(zip(["inputX", "inputY", "fx", "fy"], [x, y, None, None]))
 
-    graph = nx.convert_node_labels_to_integers(
-        graph, label_attribute=node_labels
-    )
+    graph = nx.convert_node_labels_to_integers(graph, label_attribute=node_labels)
     gjson = nx.json_graph.node_link_data(graph)
     schema = vega.load_schema("spring_graph.vg.json")
 
     if layout:
         gjson["nodes"] = [
-            {**item, **_layout_get(item[node_labels])}
-            for item in gjson["nodes"]
+            {**item, **_layout_get(item[node_labels])} for item in gjson["nodes"]
         ]
 
     schema["data"] = vega.replace_named_with(

@@ -107,9 +107,7 @@ def histogram_multi(
     hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]
 
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "binned", ["values"], desc
-    )
+    schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
 
     schema["data"] = vega.replace_named_with(
         schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]

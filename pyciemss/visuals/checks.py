@@ -29,13 +29,9 @@ class Result:
         schema = "<missing>" if self.schema is None else "<present>"
 
         additional = [
-            f
-            for f in dir(self)
-            if not f.startswith("_") and f not in always_display
+            f for f in dir(self) if not f.startswith("_") and f not in always_display
         ]
-        extras = (
-            f"; Additional Fields: {additional}" if len(additional) > 0 else ""
-        )
+        extras = f"; Additional Fields: {additional}" if len(additional) > 0 else ""
         return f"Result(status:{self.status}, checks:{self.checks}, schema:{schema}{extras})"
 
 
@@ -82,9 +78,7 @@ def contains(
         return simple_test
 
 
-def JS(
-    max_acceptable: float, *, verbose: bool = False
-) -> Callable[[Any, Any], bool]:
+def JS(max_acceptable: float, *, verbose: bool = False) -> Callable[[Any, Any], bool]:
     """Check-generator function. Returns a function that performs a test against jensen-shannon distance.
 
     max_acceptable -- Threshold for the returned check
@@ -142,15 +136,11 @@ def check_distribution_range(
     checks = {label: test(bins) for label, test in tests.items()}
     status = combiner([*checks.values()])
     if not status:
-        status_msg = (
-            f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
-        )
+        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
     else:
         status_msg = "Passed"
 
-    schema = plots.set_title(
-        schema, ["Distribution Check (Histogram)", status_msg]
-    )
+    schema = plots.set_title(schema, ["Distribution Check (Histogram)", status_msg])
 
     return Result(status, checks, schema, bins=bins)
 
@@ -182,14 +172,10 @@ def compare_distributions(
 
     groups = dict([*bins.groupby("label")])
     subject_dist = (
-        groups["Subject"]
-        .rename(columns={"count": "subject"})
-        .drop(columns=["label"])
+        groups["Subject"].rename(columns={"count": "subject"}).drop(columns=["label"])
     )
     reference_dist = (
-        groups["Reference"]
-        .rename(columns={"count": "ref"})
-        .drop(columns=["label"])
+        groups["Reference"].rename(columns={"count": "ref"}).drop(columns=["label"])
     )
 
     aligned = subject_dist.join(reference_dist, how="outer").fillna(0)
@@ -201,9 +187,7 @@ def compare_distributions(
     status = combiner([*checks.values()])
 
     if not status:
-        status_msg = (
-            f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
-        )
+        status_msg = f"Failed ({sum(checks.values())/len(checks.values()):.0%} passing)"
     else:
         status_msg = "Passed"
 

@@ -57,15 +57,13 @@ def select_traces(
         # first column is the column to compare to
         # not sure what maxlag value to use
         # return ssr-based-F test p value
-        granger_value = grangercausalitytests(
-            x[["mean_value", "value"]], maxlag=[10]
-        )[10][0]["ssr_ftest"][1]
+        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
+            10
+        ][0]["ssr_ftest"][1]
         return granger_value
 
     # all data, melted
-    melt_all = traces_df.melt(
-        ignore_index=False, var_name="trajectory"
-    ).reset_index()
+    melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
     # add value of average line to original df as column
     merged_all_mean = pd.merge(
         melt_all, examplary_line_df, on=["trajectory", "timepoint"]
@@ -177,9 +175,7 @@ def trajectories(
     distributions = _keep_drop_rename(distributions, keep, drop, relabel)
 
     if colors:
-        keep = [
-            k for k in distributions.columns if colors.get(k, None) is not None
-        ]
+        keep = [k for k in distributions.columns if colors.get(k, None) is not None]
         distributions = distributions.filter(items=keep)
 
     point_trajectories = points.columns.tolist() if points is not None else []
@@ -187,9 +183,7 @@ def trajectories(
     distributions_traj = (
         distributions.columns.tolist() if distributions is not None else []
     )
-    all_trajectories = (
-        distributions_traj + trace_trajectories + point_trajectories
-    )
+    all_trajectories = distributions_traj + trace_trajectories + point_trajectories
 
     def _quantiles(g):
         return pd.Series(
@@ -231,9 +225,7 @@ def trajectories(
         points = []
 
     if base_markers is not None:
-        markers = [
-            {"timepoint": v, "label": k} for k, v in base_markers.items()
-        ]
+        markers = [{"timepoint": v, "label": k} for k, v in base_markers.items()]
     else:
         markers = []
 
@@ -305,9 +297,7 @@ def _nice_df(df):
         df = df.assign(timepoint_id=range(len(df)))
 
     timepoint_cols = [
-        c
-        for c in df.columns
-        if c.startswith("timepoint_") and c != "timepoint_id"
+        c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"
     ]
     if len(timepoint_cols) == 0:
         df = df.assign(timepoint=df.timepoint_id)
@@ -316,13 +306,9 @@ def _nice_df(df):
             f"Cannot work with multiple timepoint formats. Found {timepoint_cols}"
         )
     else:
-        df = df.assign(timepoint=df[timepoint_cols[0]]).drop(
-            columns=timepoint_cols
-        )
+        df = df.assign(timepoint=df[timepoint_cols[0]]).drop(columns=timepoint_cols)
 
-    df = df.drop(columns=["timepoint_id"]).set_index(
-        ["timepoint", "sample_id"]
-    )
+    df = df.drop(columns=["timepoint_id"]).set_index(["timepoint", "sample_id"])
     return df
 
 

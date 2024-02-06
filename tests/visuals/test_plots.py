@@ -22,8 +22,7 @@ def make_nice_labels(labels):
     return {
         k: "_".join(k.split("_")[:-1])
         for k in labels
-        if "_" in k
-        and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
+        if "_" in k and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
     }
 
 
@@ -60,9 +59,7 @@ class TestTrajectory:
     def traces(distributions):
         return (
             distributions[distributions["sample_id"] == 0]
-            .set_index("timepoint_notional")[
-                ["dead_observable_state", "I_state"]
-            ]
+            .set_index("timepoint_notional")[["dead_observable_state", "I_state"]]
             .rename(
                 columns={
                     "dead_observable_state": "dead_exemplar",
@@ -79,9 +76,7 @@ class TestTrajectory:
     def test_base(self, distributions):
         schema = plots.trajectories(distributions)
 
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
     def test_rename(self, distributions):
@@ -89,9 +84,7 @@ class TestTrajectory:
 
         schema = plots.trajectories(distributions, relabel=nice_labels)
 
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         kept_names = df["trajectory"].unique()
         for name in nice_labels.values():
@@ -102,9 +95,7 @@ class TestTrajectory:
 
     def test_keep(self, distributions):
         schema = plots.trajectories(distributions, keep=".*_observable.*")
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         kept = sorted(df["trajectory"].unique())
         assert [
@@ -116,12 +107,8 @@ class TestTrajectory:
 
         keep_list = ["dead_observable_state", "exposed_observable_state"]
         schema = plots.trajectories(distributions, keep=keep_list)
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
-        assert keep_list == sorted(
-            df["trajectory"].unique()
-        ), "Keeping by list"
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
+        assert keep_list == sorted(df["trajectory"].unique()), "Keeping by list"
 
         nice_labels = make_nice_labels(distributions.columns)
         schema = plots.trajectories(
@@ -129,9 +116,7 @@ class TestTrajectory:
             relabel=nice_labels,
             keep=keep_list,
         )
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert ["dead_observable", "exposed_observable"] == sorted(
             df["trajectory"].unique()
         ), "Rename after keeping"
@@ -149,19 +134,11 @@ class TestTrajectory:
         ]
         should_drop = [p for p in distributions.columns if "_state" in p]
 
-        assert (
-            len(should_keep) > 0
-        ), "Expected keep trajectories not found in pre-test"
-        assert (
-            len(should_drop) > 0
-        ), "Expected drop trajectories not found in pre-test"
+        assert len(should_keep) > 0, "Expected keep trajectories not found in pre-test"
+        assert len(should_drop) > 0, "Expected drop trajectories not found in pre-test"
 
-        schema = plots.trajectories(
-            distributions, keep=".*_.*", drop=".*_state"
-        )
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        schema = plots.trajectories(distributions, keep=".*_.*", drop=".*_state")
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         kept = df["trajectory"].unique()
         for name in should_keep:
@@ -175,17 +152,11 @@ class TestTrajectory:
             "H_state" in distributions.columns
         ), "Exepected trajectory not found in pre-test"
 
-        should_drop = [
-            p for p in distributions.columns if "_observable_state" in p
-        ]
-        assert (
-            len(should_drop) > 0
-        ), "Exepected trajectory not found in pre-test"
+        should_drop = [p for p in distributions.columns if "_observable_state" in p]
+        assert len(should_drop) > 0, "Exepected trajectory not found in pre-test"
 
         schema = plots.trajectories(distributions, drop=should_drop)
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 
         assert (
             "H_state" in df["trajectory"].unique()
@@ -205,9 +176,7 @@ class TestTrajectory:
             assert False, "Error dropping non-existent trajectory"
 
         schema = plots.trajectories(distributions, drop=".*_observable")
-        df = pd.DataFrame(
-            vega.find_named(schema["data"], "distributions")["values"]
-        )
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert (
             "E_state" in df["trajectory"].unique()
         ), "Exepected trajectory not retained from pattern"
@@ -225,13 +194,9 @@ class TestTrajectory:
             points=observed_points,
         )
 
-        points = pd.DataFrame(
-            vega.find_named(schema["data"], "points")["values"]
-        )
+        points = pd.DataFrame(vega.find_named(schema["data"], "points")["values"])
 
-        assert (
-            len(points["trajectory"].unique()) == 2
-        ), "Unexpected number of exemplars"
+        assert len(points["trajectory"].unique()) == 2, "Unexpected number of exemplars"
 
         assert (
             len(points) == observed_points.count().sum()
@@ -244,9 +209,7 @@ class TestTrajectory:
             traces=traces,
         )
 
-        shown_traces = pd.DataFrame(
-            vega.find_named(schema["data"], "traces")["values"]
-        )
+        shown_traces = pd.DataFrame(vega.find_named(schema["data"], "traces")["values"])
         plots.save_schema(schema, "_schema.json")
 
         assert sorted(traces.columns.unique()) == sorted(
@@ -288,9 +251,7 @@ class TestHistograms:
         assert all(bins["bin0"].value_counts() == 1), "Duplicated bins found"
         assert all(bins["bin1"].value_counts() == 1), "Duplicated bins found"
 
-        hist_data = pd.DataFrame(
-            by_key_value(hist["data"], "name", "binned")["values"]
-        )
+        hist_data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         assert all(bins == hist_data), "Bin count not as expected"
 
         assert (
@@ -369,32 +330,24 @@ class TestHistograms:
             E=simulation_result["E_state"],
             H=simulation_result["R_state"],
         )
-        data = pd.DataFrame(
-            by_key_value(hist["data"], "name", "binned")["values"]
-        )
+        data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         assert set(data["label"].values) == {"D", "E", "H"}
 
         hist = plots.histogram_multi(
             D_state=simulation_result["D_state"],
             E_state=simulation_result["E_state"],
         )
-        data = pd.DataFrame(
-            by_key_value(hist["data"], "name", "binned")["values"]
-        )
+        data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         assert set(data["label"].values) == {"D_state", "E_state"}
 
 
 class TestHeatmapScatter:
     def test_implicit_heatmap(self):
-        df = pd.DataFrame(
-            3 * np.random.random((100, 2)), columns=["test4", "test5"]
-        )
+        df = pd.DataFrame(3 * np.random.random((100, 2)), columns=["test4", "test5"])
         schema = plots.heatmap_scatter(df, max_x_bins=4, max_y_bins=4)
 
         points = vega.find_named(schema["data"], "points")["values"]
-        assert all(
-            pd.DataFrame(points) == df
-        ), "Unexpected points values found"
+        assert all(pd.DataFrame(points) == df), "Unexpected points values found"
 
     def test_explicit_heatmap(self):
         def create_fake_data():
@@ -422,9 +375,7 @@ class TestHeatmapScatter:
 
         mesh = pd.DataFrame(vega.find_named(schema["data"], "mesh")["values"])
         assert mesh.size == 500, "Unexpected mesh representation size."
-        assert all(
-            mesh["__count"].isin(mesh_data[2].ravel())
-        ), "Unexpected count found"
+        assert all(mesh["__count"].isin(mesh_data[2].ravel())), "Unexpected count found"
 
 
 class TestGraph:
@@ -446,9 +397,7 @@ class TestGraph:
             for n in g.nodes()
         }
 
-        edge_attributions = {
-            e: {"attribution": rand_attributions()} for e in g.edges()
-        }
+        edge_attributions = {e: {"attribution": rand_attributions()} for e in g.edges()}
 
         nx.set_node_attributes(g, node_properties)
         nx.set_edge_attributes(g, edge_attributions)
@@ -464,9 +413,7 @@ class TestGraph:
         all_attributions = set(
             chain(*nx.get_node_attributes(test_graph, "attribution").values())
         )
-        nx.set_node_attributes(
-            test_graph, {0: {"attribution": all_attributions}}
-        )
+        nx.set_node_attributes(test_graph, {0: {"attribution": all_attributions}})
         collapsed = plots.attributed_graph(test_graph, collapse_all=True)
         nodes = vega.find_named(collapsed["data"], "node-data")["values"]
         edges = vega.find_named(collapsed["data"], "link-data")["values"]
@@ -489,9 +436,7 @@ class TestGraph:
 
     def test_provided_layout(self, test_graph):
         pos = nx.fruchterman_reingold_layout(test_graph)
-        schema = plots.spring_force_graph(
-            test_graph, node_labels="label", layout=pos
-        )
+        schema = plots.spring_force_graph(test_graph, node_labels="label", layout=pos)
 
         nodes = vega.find_named(schema["data"], "node-data")["values"]
         edges = vega.find_named(schema["data"], "link-data")["values"]
