@@ -317,7 +317,7 @@ if __name__ == "__main__":
 
     png = plots.ipy_display(schema, format="png")
     svg = plots.ipy_display(schema, format="svg")
-    print(f"Rendering succeeded")
+    print("Rendering succeeded")
 
     if not args.dry_run:
         with open(png_output, "wb") as f:

@@ -30,7 +30,10 @@ class TestTrajectory:
     @staticmethod
     @pytest.fixture
     def distributions():
-        model_1_path = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        model_1_path = (
+            "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
+            "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        )
         start_time = 0.0
         end_time = 100.0
         logging_step_size = 1
@@ -226,7 +229,10 @@ class TestHistograms:
     @staticmethod
     @pytest.fixture
     def simulation_result():
-        model_1_path = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        model_1_path = (
+            "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/"
+            "main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+        )
         start_time = 0.0
         end_time = 100.0
         logging_step_size = 10.0

@@ -14,7 +14,7 @@ def test_JS():
     assert checks.JS(0)(d1, d1), "Identical distributions passes at 0"
 
     assert checks.JS(1)(d1, d2), "Disjoint passes at 1"
-    assert checks.JS(0.4)(d1, d2) == False, "Disjoint should fail at .4"
+    assert not checks.JS(0.4)(d1, d2), "Disjoint should fail at .4"
     assert checks.JS(0.6)(d1, d3), "Overlap passes"
     assert checks.JS(0.6)(d2, d3), "Overlap passes"
 
@@ -26,13 +26,13 @@ def test_contains():
     assert checker(bins), "In range"
 
     checker = checks.contains(-1, 10)
-    assert checker(bins) == False, "Out lower"
+    assert not checker(bins), "Out lower"
 
     checker = checks.contains(3, 100)
-    assert checker(bins) == False, "Out upper"
+    assert not checker(bins), "Out upper"
 
     checker = checks.contains(-10, 40)
-    assert checker(bins) == False, "Out both"
+    assert not checker(bins), "Out both"
 
 
 def test_contains_pct():
@@ -79,7 +79,7 @@ def test_check_distribution_range(normal0):
     )
 
     assert result.checks[0]
-    assert result.checks[1] == False
+    assert not result.checks[1]
     assert "Fail" in result.schema["title"]["text"][1]
     assert "50%" in result.schema["title"]["text"][1]
 
@@ -87,7 +87,7 @@ def test_check_distribution_range(normal0):
 def test_compare_distributions(normal0, normal2):
     result = checks.compare_distributions(normal0, normal2, tests=[checks.JS(0)])
 
-    assert result.status == False
+    assert not result.status
     assert "0%" in result.schema["title"]["text"][1]
 
     result = checks.compare_distributions(normal0, normal2, tests=[checks.JS(1)])

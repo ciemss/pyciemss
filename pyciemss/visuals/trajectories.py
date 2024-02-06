@@ -25,7 +25,8 @@ def select_traces(
         select_by -- Method for selecting a trajectory
           - "mean" -- Trajectory closest to the mean-line of the envelope of all trajectories
           - "var" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
-          - "granger" -- Trajectory that "best predicts" the mean-line of the envelope (by the grangercausalitytest, maxlag=10)
+          - "granger" -- Trajectory that "best predicts" the mean-line of the envelope
+                        (by the grangercausalitytest, maxlag=10)
 
         keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
            - Default is the "all" string and it keeps all columns
@@ -148,7 +149,8 @@ def trajectories(
         markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
         keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
            - Default is the string "all", and it keeps all columns
-           - If a any other string is present, it is treated as a regex and matched against the columns. Matches are kept.
+           - If a any other string is present, it is treated as a regex and matched against the columns.
+             Matches are kept.
            - Otherwise, assumed to be a list-like of columns to keep
            If keep is specified, the color scale ordering follows the kept order.
         drop (str, list, None): Drop specific columns from 'distributions' (applied AFTER keep)
