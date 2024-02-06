@@ -1,8 +1,11 @@
 import os
 from collections.abc import Mapping
-from typing import Dict, Optional, TypeVar
+from typing import Callable, Dict, List, Optional, TypeVar
 
+import numpy as np
 import torch
+
+from pyciemss.ouu.qoi import scenario2dec_nday_average
 
 T = TypeVar("T")
 
@@ -17,11 +20,25 @@ class ModelFixture:
         important_parameter: Optional[str] = None,
         data_path: Optional[str] = None,
         data_mapping: Dict[str, str] = {},
+        risk_bound: float = None,
+        qoi: Callable = None,
+        objfun: Callable = None,
+        static_parameter_interventions: Dict[torch.Tensor, str] = None,
+        initial_guess_interventions: float = None,
+        bounds_interventions: List[List[float]] = None,
+        opt: bool = False,
     ):
         self.url = url
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
+        self.risk_bound = risk_bound
+        self.qoi = qoi
+        self.objfun = objfun
+        self.static_parameter_interventions = static_parameter_interventions
+        self.initial_guess_interventions = initial_guess_interventions
+        self.bounds_interventions = bounds_interventions
+        self.opt = opt
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
@@ -53,6 +70,16 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRD_stockflow.json"), "p_cbeta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHDS_stockflow.json"), "p_cbeta"),
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        risk_bound=300.0,
+        qoi=lambda x: scenario2dec_nday_average(x, ["I_state"], 1),
+        objfun=lambda x: np.abs(x),
+        static_parameter_interventions={torch.tensor(1.0): "p_cbeta"},
+        initial_guess_interventions=0.15,
+        bounds_interventions=[[0.1], [0.5]],
+        opt=True,
+    ),
 ]
 
 MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS

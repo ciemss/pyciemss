@@ -1,6 +1,9 @@
 import contextlib
+import time
+from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers import (
@@ -26,10 +29,6 @@ from pyciemss.interruptions import (
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
-
-from math import ceil
-import numpy as np
-import time
 
 
 @pyciemss_logging_wrapper
@@ -550,7 +549,7 @@ def optimize(
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     n_samples_ouu: int = int(1e2),
-    maxiter: int = 2,
+    maxiter: int = 5,
     maxfeval: int = 25,
     verbose: bool = False,
     roundup_decimal: int = 4,

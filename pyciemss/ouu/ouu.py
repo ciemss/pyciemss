@@ -1,21 +1,18 @@
-import numpy as np
-from scipy.optimize import basinhopping
 import contextlib
+from typing import Any, Callable, Dict, List, Tuple
+
+import numpy as np
 import pyro
 import torch
-from chirho.dynamical.handlers import (
-    LogTrajectory,
-)
+from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.handlers.solver import TorchDiffEq
-# from chirho.interventional.ops import Intervention
-
-from pyciemss.ouu.risk_measures import alpha_superquantile
-from pyciemss.interruptions import (
-    StaticParameterIntervention,
-)
-
-from typing import Any, Callable, Dict, List, Tuple
+from scipy.optimize import basinhopping
 from tqdm import tqdm
+
+from pyciemss.interruptions import StaticParameterIntervention
+from pyciemss.ouu.risk_measures import alpha_superquantile
+
+# from chirho.interventional.ops import Intervention
 
 
 class RandomDisplacementBounds:
@@ -29,15 +26,16 @@ class RandomDisplacementBounds:
         if stepsize:
             self.stepsize = stepsize
         else:
-            # stepsize is set to 20% of longest euclidean distance
-            self.stepsize = 0.2 * np.linalg.norm(xmax - xmin)
+            # stepsize is set to 30% of longest euclidean distance
+            self.stepsize = 0.3 * np.linalg.norm(xmax - xmin)
 
     def __call__(self, x):
-        return np.clip(
+        xnew = np.clip(
             x + np.random.uniform(-self.stepsize, self.stepsize, np.shape(x)),
             self.xmin,
             self.xmax,
         )
+        return xnew
 
 
 class computeRisk:
@@ -80,8 +78,7 @@ class computeRisk:
         samples = self.propagate_uncertainty(x)
         # Compute quanity of interest
         sample_qoi = self.qoi(samples)
-        # Estimate risk measure
-        print(x, sample_qoi, self.risk_measure(sample_qoi))
+        # Estimate risk
         return self.risk_measure(sample_qoi)
 
     def propagate_uncertainty(self, x):
@@ -102,7 +99,6 @@ class computeRisk:
                     )
                 ]
             )
-            print(x, time, dict([(param, torch.as_tensor(x[count]))]))
             count = count + 1
 
         def wrapped_model():
@@ -132,7 +128,6 @@ class computeRisk:
         samples = pyro.infer.Predictive(
             wrapped_model, guide=self.guide, num_samples=self.num_samples
         )()
-        # print(samples)
         return samples
 
 

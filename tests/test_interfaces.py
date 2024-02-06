@@ -6,8 +6,7 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, sample, optimize
-from pyciemss.ouu.qoi import scenario2dec_nday_average
+from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
     END_TIMES,
@@ -424,28 +423,40 @@ def test_output_format(
     assert processed_result["sample_id"].dtype == np.int64
 
 
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES[0])
+@pytest.mark.parametrize("end_time", END_TIMES[0])
+def test_optimize(model_fixture, start_time, end_time):
+    if model_fixture.opt:
+        logging_step_size = 1.0
+        model_url = model_fixture.url
+        qoi = model_fixture.qoi
+        risk_bound = model_fixture.risk_bound
+        static_parameter_interventions = model_fixture.static_parameter_interventions
+        objfun = model_fixture.objfun
+        initial_guess_interventions = model_fixture.initial_guess_interventions
+        bounds_interventions = model_fixture.bounds_interventions
+        opt_result = optimize(
+            model_url,
+            end_time,
+            logging_step_size,
+            qoi,
+            risk_bound,
+            static_parameter_interventions,
+            objfun,
+            start_time=start_time,
+            initial_guess_interventions=initial_guess_interventions,
+            bounds_interventions=bounds_interventions,
+            start_time=0.0,
+            n_samples_ouu=int(2),
+            maxiter=1,
+            maxfeval=2,
+            solver_method="euler",
+        )
 
-@pytest.mark.parametrize("model_url", [MODEL_URLS[0]])
-@pytest.mark.parametrize("start_time", START_TIMES)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_optimize(
-    model_url, start_time, end_time, logging_step_size
-):
-    risk_bound = 5.
-    end_time = 100.
-    qoi = lambda x: scenario2dec_nday_average(x, ["I_state"], 1)
-    objfun = lambda x: np.abs(x)
-    static_parameter_interventions = {torch.tensor(1.): "gamma"}
-    initial_guess_interventions = 0.5
-    bounds_interventions = [[0.],[3.]]
+        assert (bounds_interventions[0] <= opt_result.x).all()
+        assert (opt_result.x <= bounds_interventions[1]).all()
 
-    opt_result = optimize(model_url, end_time, logging_step_size, qoi, risk_bound, static_parameter_interventions, objfun,
-        start_time=start_time, initial_guess_interventions=initial_guess_interventions, bounds_interventions=bounds_interventions,
-        start_time=0.0, n_samples_ouu=int(2), maxiter=1, maxfeval=2)
-    
-    assert (bounds_interventions[0]<=opt_result.x).all()
-    assert (opt_result.x<=bounds_interventions[1]).all()
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
