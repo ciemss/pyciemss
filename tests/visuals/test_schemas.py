@@ -26,12 +26,9 @@ def save_result(data, name, ref_ext):
     """Save new reference files"""
     _output_root.mkdir(parents=True, exist_ok=True)
 
-    if ref_ext == "png":
-        with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "wb") as f:
-            f.write(data)
-    elif ref_ext == "svg":
-        with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "w") as f:
-            f.write(data)
+    mode = "w" if ref_ext == "svg" else "wb"
+    with open(os.path.join(_output_root, f"{name}.{ref_ext}"), mode) as f:
+        f.write(data)
 
 
 def svg_matches(wrapped, ref_file):
@@ -301,3 +298,46 @@ def test_nested_mark_sources(schema_file):
             assert (
                 mark["from"]["data"] in split_data
             ), "Did not use split data (or derivation) in group mark"
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+    from pathlib import Path
+
+    parser = argparse.ArgumentParser("Utility to generate reference images")
+    parser.add_argument(
+        "schema",
+        type=Path,
+        help=f"Schema to load. Just the schema name, will look in {_schema_root} for the schema",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Execute but don't save files"
+    )
+    args = parser.parse_args()
+
+    args.schema = _schema_root / args.schema
+    png_output = _reference_root / f"{args.schema.stem.split('.')[0]}.png"
+    svg_output = _reference_root / f"{args.schema.stem.split('.')[0]}.svg"
+
+    if not args.schema.exists():
+        print(f"Could not input file: {args.schema}")
+        sys.exit(-1)
+
+    with open(args.schema) as f:
+        schema = json.load(f)
+
+    print(f"Read from: {args.schema}")
+    print(f"Target png: {png_output}")
+    print(f"Target svg: {svg_output}")
+
+    png = plots.ipy_display(schema, format="png")
+    svg = plots.ipy_display(schema, format="svg")
+    print(f"Rendering succeeded")
+
+    if not args.dry_run:
+        with open(png_output, "wb") as f:
+            f.write(png.data)
+        with open(svg_output, "w") as f:
+            f.write(svg.data)
+        print("References saved")
