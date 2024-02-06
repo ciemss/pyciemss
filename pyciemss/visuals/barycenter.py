@@ -1,9 +1,9 @@
 from typing import Optional
-import pandas as pd
-import numpy as np
-import torch
 
 import matplotlib.tri as tri
+import numpy as np
+import pandas as pd
+import torch
 from pyro.distributions import Dirichlet
 
 from . import vega
@@ -33,7 +33,9 @@ def triangle_weights(samples, concentration=20, subdiv=7):
     # The area of the triangle formed by point xy and another pair or points
 
     # convert to coordinates with 3, rather than to points of reference for Direichlet input
-    points = torch.tensor(np.array([(_xy2bc(xy)) for xy in zip(trimesh.x, trimesh.y)]))
+    points = torch.tensor(
+        np.array([(_xy2bc(xy)) for xy in zip(trimesh.x, trimesh.y)])
+    )
     points /= torch.sum(points, dim=1, keepdim=True)
 
     alpha = samples * concentration
@@ -57,7 +59,9 @@ def triangle_weights(samples, concentration=20, subdiv=7):
         if y_num % 2 == 0:
             not_use_trimesh_y.append(y)
 
-    df_coord = pd.DataFrame({"x": trimesh.x, "y": trimesh.y, "z": vals.tolist()})
+    df_coord = pd.DataFrame(
+        {"x": trimesh.x, "y": trimesh.y, "z": vals.tolist()}
+    )
     not_use_trimesh_x = list(
         np.unique(df_coord[df_coord.y == not_use_trimesh_y[0]]["x"].tolist())
     )
@@ -78,7 +82,9 @@ def triangle_weights(samples, concentration=20, subdiv=7):
     df = df.sort_values(["y", "x"], ascending=[False, True])
 
     # remove the alternative values, (every other y and all the values associated with that y)
-    df_use = df[(~df.x.isin(not_use_trimesh_x)) & (~df.y.isin(not_use_trimesh_y))]
+    df_use = df[
+        (~df.x.isin(not_use_trimesh_x)) & (~df.y.isin(not_use_trimesh_y))
+    ]
 
     json_dict = {}
     json_dict["width"] = len(np.unique(df_use.x))

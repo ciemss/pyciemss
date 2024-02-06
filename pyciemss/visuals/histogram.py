@@ -1,19 +1,8 @@
-from typing import (
-    List,
-    Callable,
-    Optional,
-    Tuple,
-    Dict,
-    Union,
-    Any,
-    Literal,
-    overload,
-)
-
 from numbers import Number
+from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from . import vega
 

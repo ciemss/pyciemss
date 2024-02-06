@@ -1,8 +1,9 @@
-from typing import Any, Dict, Optional, Iterable, Union, Any
+from typing import Any, Dict, Iterable, Optional, Union
 
 import numpy as np
 import pandas as pd
 import torch
+
 from pyciemss.visuals import plots
 
 

@@ -1,15 +1,16 @@
-import pytest
-import pandas as pd
-import numpy as np
-import networkx as nx
 import random
 from itertools import chain
 
+import networkx as nx
+import numpy as np
+import pandas as pd
+import pytest
+
 import pyciemss
-from pyciemss.visuals import plots, vega
 from pyciemss.integration_utils.result_processing import (
     convert_to_output_format,
 )
+from pyciemss.visuals import plots, vega
 
 
 def by_key_value(targets, key, value):
@@ -61,7 +62,9 @@ class TestTrajectory:
     def traces(distributions):
         return (
             distributions[distributions["sample_id"] == 0]
-            .set_index("timepoint_notional")[["dead_observable_state", "I_state"]]
+            .set_index("timepoint_notional")[
+                ["dead_observable_state", "I_state"]
+            ]
             .rename(
                 columns={
                     "dead_observable_state": "dead_exemplar",
@@ -174,7 +177,9 @@ class TestTrajectory:
             "H_state" in distributions.columns
         ), "Exepected trajectory not found in pre-test"
 
-        should_drop = [p for p in distributions.columns if "_observable_state" in p]
+        should_drop = [
+            p for p in distributions.columns if "_observable_state" in p
+        ]
         assert (
             len(should_drop) > 0
         ), "Exepected trajectory not found in pre-test"

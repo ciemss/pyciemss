@@ -1,12 +1,13 @@
-from typing import List, Dict, Any, Callable, Optional, Union
+from dataclasses import dataclass
 from numbers import Number
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from . import plots
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import jensenshannon
+
+from . import plots
 from .plots import VegaSchema
-from dataclasses import dataclass
 
 
 @dataclass(repr=False)
@@ -147,9 +148,11 @@ def check_distribution_range(
     else:
         status_msg = "Passed"
 
-    schema = plots.set_title(schema, ["Distribution Check (Histogram)", status_msg])
+    schema = plots.set_title(
+        schema, ["Distribution Check (Histogram)", status_msg]
+    )
 
-    return  Result(status, checks, schema, bins=bins)
+    return Result(status, checks, schema, bins=bins)
 
 
 def compare_distributions(

@@ -1,17 +1,15 @@
-from typing import Dict, Any, Literal, Optional
-
 import json
+from typing import Any, Dict, Literal, Optional
 
 import IPython.display
 import vl_convert
 
-from .vega import VegaSchema, pad, resize, set_title, rescale, orient_legend
 from .barycenter import triangle_contour
-from .trajectories import trajectories
 from .calibration import calibration
-from .histogram import histogram_multi, heatmap_scatter
 from .graphs import attributed_graph, spring_force_graph
-
+from .histogram import heatmap_scatter, histogram_multi
+from .trajectories import trajectories
+from .vega import VegaSchema, orient_legend, pad, rescale, resize, set_title
 
 __all__ = [
     "VegaSchema",
@@ -77,13 +75,13 @@ def ipy_display(
         bundle = {"application/vnd.vega.v5+json": schema}
         print("", end=None)
         IPython.display.display(bundle, raw=True)
-    
+
     elif format in ["png", "PNG"]:
         if dpi and "scale" not in kwargs:
             kwargs["scale"] = dpi // 72
         png_data = vl_convert.vega_to_png(schema, **kwargs)
         return IPython.display.Image(png_data)
-    
+
     elif format in ["svg", "SVG"]:
         png_data = vl_convert.vega_to_svg(schema, **kwargs)
         return IPython.display.SVG(png_data)

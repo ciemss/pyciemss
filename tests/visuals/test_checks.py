@@ -1,8 +1,11 @@
-from pyciemss.visuals import checks, plots
-import pandas as pd
 from pathlib import Path
-import pytest
+
 import numpy as np
+import pandas as pd
+import pytest
+
+from pyciemss.visuals import checks, plots
+
 
 def test_JS():
     d1 = [0, 0, 0, 0, 0, 5, 9, 5, 0]

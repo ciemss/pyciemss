@@ -1,11 +1,11 @@
-from pyciemss.visuals import plots, vega
-import pyciemss
-import pytest
 import numpy as np
+import pytest
 
+import pyciemss
 from pyciemss.integration_utils.result_processing import (
     convert_to_output_format,
 )
+from pyciemss.visuals import plots, vega
 
 # TODO: Consider testing some of these utils on raw schemas instead of with-data schemas
 

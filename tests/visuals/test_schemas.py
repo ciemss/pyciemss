@@ -1,20 +1,18 @@
-import pytest
-import json
-from pathlib import Path
 import difflib
-from xmldiff import main
-import numpy as np
+import io
+import json
+import os
+import re
+from pathlib import Path
 
 import IPython
-from pyciemss.visuals import plots
-from pyciemss.visuals import checks
-from scipy.spatial.distance import jensenshannon
-
+import numpy as np
+import pytest
 from PIL import Image
+from scipy.spatial.distance import jensenshannon
+from xmldiff import main
 
-import os
-import io
-import re
+from pyciemss.visuals import checks, plots
 
 _schema_root = (
     Path(__file__).parent.parent.parent / "pyciemss" / "visuals" / "schemas"
@@ -27,7 +25,7 @@ _output_root = Path(__file__).parent / "output_images"
 def save_result(data, name, ref_ext):
     """Save new reference files"""
     _output_root.mkdir(parents=True, exist_ok=True)
-    
+
     if ref_ext == "png":
         with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "wb") as f:
             f.write(data)
@@ -35,12 +33,13 @@ def save_result(data, name, ref_ext):
         with open(os.path.join(_output_root, f"{name}.{ref_ext}"), "w") as f:
             f.write(data)
 
+
 def svg_matches(wrapped, ref_file):
     """Return the reference and svg created from schema
 
     wrapped -- IPython display SVG, contains the data property
     ref_file -- path to reference files
-    returns -- Return the content and reference svg files 
+    returns -- Return the content and reference svg files
     """
     if not isinstance(wrapped, IPython.display.SVG):
         raise ValueError("Expected wrapped SVG")
@@ -48,24 +47,28 @@ def svg_matches(wrapped, ref_file):
     with open(ref_file) as f:
         reference = "".join(f.readlines())
         # replace what seems to be random numbers for gradient and cliip in svg
-    reference = re.sub('gradient_?[0-9]*', "gradient_REPLACED", reference)
-    reference = re.sub('clip[0-9]*', "clipREPLACED", reference)
-    
-    content = re.sub('gradient_?[0-9]*', "gradient_REPLACED", "".join(wrapped.data))
-    content = re.sub('clip[0-9]*', "clipREPLACED", content)
+    reference = re.sub("gradient_?[0-9]*", "gradient_REPLACED", reference)
+    reference = re.sub("clip[0-9]*", "clipREPLACED", reference)
+
+    content = re.sub(
+        "gradient_?[0-9]*", "gradient_REPLACED", "".join(wrapped.data)
+    )
+    content = re.sub("clip[0-9]*", "clipREPLACED", content)
     return content, reference
+
 
 def background_white(orig_image):
     """Convert transparant background to white"""
     image = orig_image.convert("RGBA")
     new_image = Image.new("RGBA", image.size, "WHITE")
     new_image.paste(image, mask=image)
-    new_image.convert('L')
+    new_image.convert("L")
     return new_image
 
+
 def png_matches(image, ref_file, threshold):
-    """Check how similiar the histograms 
-    of the reference and png created from schema are. 
+    """Check how similiar the histograms
+    of the reference and png created from schema are.
 
     image -- PNG result of plotting
     ref_file -- path to reference files
@@ -81,12 +84,14 @@ def png_matches(image, ref_file, threshold):
     new_content = background_white(content)
     # convert to list
     content_pixels = list(new_content.getdata())
-    reference_pixels =  list(new_reference.getdata())
-    #[a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
-    content_hist, _ = np.histogram(content_pixels,  bins=100)
-    reference_hist, _ = np.histogram(reference_pixels,  bins=100)
+    reference_pixels = list(new_reference.getdata())
+    # [a-b for a, b in zip(content_pixels, reference_pixels) if a != b]
+    content_hist, _ = np.histogram(content_pixels, bins=100)
+    reference_hist, _ = np.histogram(reference_pixels, bins=100)
     # check if histograms are similiar enough
-    return checks.JS(threshold, verbose = True)(content_hist, reference_hist), jensenshannon(content_hist, reference_hist)
+    return checks.JS(threshold, verbose=True)(
+        content_hist, reference_hist
+    ), jensenshannon(content_hist, reference_hist)
 
 
 """
@@ -96,24 +101,26 @@ to avoid problems"""
 
 
 def schemas(ref_ext=None):
-    """  
+    """
     Find all schema files.  If ref_ext is not None, figure out names for it
     """
     schemas = [*_schema_root.glob("*.vg.json")]
     assert len(schemas) > 0, "No schemas found"
 
     if ref_ext is not None:
-        reference_names = {f"{schema.stem.split('.')[0]}": schema
-            for schema in schemas
+        reference_names = {
+            f"{schema.stem.split('.')[0]}": schema for schema in schemas
         }
-        reference_files = {name:
-            _reference_root / f"{name}.{ref_ext}"
+        reference_files = {
+            name: _reference_root / f"{name}.{ref_ext}"
             for name in reference_names.keys()
         }
-        
-        schemas = [(schema_file, reference_files[name], name)
-                   for name, schema_file in reference_names.items()
-                   if reference_files[name].exists()]
+
+        schemas = [
+            (schema_file, reference_files[name], name)
+            for name, schema_file in reference_names.items()
+            if reference_files[name].exists()
+        ]
         assert (
             len(schemas) > 0
         ), f"No schema with images type '{ref_ext}' found"
@@ -134,7 +141,7 @@ def test_export_interactive(schema_file):
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="png"))
 def test_export_PNG(schema_file, ref_file, name):
-    """  
+    """
     Test all default schema files against the reference files for PNG files
 
     schema_file: default schema files saved within the visuals module
@@ -144,12 +151,14 @@ def test_export_PNG(schema_file, ref_file, name):
     with open(schema_file) as f:
         schema = json.load(f)
 
-    image = plots.ipy_display(schema, format = "PNG", dpi=72).data
+    image = plots.ipy_display(schema, format="PNG", dpi=72).data
     save_result(image, name, "png")
 
     test_threshold = 0.04
     JS_boolean, JS_score = png_matches(image, ref_file, test_threshold)
-    assert JS_boolean, f"{name}: PNG Histogram divergence: Shannon Jansen value {JS_score} > {test_threshold} "
+    assert (
+        JS_boolean
+    ), f"{name}: PNG Histogram divergence: Shannon Jansen value {JS_score} > {test_threshold} "
 
 
 @pytest.mark.parametrize("schema_file, ref_file, name", schemas(ref_ext="svg"))
