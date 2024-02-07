@@ -13,6 +13,7 @@ from .fixtures import (
     LOGGING_STEP_SIZES,
     MODEL_URLS,
     MODELS,
+    OPT_MODELS,
     NON_POS_INTS,
     NUM_SAMPLES,
     START_TIMES,
@@ -60,7 +61,7 @@ CALIBRATE_KWARGS = {
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
-@pytest.mark.parametrize("model_url", MODEL_URLS[:-1])
+@pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
@@ -423,7 +424,7 @@ def test_output_format(
     assert processed_result["sample_id"].dtype == np.int64
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 def test_optimize(model_fixture, start_time, end_time):
