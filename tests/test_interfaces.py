@@ -424,8 +424,8 @@ def test_output_format(
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("start_time", START_TIMES[0])
-@pytest.mark.parametrize("end_time", END_TIMES[0])
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
 def test_optimize(model_fixture, start_time, end_time):
     if model_fixture.opt:
         logging_step_size = 1.0
