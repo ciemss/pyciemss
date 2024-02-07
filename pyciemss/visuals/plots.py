@@ -37,7 +37,7 @@ def save_schema(schema: Dict[str, Any], path: str):
 def ipy_display(
     schema: Dict[str, Any],
     *,
-    format: Literal["png", "svg", "PNG", "SVG", "interative"] = "png",
+    format: Literal["png", "svg", "PNG", "SVG", "interactive", "INTERACTIVE"] = "png",
     force_clear: bool = False,
     dpi: Optional[int] = None,
     **kwargs,
