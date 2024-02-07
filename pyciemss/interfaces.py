@@ -556,7 +556,8 @@ def optimize(
     postprocess: bool = False,
 ) -> Dict:
     """
-    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based constraints over dynamical models.
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
+    with risk-based constraints over dynamical models.
     Args:
         model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.

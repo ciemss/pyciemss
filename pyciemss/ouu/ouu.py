@@ -12,8 +12,6 @@ from tqdm import tqdm
 from pyciemss.interruptions import StaticParameterIntervention
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
-# from chirho.interventional.ops import Intervention
-
 
 class RandomDisplacementBounds:
     """
@@ -133,7 +131,8 @@ class computeRisk:
 
 class solveOUU:
     """
-    Solve the optimization under uncertainty problem. The core of this class is a wrapper around an appropriate SciPy optimization algorithm.
+    Solve the optimization under uncertainty problem.
+    The core of this class is a wrapper around an appropriate SciPy optimization algorithm.
     """
 
     def __init__(
