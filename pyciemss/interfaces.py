@@ -565,9 +565,9 @@ def optimize(
         logging_step_size: float
             - The step size to use for logging the trajectory.
         qoi: Callable
-            -
+            - A callable function defining the quantity of interest to optimize over.
         risk_bounds: float
-            -
+            - The threshold on the risk constraint.
         static_parameter_interventions: Dict[float, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
@@ -575,11 +575,14 @@ def optimize(
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
         objfun: Callable
-            -
+            - The objective function defined as a callable function definition.
+            - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
         initial_guess_interventions: List[float]
-            -
+            - The initial guess for the optimizer.
+            - The length should be equal to number of dimensions of the intervention (or control action).
         bounds_interventions: List[List[float]]
-            -
+            - The lower and upper bounds for intervention parameter.
+            - Bounds are a list of the form [[lower bounds], [upper bounds]]
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
@@ -595,8 +598,8 @@ def optimize(
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
         n_samples_ouu: int
-            -
-        maxiter: int = 2
+            - The number of samples to draw from the model to estimate risk for each optimization iteration.
+        maxiter: int
             - Maximum number of basinhopping iterations: >0 leads to multi-start
         maxfeval: int
             - Maximum number of function evaluations for each local optimization step

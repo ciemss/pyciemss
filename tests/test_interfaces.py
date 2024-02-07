@@ -447,7 +447,6 @@ def test_optimize(model_fixture, start_time, end_time):
             start_time=start_time,
             initial_guess_interventions=initial_guess_interventions,
             bounds_interventions=bounds_interventions,
-            start_time=0.0,
             n_samples_ouu=int(2),
             maxiter=1,
             maxfeval=2,
