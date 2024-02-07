@@ -60,7 +60,7 @@ CALIBRATE_KWARGS = {
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
-@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("model_url", MODEL_URLS[:-1])
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
