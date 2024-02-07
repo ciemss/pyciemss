@@ -682,9 +682,12 @@ def optimize(
 
     # Rounding up to given number of decimal places
     def round_up(num, dec=roundup_decimal):
-        return ceil(num * 10**dec) / (10**dec)
+        rnum = np.zeros(num.shape[-1])
+        for i in range(num.shape[-1]):
+            rnum[i] = ceil(num[i] * 10**dec) / (10**dec)
+        return rnum
 
-    opt_results.x = round_up(opt_results.x)
+    opt_results.x = round_up(np.atleast_1d(opt_results.x))
     if verbose:
         print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
         print(f"Optimal policy:\t{opt_results.x}")

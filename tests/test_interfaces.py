@@ -452,7 +452,7 @@ def test_optimize(model_fixture, start_time, end_time):
             maxfeval=2,
             solver_method="euler",
         )
-        opt_policy = np.atleast_1d([opt_result["policy"]])
+        opt_policy = opt_result["policy"]
         for i in range(opt_policy.shape[-1]):
             assert bounds_interventions[0][i] <= opt_policy[i]
             assert opt_policy[i] <= bounds_interventions[1][i]
