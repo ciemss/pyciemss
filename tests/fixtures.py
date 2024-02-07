@@ -74,7 +74,7 @@ STOCKFLOW_MODELS = [
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         risk_bound=300.0,
         qoi=lambda x: scenario2dec_nday_average(x, ["I_state"], 1),
-        objfun=lambda x: np.abs(x),
+        objfun=lambda x: np.abs(0.35-x),
         static_parameter_interventions={torch.tensor(1.0): "p_cbeta"},
         initial_guess_interventions=0.15,
         bounds_interventions=[[0.1], [0.5]],
