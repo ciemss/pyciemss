@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import pyro
 import torch
@@ -100,6 +100,10 @@ def ensemble_sample(
     )
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
 
     def wrapped_model():
         # We need to interleave the LogTrajectory and the solutions from the models.
@@ -239,6 +243,10 @@ def sample(
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
+
     static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
         for time, static_intervention_assignment in static_state_interventions.items()
@@ -331,7 +339,7 @@ def calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
-) -> Tuple[pyro.nn.PyroModule, float]:
+) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
     This uses variational inference with a mean-field variational family to infer the parameters of the model.
@@ -412,11 +420,13 @@ def calibrate(
             - This can be used to implement custom progress bars.
 
     Returns:
-        - inferred_parameters: pyro.nn.PyroModule
-            - A Pyro module that contains the inferred parameters of the model.
-            - This can be passed to `sample` to sample from the model conditional on the data.
-        - loss: float
-            - The final loss value of the approximate ELBO loss.
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - inferred_parameters: pyro.nn.PyroModule
+                    - A Pyro module that contains the inferred parameters of the model.
+                    - This can be passed to `sample` to sample from the model conditional on the data.
+                - loss: float
+                    - The final loss value of the approximate ELBO loss.
     """
 
     pyro.clear_param_store()
@@ -424,6 +434,10 @@ def calibrate(
     model = CompiledDynamics.load(model_path_or_json)
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
+
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
 
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
@@ -511,7 +525,7 @@ def calibrate(
             if i % 25 == 0:
                 print(f"iteration {i}: loss = {loss}")
 
-    return inferred_parameters, loss
+    return {"inferred_parameters": inferred_parameters, "loss": loss}
 
 
 # # TODO
