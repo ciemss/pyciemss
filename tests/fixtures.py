@@ -72,6 +72,7 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        important_parameter="p_cbeta",
         risk_bound=300.0,
         qoi=lambda x: scenario2dec_nday_average(x, ["I_state"], 1),
         objfun=lambda x: np.abs(0.35 - x),
