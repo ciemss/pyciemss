@@ -453,8 +453,8 @@ def test_optimize(model_fixture, start_time, end_time):
             solver_method="euler",
         )
 
-        assert (bounds_interventions[0] <= opt_result.x).all()
-        assert (opt_result.x <= bounds_interventions[1]).all()
+        assert (bounds_interventions[0] <= opt_result["policy"]).all()
+        assert (opt_result["policy"] <= bounds_interventions[1]).all()
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
