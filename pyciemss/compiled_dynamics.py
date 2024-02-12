@@ -73,20 +73,24 @@ class CompiledDynamics(pyro.nn.PyroModule):
         self.instantiate_parameters()
 
         if logging_times is not None:
-            with LogTrajectory(logging_times, is_traced=is_traced) as lt:
+            with LogTrajectory(logging_times) as lt:
                 simulate(self.deriv, self.initial_state(), start_time, end_time)
                 result = lt.trajectory
         else:
             result = simulate(self.deriv, self.initial_state(), start_time, end_time)
-            if is_traced:
-                # Add the state variables to the trace so that they can be accessed later.
-                [pyro.deterministic(name, value) for name, value in result.items()]
 
         observables = self.observables(result)
 
         if is_traced:
             # Add the observables to the trace so that they can be accessed later.
-            [pyro.deterministic(name, value) for name, value in observables.items()]
+            [
+                pyro.deterministic(f"{name}_state", value)
+                for name, value in result.items()
+            ]
+            [
+                pyro.deterministic(f"{name}_observable", value)
+                for name, value in observables.items()
+            ]
 
         return {**result, **observables}
 

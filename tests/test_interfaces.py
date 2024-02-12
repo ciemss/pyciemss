@@ -132,7 +132,9 @@ def test_sample_with_noise(
     else:
         for k, v in result.items():
             if v.ndim == 2 and k[-6:] != "_noisy":
-                noisy = result[f"{k}_noisy"]
+                state_str = k[: k.rfind("_")]
+                noisy = result[f"{state_str}_noisy"]
+
                 check_noise(noisy, v, scale)
 
 
