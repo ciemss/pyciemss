@@ -36,35 +36,35 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
             "model_weights", pyro.distributions.Dirichlet(self.dirichlet_alpha)
         )
 
-        solutions: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)
+        mapped_states: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)
 
         for i, dynamics in enumerate(self.dynamics_models):
             with scope(prefix=f"model_{i}"):
-                result = dynamics(start_time, end_time, logging_times, is_traced)
-                solutions[i] = self.solution_mappings[i](result)
+                state_and_observables = dynamics(start_time, end_time, logging_times, is_traced)
+                mapped_states[i] = self.solution_mappings[i](state_and_observables)
 
-        if not all(solutions[0].keys() == s.keys() for s in solutions):
+        if not all(mapped_states[0].keys() == s.keys() for s in mapped_states):
             raise ValueError(
                 "All solution mappings must return the same keys for each model."
             )
 
-        result = dict(
+        mapped_state = dict(
             **{
                 k: sum(
                     [
                         model_weights[..., i].unsqueeze(dim=-1) * v[k]
-                        for i, v in enumerate(solutions)
+                        for i, v in enumerate(mapped_states)
                     ]
                 )
-                for k in solutions[0].keys()
+                for k in mapped_states[0].keys()
             }
         )
 
         if is_traced:
             # Add the mapped result variables to the trace so that they can be accessed later.
-            [pyro.deterministic(name, value) for name, value in result.items()]
+            [pyro.deterministic(f"{name}_state", value) for name, value in mapped_state.items()]
 
-        return result
+        return mapped_states
 
     @functools.singledispatchmethod
     @classmethod
