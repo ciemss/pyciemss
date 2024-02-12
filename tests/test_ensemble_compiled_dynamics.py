@@ -30,7 +30,7 @@ def test_ensemble_compiled_dynamics_solution_mappings(url, start_time, end_time)
     urls = [url, url]
     # Check a solution mapping that returns the same state
     solution_mappings = [lambda x: {"total": sum([v for v in x.values()])},
-                          lambda x: {"total": sum([v for v in x.values()])}]
+                          lambda x: {"total": sum([v for v in x.values()])/2}]
 
     model = EnsembleCompiledDynamics.load(
         urls,
