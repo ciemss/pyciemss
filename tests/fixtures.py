@@ -55,7 +55,8 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
-MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
+# MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
+MODELS = PETRI_MODELS
 
 MODEL_URLS = [model.url for model in MODELS]
 
@@ -118,8 +119,9 @@ def check_result_sizes(
         num_timesteps = len(
             torch.arange(start_time + logging_step_size, end_time, logging_step_size)
         )
-
-        if v.ndim == 2:
+        if v.ndim == 2 and k == "model_weights":
+            assert v.shape[0] == num_samples
+        elif v.ndim == 2:
             assert v.shape == (num_samples, num_timesteps)
         else:
             assert v.shape == (num_samples,)

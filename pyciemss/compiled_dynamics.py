@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, Tuple, TypeVar, Union
+from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -10,6 +10,7 @@ import mira.sources
 import mira.sources.amr
 import pyro
 import torch
+from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.ops import State, simulate
 
 S = TypeVar("S")
@@ -66,14 +67,28 @@ class CompiledDynamics(pyro.nn.PyroModule):
         self,
         start_time: torch.Tensor,
         end_time: torch.Tensor,
+        logging_times: Optional[torch.Tensor] = None,
+        is_traced: bool = False,
     ):
         self.instantiate_parameters()
 
-        state = simulate(self.deriv, self.initial_state(), start_time, end_time)
+        if logging_times is not None:
+            with LogTrajectory(logging_times, is_traced=is_traced) as lt:
+                simulate(self.deriv, self.initial_state(), start_time, end_time)
+                result = lt.trajectory
+        else:
+            result = simulate(self.deriv, self.initial_state(), start_time, end_time)
+            if is_traced:
+                # Add the state variables to the trace so that they can be accessed later.
+                [pyro.deterministic(name, value) for name, value in result.items()]
 
-        observables = self.observables(state)
+        observables = self.observables(result)
 
-        return {**state, **observables}
+        if is_traced:
+            # Add the observables to the trace so that they can be accessed later.
+            [pyro.deterministic(name, value) for name, value in observables.items()]
+
+        return {**result, **observables}
 
     @functools.singledispatchmethod
     @classmethod

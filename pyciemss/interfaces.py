@@ -99,47 +99,33 @@ def ensemble_sample(
         model_paths_or_jsons, dirichlet_alpha, solution_mappings
     )
 
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    logging_times = torch.arange(
+        start_time + logging_step_size, end_time, logging_step_size
+    )
 
     # Check that num_samples is a positive integer
     if not (isinstance(num_samples, int) and num_samples > 0):
         raise ValueError("num_samples must be a positive integer")
 
     def wrapped_model():
-        # We need to interleave the LogTrajectory and the solutions from the models.
-        # This because each contituent model will have its own LogTrajectory.
+        with TorchDiffEq(method=solver_method, options=solver_options):
+            solution = model(
+                torch.as_tensor(start_time),
+                torch.as_tensor(end_time),
+                logging_times=logging_times,
+                is_traced=True,
+            )
 
-        solutions: List[State[torch.Tensor]] = [dict()] * len(model_paths_or_jsons)
+        if noise_model is not None:
+            compiled_noise_model = compile_noise_model(
+                noise_model,
+                vars=set(solution.keys()),
+                **noise_model_kwargs,
+            )
+            # Adding noise to the model so that we can access the noisy trajectory in the trace.
+            compiled_noise_model(solution)
 
-        for i, dynamics in enumerate(model.dynamics_models):
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with scope(prefix=f"model_{i}"):
-                    with LogTrajectory(timespan) as lt:
-                        dynamics(torch.as_tensor(start_time), torch.as_tensor(end_time))
-
-                    solutions[i] = lt.trajectory
-
-                    # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
-                    [
-                        pyro.deterministic(f"{k}_state", v)
-                        for k, v in lt.trajectory.items()
-                    ]
-
-                    if noise_model is not None:
-                        compiled_noise_model = compile_noise_model(
-                            noise_model,
-                            vars=set(lt.trajectory.keys()),
-                            **noise_model_kwargs,
-                        )
-                        # Adding noise to the model so that we can access the noisy trajectory in the trace.
-                        compiled_noise_model(lt.trajectory)
-
-        return dict(
-            **{
-                k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
-                for k in solutions[0].keys()
-            }
-        )
+        return solution
 
     samples = pyro.infer.Predictive(
         wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=True
@@ -241,7 +227,9 @@ def sample(
 
     model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+    logging_times = torch.arange(
+        start_time + logging_step_size, end_time, logging_step_size
+    )
 
     # Check that num_samples is a positive integer
     if not (isinstance(num_samples, int) and num_samples > 0):
@@ -274,24 +262,17 @@ def sample(
     )
 
     def wrapped_model():
-        with LogTrajectory(timespan) as lt:
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with contextlib.ExitStack() as stack:
-                    for handler in intervention_handlers:
-                        stack.enter_context(handler)
-                    model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-
-        trajectory = lt.trajectory
-        [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
-
-        # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
-        trajectory_observables = model.observables(trajectory)
-        [
-            pyro.deterministic(f"{k}_observable", v)
-            for k, v in trajectory_observables.items()
-        ]
-
-        full_trajectory = {**trajectory, **trajectory_observables}
+        # with LogTrajectory(timespan) as lt:
+        with TorchDiffEq(method=solver_method, options=solver_options):
+            with contextlib.ExitStack() as stack:
+                for handler in intervention_handlers:
+                    stack.enter_context(handler)
+                full_trajectory = model(
+                    torch.as_tensor(start_time),
+                    torch.as_tensor(end_time),
+                    logging_times=logging_times,
+                    is_traced=True,
+                )
 
         if noise_model is not None:
             compiled_noise_model = compile_noise_model(

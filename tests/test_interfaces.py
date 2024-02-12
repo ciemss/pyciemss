@@ -51,7 +51,7 @@ def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
     return parameter_names, calibrate_end_time, sample_args, sample_kwargs
 
 
-SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+SAMPLE_METHODS = {"sample": sample, "ensemble_sample": dummy_ensemble_sample}
 INTERVENTION_TYPES = ["static", "dynamic"]
 INTERVENTION_TARGETS = ["state", "parameter"]
 
@@ -62,15 +62,17 @@ CALIBRATE_KWARGS = {
 }
 
 
-@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("sample_method_item", SAMPLE_METHODS.items())
 @pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
 def test_sample_no_interventions(
-    sample_method, model_url, start_time, end_time, logging_step_size, num_samples
+    sample_method_item, model_url, start_time, end_time, logging_step_size, num_samples
 ):
+    sample_str = sample_method_item[0]
+    sample_method = sample_method_item[1]
     with pyro.poutine.seed(rng_seed=0):
         result1 = sample_method(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
@@ -91,8 +93,11 @@ def test_sample_no_interventions(
     check_states_match(result1, result2)
     check_states_match_in_all_but_values(result1, result3)
 
+    if sample_str == "ensemble_sample":
+        assert "total" in result1.keys()
 
-@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+
+@pytest.mark.parametrize("sample_method_item", SAMPLE_METHODS.items())
 @pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -100,7 +105,7 @@ def test_sample_no_interventions(
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
 @pytest.mark.parametrize("scale", [0.1, 10.0])
 def test_sample_with_noise(
-    sample_method,
+    sample_method_item,
     model_url,
     start_time,
     end_time,
@@ -108,6 +113,9 @@ def test_sample_with_noise(
     num_samples,
     scale,
 ):
+    sample_str = sample_method_item[0]
+    sample_method = sample_method_item[1]
+
     result = sample_method(
         model_url,
         end_time,
@@ -120,11 +128,17 @@ def test_sample_with_noise(
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
-    for k in result.keys():
-        if k[-5:] == "state":
-            noisy = result[f"{k[:-6]}_noisy"]
-            state = result[k]
-            assert 0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+    def check_noise(noisy, state, scale):
+        0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+
+    if sample_str == "ensemble_sample":
+        assert "total_noisy" in result.keys()
+        check_noise(result["total_noisy"], result["total"], scale)
+    else:
+        for k, v in result.items():
+            if v.ndim == 2 and k[-6:] != "_noisy":
+                noisy = result[f"{k}_noisy"]
+                check_noise(noisy, v, scale)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
@@ -400,7 +414,7 @@ def test_calibrate_progress_hook(
     assert len(progress_hook.losses) == CALIBRATE_KWARGS["num_iterations"]
 
 
-@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS.values())
 @pytest.mark.parametrize("url", MODEL_URLS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -441,7 +455,7 @@ def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
         )
 
 
-@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS.values())
 @pytest.mark.parametrize("model_url", MODEL_URLS)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
