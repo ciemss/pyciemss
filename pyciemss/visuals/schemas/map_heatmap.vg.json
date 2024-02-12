@@ -1,0 +1,269 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A configurable map of countries of the world.",
+  "width": 400,
+  "height": 400,
+  "autosize": "none",
+
+  "signals": [
+    
+    { "name": "translate0", "update": "width / 2" },
+    { "name": "translate1", "update": "height / 2" },
+    { "name": "zoom_by_country", 
+      "bind": {"input": "checkbox"}},
+    { "name": "CountryID", "value": 4,
+      "update": "pluck(data('SelectedName'),'country-code')[0]" },
+
+    { "name": "CountryName", "value": "Afghanistan",
+      "bind": {"input": "select", "options": [
+        "Austria", "Australia", "Antarctica"
+      ]}},
+
+    { "name": "longitude", 
+    "value": 0,    
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'centroid_country_degree')[0][0]"}],
+      "bind": {"input": "range", "min": -180, "max": 180, "step": 1}},
+
+    { "name": "latitude", 
+    "value": 0,    
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'centroid_country_degree')[0][1]"}],
+      "bind": {"input": "range", "min": -90, "max": 90, "step": 1}},
+
+    { "name": "longitude_width", 
+    "on": [
+      {"events": {"signal": "zoom_by_country"}, "update": "pluck(data('SelectedGeometry'),'country_width_degrees')[0]"}],
+    "value": 360,
+      "bind": {"input": "range", "min": 1, "max": 360, "step": 1}},
+
+    { "name": "scale_projection", 
+    "on": [
+      {"events": {"signal": "zoom_by_country|longitude_width"}, 
+    "update": "geoScale('projection_original')*width/(scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0])"}]},
+
+    {
+      "name": "opacity", "value": 0.5
+    },
+    {
+      "name": "levels", "value": 6
+    },
+    {
+      "name": "stop", "value": 3000
+    },
+    {
+      "name": "step",
+      "update": "stop / levels"
+    },
+  { "description": "Active datapoint",
+    "name": "activated_datapoint", "value": null,
+    "on": [
+      {
+        "events": "mouseover",
+        "update": "item()"
+      },
+      {
+        "events": "mouseout",
+        "update": "null"
+      }
+    ]
+  }
+
+  ],
+  "projections": [
+    {
+      "name": "projection_updated",
+      "scale": {"signal": "scale_projection"},
+      "center": [
+        {"signal": "longitude"},
+        {"signal": "latitude"}
+      ],
+      "translate": [
+        {"signal": "translate0"},
+        {"signal": "translate1"}
+      ]
+    },
+    {
+      "name": "projection_original",
+      "translate": [
+        {"signal": "translate0"},
+        {"signal": "translate1"}
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "color",
+      "type": "quantize",
+      "domain": {"signal": "[0, stop]"},
+      "range": {"scheme": "bluepurple", "count": {"signal": "levels"}}
+    }
+  ],
+  "data": [
+
+    {
+      "name": "mesh",
+      "values": [
+        {"x_start":0,"x_end":50,"y_start":0, "y_end": 50, "__count":10},
+        {"x_start":50,"x_end":60,"y_start":50, "y_end": 70, "__count":40}
+        ]
+    },
+    {
+      "name": "world",
+      "url": "data/world-110m.json",
+      "format": {
+        "type": "topojson",
+        "feature": "countries"
+      }
+    },
+
+        {
+      "name": "names",
+      "url": "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv",
+      "format": {"type": "csv",
+      "parse": {"country-code": "number"}}
+    },
+        {
+      "name": "SelectedName",
+      "source": "names",
+      "format": {"type": "csv",
+      "parse": {"country-code": "number"}},
+      "transform": [
+      {"type": "filter", "expr": "datum['name'] == CountryName"}]
+    },
+    {
+      "name": "SelectedGeometry",
+      "source": "world",
+      "transform": 
+        [
+        { "type": "filter", "expr": "datum['id'] == CountryID" },
+        {
+          "type": "formula",
+          "expr": "geoCentroid('projection_original', datum)",
+          "as": "centroid_country_px"
+        },
+        {
+          "type": "formula",
+          "expr": "invert('projection_original', datum.centroid_country_px)",
+          "as": "centroid_country_degree"
+        },
+        {
+          "type": "formula",
+          "expr": "geoBounds('projection_original', datum)",
+          "as": "bounds_country_px"
+        },
+
+        {
+          "type": "formula",
+          "expr": "max(datum.bounds_country_px[1][0] - datum.bounds_country_px[0][0], datum.bounds_country_px[1][1] - datum.bounds_country_px[0][1])",
+          "as": "country_scale_px"
+        },
+        {
+          "type": "formula",
+          "expr": "invert('projection_original', [datum.country_scale_px + scale('projection_original', [-180, 0])[0], 0])[0] + 180",
+          "as": "country_width_degrees"
+        },
+        {
+          "type": "formula",
+          "expr": "geoScale('projection_original')",
+          "as": "orig_scale"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0]",
+          "as": "degree_width_pixels"
+        },
+        {
+          "type": "formula",
+          "expr": "width/datum.degree_width_pixels",
+          "as": "manual_width_ratio"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.orig_scale*datum.manual_width_ratio",
+          "as": "manual_scale"
+        }
+      ]
+    },
+    
+    {
+      "name": "graticule",
+      "transform": [
+        { "type": "graticule", "stepMinor": [10, 10] }
+      ]
+    }
+  ],
+
+  "marks": [
+        {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "mesh"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "__count"},
+          "x2": {
+            "signal": "scale('projection_updated', [datum.x_start, datum.y_start])[0]"
+          },
+          "x": {
+            "signal": "scale('projection_updated', [datum.x_end, datum.y_end])[0]"
+          },
+          "y2": {
+            "signal": "scale('projection_updated', [datum.x_start, datum.y_start])[1]"
+          },
+          "y": {
+            "signal": "scale('projection_updated', [datum.x_end, datum.y_end])[1]"
+          }
+        }
+      }
+    },
+    {
+      "type": "shape",
+      "from": {"data": "graticule"},
+      "encode": {
+        "update": {
+          "strokeWidth": {"value": 1},
+          "strokeDash": "[+1, +1]",
+          "stroke": "#444",
+          "fill": {"value": null}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection_updated" }
+      ]
+    },
+    {
+      "type": "shape",
+      "from": {"data": "world"},
+      "encode": {
+        "update": {
+          "strokeWidth": 1,
+    "opacity": [{"test": "datum['id'] == CountryID", "value": 1.0}, {"value": 0.2}],
+          "zindex": {"value": 0}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection_updated" }
+      ]
+    },
+    {
+      "type": "shape",
+      "from": {"data": "graticule"},
+      "encode": {
+        "update": {
+          "strokeWidth": {"value": 1},
+          "strokeDash": {"value": 1},
+          "stroke": {"value": "#444"},
+          "fill": {"value": null}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection_updated" }
+      ]
+    }
+  ]
+}
+
