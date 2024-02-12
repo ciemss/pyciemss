@@ -5,7 +5,6 @@ from typing import Callable, List, Optional, TypeVar
 
 import pyro
 import torch
-from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.ops import State
 from pyro.contrib.autoname import scope
 

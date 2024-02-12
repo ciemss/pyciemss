@@ -5,15 +5,12 @@ import pyro
 import torch
 from chirho.dynamical.handlers import (
     DynamicIntervention,
-    LogTrajectory,
     StaticBatchObservation,
     StaticIntervention,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.dynamical.ops import State
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
-from pyro.contrib.autoname import scope
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
