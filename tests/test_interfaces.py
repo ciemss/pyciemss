@@ -24,8 +24,10 @@ from .fixtures import (
 
 def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     model_paths_or_jsons = [model_path_or_json, model_path_or_json]
-    solution_mappings = [lambda x: {"total": sum([v for v in x.values()])},
-                          lambda x: {"total": sum([v for v in x.values()])/2}]
+    solution_mappings = [
+        lambda x: {"total": sum([v for v in x.values()])},
+        lambda x: {"total": sum([v for v in x.values()]) / 2},
+    ]
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
