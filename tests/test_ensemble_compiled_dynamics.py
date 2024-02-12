@@ -21,3 +21,23 @@ def test_ensemble_compiled_dynamics_load_url(url, start_time, end_time):
     with TorchDiffEq():
         simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
     check_is_state(simulation, torch.Tensor)
+
+@pytest.mark.parametrize("url", MODEL_URLS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+def test_ensemble_compiled_dynamics_solution_mappings(url, start_time, end_time):
+    
+    urls = [url, url]
+    # Check a solution mapping that returns the same state
+    solution_mappings = [lambda x: {"total": sum([v for v in x.values()])},
+                          lambda x: {"total": sum([v for v in x.values()])}]
+
+    model = EnsembleCompiledDynamics.load(
+        urls,
+        torch.ones(len(urls)),
+        solution_mappings,
+    )
+    with TorchDiffEq():
+        simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+    check_is_state(simulation, torch.Tensor)
+    assert simulation.keys() == {"total"}
