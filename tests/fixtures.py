@@ -1,6 +1,6 @@
 import os
 from collections.abc import Mapping
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Dict, Optional, TypeVar
 
 import numpy as np
 import torch
