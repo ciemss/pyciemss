@@ -5,7 +5,7 @@ from typing import Callable, Dict, List, Optional, TypeVar
 import numpy as np
 import torch
 
-from pyciemss.ouu.qoi import scenario2dec_nday_average
+from pyciemss.ouu.qoi import obs_nday_average_qoi
 
 T = TypeVar("T")
 
@@ -77,7 +77,7 @@ OPT_MODELS = [
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         important_parameter="p_cbeta",
         risk_bound=300.0,
-        qoi=lambda x: scenario2dec_nday_average(x, ["I_state"], 1),
+        qoi=lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
         objfun=lambda x: np.abs(0.35 - x),
         static_parameter_interventions={torch.tensor(1.0): "p_cbeta"},
         initial_guess_interventions=0.15,
