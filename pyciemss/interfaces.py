@@ -1,6 +1,9 @@
 import contextlib
+import time
+from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers import (
@@ -24,6 +27,8 @@ from pyciemss.interruptions import (
     DynamicParameterIntervention,
     StaticParameterIntervention,
 )
+from pyciemss.ouu.ouu import computeRisk, solveOUU
+from pyciemss.ouu.risk_measures import alpha_superquantile
 
 
 @pyciemss_logging_wrapper
@@ -100,6 +105,10 @@ def ensemble_sample(
     )
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
 
     def wrapped_model():
         # We need to interleave the LogTrajectory and the solutions from the models.
@@ -238,6 +247,10 @@ def sample(
     model = CompiledDynamics.load(model_path_or_json)
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
 
     static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
@@ -427,6 +440,10 @@ def calibrate(
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -516,16 +533,175 @@ def calibrate(
     return {"inferred_parameters": inferred_parameters, "loss": loss}
 
 
-# # TODO
-# def optimize(
-#     model: CompiledDynamics,
-#     objective_function: ObjectiveFunction,
-#     constraints: Constraints,
-#     optimization_algorithm: OptimizationAlgorithm,
-#     *args,
-#     **kwargs
-# ) -> OptimizationResult:
-#     """
-#     Optimize the objective function subject to the constraints.
-#     """
-#     raise NotImplementedError
+def optimize(
+    model_path_or_json: Union[str, Dict],
+    end_time: float,
+    logging_step_size: float,
+    qoi: Callable,
+    risk_bound: float,
+    static_parameter_interventions: Dict[torch.Tensor, str],
+    objfun: Callable,
+    initial_guess_interventions: List[float],
+    bounds_interventions: List[List[float]],
+    *,
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
+    inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    n_samples_ouu: int = int(1e2),
+    maxiter: int = 5,
+    maxfeval: int = 25,
+    verbose: bool = False,
+    roundup_decimal: int = 4,
+) -> Dict[str, Any]:
+    """
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
+    with risk-based constraints over dynamical models.
+    Args:
+        model_path_or_json: Union[str, Dict]
+            - A path to a AMR model file or JSON containing a model in AMR form.
+        end_time: float
+            - The end time of the sampled simulation.
+        logging_step_size: float
+            - The step size to use for logging the trajectory.
+        qoi: Callable
+            - A callable function defining the quantity of interest to optimize over.
+        risk_bounds: float
+            - The threshold on the risk constraint.
+        static_parameter_interventions: Dict[torch.Tensor, str]
+            - A dictionary of the form {intervention_time: parameter_name}
+              of static parameter interventions to optimize over.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a string with the intervention parameter name.
+        objfun: Callable
+            - The objective function defined as a callable function definition.
+            - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
+        initial_guess_interventions: List[float]
+            - The initial guess for the optimizer.
+            - The length should be equal to number of dimensions of the intervention (or control action).
+        bounds_interventions: List[List[float]]
+            - The lower and upper bounds for intervention parameter.
+            - Bounds are a list of the form [[lower bounds], [upper bounds]]
+        solver_method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug.
+              If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        solver_options: Dict[str, Any]
+            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` from the
+              AMR model with the simulation timepoints.
+            - By default we set the `start_time` to be 0.
+        inferred_parameters: Optional[pyro.nn.PyroModule]
+            - A Pyro module that contains the inferred parameters of the model.
+              This is typically the result of `calibrate`.
+            - If not provided, we will use the default values from the AMR model.
+        n_samples_ouu: int
+            - The number of samples to draw from the model to estimate risk for each optimization iteration.
+        maxiter: int
+            - Maximum number of basinhopping iterations: >0 leads to multi-start
+        maxfeval: int
+            - Maximum number of function evaluations for each local optimization step
+        verbose: bool
+            - Whether to print out the optimization under uncertainty progress.
+        roundup_decimal: int
+            - Number of significant digits for the optimal policy.
+
+    Returns:
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - policy: torch.tensor(opt_results.x)
+                    - Optimal intervention as the solution of the optimization under uncertainty problem.
+                - OptResults: scipy OptimizeResult object
+                    - Optimization results as scipy object.
+    """
+    control_model = CompiledDynamics.load(model_path_or_json)
+    bounds_np = np.atleast_2d(bounds_interventions)
+    u_min = bounds_np[0, :]
+    u_max = bounds_np[1, :]
+    # Set up risk estimation
+    RISK = computeRisk(
+        model=control_model,
+        interventions=static_parameter_interventions,
+        qoi=qoi,
+        end_time=end_time,
+        logging_step_size=logging_step_size,
+        start_time=start_time,
+        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+        num_samples=1,
+        guide=inferred_parameters,
+        solver_method=solver_method,
+        solver_options=solver_options,
+    )
+
+    # Run one sample to estimate model evaluation time
+    start_t = time.time()
+    init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
+    RISK.qoi(init_prediction)
+    end_t = time.time()
+    forward_time = end_t - start_t
+    time_per_eval = forward_time / 1.0
+    if verbose:
+        print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
+
+    # Assign the required number of MC samples for each OUU iteration
+    RISK = computeRisk(
+        model=control_model,
+        interventions=static_parameter_interventions,
+        qoi=qoi,
+        end_time=end_time,
+        logging_step_size=logging_step_size,
+        start_time=start_time,
+        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+        num_samples=n_samples_ouu,
+        guide=inferred_parameters,
+        solver_method=solver_method,
+        solver_options=solver_options,
+    )
+    # Define constraints >= 0
+    constraints = (
+        # risk constraint
+        {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+        # bounds on control
+        {"type": "ineq", "fun": lambda x: x - u_min},
+        {"type": "ineq", "fun": lambda x: u_max - x},
+    )
+    if verbose:
+        print(
+            "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+        )
+        print(
+            f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
+        )
+    start_time = time.time()
+    opt_results = solveOUU(
+        x0=initial_guess_interventions,
+        objfun=objfun,
+        constraints=constraints,
+        maxiter=maxiter,
+        maxfeval=maxfeval,
+        u_bounds=bounds_np,
+    ).solve()
+
+    # Rounding up to given number of decimal places
+    def round_up(num, dec=roundup_decimal):
+        rnum = np.zeros(num.shape[-1])
+        for i in range(num.shape[-1]):
+            rnum[i] = ceil(num[i] * 10**dec) / (10**dec)
+        return rnum
+
+    opt_results.x = round_up(np.atleast_1d(opt_results.x))
+    if verbose:
+        print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
+        print(f"Optimal policy:\t{opt_results.x}")
+
+    # Check for some interventions that lead to no feasible solutions
+    if opt_results.x < 0:
+        if verbose:
+            print("No solution found")
+
+    ouu_results = {
+        "policy": torch.tensor(opt_results.x),
+        "OptResults": opt_results,
+    }
+    return ouu_results

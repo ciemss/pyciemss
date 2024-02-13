@@ -1,0 +1,135 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A plot of relative contribution from three points on a triangle",
+  "width": 387,
+  "height": 195,
+  "data": [
+    {
+      "name": "contributions",
+      "url": "data/contour_grid.json"
+    },
+    {
+      "name": "contours",
+      "source": "contributions",
+      "transform": [
+        {
+          "type": "isocontour",
+          "scale": {
+            "expr": "width / datum.width"
+          },
+          "smooth": true,
+          "zero": false
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "linear",
+      "range": {
+        "scheme": "reds"
+      },
+      "domain": {
+        "data": "contours",
+        "field": "contour.value"
+      }
+    }
+  ],
+  "legends": [
+    {
+      "stroke": "color",
+      "symbolType": "stroke",
+      "orient": "left"
+    }
+  ],
+  "marks": [
+    {
+      "type": "path",
+      "name": "_contours",
+      "from": {"data": "contours"},
+      "encode": {
+        "enter": {
+          "x": {"value": 50},
+          "y": {"value": 0},
+          "stroke": {"value": "#ccc"},
+          "strokeWidth": {"value": 0.5},
+          "fill": {
+            "scale": "color",
+            "field": "contour.value"
+          }
+        }
+      },
+      "transform": [
+        {
+          "type": "geopath",
+          "field": "datum.contour"
+        }
+      ]
+    },
+    {
+      "type": "path",
+      "name": "outline",
+      "encode": {
+        "enter": {
+          "stroke": {"value": "#ccc"}
+        },
+        "update": {
+          "x": {"value": 50},
+          "y": {"value": 0},
+          "path": {"value": "L0,195 L193,0 L387,195 L0,195"},
+          "opacity": {"value": 1},
+          "strokeWidth": {"value": 1}
+        }
+      }
+    },
+    {
+      "type": "group",
+      "name": "labels",
+      "marks": [
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "fill": {"value": "#000"},
+              "text": {"value": "Model 2"}
+            },
+            "update": {
+              "opacity": {"value": 1},
+              "x": {"value": 0},
+              "y": {"value": 195}
+            }
+          }
+        },
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "fill": {"value": "#000"},
+              "text": {"value": "Model 3"}
+            },
+            "update": {
+              "opacity": {"value": 1},
+              "x": {"value": 195},
+              "y": {"value": 0}
+            }
+          }
+        },
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "fill": {"value": "#000"},
+              "text": {"value": "Model 2"}
+            },
+            "update": {
+              "opacity": {"value": 1},
+              "x": {"value": 450},
+              "y": {"value": 195}
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

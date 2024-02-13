@@ -6,14 +6,16 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, sample
+from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
     END_TIMES,
     LOGGING_STEP_SIZES,
     MODEL_URLS,
     MODELS,
+    NON_POS_INTS,
     NUM_SAMPLES,
+    OPT_MODELS,
     START_TIMES,
     check_result_sizes,
     check_states_match,
@@ -420,3 +422,83 @@ def test_output_format(
 
     assert processed_result["timepoint_id"].dtype == np.int64
     assert processed_result["sample_id"].dtype == np.int64
+
+
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_optimize(model_fixture, start_time, end_time, num_samples):
+    logging_step_size = 1.0
+    model_url = model_fixture.url
+    optimize_kwargs = {
+        **model_fixture.optimize_kwargs,
+        "solver_method": "euler",
+        "start_time": start_time,
+        "n_samples_ouu": int(2),
+        "maxiter": 1,
+        "maxfeval": 2,
+    }
+    bounds_interventions = optimize_kwargs["bounds_interventions"]
+    opt_result = optimize(
+        model_url,
+        end_time,
+        logging_step_size,
+        **optimize_kwargs,
+    )
+    opt_policy = opt_result["policy"]
+    for i in range(opt_policy.shape[-1]):
+        assert bounds_interventions[0][i] <= opt_policy[i]
+        assert opt_policy[i] <= bounds_interventions[1][i]
+
+    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())
+    intervened_params = optimize_kwargs["static_parameter_interventions"][
+        intervention_time[0]
+    ]
+    result_opt = sample(
+        model_url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        static_parameter_interventions={
+            intervention_time[0]: {intervened_params: opt_policy}
+        },
+        solver_method=optimize_kwargs["solver_method"],
+    )["unprocessed_result"]
+
+    assert isinstance(result_opt, dict)
+    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
+def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
+    # Assert that a ValueError is raised when num_iterations is not a positive integer
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            num_iterations=bad_num_iterations,
+        )
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("bad_num_samples", NON_POS_INTS)
+def test_non_pos_int_sample(
+    sample_method, model_url, end_time, logging_step_size, bad_num_samples
+):
+    # Assert that a ValueError is raised when num_samples is not a positive integer
+    with pytest.raises(ValueError):
+        sample_method(
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples=bad_num_samples,
+        )
