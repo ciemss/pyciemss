@@ -427,41 +427,40 @@ def test_output_format(
 @pytest.mark.parametrize("model_fixture", OPT_MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
-def test_optimize(model_fixture, start_time, end_time):
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_optimize(model_fixture, start_time, end_time, num_samples):
     logging_step_size = 1.0
     model_url = model_fixture.url
-    qoi = model_fixture.qoi
-    risk_bound = model_fixture.risk_bound
-    static_parameter_interventions = model_fixture.static_parameter_interventions
-    objfun = model_fixture.objfun
-    initial_guess_interventions = model_fixture.initial_guess_interventions
-    bounds_interventions = model_fixture.bounds_interventions
+    optimize_kwargs = {
+        ** model_fixture.optimize_kwargs,
+        "solver_method": "euler",
+        "start_time": start_time,
+        "n_samples_ouu": int(2),
+        "maxiter": 1,
+        "maxfeval": 2,
+    }
+    bounds_interventions = optimize_kwargs["bounds_interventions"]
     opt_result = optimize(
         model_url,
         end_time,
         logging_step_size,
-        qoi,
-        risk_bound,
-        static_parameter_interventions,
-        objfun,
-        start_time=start_time,
-        initial_guess_interventions=initial_guess_interventions,
-        bounds_interventions=bounds_interventions,
-        n_samples_ouu=int(2),
-        maxiter=1,
-        maxfeval=2,
-        solver_method="euler",
+        **optimize_kwargs,
     )
     opt_policy = opt_result["policy"]
     for i in range(opt_policy.shape[-1]):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
     
-    result = sample(
-    *sample_args, **sample_kwargs, inferred_parameters=inferred_parameters
+    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())[0]
+    intervened_params = list(optimize_kwargs["static_parameter_interventions"][intervention_time].keys())[0]
+    result_opt = sample(
+        model_url, end_time, logging_step_size, num_samples, start_time=start_time,
+        static_parameter_interventions={intervention_time: {intervened_params: opt_policy}},
+        solver_method=optimize_kwargs["solver_method"]
     )["unprocessed_result"]
 
-    check_result_sizes(result, start_time, end_time, logging_step_size, 1)
+    assert isinstance(result_opt, dict)
+    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)

@@ -1,6 +1,6 @@
 import os
 from collections.abc import Mapping
-from typing import Callable, Dict, List, Optional, TypeVar
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 import numpy as np
 import torch
@@ -20,25 +20,13 @@ class ModelFixture:
         important_parameter: Optional[str] = None,
         data_path: Optional[str] = None,
         data_mapping: Dict[str, str] = {},
-        risk_bound: float = None,
-        qoi: Callable = None,
-        objfun: Callable = None,
-        static_parameter_interventions: Dict[torch.Tensor, str] = None,
-        initial_guess_interventions: float = None,
-        bounds_interventions: List[List[float]] = None,
-        opt: bool = False,
+        optimize_kwargs: Dict[str, Any] = None,
     ):
         self.url = url
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
-        self.risk_bound = risk_bound
-        self.qoi = qoi
-        self.objfun = objfun
-        self.static_parameter_interventions = static_parameter_interventions
-        self.initial_guess_interventions = initial_guess_interventions
-        self.bounds_interventions = bounds_interventions
-        self.opt = opt
+        self.optimize_kwargs = optimize_kwargs
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
@@ -72,17 +60,20 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
+optimize_kwargs_SIRstockflow = {
+    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
+    "risk_bound": 300.0,
+    "static_parameter_interventions": {torch.tensor(1.0): "p_cbeta"},
+    "objfun": lambda x: np.abs(0.35 - x),
+    "initial_guess_interventions": 0.15,
+    "bounds_interventions": [[0.1], [0.5]],
+}
+
 OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         important_parameter="p_cbeta",
-        risk_bound=300.0,
-        qoi=lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-        objfun=lambda x: np.abs(0.35 - x),
-        static_parameter_interventions={torch.tensor(1.0): "p_cbeta"},
-        initial_guess_interventions=0.15,
-        bounds_interventions=[[0.1], [0.5]],
-        opt=True,
+        optimize_kwargs=optimize_kwargs_SIRstockflow,
     ),
 ]
 
