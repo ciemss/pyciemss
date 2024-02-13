@@ -553,8 +553,7 @@ def optimize(
     maxfeval: int = 25,
     verbose: bool = False,
     roundup_decimal: int = 4,
-    postprocess: bool = False,
-) -> Dict:
+) -> Dict[str, Any]:
     """
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
     with risk-based constraints over dynamical models.
@@ -569,12 +568,11 @@ def optimize(
             - A callable function defining the quantity of interest to optimize over.
         risk_bounds: float
             - The threshold on the risk constraint.
-        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
-            - A dictionary of static interventions to apply to the model.
+        static_parameter_interventions: Dict[torch.Tensor, str]
+            - A dictionary of the form {intervention_time: parameter_name} 
+              of static parameter interventions to optimize over.
             - Each key is the time at which the intervention is applied.
-            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
-            - Note that the `intervention_assignment` can be any type supported by
-              :func:`~chirho.interventional.ops.intervene`, including functions.
+            - Each value is a string with the intervention parameter name.
         objfun: Callable
             - The objective function defined as a callable function definition.
             - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
@@ -604,13 +602,18 @@ def optimize(
             - Maximum number of basinhopping iterations: >0 leads to multi-start
         maxfeval: int
             - Maximum number of function evaluations for each local optimization step
+        verbose: bool
+            - Whether to print out the optimization under uncertainty progress.
+        roundup_decimal: int
+            - Number of significant digits for the optimal policy.
 
     Returns:
-        result: Dict[str, torch.Tensor]
-            - Dictionary of outputs from the model.
-                - Each key is the name of a parameter or state variable in the model.
-                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
-                    and (num_samples,) for parameters.
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - policy: torch.tensor(opt_results.x)
+                    - Optimal intervention as the solution of the optimization under uncertainty problem.
+                - OptResults: scipy OptimizeResult object
+                    - Optimization results as scipy object.
     """
     control_model = CompiledDynamics.load(model_path_or_json)
     bounds_np = np.atleast_2d(bounds_interventions)
@@ -697,40 +700,8 @@ def optimize(
         if verbose:
             print("No solution found")
 
-    # Post-process OUU results
-    if postprocess:
-        if verbose:
-            print("Post-processing optimal policy...")
-        # TODO: change num_samples to a user-input
-        RISK = computeRisk(
-            model=control_model,
-            interventions=static_parameter_interventions,
-            qoi=qoi,
-            end_time=end_time,
-            logging_step_size=logging_step_size,
-            start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-            num_samples=int(1e3),
-            guide=inferred_parameters,
-            solver_method=solver_method,
-            solver_options=solver_options,
-        )
-        sq_optimal_prediction = RISK.propagate_uncertainty(opt_results.x)
-        qois_sq = RISK.qoi(sq_optimal_prediction)
-        sq_est = round_up(RISK.risk_measure(qois_sq))
-        ouu_results = {
-            "policy": opt_results.x,
-            "risk": [sq_est],
-            "samples": sq_optimal_prediction,
-            "qoi": qois_sq,
-            "tspan": RISK.timespan,
-            "OptResults": opt_results,
-        }
-        if verbose:
-            print("Estimated risk at optimal policy", ouu_results["risk"])
-    else:
-        ouu_results = {
-            "policy": opt_results.x,
-            "OptResults": opt_results,
-        }
+    ouu_results = {
+        "policy": torch.tensor(opt_results.x),
+        "OptResults": opt_results,
+    }
     return ouu_results
