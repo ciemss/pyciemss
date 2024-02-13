@@ -69,7 +69,7 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
                 for name, value in mapped_state.items()
             ]
 
-        return mapped_states
+        return mapped_state
 
     @functools.singledispatchmethod
     @classmethod

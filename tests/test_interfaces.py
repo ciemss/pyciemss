@@ -93,7 +93,7 @@ def test_sample_no_interventions(
     check_states_match_in_all_but_values(result1, result3)
 
     if sample_method.__name__ == "dummy_ensemble_sample":
-        assert "total" in result1.keys()
+        assert "total_state" in result1.keys()
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
@@ -129,7 +129,7 @@ def test_sample_with_noise(
 
     if sample_method.__name__ == "dummy_ensemble_sample":
         assert "total_noisy" in result.keys()
-        check_noise(result["total_noisy"], result["total"], scale)
+        check_noise(result["total_noisy"], result["total_state"], scale)
     else:
         for k, v in result.items():
             if v.ndim == 2 and k[-6:] != "_noisy":
