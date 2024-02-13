@@ -428,35 +428,40 @@ def test_output_format(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 def test_optimize(model_fixture, start_time, end_time):
-    if model_fixture.opt:
-        logging_step_size = 1.0
-        model_url = model_fixture.url
-        qoi = model_fixture.qoi
-        risk_bound = model_fixture.risk_bound
-        static_parameter_interventions = model_fixture.static_parameter_interventions
-        objfun = model_fixture.objfun
-        initial_guess_interventions = model_fixture.initial_guess_interventions
-        bounds_interventions = model_fixture.bounds_interventions
-        opt_result = optimize(
-            model_url,
-            end_time,
-            logging_step_size,
-            qoi,
-            risk_bound,
-            static_parameter_interventions,
-            objfun,
-            start_time=start_time,
-            initial_guess_interventions=initial_guess_interventions,
-            bounds_interventions=bounds_interventions,
-            n_samples_ouu=int(2),
-            maxiter=1,
-            maxfeval=2,
-            solver_method="euler",
-        )
-        opt_policy = opt_result["policy"]
-        for i in range(opt_policy.shape[-1]):
-            assert bounds_interventions[0][i] <= opt_policy[i]
-            assert opt_policy[i] <= bounds_interventions[1][i]
+    logging_step_size = 1.0
+    model_url = model_fixture.url
+    qoi = model_fixture.qoi
+    risk_bound = model_fixture.risk_bound
+    static_parameter_interventions = model_fixture.static_parameter_interventions
+    objfun = model_fixture.objfun
+    initial_guess_interventions = model_fixture.initial_guess_interventions
+    bounds_interventions = model_fixture.bounds_interventions
+    opt_result = optimize(
+        model_url,
+        end_time,
+        logging_step_size,
+        qoi,
+        risk_bound,
+        static_parameter_interventions,
+        objfun,
+        start_time=start_time,
+        initial_guess_interventions=initial_guess_interventions,
+        bounds_interventions=bounds_interventions,
+        n_samples_ouu=int(2),
+        maxiter=1,
+        maxfeval=2,
+        solver_method="euler",
+    )
+    opt_policy = opt_result["policy"]
+    for i in range(opt_policy.shape[-1]):
+        assert bounds_interventions[0][i] <= opt_policy[i]
+        assert opt_policy[i] <= bounds_interventions[1][i]
+    
+    result = sample(
+    *sample_args, **sample_kwargs, inferred_parameters=inferred_parameters
+    )["unprocessed_result"]
+
+    check_result_sizes(result, start_time, end_time, logging_step_size, 1)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
