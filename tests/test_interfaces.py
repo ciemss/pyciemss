@@ -451,12 +451,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
 
-    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())[
-        0
-    ]
-    intervened_params = list(
-        optimize_kwargs["static_parameter_interventions"][intervention_time].keys()
-    )[0]
+    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())
+    intervened_params = optimize_kwargs["static_parameter_interventions"][intervention_time[0]]
     result_opt = sample(
         model_url,
         end_time,
@@ -464,7 +460,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         num_samples,
         start_time=start_time,
         static_parameter_interventions={
-            intervention_time: {intervened_params: opt_policy}
+            intervention_time[0]: {intervened_params: opt_policy}
         },
         solver_method=optimize_kwargs["solver_method"],
     )["unprocessed_result"]
