@@ -11,7 +11,6 @@ T = TypeVar("T")
 
 MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
 DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
-DATA_PATH2 = "https://raw.githubusercontent.com/ciemss/pyciemss/sa-load-data-tests/docs/source/sa-testing-notebooks/"
 
 
 class ModelFixture:
@@ -45,14 +44,14 @@ PETRI_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"),
         "kappa",
-        os.path.join(DATA_PATH2, "SIR_data_case_hosp.csv"),
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
         {"case": "infected", "hosp": "hospitalized"},
         True,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"),
         "beta",
-        os.path.join(DATA_PATH2, "SIR_data_case_hosp.csv"),
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
         {"case": "infected", "hosp": "hospitalized"},
         True,
     ),
