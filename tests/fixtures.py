@@ -65,6 +65,12 @@ END_TIMES = [40.0]
 LOGGING_STEP_SIZES = [5.0]
 
 NUM_SAMPLES = [2]
+NON_POS_INTS = [
+    3.5,
+    -3,
+    0,
+    torch.tensor(3),
+]  # bad candidates for num_samples/num_iterations
 
 
 def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):

@@ -101,6 +101,10 @@ def ensemble_sample(
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
 
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
+
     def wrapped_model():
         # We need to interleave the LogTrajectory and the solutions from the models.
         # This because each contituent model will have its own LogTrajectory.
@@ -238,6 +242,10 @@ def sample(
     model = CompiledDynamics.load(model_path_or_json)
 
     timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+
+    # Check that num_samples is a positive integer
+    if not (isinstance(num_samples, int) and num_samples > 0):
+        raise ValueError("num_samples must be a positive integer")
 
     static_state_intervention_handlers = [
         StaticIntervention(time, dict(**static_intervention_assignment))
@@ -426,6 +434,10 @@ def calibrate(
     model = CompiledDynamics.load(model_path_or_json)
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
+
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
 
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
