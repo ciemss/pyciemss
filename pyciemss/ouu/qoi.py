@@ -1,10 +1,9 @@
-import numpy as np
 from typing import List
 
+import numpy as np
 
-def obs_nday_average_qoi(
-    dataCube, contexts: List, ndays: int = 7
-) -> np.ndarray:
+
+def obs_nday_average_qoi(dataCube, contexts: List, ndays: int = 7) -> np.ndarray:
     """
     Return estimate of last n-day average of each sample.
     dataCube is is the output from a Pyro Predictive object.
@@ -12,6 +11,6 @@ def obs_nday_average_qoi(
     Note: last ndays timepoints is assumed to represent last n-days of simulation.
     """
     if contexts is not None:
-            dataQoI = dataCube[contexts[0]].detach().numpy()
+        dataQoI = dataCube[contexts[0]].detach().numpy()
 
     return np.mean(dataQoI[:, -ndays:], axis=1)

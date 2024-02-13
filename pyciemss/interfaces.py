@@ -569,7 +569,7 @@ def optimize(
         risk_bounds: float
             - The threshold on the risk constraint.
         static_parameter_interventions: Dict[torch.Tensor, str]
-            - A dictionary of the form {intervention_time: parameter_name} 
+            - A dictionary of the form {intervention_time: parameter_name}
               of static parameter interventions to optimize over.
             - Each key is the time at which the intervention is applied.
             - Each value is a string with the intervention parameter name.
