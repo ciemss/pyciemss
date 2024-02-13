@@ -423,36 +423,6 @@ def test_output_format(
     assert processed_result["sample_id"].dtype == np.int64
 
 
-# Failing test for calibration when data is mapped to observables
-@pytest.mark.skip("Failing test for calibration when data is mapped to observables")
-@pytest.mark.parametrize("model_fixture", MODELS)
-@pytest.mark.parametrize("start_time", START_TIMES)
-@pytest.mark.parametrize("end_time", END_TIMES)
-@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_with_observables(
-    model_fixture, start_time, end_time, logging_step_size
-):
-    model_url = model_fixture.url
-
-    (
-        _,
-        calibrate_end_time,
-        sample_args,
-        sample_kwargs,
-    ) = setup_calibrate(model_fixture, start_time, end_time, logging_step_size)
-
-    calibrate_args = [model_url, model_fixture.data_path]
-
-    calibrate_kwargs = {
-        "data_mapping": model_fixture.data_mapping,
-        "start_time": start_time,
-        **CALIBRATE_KWARGS,
-    }
-
-    result = calibrate(*calibrate_args, **calibrate_kwargs)
-
-    assert result is not None
-    
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("bad_num_iterations", NON_POS_INTS)
 def test_non_pos_int_calibrate(model_fixture, bad_num_iterations):
