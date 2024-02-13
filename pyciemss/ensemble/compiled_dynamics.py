@@ -40,7 +40,9 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
 
         for i, dynamics in enumerate(self.dynamics_models):
             with scope(prefix=f"model_{i}"):
-                state_and_observables = dynamics(start_time, end_time, logging_times, is_traced)
+                state_and_observables = dynamics(
+                    start_time, end_time, logging_times, is_traced
+                )
                 mapped_states[i] = self.solution_mappings[i](state_and_observables)
 
         if not all(mapped_states[0].keys() == s.keys() for s in mapped_states):
@@ -62,7 +64,10 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
 
         if is_traced:
             # Add the mapped result variables to the trace so that they can be accessed later.
-            [pyro.deterministic(f"{name}_state", value) for name, value in mapped_state.items()]
+            [
+                pyro.deterministic(f"{name}_state", value)
+                for name, value in mapped_state.items()
+            ]
 
         return mapped_states
 
