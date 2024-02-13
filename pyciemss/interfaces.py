@@ -264,7 +264,6 @@ def sample(
     )
 
     def wrapped_model():
-        # with LogTrajectory(timespan) as lt:
         with TorchDiffEq(method=solver_method, options=solver_options):
             with contextlib.ExitStack() as stack:
                 for handler in intervention_handlers:
