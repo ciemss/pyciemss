@@ -19,12 +19,14 @@ class ModelFixture:
         data_path: Optional[str] = None,
         data_mapping: Dict[str, str] = {},
         data_mapped_to_observable: bool = False,
+        optimize_kwargs: Dict[str, Any] = None,
     ):
         self.url = url
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
         self.data_mapped_to_observable = data_mapped_to_observable
+        self.optimize_kwargs = optimize_kwargs
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
