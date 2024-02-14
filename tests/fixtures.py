@@ -20,12 +20,14 @@ class ModelFixture:
         important_parameter: Optional[str] = None,
         data_path: Optional[str] = None,
         data_mapping: Dict[str, str] = {},
+        data_mapped_to_observable: bool = False,
         optimize_kwargs: Dict[str, Any] = None,
     ):
         self.url = url
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
+        self.data_mapped_to_observable = data_mapped_to_observable
         self.optimize_kwargs = optimize_kwargs
 
 
@@ -37,10 +39,21 @@ PETRI_MODELS = [
         "gamma",
         os.path.join(DATA_PATH, "traditional.csv"),
         {"Infected": "I"},
+        False,
     ),
-    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
     ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"),
+        "kappa",
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
+        {"case": "infected", "hosp": "hospitalized"},
+        True,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"),
+        "beta",
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
+        {"case": "infected", "hosp": "hospitalized"},
+        True,
     ),
 ]
 
