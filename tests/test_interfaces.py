@@ -6,7 +6,7 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, sample
+from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
     END_TIMES,
@@ -15,6 +15,7 @@ from .fixtures import (
     MODELS,
     NON_POS_INTS,
     NUM_SAMPLES,
+    OPT_MODELS,
     START_TIMES,
     check_result_sizes,
     check_states_match,
@@ -24,12 +25,15 @@ from .fixtures import (
 
 def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     model_paths_or_jsons = [model_path_or_json, model_path_or_json]
-    solution_mappings = [lambda x: x, lambda x: {k: 2 * v for k, v in x.items()}]
+    solution_mappings = [
+        lambda x: {"total": sum([v for v in x.values()])},
+        lambda x: {"total": sum([v for v in x.values()]) / 2},
+    ]
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
-    if model_fixture.data_path is None:
+    if model_fixture.data_path is None or model_fixture.data_mapped_to_observable:
         pytest.skip("TODO: create temporary file")
 
     data_timepoints = load_data(model_fixture.data_path)[0]
@@ -88,6 +92,9 @@ def test_sample_no_interventions(
     check_states_match(result1, result2)
     check_states_match_in_all_but_values(result1, result3)
 
+    if sample_method.__name__ == "dummy_ensemble_sample":
+        assert "total_state" in result1.keys()
+
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model_url", MODEL_URLS)
@@ -117,11 +124,19 @@ def test_sample_with_noise(
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
-    for k in result.keys():
-        if k[-5:] == "state":
-            noisy = result[f"{k[:-6]}_noisy"]
-            state = result[k]
-            assert 0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+    def check_noise(noisy, state, scale):
+        0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+
+    if sample_method.__name__ == "dummy_ensemble_sample":
+        assert "total_noisy" in result.keys()
+        check_noise(result["total_noisy"], result["total_state"], scale)
+    else:
+        for k, v in result.items():
+            if v.ndim == 2 and k[-6:] != "_noisy":
+                state_str = k[: k.rfind("_")]
+                noisy = result[f"{state_str}_noisy"]
+
+                check_noise(noisy, v, scale)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
@@ -421,6 +436,53 @@ def test_output_format(
 
     assert processed_result["timepoint_id"].dtype == np.int64
     assert processed_result["sample_id"].dtype == np.int64
+
+
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_optimize(model_fixture, start_time, end_time, num_samples):
+    logging_step_size = 1.0
+    model_url = model_fixture.url
+    optimize_kwargs = {
+        **model_fixture.optimize_kwargs,
+        "solver_method": "euler",
+        "start_time": start_time,
+        "n_samples_ouu": int(2),
+        "maxiter": 1,
+        "maxfeval": 2,
+    }
+    bounds_interventions = optimize_kwargs["bounds_interventions"]
+    opt_result = optimize(
+        model_url,
+        end_time,
+        logging_step_size,
+        **optimize_kwargs,
+    )
+    opt_policy = opt_result["policy"]
+    for i in range(opt_policy.shape[-1]):
+        assert bounds_interventions[0][i] <= opt_policy[i]
+        assert opt_policy[i] <= bounds_interventions[1][i]
+
+    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())
+    intervened_params = optimize_kwargs["static_parameter_interventions"][
+        intervention_time[0]
+    ]
+    result_opt = sample(
+        model_url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        static_parameter_interventions={
+            intervention_time[0]: {intervened_params: opt_policy}
+        },
+        solver_method=optimize_kwargs["solver_method"],
+    )["unprocessed_result"]
+
+    assert isinstance(result_opt, dict)
+    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)

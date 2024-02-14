@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, Tuple, TypeVar, Union
+from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -10,6 +10,7 @@ import mira.sources
 import mira.sources.amr
 import pyro
 import torch
+from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.ops import State, simulate
 
 S = TypeVar("S")
@@ -66,12 +67,30 @@ class CompiledDynamics(pyro.nn.PyroModule):
         self,
         start_time: torch.Tensor,
         end_time: torch.Tensor,
+        logging_times: Optional[torch.Tensor] = None,
+        is_traced: bool = False,
     ):
         self.instantiate_parameters()
 
-        state = simulate(self.deriv, self.initial_state(), start_time, end_time)
+        if logging_times is not None:
+            with LogTrajectory(logging_times) as lt:
+                simulate(self.deriv, self.initial_state(), start_time, end_time)
+                state = lt.trajectory
+        else:
+            state = simulate(self.deriv, self.initial_state(), start_time, end_time)
 
         observables = self.observables(state)
+
+        if is_traced:
+            # Add the observables to the trace so that they can be accessed later.
+            [
+                pyro.deterministic(f"{name}_state", value)
+                for name, value in state.items()
+            ]
+            [
+                pyro.deterministic(f"{name}_observable", value)
+                for name, value in observables.items()
+            ]
 
         return {**state, **observables}
 
