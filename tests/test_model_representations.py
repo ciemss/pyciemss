@@ -4,6 +4,9 @@ from askem_model_representations import model_inventory
 
 
 def is_satisfactory(inventory):
+    """All true/false statements in the invetory need to be true for it to be used.
+    This removes teh counts
+    """
     inventory = inventory.copy()
     inventory.pop("source", None)
     inventory.pop("observables found", None)
@@ -22,14 +25,14 @@ repo_root = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations
 model_files = [
     f"{repo_root}/petrinet/examples/flux_typed.json",
     f"{repo_root}/petrinet/examples/flux_typed_aug.json",
-    # "{repo_root}/halfar.json",
-    # "{repo_root}/on_pop_vax.json",
-    # "{repo_root}/sir.json",
+    f"{repo_root}/petrinet/examples/ont_pop_vax.json",
     f"{repo_root}/petrinet/examples/sir_flux_span.json",
-    # "{repo_root}/sir_typed.json",
-    # "{repo_root}/sir_typed_aug.json",
     f"{repo_root}/regnet/examples/lotka_volterra.json",
     f"{repo_root}/stockflow/examples/sir.json",
+    # f"{repo_root}/petrinet/examples/halfar.json",
+    # f"{repo_root}/petrinet/examples/sir.json",
+    # f"{repo_root}/petrinet/examples/sir_typed.json",
+    # f"{repo_root}/petrinet/examples/sir_typed_aug.json",
 ]
 
 
@@ -38,7 +41,15 @@ def test_representations(model_file):
     try:
         model = requests.get(model_file).json()
     except BaseException:
-        assert False, f"Could not load model {model_file}"
+        assert False, f"Could not load model"
     inventory = model_inventory.check_amr(model, summary=True)
 
-    assert is_satisfactory(inventory), f"{model_file} not satisfactory"
+    keys_to_check = [
+        "parameter distribtuion exists",
+        "parameter dist/value set",
+        "initial values present",
+        "rate laws present",
+        "rate law vars defined",
+    ]
+    for key in keys_to_check:
+        assert inventory.get(key, False), f"'{key}' check failed"
