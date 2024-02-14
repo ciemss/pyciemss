@@ -65,6 +65,10 @@ def ensemble_sample(
         - The number of samples to draw from the model.
     dirichlet_alpha: Optional[torch.Tensor]
         - A tensor of shape (num_models,) containing the Dirichlet alpha values for the ensemble.
+            - A higher proportion of alpha values will result in higher weights for the corresponding models.
+            - A larger total alpha values will result in more certain priors.
+            - e.g. torch.tensor([1, 1, 1]) will result in a uniform prior over vectors of length 3 that sum to 1.
+            - e.g. torch.tensor([1, 2, 3]) will result in a prior that is biased towards the third model.
         - If not provided, we will use a uniform Dirichlet prior.
     noise_model: Optional[str]
         - The noise model to use for the data.
