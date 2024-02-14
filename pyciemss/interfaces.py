@@ -135,7 +135,10 @@ def ensemble_sample(
             return solution
 
         samples = pyro.infer.Predictive(
-            wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=True
+            wrapped_model,
+            guide=inferred_parameters,
+            num_samples=num_samples,
+            parallel=True,
         )()
 
         return prepare_interchange_dictionary(samples)
@@ -258,7 +261,9 @@ def sample(
         ]
 
         dynamic_parameter_intervention_handlers = [
-            DynamicParameterIntervention(event_fn, dict(**dynamic_intervention_assignment))
+            DynamicParameterIntervention(
+                event_fn, dict(**dynamic_intervention_assignment)
+            )
             for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
         ]
 
@@ -676,7 +681,9 @@ def optimize(
 
         opt_results.x = round_up(np.atleast_1d(opt_results.x))
         if verbose:
-            print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
+            print(
+                f"Optimization completed in time {time.time()-start_time:.2f} seconds."
+            )
             print(f"Optimal policy:\t{opt_results.x}")
 
         # Check for some interventions that lead to no feasible solutions
