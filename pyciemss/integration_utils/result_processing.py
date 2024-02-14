@@ -53,6 +53,11 @@ def convert_to_output_format(
             pyciemss_results["parameters"][name] = (
                 sample.data.detach().cpu().numpy().astype(np.float64)
             )
+        elif sample.ndim == 2 and name == "model_weights":
+            for i in range(sample.shape[1]):
+                pyciemss_results["parameters"][f"model_{i}/weight_param"] = (
+                    sample[:, i].data.detach().cpu().numpy().astype(np.float64)
+                )
         else:
             name = name + "_state" if not (name.endswith("_state")) else name
             pyciemss_results["states"][name] = (
