@@ -97,60 +97,70 @@ def ensemble_sample(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
-    if dirichlet_alpha is None:
-        dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
+    with torch.no_grad():
+        if dirichlet_alpha is None:
+            dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
 
-    model = EnsembleCompiledDynamics.load(
-        model_paths_or_jsons, dirichlet_alpha, solution_mappings
-    )
-
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
-
-    # Check that num_samples is a positive integer
-    if not (isinstance(num_samples, int) and num_samples > 0):
-        raise ValueError("num_samples must be a positive integer")
-
-    def wrapped_model():
-        # We need to interleave the LogTrajectory and the solutions from the models.
-        # This because each contituent model will have its own LogTrajectory.
-
-        solutions: List[State[torch.Tensor]] = [dict()] * len(model_paths_or_jsons)
-
-        for i, dynamics in enumerate(model.dynamics_models):
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with scope(prefix=f"model_{i}"):
-                    with LogTrajectory(timespan) as lt:
-                        dynamics(torch.as_tensor(start_time), torch.as_tensor(end_time))
-
-                    solutions[i] = lt.trajectory
-
-                    # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
-                    [
-                        pyro.deterministic(f"{k}_state", v)
-                        for k, v in lt.trajectory.items()
-                    ]
-
-                    if noise_model is not None:
-                        compiled_noise_model = compile_noise_model(
-                            noise_model,
-                            vars=set(lt.trajectory.keys()),
-                            **noise_model_kwargs,
-                        )
-                        # Adding noise to the model so that we can access the noisy trajectory in the trace.
-                        compiled_noise_model(lt.trajectory)
-
-        return dict(
-            **{
-                k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
-                for k in solutions[0].keys()
-            }
+        model = EnsembleCompiledDynamics.load(
+            model_paths_or_jsons, dirichlet_alpha, solution_mappings
         )
 
-    samples = pyro.infer.Predictive(
-        wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=True
-    )()
+        timespan = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
-    return prepare_interchange_dictionary(samples)
+        # Check that num_samples is a positive integer
+        if not (isinstance(num_samples, int) and num_samples > 0):
+            raise ValueError("num_samples must be a positive integer")
+
+        def wrapped_model():
+            # We need to interleave the LogTrajectory and the solutions from the models.
+            # This because each contituent model will have its own LogTrajectory.
+
+            solutions: List[State[torch.Tensor]] = [dict()] * len(model_paths_or_jsons)
+
+            for i, dynamics in enumerate(model.dynamics_models):
+                with TorchDiffEq(method=solver_method, options=solver_options):
+                    with scope(prefix=f"model_{i}"):
+                        with LogTrajectory(timespan) as lt:
+                            dynamics(
+                                torch.as_tensor(start_time), torch.as_tensor(end_time)
+                            )
+
+                        solutions[i] = lt.trajectory
+
+                        # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
+                        [
+                            pyro.deterministic(f"{k}_state", v)
+                            for k, v in lt.trajectory.items()
+                        ]
+
+                        if noise_model is not None:
+                            compiled_noise_model = compile_noise_model(
+                                noise_model,
+                                vars=set(lt.trajectory.keys()),
+                                **noise_model_kwargs,
+                            )
+                            # Adding noise to the model so that we can access the noisy trajectory in the trace.
+                            compiled_noise_model(lt.trajectory)
+
+            return dict(
+                **{
+                    k: sum(
+                        [model.model_weights[i] * v[k] for i, v in enumerate(solutions)]
+                    )
+                    for k in solutions[0].keys()
+                }
+            )
+
+        samples = pyro.infer.Predictive(
+            wrapped_model,
+            guide=inferred_parameters,
+            num_samples=num_samples,
+            parallel=True,
+        )()
+
+        return prepare_interchange_dictionary(samples)
 
 
 @pyciemss_logging_wrapper
@@ -244,77 +254,82 @@ def sample(
                     and (num_samples,) for parameters.
     """
 
-    model = CompiledDynamics.load(model_path_or_json)
+    with torch.no_grad():
+        model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+        timespan = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
-    # Check that num_samples is a positive integer
-    if not (isinstance(num_samples, int) and num_samples > 0):
-        raise ValueError("num_samples must be a positive integer")
+        # Check that num_samples is a positive integer
+        if not (isinstance(num_samples, int) and num_samples > 0):
+            raise ValueError("num_samples must be a positive integer")
 
-    static_state_intervention_handlers = [
-        StaticIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_state_interventions.items()
-    ]
-    static_parameter_intervention_handlers = [
-        StaticParameterIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_parameter_interventions.items()
-    ]
-
-    dynamic_state_intervention_handlers = [
-        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
-    ]
-
-    dynamic_parameter_intervention_handlers = [
-        DynamicParameterIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
-    ]
-
-    intervention_handlers = (
-        static_state_intervention_handlers
-        + static_parameter_intervention_handlers
-        + dynamic_state_intervention_handlers
-        + dynamic_parameter_intervention_handlers
-    )
-
-    def wrapped_model():
-        with LogTrajectory(timespan) as lt:
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with contextlib.ExitStack() as stack:
-                    for handler in intervention_handlers:
-                        stack.enter_context(handler)
-                    model(torch.as_tensor(start_time), torch.as_tensor(end_time))
-
-        trajectory = lt.trajectory
-        [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
-
-        # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
-        trajectory_observables = model.observables(trajectory)
-        [
-            pyro.deterministic(f"{k}_observable", v)
-            for k, v in trajectory_observables.items()
+        static_state_intervention_handlers = [
+            StaticIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_state_interventions.items()
+        ]
+        static_parameter_intervention_handlers = [
+            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_parameter_interventions.items()
         ]
 
-        full_trajectory = {**trajectory, **trajectory_observables}
+        dynamic_state_intervention_handlers = [
+            DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
+            for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
+        ]
 
-        if noise_model is not None:
-            compiled_noise_model = compile_noise_model(
-                noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
+        dynamic_parameter_intervention_handlers = [
+            DynamicParameterIntervention(
+                event_fn, dict(**dynamic_intervention_assignment)
             )
-            # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            compiled_noise_model(full_trajectory)
+            for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
+        ]
 
-    parallel = False if len(intervention_handlers) > 0 else True
+        intervention_handlers = (
+            static_state_intervention_handlers
+            + static_parameter_intervention_handlers
+            + dynamic_state_intervention_handlers
+            + dynamic_parameter_intervention_handlers
+        )
 
-    samples = pyro.infer.Predictive(
-        wrapped_model,
-        guide=inferred_parameters,
-        num_samples=num_samples,
-        parallel=parallel,
-    )()
+        def wrapped_model():
+            with LogTrajectory(timespan) as lt:
+                with TorchDiffEq(method=solver_method, options=solver_options):
+                    with contextlib.ExitStack() as stack:
+                        for handler in intervention_handlers:
+                            stack.enter_context(handler)
+                        model(torch.as_tensor(start_time), torch.as_tensor(end_time))
 
-    return prepare_interchange_dictionary(samples)
+            trajectory = lt.trajectory
+            [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
+
+            # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
+            trajectory_observables = model.observables(trajectory)
+            [
+                pyro.deterministic(f"{k}_observable", v)
+                for k, v in trajectory_observables.items()
+            ]
+
+            full_trajectory = {**trajectory, **trajectory_observables}
+
+            if noise_model is not None:
+                compiled_noise_model = compile_noise_model(
+                    noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
+                )
+                # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+                compiled_noise_model(full_trajectory)
+
+        parallel = False if len(intervention_handlers) > 0 else True
+
+        samples = pyro.infer.Predictive(
+            wrapped_model,
+            guide=inferred_parameters,
+            num_samples=num_samples,
+            parallel=parallel,
+        )()
+
+        return prepare_interchange_dictionary(samples)
 
 
 @pyciemss_logging_wrapper
@@ -615,93 +630,96 @@ def optimize(
                 - OptResults: scipy OptimizeResult object
                     - Optimization results as scipy object.
     """
-    control_model = CompiledDynamics.load(model_path_or_json)
-    bounds_np = np.atleast_2d(bounds_interventions)
-    u_min = bounds_np[0, :]
-    u_max = bounds_np[1, :]
-    # Set up risk estimation
-    RISK = computeRisk(
-        model=control_model,
-        interventions=static_parameter_interventions,
-        qoi=qoi,
-        end_time=end_time,
-        logging_step_size=logging_step_size,
-        start_time=start_time,
-        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-        num_samples=1,
-        guide=inferred_parameters,
-        solver_method=solver_method,
-        solver_options=solver_options,
-    )
-
-    # Run one sample to estimate model evaluation time
-    start_t = time.time()
-    init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
-    RISK.qoi(init_prediction)
-    end_t = time.time()
-    forward_time = end_t - start_t
-    time_per_eval = forward_time / 1.0
-    if verbose:
-        print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
-
-    # Assign the required number of MC samples for each OUU iteration
-    RISK = computeRisk(
-        model=control_model,
-        interventions=static_parameter_interventions,
-        qoi=qoi,
-        end_time=end_time,
-        logging_step_size=logging_step_size,
-        start_time=start_time,
-        risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
-        num_samples=n_samples_ouu,
-        guide=inferred_parameters,
-        solver_method=solver_method,
-        solver_options=solver_options,
-    )
-    # Define constraints >= 0
-    constraints = (
-        # risk constraint
-        {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
-        # bounds on control
-        {"type": "ineq", "fun": lambda x: x - u_min},
-        {"type": "ineq", "fun": lambda x: u_max - x},
-    )
-    if verbose:
-        print(
-            "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+    with torch.no_grad():
+        control_model = CompiledDynamics.load(model_path_or_json)
+        bounds_np = np.atleast_2d(bounds_interventions)
+        u_min = bounds_np[0, :]
+        u_max = bounds_np[1, :]
+        # Set up risk estimation
+        RISK = computeRisk(
+            model=control_model,
+            interventions=static_parameter_interventions,
+            qoi=qoi,
+            end_time=end_time,
+            logging_step_size=logging_step_size,
+            start_time=start_time,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=1,
+            guide=inferred_parameters,
+            solver_method=solver_method,
+            solver_options=solver_options,
         )
-        print(
-            f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
-        )
-    start_time = time.time()
-    opt_results = solveOUU(
-        x0=initial_guess_interventions,
-        objfun=objfun,
-        constraints=constraints,
-        maxiter=maxiter,
-        maxfeval=maxfeval,
-        u_bounds=bounds_np,
-    ).solve()
 
-    # Rounding up to given number of decimal places
-    def round_up(num, dec=roundup_decimal):
-        rnum = np.zeros(num.shape[-1])
-        for i in range(num.shape[-1]):
-            rnum[i] = ceil(num[i] * 10**dec) / (10**dec)
-        return rnum
-
-    opt_results.x = round_up(np.atleast_1d(opt_results.x))
-    if verbose:
-        print(f"Optimization completed in time {time.time()-start_time:.2f} seconds.")
-        print(f"Optimal policy:\t{opt_results.x}")
-
-    # Check for some interventions that lead to no feasible solutions
-    if opt_results.x < 0:
+        # Run one sample to estimate model evaluation time
+        start_t = time.time()
+        init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
+        RISK.qoi(init_prediction)
+        end_t = time.time()
+        forward_time = end_t - start_t
+        time_per_eval = forward_time / 1.0
         if verbose:
-            print("No solution found")
+            print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
-    ouu_results = {
-        "policy": torch.tensor(opt_results.x),
-        "OptResults": opt_results,
-    }
-    return ouu_results
+        # Assign the required number of MC samples for each OUU iteration
+        RISK = computeRisk(
+            model=control_model,
+            interventions=static_parameter_interventions,
+            qoi=qoi,
+            end_time=end_time,
+            logging_step_size=logging_step_size,
+            start_time=start_time,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=n_samples_ouu,
+            guide=inferred_parameters,
+            solver_method=solver_method,
+            solver_options=solver_options,
+        )
+        # Define constraints >= 0
+        constraints = (
+            # risk constraint
+            {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+            # bounds on control
+            {"type": "ineq", "fun": lambda x: x - u_min},
+            {"type": "ineq", "fun": lambda x: u_max - x},
+        )
+        if verbose:
+            print(
+                "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+            )
+            print(
+                f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
+            )
+        start_time = time.time()
+        opt_results = solveOUU(
+            x0=initial_guess_interventions,
+            objfun=objfun,
+            constraints=constraints,
+            maxiter=maxiter,
+            maxfeval=maxfeval,
+            u_bounds=bounds_np,
+        ).solve()
+
+        # Rounding up to given number of decimal places
+        def round_up(num, dec=roundup_decimal):
+            rnum = np.zeros(num.shape[-1])
+            for i in range(num.shape[-1]):
+                rnum[i] = ceil(num[i] * 10**dec) / (10**dec)
+            return rnum
+
+        opt_results.x = round_up(np.atleast_1d(opt_results.x))
+        if verbose:
+            print(
+                f"Optimization completed in time {time.time()-start_time:.2f} seconds."
+            )
+            print(f"Optimal policy:\t{opt_results.x}")
+
+        # Check for some interventions that lead to no feasible solutions
+        if opt_results.x < 0:
+            if verbose:
+                print("No solution found")
+
+        ouu_results = {
+            "policy": torch.tensor(opt_results.x),
+            "OptResults": opt_results,
+        }
+        return ouu_results
