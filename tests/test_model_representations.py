@@ -33,6 +33,10 @@ model_files = [
     # f"{repo_root}/petrinet/examples/sir.json",
     # f"{repo_root}/petrinet/examples/sir_typed.json",
     # f"{repo_root}/petrinet/examples/sir_typed_aug.json",
+    (
+        "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
+        "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+    ),
 ]
 
 
@@ -45,11 +49,11 @@ def test_representations(model_file):
     inventory = model_inventory.check_amr(model, summary=True)
 
     keys_to_check = [
-        "parameter distribtuion exists",
+        "parameter distribution exists",
         "parameter dist/value set",
-        "initial values present",
         "rate laws present",
         "rate law vars defined",
+        "initial values present",
     ]
     for key in keys_to_check:
         assert inventory.get(key, False), f"'{key}' check failed"
