@@ -45,7 +45,7 @@ def test_representations(model_file):
     try:
         model = requests.get(model_file).json()
     except BaseException:
-        assert False, f"Could not load model"
+        assert False, "Could not load model"
     inventory = model_inventory.check_amr(model, summary=True)
 
     keys_to_check = [
@@ -55,5 +55,6 @@ def test_representations(model_file):
         "rate law vars defined",
         "initial values present",
     ]
+
     for key in keys_to_check:
-        assert inventory.get(key, False), f"'{key}' check failed"
+        assert inventory[key], f"'{key}' check failed in {inventory}"
