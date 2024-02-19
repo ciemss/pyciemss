@@ -4,7 +4,6 @@ from typing import Any, Callable, Dict, List, Tuple
 import numpy as np
 import pyro
 import torch
-from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from scipy.optimize import basinhopping
 from tqdm import tqdm
@@ -67,7 +66,7 @@ class computeRisk:
         self.guide = guide
         self.solver_method = solver_method
         self.solver_options = solver_options
-        self.timespan = torch.arange(
+        self.logging_times = torch.arange(
             start_time + logging_step_size, end_time, logging_step_size
         )
 
@@ -100,27 +99,16 @@ class computeRisk:
             count = count + 1
 
         def wrapped_model():
-            with LogTrajectory(self.timespan) as lt:
-                with TorchDiffEq(
-                    method=self.solver_method, options=self.solver_options
-                ):
-                    with contextlib.ExitStack() as stack:
-                        for handler in static_parameter_intervention_handlers:
-                            stack.enter_context(handler)
-                        self.model(
-                            torch.as_tensor(self.start_time),
-                            torch.as_tensor(self.end_time),
-                        )
-
-            trajectory = lt.trajectory
-            [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
-
-            # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
-            trajectory_observables = self.model.observables(trajectory)
-            [
-                pyro.deterministic(f"{k}_observable", v)
-                for k, v in trajectory_observables.items()
-            ]
+            with TorchDiffEq(method=self.solver_method, options=self.solver_options):
+                with contextlib.ExitStack() as stack:
+                    for handler in static_parameter_intervention_handlers:
+                        stack.enter_context(handler)
+                    self.model(
+                        torch.as_tensor(self.start_time),
+                        torch.as_tensor(self.end_time),
+                        logging_times=self.logging_times,
+                        is_traced=True,
+                    )
 
         # Sample from intervened model
         samples = pyro.infer.Predictive(

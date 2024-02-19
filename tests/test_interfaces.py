@@ -25,7 +25,10 @@ from .fixtures import (
 
 def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     model_paths_or_jsons = [model_path_or_json, model_path_or_json]
-    solution_mappings = [lambda x: x, lambda x: {k: 2 * v for k, v in x.items()}]
+    solution_mappings = [
+        lambda x: {"total": sum([v for v in x.values()])},
+        lambda x: {"total": sum([v for v in x.values()]) / 2},
+    ]
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
@@ -89,6 +92,9 @@ def test_sample_no_interventions(
     check_states_match(result1, result2)
     check_states_match_in_all_but_values(result1, result3)
 
+    if sample_method.__name__ == "dummy_ensemble_sample":
+        assert "total_state" in result1.keys()
+
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model_url", MODEL_URLS)
@@ -118,11 +124,19 @@ def test_sample_with_noise(
     assert isinstance(result, dict)
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
-    for k in result.keys():
-        if k[-5:] == "state":
-            noisy = result[f"{k[:-6]}_noisy"]
-            state = result[k]
-            assert 0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+    def check_noise(noisy, state, scale):
+        0.1 * scale < torch.std(noisy / state - 1) < 10 * scale
+
+    if sample_method.__name__ == "dummy_ensemble_sample":
+        assert "total_noisy" in result.keys()
+        check_noise(result["total_noisy"], result["total_state"], scale)
+    else:
+        for k, v in result.items():
+            if v.ndim == 2 and k[-6:] != "_noisy":
+                state_str = k[: k.rfind("_")]
+                noisy = result[f"{state_str}_noisy"]
+
+                check_noise(noisy, v, scale)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)

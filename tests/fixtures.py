@@ -153,8 +153,9 @@ def check_result_sizes(
         num_timesteps = len(
             torch.arange(start_time + logging_step_size, end_time, logging_step_size)
         )
-
-        if v.ndim == 2:
+        if v.ndim == 2 and k == "model_weights":
+            assert v.shape[0] == num_samples
+        elif v.ndim == 2:
             assert v.shape == (num_samples, num_timesteps)
         else:
             assert v.shape == (num_samples,)
