@@ -3,6 +3,7 @@ from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
+import json
 
 from . import vega
 
@@ -208,4 +209,35 @@ def heatmap_scatter(
             schema["data"], "mesh", ["values"], json_heatmap
         )
 
+    return schema
+
+
+
+
+def map_heatmap(
+    mesh:  pd.DataFrame = None
+) -> vega.VegaSchema:
+    """
+    mesh -- (Optional) pd.DataFrame with columns
+        x_start, x_end, y_start, y_end, __count for each grid
+    """
+
+    schema = vega.load_schema("map_heatmap.vg.json")
+    mesh_array = mesh.to_json(orient='records')
+    # load heatmap data
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "mesh", ["values"], mesh_array
+    )
+    # add in map topology data
+    f = open('data/world-110m.json')
+    world_data = json.load(f)
+    schema["data"] = vega.replace_named_with(
+            schema["data"], "world", ["values"], world_data
+        )
+    
+    # add in country names
+    name_data = pd.read_csv('data/all.csv').to_json(orient='records')
+    schema["data"] = vega.replace_named_with(
+            schema["data"], "names", ["values"], name_data
+        )
     return schema

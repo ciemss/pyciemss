@@ -5,10 +5,13 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import pytest
+from pathlib import Path
 
 import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
 from pyciemss.visuals import plots, vega
+
+_output_root = Path(__file__).parent / "modified_schemas"
 
 
 def by_key_value(targets, key, value):
@@ -346,6 +349,22 @@ class TestHistograms:
         data = pd.DataFrame(by_key_value(hist["data"], "name", "binned")["values"])
         assert set(data["label"].values) == {"D_state", "E_state"}
 
+    
+
+    def test_map_heatmap(self):
+        mesh = pd.DataFrame({
+            "x_start": [0, 0, 0],
+            "x_end": [50, 40, 45],
+            "x_start": [0, 0, 0],
+            "x_end": [50, 40, 45],
+            "__count": [50, 40, 45]
+            })
+        
+        schema = plots.map_heatmap(mesh=mesh)
+        schema_path = _output_root / f"modified_map_heatmap.json"
+        plots.save_schema(schema, schema_path)
+        assert True
+
 
 class TestHeatmapScatter:
     def test_implicit_heatmap(self):
@@ -453,3 +472,5 @@ class TestGraph:
             n = [n for n in nodes if n["label"] == id][0]
             assert n["inputX"] == x, f"Layout lost for {id}"
             assert n["inputY"] == y, f"Layout lost for {id}"
+
+
