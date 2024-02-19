@@ -9,8 +9,10 @@ from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
+    BADLY_FORMATTED_DATAFRAMES,
     END_TIMES,
     LOGGING_STEP_SIZES,
+    MAPPING_FOR_DATA_TESTS,
     MODEL_URLS,
     MODELS,
     NON_POS_INTS,
@@ -515,4 +517,15 @@ def test_non_pos_int_sample(
             end_time,
             logging_step_size,
             num_samples=bad_num_samples,
+        )
+
+
+@pytest.mark.parametrize("bad_data", BADLY_FORMATTED_DATAFRAMES)
+@pytest.mark.parametrize("data_mapping", MAPPING_FOR_DATA_TESTS)
+def test_load_data(bad_data, data_mapping):
+    # Assert that a ValueError is raised for improperly formatted data
+    with pytest.raises(ValueError):
+        load_data(
+            bad_data,
+            data_mapping,
         )

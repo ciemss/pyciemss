@@ -3,6 +3,7 @@ from collections.abc import Mapping
 from typing import Any, Dict, Optional, TypeVar
 
 import numpy as np
+import pandas as pd
 import torch
 
 from pyciemss.ouu.qoi import obs_nday_average_qoi
@@ -106,6 +107,40 @@ NON_POS_INTS = [
     0,
     torch.tensor(3),
 ]  # bad candidates for num_samples/num_iterations
+
+bad_data1 = {
+    "Timestamp": {0: 1.1, 1: 2.2, 2: 3.3},
+    "case": {0: 15.0, 1: "", 2: 20.0},
+    "hosp": {0: 0.1, 1: 1.0, 2: 2.2},
+}
+bad_data2 = {
+    "Timestamp": {0: 1.1, 1: 2.2, 2: 3.3},
+    "case": {0: 15.0, 1: "apple", 2: 20.0},
+    "hosp": {0: 0.1, 1: 1.0, 2: 2.2},
+}
+bad_data3 = {
+    "Timestamp": {0: 1.1, 1: 2.2, 2: 3.3},
+    "case": {0: 15.0, 1: " ", 2: 20.0},
+    "hosp": {0: 0.1, 1: 1.0, 2: 2.2},
+}
+bad_data4 = {
+    "Timestamp": {0: 1.1, 1: 2.2, 2: 3.3},
+    "case": {0: 15.0, 1: None, 2: 20.0},
+    "hosp": {0: 0.1, 1: 1.0, 2: 2.2},
+}
+bad_data5 = {
+    "Timepoints": {0: 1.1, 1: 2.2, 2: 3.3},
+    "case": {0: 15.0, 1: 18.0, 2: 20.0},
+    "hosp": {0: 0.1, 1: 1.0, 2: 2.2},
+}
+BADLY_FORMATTED_DATAFRAMES = [
+    pd.DataFrame(bad_data1),
+    pd.DataFrame(bad_data2),
+    pd.DataFrame(bad_data3),
+    pd.DataFrame(bad_data4),
+    pd.DataFrame(bad_data5),
+]  # improperly formatted datasets
+MAPPING_FOR_DATA_TESTS = {"case": "I", "hosp": "H"}
 
 
 def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):
