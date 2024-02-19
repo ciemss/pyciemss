@@ -1,6 +1,6 @@
 
 {
-  "$schema": "https://vega.github.io/schema/vega/v5.8.json",
+  "$schema": "https://vega.github.io/schema/vega/v5.25.json",
   "description": "A configurable map of countries of the world.",
   "width": 400,
   "height": 400,
@@ -12,13 +12,62 @@
     { "name": "translate1", "update": "height / 2" },
     { "name": "zoom_by_country", 
       "on": [{"events": {"signal": "CountryName"},"update": "zoom_by_country? false: true"} ]},
-    { "name": "CountryID", "value": 4,
-      "update": "pluck(data('SelectedName'),'country-code')[0]" },
-
     { "name": "CountryName", "value": "Afghanistan",
       "bind": {"input": "select", "options": [
         "Austria", "Australia", "Antarctica"
       ]}},
+    {"name": "IndexSelectedName",
+      "on": [{"events": {"signal": "CountryName"}, 
+      "update": "indexof(pluck(data('names'),'name'), CountryName)"}]
+    },
+    { "name": "CountryID",
+    "on": [{"events": {"signal": "IndexSelectedName"}, 
+      "update": "pluck(data('names'),'country-code')[IndexSelectedName]" }]},
+
+    { "name": "IndexSelectedGeometry", 
+    "on": [{"events": {"signal": "CountryID"}, 
+      "update": "indexof(pluck(data('world'),'id'), CountryID)" }]},
+
+    { "name": "SelectedGeometry", 
+    "on": [{"events": {"signal": "CountryID"}, 
+      "update": "pluck(data('world'),'geometry')[IndexSelectedGeometry]" }]},
+
+    { "name": "centroid_country_px", 
+    "on": [{"events": {"signal": "SelectedGeometry"}, 
+      "update": "geoCentroid('projection_original', SelectedGeometry)"}]},
+
+    { "name": "centroid_country_degree", 
+    "on": [{"events": {"signal": "centroid_country_px"}, 
+      "update": "invert('projection_original', centroid_country_px)"}]},
+
+    { "name": "bounds_country_px", 
+    "on": [{"events": {"signal": "centroid_country_degree"}, 
+      "update": "geoBounds('projection_original', SelectedGeometry)"}]},
+
+    { "name": "country_scale_px", 
+    "on": [{"events": {"signal": "bounds_country_px"}, 
+      "update": "max(bounds_country_px[1][0] - bounds_country_px[0][0], bounds_country_px[1][1] - bounds_country_px[0][1])"}]},
+
+    { "name": "country_width_degrees", 
+    "on": [{"events": {"signal": "country_scale_px"}, 
+      "update": "invert('projection_original', [country_scale_px + scale('projection_original', [-180, 0])[0], 0])[0] + 180"}]},
+
+    { "name": "orig_scale", 
+    "on": [{"events": {"signal": "SelectedGeometry"}, 
+      "update": "geoScale('projection_original')"}]},
+
+    { "name": "degree_width_pixels", 
+    "on": [{"events": {"signal": "CountryID"}, 
+      "update": "scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0]"}]},
+    
+    { "name": "manual_width_ratio", 
+    "on": [{"events": {"signal": "degree_width_pixels"}, 
+      "update": "width/degree_width_pixels"}]},
+    
+    { "name": "manual_scale", 
+    "on": [{"events": {"signal": "manual_width_ratio"}, 
+      "update": "orig_scale*manual_width_ratio"}]},
+
 
     { "name": "longitude", 
     "value": 0,    
@@ -44,20 +93,11 @@
       {"events": {"signal": "zoom_by_country|longitude_width"}, 
     "update": "geoScale('projection_original')*width/(scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0])"}]},
 
-
-  { "description": "Active datapoint",
-    "name": "activated_datapoint", "value": null,
-    "on": [
-      {
-        "events": "mouseover",
-        "update": "item()"
-      },
-      {
-        "events": "mouseout",
-        "update": "null"
-      }
-    ]
-  }
+    {
+      "name": "SelectedName",
+      "on": [{"events": {"signal": "CountryName"}, 
+      "update": "indexof(pluck(data('names'),'name'), CountryName)"}]
+    },
 
   ],
   "projections": [
@@ -115,14 +155,6 @@
       "url": "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv",
       "format": {"type": "csv",
       "parse": {"country-code": "number"}}
-    },
-        {
-      "name": "SelectedName",
-      "source": "names",
-      "format": {"type": "csv",
-      "parse": {"country-code": "number"}},
-      "transform": [
-      {"type": "filter", "expr": "datum['name'] == CountryName"}]
     },
     {
       "name": "SelectedGeometry",
