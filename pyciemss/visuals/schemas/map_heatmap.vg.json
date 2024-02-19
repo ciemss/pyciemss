@@ -11,7 +11,7 @@
     { "name": "translate0", "update": "width / 2" },
     { "name": "translate1", "update": "height / 2" },
     { "name": "zoom_by_country", 
-      "bind": {"input": "checkbox"}},
+      "on": [{"events": {"signal": "CountryName"},"update": "zoom_by_country? false: true"} ]},
     { "name": "CountryID", "value": 4,
       "update": "pluck(data('SelectedName'),'country-code')[0]" },
 
@@ -39,23 +39,12 @@
       "bind": {"input": "range", "min": 1, "max": 360, "step": 1}},
 
     { "name": "scale_projection", 
+    "value": 63.66,
     "on": [
       {"events": {"signal": "zoom_by_country|longitude_width"}, 
     "update": "geoScale('projection_original')*width/(scale('projection_original', [-180 + longitude_width, 0])[0]- scale('projection_original', [-180, 0])[0])"}]},
 
-    {
-      "name": "opacity", "value": 0.5
-    },
-    {
-      "name": "levels", "value": 6
-    },
-    {
-      "name": "stop", "value": 3000
-    },
-    {
-      "name": "step",
-      "update": "stop / levels"
-    },
+
   { "description": "Active datapoint",
     "name": "activated_datapoint", "value": null,
     "on": [
@@ -96,9 +85,11 @@
   "scales": [
     {
       "name": "color",
-      "type": "quantize",
-      "domain": {"signal": "[0, stop]"},
-      "range": {"scheme": "bluepurple", "count": {"signal": "levels"}}
+      "type": "linear",
+      "domain": {"data": "mesh", "field": "__count"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": true
     }
   ],
   "data": [
@@ -107,12 +98,12 @@
       "name": "mesh",
       "values": [
         {"x_start":0,"x_end":50,"y_start":0, "y_end": 50, "__count":10},
-        {"x_start":50,"x_end":60,"y_start":50, "y_end": 70, "__count":40}
+        {"x_start":50,"x_end":60,"y_start":50, "y_end": 70, "__count":3000}
         ]
     },
     {
       "name": "world",
-      "url": "https://github.com/vega/datalib/blob/master/test/data/world-110m.json",
+      "url": "data/world-110m.json",
       "format": {
         "type": "topojson",
         "feature": "countries"
@@ -266,4 +257,3 @@
     }
   ]
 }
-
