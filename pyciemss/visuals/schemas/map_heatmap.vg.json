@@ -219,12 +219,7 @@
     },
     {
       "name": "names",
-      "values": [],
-      "format": {
-        "type": "csv",
-        "parse": {"country-code": "number"},
-        "delimiter": ","
-      }
+      "values": []
     },
     {
       "name": "graticule",

@@ -355,8 +355,8 @@ class TestHistograms:
         mesh = pd.DataFrame({
             "x_start": [0, 0, 0],
             "x_end": [50, 40, 45],
-            "x_start": [0, 0, 0],
-            "x_end": [50, 40, 45],
+            "y_start": [0, 0, 0],
+            "y_end": [50, 40, 45],
             "__count": [50, 40, 45]
             })
         
