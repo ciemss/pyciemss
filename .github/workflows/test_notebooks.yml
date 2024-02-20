@@ -37,4 +37,5 @@ jobs:
             pip install -e .[tests]
     
         - name: Run Notebook Test
-          run: python -m pytest --nbval-lax docs/source/interfaces.ipynb
+          run: | 
+           ./scripts/test_notebooks.sh

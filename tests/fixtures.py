@@ -1,8 +1,11 @@
 import os
 from collections.abc import Mapping
-from typing import Dict, Optional, TypeVar
+from typing import Any, Dict, Optional, TypeVar
 
+import numpy as np
 import torch
+
+from pyciemss.ouu.qoi import obs_nday_average_qoi
 
 T = TypeVar("T")
 
@@ -17,11 +20,15 @@ class ModelFixture:
         important_parameter: Optional[str] = None,
         data_path: Optional[str] = None,
         data_mapping: Dict[str, str] = {},
+        data_mapped_to_observable: bool = False,
+        optimize_kwargs: Dict[str, Any] = None,
     ):
         self.url = url
         self.important_parameter = important_parameter
         self.data_path = data_path
         self.data_mapping = data_mapping
+        self.data_mapped_to_observable = data_mapped_to_observable
+        self.optimize_kwargs = optimize_kwargs
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
@@ -32,10 +39,21 @@ PETRI_MODELS = [
         "gamma",
         os.path.join(DATA_PATH, "traditional.csv"),
         {"Infected": "I"},
+        False,
     ),
-    ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"), "gamma"),
     ModelFixture(
-        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"), "beta"
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type2_petrinet.json"),
+        "kappa",
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
+        {"case": "infected", "hosp": "hospitalized"},
+        True,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_with_reinfection01_petrinet.json"),
+        "beta",
+        os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
+        {"case": "infected", "hosp": "hospitalized"},
+        True,
     ),
 ]
 
@@ -55,6 +73,23 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
+optimize_kwargs_SIRstockflow = {
+    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
+    "risk_bound": 300.0,
+    "static_parameter_interventions": {torch.tensor(1.0): "p_cbeta"},
+    "objfun": lambda x: np.abs(0.35 - x),
+    "initial_guess_interventions": 0.15,
+    "bounds_interventions": [[0.1], [0.5]],
+}
+
+OPT_MODELS = [
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        important_parameter="p_cbeta",
+        optimize_kwargs=optimize_kwargs_SIRstockflow,
+    ),
+]
+
 MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
 
 MODEL_URLS = [model.url for model in MODELS]
@@ -65,6 +100,12 @@ END_TIMES = [40.0]
 LOGGING_STEP_SIZES = [5.0]
 
 NUM_SAMPLES = [2]
+NON_POS_INTS = [
+    3.5,
+    -3,
+    0,
+    torch.tensor(3),
+]  # bad candidates for num_samples/num_iterations
 
 
 def check_keys_match(obj1: Dict[str, T], obj2: Dict[str, T]):
@@ -112,8 +153,9 @@ def check_result_sizes(
         num_timesteps = len(
             torch.arange(start_time + logging_step_size, end_time, logging_step_size)
         )
-
-        if v.ndim == 2:
+        if v.ndim == 2 and k == "model_weights":
+            assert v.shape[0] == num_samples
+        elif v.ndim == 2:
             assert v.shape == (num_samples, num_timesteps)
         else:
             assert v.shape == (num_samples,)

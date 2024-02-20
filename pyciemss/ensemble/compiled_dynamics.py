@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, List, TypeVar
+from typing import Callable, List, Optional, TypeVar
 
 import pyro
 import torch
@@ -18,35 +18,58 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
         self,
         dynamics_models: List[CompiledDynamics],
         dirichlet_alpha: torch.Tensor,
-        solution_mappings: List[
-            Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
-        ],
+        solution_mappings: List[Callable[[State[torch.Tensor]], State[torch.Tensor]]],
     ):
         super().__init__()
         self.dynamics_models = dynamics_models
         self.register_buffer("dirichlet_alpha", dirichlet_alpha)
         self.solution_mappings = solution_mappings
 
-    @pyro.nn.PyroSample
-    def model_weights(self):
-        return pyro.distributions.Dirichlet(self.dirichlet_alpha)
-
     def forward(
         self,
         start_time: torch.Tensor,
         end_time: torch.Tensor,
+        logging_times: Optional[torch.Tensor] = None,
+        is_traced: bool = False,
     ) -> State[torch.Tensor]:
-        solutions: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)
+        model_weights = pyro.sample(
+            "model_weights", pyro.distributions.Dirichlet(self.dirichlet_alpha)
+        )
+
+        mapped_states: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)
+
         for i, dynamics in enumerate(self.dynamics_models):
             with scope(prefix=f"model_{i}"):
-                solutions[i] = dynamics(start_time, end_time)
+                state_and_observables = dynamics(
+                    start_time, end_time, logging_times, is_traced
+                )
+                mapped_states[i] = self.solution_mappings[i](state_and_observables)
 
-        return dict(
+        if not all(mapped_states[0].keys() == s.keys() for s in mapped_states):
+            raise ValueError(
+                "All solution mappings must return the same keys for each model."
+            )
+
+        mapped_state = dict(
             **{
-                k: sum([self.model_weights[i] * v[k] for i, v in enumerate(solutions)])
-                for k in solutions[0].keys()
+                k: sum(
+                    [
+                        model_weights[..., i].unsqueeze(dim=-1) * v[k]
+                        for i, v in enumerate(mapped_states)
+                    ]
+                )
+                for k in mapped_states[0].keys()
             }
         )
+
+        if is_traced:
+            # Add the mapped result variables to the trace so that they can be accessed later.
+            [
+                pyro.deterministic(f"{name}_state", value)
+                for name, value in mapped_state.items()
+            ]
+
+        return mapped_state
 
     @functools.singledispatchmethod
     @classmethod

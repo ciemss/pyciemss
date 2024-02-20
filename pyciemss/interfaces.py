@@ -1,19 +1,19 @@
 import contextlib
+import time
+from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers import (
     DynamicIntervention,
-    LogTrajectory,
     StaticBatchObservation,
     StaticIntervention,
 )
 from chirho.dynamical.handlers.solver import TorchDiffEq
-from chirho.dynamical.ops import State
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
-from pyro.contrib.autoname import scope
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
@@ -24,6 +24,8 @@ from pyciemss.interruptions import (
     DynamicParameterIntervention,
     StaticParameterIntervention,
 )
+from pyciemss.ouu.ouu import computeRisk, solveOUU
+from pyciemss.ouu.risk_measures import alpha_superquantile
 
 
 @pyciemss_logging_wrapper
@@ -63,6 +65,10 @@ def ensemble_sample(
         - The number of samples to draw from the model.
     dirichlet_alpha: Optional[torch.Tensor]
         - A tensor of shape (num_models,) containing the Dirichlet alpha values for the ensemble.
+            - A higher proportion of alpha values will result in higher weights for the corresponding models.
+            - A larger total alpha values will result in more certain priors.
+            - e.g. torch.tensor([1, 1, 1]) will result in a uniform prior over vectors of length 3 that sum to 1.
+            - e.g. torch.tensor([1, 2, 3]) will result in a prior that is biased towards the third model.
         - If not provided, we will use a uniform Dirichlet prior.
     noise_model: Optional[str]
         - The noise model to use for the data.
@@ -92,56 +98,50 @@ def ensemble_sample(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
-    if dirichlet_alpha is None:
-        dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
+    with torch.no_grad():
+        if dirichlet_alpha is None:
+            dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
 
-    model = EnsembleCompiledDynamics.load(
-        model_paths_or_jsons, dirichlet_alpha, solution_mappings
-    )
-
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
-
-    def wrapped_model():
-        # We need to interleave the LogTrajectory and the solutions from the models.
-        # This because each contituent model will have its own LogTrajectory.
-
-        solutions: List[State[torch.Tensor]] = [dict()] * len(model_paths_or_jsons)
-
-        for i, dynamics in enumerate(model.dynamics_models):
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with scope(prefix=f"model_{i}"):
-                    with LogTrajectory(timespan) as lt:
-                        dynamics(torch.as_tensor(start_time), torch.as_tensor(end_time))
-
-                    solutions[i] = lt.trajectory
-
-                    # Adding deterministic nodes to the model so that we can access the trajectory in the trace.
-                    [
-                        pyro.deterministic(f"{k}_state", v)
-                        for k, v in lt.trajectory.items()
-                    ]
-
-                    if noise_model is not None:
-                        compiled_noise_model = compile_noise_model(
-                            noise_model,
-                            vars=set(lt.trajectory.keys()),
-                            **noise_model_kwargs,
-                        )
-                        # Adding noise to the model so that we can access the noisy trajectory in the trace.
-                        compiled_noise_model(lt.trajectory)
-
-        return dict(
-            **{
-                k: sum([model.model_weights[i] * v[k] for i, v in enumerate(solutions)])
-                for k in solutions[0].keys()
-            }
+        model = EnsembleCompiledDynamics.load(
+            model_paths_or_jsons, dirichlet_alpha, solution_mappings
         )
 
-    samples = pyro.infer.Predictive(
-        wrapped_model, guide=inferred_parameters, num_samples=num_samples, parallel=True
-    )()
+        logging_times = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
-    return prepare_interchange_dictionary(samples)
+        # Check that num_samples is a positive integer
+        if not (isinstance(num_samples, int) and num_samples > 0):
+            raise ValueError("num_samples must be a positive integer")
+
+        def wrapped_model():
+            with TorchDiffEq(method=solver_method, options=solver_options):
+                solution = model(
+                    torch.as_tensor(start_time),
+                    torch.as_tensor(end_time),
+                    logging_times=logging_times,
+                    is_traced=True,
+                )
+
+            if noise_model is not None:
+                compiled_noise_model = compile_noise_model(
+                    noise_model,
+                    vars=set(solution.keys()),
+                    **noise_model_kwargs,
+                )
+                # Adding noise to the model so that we can access the noisy trajectory in the trace.
+                compiled_noise_model(solution)
+
+            return solution
+
+        samples = pyro.infer.Predictive(
+            wrapped_model,
+            guide=inferred_parameters,
+            num_samples=num_samples,
+            parallel=True,
+        )()
+
+        return prepare_interchange_dictionary(samples)
 
 
 @pyciemss_logging_wrapper
@@ -235,73 +235,74 @@ def sample(
                     and (num_samples,) for parameters.
     """
 
-    model = CompiledDynamics.load(model_path_or_json)
+    with torch.no_grad():
+        model = CompiledDynamics.load(model_path_or_json)
 
-    timespan = torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+        logging_times = torch.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
 
-    static_state_intervention_handlers = [
-        StaticIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_state_interventions.items()
-    ]
-    static_parameter_intervention_handlers = [
-        StaticParameterIntervention(time, dict(**static_intervention_assignment))
-        for time, static_intervention_assignment in static_parameter_interventions.items()
-    ]
+        # Check that num_samples is a positive integer
+        if not (isinstance(num_samples, int) and num_samples > 0):
+            raise ValueError("num_samples must be a positive integer")
 
-    dynamic_state_intervention_handlers = [
-        DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
-    ]
+        static_state_intervention_handlers = [
+            StaticIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_state_interventions.items()
+        ]
+        static_parameter_intervention_handlers = [
+            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_parameter_interventions.items()
+        ]
 
-    dynamic_parameter_intervention_handlers = [
-        DynamicParameterIntervention(event_fn, dict(**dynamic_intervention_assignment))
-        for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
-    ]
+        dynamic_state_intervention_handlers = [
+            DynamicIntervention(event_fn, dict(**dynamic_intervention_assignment))
+            for event_fn, dynamic_intervention_assignment in dynamic_state_interventions.items()
+        ]
 
-    intervention_handlers = (
-        static_state_intervention_handlers
-        + static_parameter_intervention_handlers
-        + dynamic_state_intervention_handlers
-        + dynamic_parameter_intervention_handlers
-    )
+        dynamic_parameter_intervention_handlers = [
+            DynamicParameterIntervention(
+                event_fn, dict(**dynamic_intervention_assignment)
+            )
+            for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
+        ]
 
-    def wrapped_model():
-        with LogTrajectory(timespan) as lt:
+        intervention_handlers = (
+            static_state_intervention_handlers
+            + static_parameter_intervention_handlers
+            + dynamic_state_intervention_handlers
+            + dynamic_parameter_intervention_handlers
+        )
+
+        def wrapped_model():
             with TorchDiffEq(method=solver_method, options=solver_options):
                 with contextlib.ExitStack() as stack:
                     for handler in intervention_handlers:
                         stack.enter_context(handler)
-                    model(torch.as_tensor(start_time), torch.as_tensor(end_time))
+                    full_trajectory = model(
+                        torch.as_tensor(start_time),
+                        torch.as_tensor(end_time),
+                        logging_times=logging_times,
+                        is_traced=True,
+                    )
 
-        trajectory = lt.trajectory
-        [pyro.deterministic(f"{k}_state", v) for k, v in trajectory.items()]
+            if noise_model is not None:
+                compiled_noise_model = compile_noise_model(
+                    noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
+                )
+                # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
+                compiled_noise_model(full_trajectory)
 
-        # Need to add observables to the trajectory, as well as add deterministic nodes to the model.
-        trajectory_observables = model.observables(trajectory)
-        [
-            pyro.deterministic(f"{k}_observable", v)
-            for k, v in trajectory_observables.items()
-        ]
+        parallel = False if len(intervention_handlers) > 0 else True
 
-        full_trajectory = {**trajectory, **trajectory_observables}
+        samples = pyro.infer.Predictive(
+            wrapped_model,
+            guide=inferred_parameters,
+            num_samples=num_samples,
+            parallel=parallel,
+        )()
 
-        if noise_model is not None:
-            compiled_noise_model = compile_noise_model(
-                noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
-            )
-            # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
-            compiled_noise_model(full_trajectory)
-
-    parallel = False if len(intervention_handlers) > 0 else True
-
-    samples = pyro.infer.Predictive(
-        wrapped_model,
-        guide=inferred_parameters,
-        num_samples=num_samples,
-        parallel=parallel,
-    )()
-
-    return prepare_interchange_dictionary(samples)
+        return prepare_interchange_dictionary(samples)
 
 
 @pyciemss_logging_wrapper
@@ -427,6 +428,10 @@ def calibrate(
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -516,16 +521,178 @@ def calibrate(
     return {"inferred_parameters": inferred_parameters, "loss": loss}
 
 
-# # TODO
-# def optimize(
-#     model: CompiledDynamics,
-#     objective_function: ObjectiveFunction,
-#     constraints: Constraints,
-#     optimization_algorithm: OptimizationAlgorithm,
-#     *args,
-#     **kwargs
-# ) -> OptimizationResult:
-#     """
-#     Optimize the objective function subject to the constraints.
-#     """
-#     raise NotImplementedError
+def optimize(
+    model_path_or_json: Union[str, Dict],
+    end_time: float,
+    logging_step_size: float,
+    qoi: Callable,
+    risk_bound: float,
+    static_parameter_interventions: Dict[torch.Tensor, str],
+    objfun: Callable,
+    initial_guess_interventions: List[float],
+    bounds_interventions: List[List[float]],
+    *,
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
+    inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    n_samples_ouu: int = int(1e2),
+    maxiter: int = 5,
+    maxfeval: int = 25,
+    verbose: bool = False,
+    roundup_decimal: int = 4,
+) -> Dict[str, Any]:
+    """
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
+    with risk-based constraints over dynamical models.
+    Args:
+        model_path_or_json: Union[str, Dict]
+            - A path to a AMR model file or JSON containing a model in AMR form.
+        end_time: float
+            - The end time of the sampled simulation.
+        logging_step_size: float
+            - The step size to use for logging the trajectory.
+        qoi: Callable
+            - A callable function defining the quantity of interest to optimize over.
+        risk_bounds: float
+            - The threshold on the risk constraint.
+        static_parameter_interventions: Dict[torch.Tensor, str]
+            - A dictionary of the form {intervention_time: parameter_name}
+              of static parameter interventions to optimize over.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a string with the intervention parameter name.
+        objfun: Callable
+            - The objective function defined as a callable function definition.
+            - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
+        initial_guess_interventions: List[float]
+            - The initial guess for the optimizer.
+            - The length should be equal to number of dimensions of the intervention (or control action).
+        bounds_interventions: List[List[float]]
+            - The lower and upper bounds for intervention parameter.
+            - Bounds are a list of the form [[lower bounds], [upper bounds]]
+        solver_method: str
+            - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+            - If performance is incredibly slow, we suggest using `euler` to debug.
+              If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+        solver_options: Dict[str, Any]
+            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        start_time: float
+            - The start time of the model. This is used to align the `start_state` from the
+              AMR model with the simulation timepoints.
+            - By default we set the `start_time` to be 0.
+        inferred_parameters: Optional[pyro.nn.PyroModule]
+            - A Pyro module that contains the inferred parameters of the model.
+              This is typically the result of `calibrate`.
+            - If not provided, we will use the default values from the AMR model.
+        n_samples_ouu: int
+            - The number of samples to draw from the model to estimate risk for each optimization iteration.
+        maxiter: int
+            - Maximum number of basinhopping iterations: >0 leads to multi-start
+        maxfeval: int
+            - Maximum number of function evaluations for each local optimization step
+        verbose: bool
+            - Whether to print out the optimization under uncertainty progress.
+        roundup_decimal: int
+            - Number of significant digits for the optimal policy.
+
+    Returns:
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - policy: torch.tensor(opt_results.x)
+                    - Optimal intervention as the solution of the optimization under uncertainty problem.
+                - OptResults: scipy OptimizeResult object
+                    - Optimization results as scipy object.
+    """
+    with torch.no_grad():
+        control_model = CompiledDynamics.load(model_path_or_json)
+        bounds_np = np.atleast_2d(bounds_interventions)
+        u_min = bounds_np[0, :]
+        u_max = bounds_np[1, :]
+        # Set up risk estimation
+        RISK = computeRisk(
+            model=control_model,
+            interventions=static_parameter_interventions,
+            qoi=qoi,
+            end_time=end_time,
+            logging_step_size=logging_step_size,
+            start_time=start_time,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=1,
+            guide=inferred_parameters,
+            solver_method=solver_method,
+            solver_options=solver_options,
+        )
+
+        # Run one sample to estimate model evaluation time
+        start_t = time.time()
+        init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
+        RISK.qoi(init_prediction)
+        end_t = time.time()
+        forward_time = end_t - start_t
+        time_per_eval = forward_time / 1.0
+        if verbose:
+            print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
+
+        # Assign the required number of MC samples for each OUU iteration
+        RISK = computeRisk(
+            model=control_model,
+            interventions=static_parameter_interventions,
+            qoi=qoi,
+            end_time=end_time,
+            logging_step_size=logging_step_size,
+            start_time=start_time,
+            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            num_samples=n_samples_ouu,
+            guide=inferred_parameters,
+            solver_method=solver_method,
+            solver_options=solver_options,
+        )
+        # Define constraints >= 0
+        constraints = (
+            # risk constraint
+            {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+            # bounds on control
+            {"type": "ineq", "fun": lambda x: x - u_min},
+            {"type": "ineq", "fun": lambda x: u_max - x},
+        )
+        if verbose:
+            print(
+                "Performing risk-based optimization under uncertainty (using alpha-superquantile)"
+            )
+            print(
+                f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
+            )
+        start_time = time.time()
+        opt_results = solveOUU(
+            x0=initial_guess_interventions,
+            objfun=objfun,
+            constraints=constraints,
+            maxiter=maxiter,
+            maxfeval=maxfeval,
+            u_bounds=bounds_np,
+        ).solve()
+
+        # Rounding up to given number of decimal places
+        def round_up(num, dec=roundup_decimal):
+            rnum = np.zeros(num.shape[-1])
+            for i in range(num.shape[-1]):
+                rnum[i] = ceil(num[i] * 10**dec) / (10**dec)
+            return rnum
+
+        opt_results.x = round_up(np.atleast_1d(opt_results.x))
+        if verbose:
+            print(
+                f"Optimization completed in time {time.time()-start_time:.2f} seconds."
+            )
+            print(f"Optimal policy:\t{opt_results.x}")
+
+        # Check for some interventions that lead to no feasible solutions
+        if opt_results.x < 0:
+            if verbose:
+                print("No solution found")
+
+        ouu_results = {
+            "policy": torch.tensor(opt_results.x),
+            "OptResults": opt_results,
+        }
+        return ouu_results
