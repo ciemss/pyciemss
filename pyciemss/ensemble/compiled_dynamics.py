@@ -33,7 +33,7 @@ class EnsembleCompiledDynamics(pyro.nn.PyroModule):
         is_traced: bool = False,
     ) -> State[torch.Tensor]:
         model_weights = pyro.sample(
-            "model_weights", pyro.distributions.Dirichlet(self.dirichlet_alpha)
+            "model_weights", pyro.distributions.Dirichlet(self.dirichlet_alpha)  # type: ignore[attr-defined]
         )
 
         mapped_states: List[State[torch.Tensor]] = [dict()] * len(self.dynamics_models)

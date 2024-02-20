@@ -504,7 +504,7 @@ def calibrate(
 
     inferred_parameters = autoguide(wrapped_model)
 
-    optim = pyro.optim.Adam({"lr": lr})
+    optim = pyro.optim.Adam({"lr": lr})  # type: ignore[attr-defined]
     loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
     svi = pyro.infer.SVI(wrapped_model, inferred_parameters, optim, loss=loss)
 

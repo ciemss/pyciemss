@@ -1,20 +1,19 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import mira.metamodel
 import pyro
 
+if TYPE_CHECKING:
+    from pyro.distributions.torch_distribution import TorchDistributionMixin
 
-def mira_uniform_to_pyro(
-    parameters: Dict[str, float]
-) -> pyro.distributions.Distribution:
+
+def mira_uniform_to_pyro(parameters: Dict[str, float]) -> TorchDistributionMixin:
     minimum = parameters["minimum"]
     maximum = parameters["maximum"]
-    return pyro.distributions.Uniform(minimum, maximum)
+    return pyro.distributions.Uniform(minimum, maximum)  # type: ignore[attr-defined]
 
 
-def mira_normal_to_pyro(
-    parameters: Dict[str, float]
-) -> pyro.distributions.Distribution:
+def mira_normal_to_pyro(parameters: Dict[str, float]) -> TorchDistributionMixin:
     if "mean" in parameters.keys():
         mean = parameters["mean"]
 
@@ -27,7 +26,7 @@ def mira_normal_to_pyro(
 
     #  Pyro distributions are thing wrappers around torch distributions.
     #  See https://pytorch.org/docs/stable/generated/torch.normal.html
-    return pyro.distributions.Normal(mean, std)
+    return pyro.distributions.Normal(mean, std)  # type: ignore[attr-defined]
 
 
 # TODO: Add lognormal, beta, gamma, etc.
@@ -47,7 +46,7 @@ _MIRA_TO_PYRO = {
 
 def mira_distribution_to_pyro(
     mira_dist: mira.metamodel.template_model.Distribution,
-) -> pyro.distributions.Distribution:
+) -> TorchDistributionMixin:
     if mira_dist.type not in _MIRA_TO_PYRO.keys():
         raise NotImplementedError(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution not implemented."
