@@ -143,7 +143,8 @@ def test_export_PNG(schema_file, ref_file, name):
     image = plots.ipy_display(schema, format="PNG", dpi=72).data
     save_result(image, name, "png")
 
-    test_threshold = 0.04
+    # JS_score of 0.15 observed for some hardware choices. 
+    test_threshold = 0.2
     JS_boolean, JS_score = png_matches(image, ref_file, test_threshold)
     assert (
         JS_boolean
