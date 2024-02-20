@@ -1,10 +1,8 @@
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
 import mira.metamodel
 import pyro
-
-if TYPE_CHECKING:
-    from pyro.distributions.torch_distribution import TorchDistributionMixin
+from pyro.distributions.torch_distribution import TorchDistributionMixin
 
 
 def mira_uniform_to_pyro(parameters: Dict[str, float]) -> TorchDistributionMixin:
