@@ -53,7 +53,7 @@ def load_data(
 
         return data_df
 
-    def print_dataframe_report(data_df):
+    def print_data_report(data_df):
         # Prints a short report about the data
 
         print(
@@ -66,7 +66,7 @@ def load_data(
             print(column_name)
 
     df = check_data(path)
-    print_dataframe_report(df)
+    print_data_report(df)
 
     data_timepoints = torch.tensor(df["Timestamp"].values, dtype=torch.float32)
     data = {}
