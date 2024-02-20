@@ -12,9 +12,9 @@ def load_data(
     path: Union[str, pd.DataFrame], data_mapping: Dict[str, str] = {}
 ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
     """
-    Load data from a CSV file.
+    Load data from a CSV file, or directly from a DataFrame.
 
-    - path: path to the CSV file
+    - path: path to the CSV file, or DataFrame
     - data_mapping: A mapping from column names in the data file to state variable names in the model.
         - keys: str name of column in dataset
         - values: str name of state/observable in model
