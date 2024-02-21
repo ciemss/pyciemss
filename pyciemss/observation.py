@@ -1,7 +1,10 @@
-from typing import Dict, Set
+from typing import TYPE_CHECKING, Dict, Set
 
 import pyro
 import torch
+
+if TYPE_CHECKING:
+    from pyro.distributions.torch_distribution import TorchDistributionMixin
 
 
 class NoiseModel(pyro.nn.PyroModule):
@@ -21,9 +24,7 @@ class StateIndependentNoiseModel(NoiseModel):
     def __init__(self, vars: Set[str] = set()):
         super().__init__(vars=vars)
 
-    def markov_kernel(
-        self, name: str, val: torch.Tensor
-    ) -> pyro.distributions.Distribution:
+    def markov_kernel(self, name: str, val: torch.Tensor) -> TorchDistributionMixin:
         raise NotImplementedError
 
     def forward(self, state: Dict[str, torch.Tensor]) -> None:
@@ -39,7 +40,5 @@ class NormalNoiseModel(StateIndependentNoiseModel):
         super().__init__(vars=vars)
         self.scale = scale
 
-    def markov_kernel(
-        self, name: str, val: torch.Tensor
-    ) -> pyro.distributions.Distribution:
-        return pyro.distributions.Normal(val, self.scale * torch.abs(val)).to_event(1)
+    def markov_kernel(self, name: str, val: torch.Tensor) -> TorchDistributionMixin:
+        return pyro.distributions.Normal(val, self.scale * torch.abs(val)).to_event(1)  # type: ignore[attr-defined]

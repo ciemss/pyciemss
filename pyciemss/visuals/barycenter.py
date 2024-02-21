@@ -4,7 +4,7 @@ import matplotlib.tri as tri
 import numpy as np
 import pandas as pd
 import torch
-from pyro.distributions import Dirichlet
+from pyro.distributions import Dirichlet  # type: ignore[attr-defined]
 
 from . import vega
 

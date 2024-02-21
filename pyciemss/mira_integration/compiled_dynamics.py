@@ -14,6 +14,7 @@ import sympy
 import sympytorch
 import torch
 from chirho.dynamical.ops import State
+from torch.distributions import constraints
 
 from pyciemss.compiled_dynamics import (
     _compile_deriv,
@@ -84,7 +85,7 @@ def _compile_observables_mira(
 def _compile_param_values_mira(
     src: mira.modeling.Model,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
-    values = {}
+    values: Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]] = {}
     for param_info in src.parameters.values():
         param_name = get_name(param_info)
 
@@ -98,7 +99,7 @@ def _compile_param_values_mira(
             param_value = mira_distribution_to_pyro(param_dist)
 
         if isinstance(param_value, torch.nn.Parameter):
-            values[param_name] = pyro.nn.PyroParam(param_value)
+            values[param_name] = pyro.nn.PyroParam(param_value, constraints.real, None)
         elif isinstance(param_value, pyro.distributions.Distribution):
             values[param_name] = pyro.nn.PyroSample(param_value)
         elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
