@@ -93,16 +93,15 @@ def _compile_param_values_mira(
 
         param_dist = getattr(param_info, "distribution", None)
         if param_dist is None:
-            param_value = param_info.value
+            # Using a Delta distribution for numerical parameters is required to get downstream
+            # pytorch broadcasting to work correctly with Pyro. This will likely be fixed as we move to
+            # a different differential equation backend that supports full tensor broadcasting.
+            param_value = pyro.distribution.Delta(param_info.value)
         else:
             param_value = mira_distribution_to_pyro(param_dist)
 
-        if isinstance(param_value, torch.nn.Parameter):
-            values[param_name] = pyro.nn.PyroParam(param_value)
-        elif isinstance(param_value, pyro.distributions.Distribution):
+        if isinstance(param_value, pyro.distributions.Distribution):
             values[param_name] = pyro.nn.PyroSample(param_value)
-        elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
-            values[param_name] = torch.as_tensor(param_value)
         else:
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
