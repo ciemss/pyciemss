@@ -1,49 +1,38 @@
 {
- "id": "advection-petrinet-backward-10013",
- "header": {
-  "name": "Advection Model",
-  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.1/petrinet/petrinet_schema.json",
-  "schema_name": "petrinet",
-  "description": "Advection as Petrinet model created by Dan Bryce and Drisana Mosiphir",
-  "model_version": "0.1"
- },
- "properties": {},
- "model": {
-  "states": [
+    "header": {
+        "name": "Advection Model",
+        "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.1/petrinet/petrinet_schema.json",
+        "schema_name": "petrinet",
+        "description": "Advection as Petrinet model created by Dan Bryce and Drisana Iverson (Mosaphir)",
+        "model_version": "0.2"
+    },
+    "model": {
+        "states": [
             {
                 "id": "a_0",
                 "name": "a_0",
-                "description": "a at [-1.5]",
-                "grounding": {},
-                "units": null
+                "description": "a at [-1.5]"
             },
             {
                 "id": "a_1",
                 "name": "a_1",
-                "description": "a at [0.0]",
-                "grounding": {},
-                "units": {}
+                "description": "a at [0.0]"
             },
             {
                 "id": "a_2",
                 "name": "a_2",
-                "description": "a at [1.5]",
-                "grounding": {},
-                "units": {}
+                "description": "a at [1.5]"
             }
-  ],
-  "transitions": [
+        ],
+        "transitions": [
             {
                 "id": "r_a_0_0_boundary",
                 "input": [
                     "a_0"
                 ],
                 "output": [],
-                "grounding": {},
                 "properties": {
-                    "name": "r_a_0_0_boundary",
-                    "description": {},
-                    "grounding": {}
+                    "name": "r_a_0_0_boundary"
                 }
             },
             {
@@ -54,11 +43,8 @@
                 "output": [
                     "a_0"
                 ],
-                "grounding": {},
                 "properties": {
-                    "name": "r_a_0_1_0",
-                    "description": {},
-                    "grounding": {}
+                    "name": "r_a_0_1_0"
                 }
             },
             {
@@ -69,11 +55,8 @@
                 "output": [
                     "a_1"
                 ],
-                "grounding": {},
                 "properties": {
-                    "name": "r_a_0_2_1",
-                    "description": {},
-                    "grounding": {}
+                    "name": "r_a_0_2_1"
                 }
             },
             {
@@ -82,110 +65,81 @@
                 "output": [
                     "a_2"
                 ],
-                "grounding": {},
                 "properties": {
-                    "name": "r_a_0_boundary_2",
-                    "description": {},
-                    "grounding": {}
+                    "name": "r_a_0_boundary_2"
                 }
             }
-  ]
- },
- "semantics": {
-  "ode": {
-   "rates": [
+        ]
+    },
+    "semantics": {
+        "ode": {
+            "rates": [
                 {
                     "target": "r_a_0_0_boundary",
-                    "expression": "(0.01*t)",
-                    "expression_mathml": null
+                    "expression": "(p_1)*(t)"
                 },
                 {
                     "target": "r_a_0_1_0",
-                    "expression": "(-u/dx)*(a_0)",
-                    "expression_mathml": null
+                    "expression": "(-u/dx)*(a_0)"
                 },
                 {
                     "target": "r_a_0_2_1",
-                    "expression": "(-u/dx)*(a_1)",
-                    "expression_mathml": null
+                    "expression": "(-u/dx)*(a_1)"
                 },
                 {
                     "target": "r_a_0_boundary_2",
-                    "expression": "(-u/dx)*(a_2)",
-                    "expression_mathml": null
+                    "expression": "(-u/dx)*(a_2)"
                 }
-   ],
-   "initials": [
+            ],
+            "initials": [
                 {
                     "target": "a_0",
-                    "expression": "0.4",
-                    "expression_mathml": null
+                    "expression": "0.4"
                 },
                 {
                     "target": "a_1",
-                    "expression": "1.0",
-                    "expression_mathml": null
+                    "expression": "1.0"
                 },
                 {
                     "target": "a_2",
-                    "expression": "0.4",
-                    "expression_mathml": null
+                    "expression": "0.4"
                 }
-   ],
-   "parameters": [
+            ],
+            "parameters": [
                 {
                     "id": "u",
-                    "name": null,
-                    "description": null,
                     "value": 1.0,
-                    "grounding": null,
                     "distribution": {
                         "type": "StandardUniform1",
                         "parameters": {
                             "minimum": 0.0,
                             "maximum": 1.0
                         }
-                    },
-                    "units": null
+                    }
                 },
                 {
                     "id": "dx",
-                    "name": null,
-                    "description": null,
                     "value": 1.0,
-                    "grounding": null,
                     "distribution": {
                         "type": "StandardUniform1",
                         "parameters": {
                             "minimum": 0,
                             "maximum": 1
                         }
-                    },
-                    "units": null
+                    }
+                },
+                {
+                    "id": "p_1",
+                    "value": 0.01
                 }
-   ],
-   "time": {
-    "id": "t",
-    "units": {
-     "expression": "day",
-     "expression_mathml": "<ci>day</ci>"
+            ],
+            "time": {
+                "id": "t",
+                "units": {
+                    "expression": "day",
+                    "expression_mathml": "<ci>day</ci>"
+                }
+            }
+        }
     }
-   }
-  }
- },
- "metadata": {
-  "annotations": {
-   "license": {},
-   "authors": [],
-   "references": [],
-   "time_scale": {},
-   "time_start": {},
-   "time_end": {},
-   "locations": [],
-   "pathogens": [],
-   "diseases": [],
-   "hosts": [],
-   "model_types": []
-  }
- }
 }
