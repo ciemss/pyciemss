@@ -12,9 +12,9 @@ def load_data(
     path: Union[str, pd.DataFrame], data_mapping: Dict[str, str] = {}
 ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
     """
-    Load data from a CSV file.
+    Load data from a CSV file, or directly from a DataFrame.
 
-    - path: path to the CSV file
+    - path: path to the CSV file, or DataFrame
     - data_mapping: A mapping from column names in the data file to state variable names in the model.
         - keys: str name of column in dataset
         - values: str name of state/observable in model
@@ -53,7 +53,7 @@ def load_data(
 
         return data_df
 
-    def print_dataframe_report(data_df):
+    def print_data_report(data_df):
         # Prints a short report about the data
 
         print(
@@ -66,7 +66,7 @@ def load_data(
             print(column_name)
 
     df = check_data(path)
-    print_dataframe_report(df)
+    print_data_report(df)
 
     data_timepoints = torch.tensor(df["Timestamp"].values, dtype=torch.float32)
     data = {}
