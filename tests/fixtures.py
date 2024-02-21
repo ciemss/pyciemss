@@ -55,6 +55,10 @@ PETRI_MODELS = [
         {"case": "infected", "hosp": "hospitalized"},
         True,
     ),
+    ModelFixture(
+        "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/pde-petri-amrs/petrinet/examples/pde/advection/advection_backward_1_0.01_3.json",
+        "u",
+    ),
 ]
 
 REGNET_MODELS = [
