@@ -138,7 +138,6 @@ def ensemble_sample(
             wrapped_model,
             guide=inferred_parameters,
             num_samples=num_samples,
-            parallel=True,
         )()
 
         return prepare_interchange_dictionary(samples)
@@ -293,13 +292,10 @@ def sample(
                 # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
                 compiled_noise_model(full_trajectory)
 
-        parallel = False if len(intervention_handlers) > 0 else True
-
         samples = pyro.infer.Predictive(
             wrapped_model,
             guide=inferred_parameters,
             num_samples=num_samples,
-            parallel=parallel,
         )()
 
         return prepare_interchange_dictionary(samples)
