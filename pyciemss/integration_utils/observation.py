@@ -57,13 +57,12 @@ def load_data(
         # Prints a short report about the data
 
         print(
-            f"Data printout: This dataset contains {len(data_df) - 1} rows of data. The first column, {data_df.columns[0]}, begins at {data_df.iloc[0, 0]} and ends at {data_df.iloc[-1, 0]}. The subsequent columns are named: "
+            f"Data printout: This dataset contains {len(data_df) - 1} rows of data. "
+            f"The first column, {data_df.columns[0]}, begins at {data_df.iloc[0, 0]} "
+            f"and ends at {data_df.iloc[-1, 0]}. "
+            f"The subsequent columns are named: "
+            f"{', '.join(data_df.columns[1:])}"
         )
-
-        # Print the names of subsequent columns
-        other_col_names = data_df.columns[1:]
-        for column_name in other_col_names:
-            print(column_name)
 
     df = check_data(path)
     print_data_report(df)
