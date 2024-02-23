@@ -10,6 +10,7 @@ from pyciemss.ouu.qoi import obs_nday_average_qoi
 T = TypeVar("T")
 
 MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
+PDE_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/pde-petri-amrs/petrinet/"
 DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
 
 
@@ -54,6 +55,12 @@ PETRI_MODELS = [
         os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
         {"case": "infected", "hosp": "hospitalized"},
         True,
+    ),
+    ModelFixture(
+        os.path.join(
+            PDE_PATH, "examples/pde/advection/advection_backward_1_0.01_3.json"
+        ),
+        "u",
     ),
 ]
 
