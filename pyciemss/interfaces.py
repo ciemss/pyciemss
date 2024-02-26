@@ -166,7 +166,7 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
-) -> Dict[str, torch.Tensor]:
+) -> Dict[str, Any]:
     """
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
@@ -228,10 +228,18 @@ def sample(
 
     Returns:
         result: Dict[str, torch.Tensor]
-            - Dictionary of outputs from the model.
-                - Each key is the name of a parameter or state variable in the model.
-                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+            - Dictionary of outputs with following attributes:
+                - data: The samples from the model as a pandas DataFrame.
+                - unprocessed_result: Dictionary of outputs from the model.
+                    - Each key is the name of a parameter or state variable in the model.
+                    - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
+                - quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                - risk: Dictionary with each key as the name of a state with
+                a dictionary of risk estimates for each state at the final timepoint.
+                    - risk: Estimated alpha-superquantile risk with alpha=0.95
+                    - qoi: Samples of quantity of interest (value of the state at the final timepoint)
+                - schema: Visualization. (If visual_options is truthy)
     """
 
     with torch.no_grad():
