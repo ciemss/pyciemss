@@ -298,7 +298,15 @@ def sample(
             num_samples=num_samples,
         )()
 
-        return prepare_interchange_dictionary(samples)
+        risk_results = {}
+        for k, vals in samples.items():
+            if "_state" in k:
+                # qoi is assumed to be the last day of simulation
+                qoi_sample = vals[:,-1]
+                sq_est = alpha_superquantile(qoi_sample, alpha=0.95)
+                risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
+
+        return {**prepare_interchange_dictionary(samples), "risk": risk_results}
 
 
 @pyciemss_logging_wrapper
