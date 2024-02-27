@@ -41,6 +41,7 @@ def select_traces(
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after keep & drop.
 
+        #TODO: Add a way to control the time-axis.  _nice_df does some heuristics BUT we should provide an override
     """
     traces_df = _nice_df(traces)
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
