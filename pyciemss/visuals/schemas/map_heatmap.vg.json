@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v5.25.json",
+  "$schema": "https://vega.github.io/schema/vega/v5.27.json",
   "description": "A configurable map of countries of the world.",
   "width": 400,
   "height": 400,
