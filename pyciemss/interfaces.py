@@ -170,8 +170,9 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
-) -> Dict[str, torch.Tensor]:
-    """
+    alpha: float = 0.95,
+) -> Dict[str, Any]:
+    r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
     Args:
@@ -229,13 +230,27 @@ def sample(
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
+        alpha: float
+            - Risk level for alpha-superquantile outputs in the results dictionary.
 
     Returns:
         result: Dict[str, torch.Tensor]
-            - Dictionary of outputs from the model.
-                - Each key is the name of a parameter or state variable in the model.
-                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+            - Dictionary of outputs with following attributes:
+                - data: The samples from the model as a pandas DataFrame.
+                - unprocessed_result: Dictionary of outputs from the model.
+                    - Each key is the name of a parameter or state variable in the model.
+                    - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
+                - quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                - risk: Dictionary with each key as the name of a state with
+                a dictionary of risk estimates for each state at the final timepoint.
+                    - risk: alpha-superquantile risk estimate
+                    Superquantiles can be intuitively thought of as a tail expectation, or an average
+                    over a portion of worst-case outcomes. Given a distribution of a
+                    quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is
+                    the expected value of the largest 100(1 -\alpha)% realizations of the QoI.
+                    - qoi: Samples of quantity of interest (value of the state at the final timepoint)
+                - schema: Visualization. (If visual_options is truthy)
     """
 
     with torch.no_grad():
@@ -302,9 +317,20 @@ def sample(
             num_samples=num_samples,
         )()
 
-        return prepare_interchange_dictionary(
-            samples, timepoints=logging_times, time_unit=time_unit
-        )
+        risk_results = {}
+        for k, vals in samples.items():
+            if "_state" in k:
+                # qoi is assumed to be the last day of simulation
+                qoi_sample = vals[:, -1]
+                sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
+                risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
+
+        return {
+            **prepare_interchange_dictionary(
+                samples, timepoints=logging_times, time_unit=time_unit
+            ),
+            "risk": risk_results,
+        }
 
 
 @pyciemss_logging_wrapper
@@ -534,6 +560,7 @@ def optimize(
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
+    alpha: float = 0.95,
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -544,9 +571,12 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
 ) -> Dict[str, Any]:
-    """
-    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
-    with risk-based constraints over dynamical models.
+    r"""
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
+    constraints over dynamical models. This uses \alpha-superquantile as the risk measure. Superquantiles can be
+    intuitively thought of as a tail expectation, or an average over a portion of worst-case outcomes. Given a
+    distribution of a quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is the expected
+    value of the largest 100(1 -\alpha)% realizations of the QoI.
     Args:
         model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
@@ -618,7 +648,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=1,
             guide=inferred_parameters,
             solver_method=solver_method,
@@ -643,7 +673,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=n_samples_ouu,
             guide=inferred_parameters,
             solver_method=solver_method,
