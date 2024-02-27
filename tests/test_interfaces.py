@@ -422,15 +422,24 @@ def test_output_format(
     sample_method, url, start_time, end_time, logging_step_size, num_samples
 ):
     processed_result = sample_method(
-        url, end_time, logging_step_size, num_samples, start_time=start_time
+        url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        time_unit="nominal",
     )["data"]
     assert isinstance(processed_result, pd.DataFrame)
     assert processed_result.shape[0] == num_samples * len(
         torch.arange(start_time + logging_step_size, end_time, logging_step_size)
     )
     assert processed_result.shape[1] >= 2
-    assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
-    for col_name in processed_result.columns[2:]:
+    assert list(processed_result.columns)[:3] == [
+        "timepoint_id",
+        "sample_id",
+        "timepoint_nominal",
+    ]
+    for col_name in processed_result.columns[3:]:
         assert col_name.split("_")[-1] in ("param", "state")
         assert processed_result[col_name].dtype == np.float64
 
