@@ -167,7 +167,7 @@ def sample(
         Dict[str, Intervention],
     ] = {},
 ) -> Dict[str, Any]:
-    """
+    r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
     Args:
@@ -238,6 +238,10 @@ def sample(
                 - risk: Dictionary with each key as the name of a state with
                 a dictionary of risk estimates for each state at the final timepoint.
                     - risk: Estimated alpha-superquantile risk with alpha=0.95
+                    Superquantiles can be intuitively thought of as a tail expectation, or an average
+                    over a portion of worst-case outcomes. Given a distribution of a
+                    quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is
+                    the expected value of the largest 100(1 -\alpha)% realizations of the QoI.
                     - qoi: Samples of quantity of interest (value of the state at the final timepoint)
                 - schema: Visualization. (If visual_options is truthy)
     """
@@ -554,9 +558,12 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
 ) -> Dict[str, Any]:
-    """
-    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
-    with risk-based constraints over dynamical models.
+    r"""
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
+    constraints over dynamical models. This uses \alpha-superquantile as the risk measure. Superquantiles can be
+    intuitively thought of as a tail expectation, or an average over a portion of worst-case outcomes. Given a
+    distribution of a quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is the expected
+    value of the largest 100(1 -\alpha)% realizations of the QoI.
     Args:
         model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
