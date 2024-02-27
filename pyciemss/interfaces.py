@@ -325,7 +325,7 @@ def sample(
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
-        return {**prepare_interchange_dictionary(samples), "risk": risk_results}
+        return {**prepare_interchange_dictionary(samples, timepoints=logging_times, time_unit=time_unit), "risk": risk_results}
 
 
 @pyciemss_logging_wrapper
