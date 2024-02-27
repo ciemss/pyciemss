@@ -38,7 +38,7 @@ def convert_to_output_format(
     """
 
     if time_unit is not None and timepoints is None:
-        raise ValueError("`timepionts` must be supplied when a `time_unit` is supplied")
+        raise ValueError("`timepoints` must be supplied when a `time_unit` is supplied")
 
     pyciemss_results: Dict[str, Dict[str, torch.Tensor]] = {
         "parameters": {},
@@ -73,7 +73,7 @@ def convert_to_output_format(
     if timepoints is not None:
         timepoints = [*timepoints]
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
-        output[label] = [float(timepoints[v]) for v in output["timepoint_id"]]
+        output[label] = np.array(float(timepoints[v]) for v in output["timepoint_id"])
 
     # Parameters
     output = {
