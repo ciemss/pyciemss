@@ -166,6 +166,7 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
+    alpha: float = 0.95,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -225,6 +226,8 @@ def sample(
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
+        alpha: float
+            - Risk level for alpha-superquantile outputs in the results dictionary.
 
     Returns:
         result: Dict[str, torch.Tensor]
@@ -237,7 +240,7 @@ def sample(
                 - quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
                 - risk: Dictionary with each key as the name of a state with
                 a dictionary of risk estimates for each state at the final timepoint.
-                    - risk: Estimated alpha-superquantile risk with alpha=0.95
+                    - risk: alpha-superquantile risk estimate
                     Superquantiles can be intuitively thought of as a tail expectation, or an average
                     over a portion of worst-case outcomes. Given a distribution of a
                     quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is
@@ -315,7 +318,7 @@ def sample(
             if "_state" in k:
                 # qoi is assumed to be the last day of simulation
                 qoi_sample = vals[:, -1]
-                sq_est = alpha_superquantile(qoi_sample, alpha=0.95)
+                sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
         return {**prepare_interchange_dictionary(samples), "risk": risk_results}
@@ -548,6 +551,7 @@ def optimize(
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
+    alpha: float = 0.95,
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -635,7 +639,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=1,
             guide=inferred_parameters,
             solver_method=solver_method,
@@ -660,7 +664,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=n_samples_ouu,
             guide=inferred_parameters,
             solver_method=solver_method,
