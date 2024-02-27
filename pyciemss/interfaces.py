@@ -316,7 +316,7 @@ def sample(
             guide=inferred_parameters,
             num_samples=num_samples,
         )()
-        
+
         risk_results = {}
         for k, vals in samples.items():
             if "_state" in k:
