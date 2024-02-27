@@ -45,6 +45,7 @@ def ensemble_sample(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    time_unit: Optional[str] = None,
 ):
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -140,7 +141,9 @@ def ensemble_sample(
             num_samples=num_samples,
         )()
 
-        return prepare_interchange_dictionary(samples)
+        return prepare_interchange_dictionary(
+            samples, timepoints=logging_times, time_unit=time_unit
+        )
 
 
 @pyciemss_logging_wrapper
@@ -155,6 +158,7 @@ def sample(
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
+    time_unit: Optional[str] = None,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
     static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
@@ -298,7 +302,9 @@ def sample(
             num_samples=num_samples,
         )()
 
-        return prepare_interchange_dictionary(samples)
+        return prepare_interchange_dictionary(
+            samples, timepoints=logging_times, time_unit=time_unit
+        )
 
 
 @pyciemss_logging_wrapper
