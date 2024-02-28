@@ -13,6 +13,8 @@ def prepare_interchange_dictionary(
     timepoints: Optional[Iterable[float]] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
+
     processed_samples = convert_to_output_format(
         samples, time_unit=time_unit, timepoints=timepoints
     )
@@ -36,8 +38,6 @@ def convert_to_output_format(
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """
-
-    samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
 
     if time_unit is not None and timepoints is None:
         raise ValueError("`timepoints` must be supplied when a `time_unit` is supplied")
