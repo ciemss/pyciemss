@@ -370,7 +370,7 @@
                 "lineAnchor": "start",
                 "as": ["_x", "y", "opacity", "align", "baseline"],
                 "offset": [1],
-                "size": {"signal": "[height, width]"}
+                "size": {"signal": "[width, height]"}
               }
             ]
           }
@@ -424,8 +424,8 @@
     },
     {
       "name": "markers_h",
-      "values": [{"axis_value": 3, "label": "Low marker"},
-                 {"axis_value": 7, "label": "High marker"}]
+      "values": [{"axis_value": 20, "label": "Low marker"},
+                 {"axis_value": 37, "label": "High marker"}]
     },
     {
       "name": "selected",
