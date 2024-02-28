@@ -37,6 +37,8 @@ def convert_to_output_format(
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """
 
+    samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
+
     if time_unit is not None and timepoints is None:
         raise ValueError("`timepoints` must be supplied when a `time_unit` is supplied")
 
