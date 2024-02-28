@@ -148,8 +148,8 @@ def trajectories(
            These will be plotted as spans based on the qlow/qhigh parameters
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
-        base_markers (None, list[Dict[str, Number]]): Timepoint markers. Key is the label, value is the timepoint
-        base_markers_h (None, list[Dict[str, Number]]): Timepoint markers. Key is the label, value is the timepoint
+        base_markers (None, Dict[str, Number]): Timepoint markers. Key is the label, value is the timepoint
+        base_markers_h (None, Dict[str, Number]): Horizontal markers. Key is the label, value is the horizonal value
         keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
            - Default is the string "all", and it keeps all columns
            - If a any other string is present, it is treated as a regex and matched against the columns.
