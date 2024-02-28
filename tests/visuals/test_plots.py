@@ -86,13 +86,16 @@ class TestTrajectory:
     @pytest.mark.parametrize("time_unit", ["five", None])
     @pytest.mark.parametrize("end_time", [80, 100])
     def test_timepoints(self, logging_step_size, time_unit, end_time):
+        # distribution will create timepoint from logging_step_size, and start and end time
         new_distribution = create_distributions(logging_step_size=logging_step_size, time_unit=time_unit)
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
+        # check if new time label is correct
         assert label in new_distribution.columns
 
-        schema = plots.trajectories(create_distributions(logging_step_size=logging_step_size, time_unit=time_unit))
+        schema = plots.trajectories(new_distribution)
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         new_timepoints = [float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)]
+        # check timepoint created match the input logging_step_size and start and end time
         assert df.timepoint[:len(new_timepoints)].tolist() == new_timepoints
 
     def test_rename(self, distributions):
