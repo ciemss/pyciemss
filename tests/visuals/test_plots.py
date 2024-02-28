@@ -5,6 +5,7 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import pytest
+import torch
 
 import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
@@ -22,47 +23,48 @@ def make_nice_labels(labels):
     return {
         k: "_".join(k.split("_")[:-1])
         for k in labels
-        if "_" in k and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
+        if "_" in k and k not in ["sample_id"] and not k.startswith("timepoint_")
     }
 
 
 class TestTrajectory:
     @staticmethod
-    @pytest.fixture
-    def distributions():
+    def create_distributions(logging_step_size=20, time_unit="twenty"):
         model_1_path = (
             "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
             "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
         )
         start_time = 0.0
         end_time = 100.0
-        logging_step_size = 1
         num_samples = 30
         sample = pyciemss.sample(
             model_1_path,
             end_time,
             logging_step_size,
             num_samples,
+            time_unit = time_unit,
             start_time=start_time,
             solver_method="euler",
         )["unprocessed_result"]
 
-        for e in sample.values():
-            if len(e.shape) > 1:
-                num_timepoints = e.shape[1]
-
         return convert_to_output_format(
             sample,
-            timepoints=np.linspace(start_time, end_time, num_timepoints),
-            time_unit="notional",
+            timepoints = np.arange(start_time + logging_step_size, end_time, logging_step_size),
+            time_unit=time_unit,
         )
+    
+    @staticmethod
+    @pytest.fixture
+    def distributions(self):
+        return  self.create_distribution(logging_step_size=1, time_unit="notional")
 
     @staticmethod
     @pytest.fixture
     def traces(distributions):
+        timepoint_col = [c for c in distributions.columns if c.startswith("timepoint_") and c != "timepoint_id"][0]
         return (
             distributions[distributions["sample_id"] == 0]
-            .set_index("timepoint_notional")[["dead_observable_state", "I_state"]]
+            .set_index(timepoint_col)[["dead_observable_state", "I_state"]]
             .rename(
                 columns={
                     "dead_observable_state": "dead_exemplar",
@@ -81,6 +83,19 @@ class TestTrajectory:
 
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
+
+    def test_timepoints(self):
+        logging_step_size =20
+        time_unit = "twenty"
+        end_time = 100
+        new_distribution = self.create_distributions(logging_step_size=logging_step_size, time_unit=time_unit)
+        label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
+        assert label in new_distribution.columns
+
+        schema = plots.trajectories(self.create_distributions(logging_step_size=logging_step_size, time_unit=time_unit))
+        df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
+        new_timepoints = [float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)]
+        assert df.timepoint[:len(new_timepoints)].tolist() == new_timepoints
 
     def test_rename(self, distributions):
         nice_labels = make_nice_labels(distributions.columns)
@@ -133,7 +148,7 @@ class TestTrajectory:
             p
             for p in distributions.columns
             if "_state" not in p
-            and p not in ["sample_id", "timepoint_id", "timepoint_notional"]
+            and p not in ["sample_id"] and not p.startswith("timepoint_")
         ]
         should_drop = [p for p in distributions.columns if "_state" in p]
 
@@ -213,7 +228,7 @@ class TestTrajectory:
         )
 
         shown_traces = pd.DataFrame(vega.find_named(schema["data"], "traces")["values"])
-        plots.save_schema(schema, "_schema.json")
+        plots.save_schema(schema, "test_traces_schema.vg.json")
 
         assert sorted(traces.columns.unique()) == sorted(
             shown_traces["trajectory"].unique()
