@@ -555,7 +555,7 @@ def optimize(
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
-    static_parameter_interventions: Dict[torch.Tensor, str],
+    static_parameter_interventions: Dict[str, List[Any]],
     objfun: Callable,
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
