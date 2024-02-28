@@ -128,6 +128,7 @@ def trajectories(
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     base_markers: Optional[Dict[str, Number]] = None,
+    base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict] = None,
     qlow: float = 0.05,
@@ -228,9 +229,14 @@ def trajectories(
         points = []
 
     if base_markers is not None:
-        markers = [{"timepoint": v, "label": k} for k, v in base_markers.items()]
+        markers = base_markers
     else:
         markers = []
+
+    if base_markers_h is not None:
+        markers_h = base_markers_h
+    else:
+        markers_h = []
 
     schema = vega.load_schema("trajectories.vg.json")
     schema["data"] = vega.replace_named_with(
@@ -245,6 +251,9 @@ def trajectories(
     )
     schema["data"] = vega.replace_named_with(
         schema["data"], "markers", ["values"], _clean_nans(markers)
+    )
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "markers_h", ["values"], _clean_nans(markers_h)
     )
 
     if colors is not None:

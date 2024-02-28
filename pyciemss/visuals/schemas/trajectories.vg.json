@@ -306,7 +306,7 @@
           "encode": {
             "enter": {"stroke": {"value": "lightgray"}},
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
+              "x": {"scale": "xscale", "field": "axis_value"},
               "y2": {"value": 0},
               "y": {"signal": "height"},
               "opacity": {"value": 1}
@@ -341,12 +341,12 @@
         "marks": [
           {
             "type": "rule",
-            "name": "_h_marker text",
-            "from": {"data": "h_markers"},
+            "name": "_marker_h text",
+            "from": {"data": "markers_h"},
             "encode": {
               "enter": {"stroke": {"value": "lightgray"}},
               "update": {
-                "y": {"scale": "yscale", "field": "timepoint"},
+                "y": {"scale": "yscale", "field": "axis_value"},
                 "x2": {"value": 0},
                 "x": {"signal": "width"},
                 "opacity": {"value": 1}
@@ -355,12 +355,12 @@
           },
           {
             "type": "text",
-            "name": "_h_marker flags",
-            "from": {"data": "_h_marker text"},
+            "name": "_marker_h flags",
+            "from": {"data": "_marker_h text"},
             "encode": {
               "enter": {
                 "text": {"field": "datum.label"},
-                "x": {"signal": "width"},
+                "x": {"signal": "width+20"},
                 "fontSize": {"value": 8}
               }
             },
@@ -419,13 +419,13 @@
     },
     {
       "name": "markers",
-      "values": [{"timepoint": 3, "label": "Low marker"},
-                 {"timepoint": 7, "label": "High marker"}]
+      "values": [{"axis_value": 3, "label": "Low marker"},
+                 {"axis_value": 7, "label": "High marker"}]
     },
     {
-      "name": "h_markers",
-      "values": [{"timepoint": 3, "label": "Low marker"},
-                 {"timepoint": 7, "label": "High marker"}]
+      "name": "markers_h",
+      "values": [{"axis_value": 3, "label": "Low marker"},
+                 {"axis_value": 7, "label": "High marker"}]
     },
     {
       "name": "selected",
