@@ -22,6 +22,7 @@ from pyciemss.integration_utils.observation import compile_noise_model, load_dat
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 from pyciemss.interruptions import (
     DynamicParameterIntervention,
+    ParameterInterventionTracer,
     StaticParameterIntervention,
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
@@ -269,7 +270,7 @@ def sample(
             for time, static_intervention_assignment in static_state_interventions.items()
         ]
         static_parameter_intervention_handlers = [
-            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            StaticParameterIntervention(time, dict(**static_intervention_assignment), is_traced=True)
             for time, static_intervention_assignment in static_parameter_interventions.items()
         ]
 
@@ -280,7 +281,7 @@ def sample(
 
         dynamic_parameter_intervention_handlers = [
             DynamicParameterIntervention(
-                event_fn, dict(**dynamic_intervention_assignment)
+                event_fn, dict(**dynamic_intervention_assignment), is_traced=True
             )
             for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
         ]
@@ -293,16 +294,17 @@ def sample(
         )
 
         def wrapped_model():
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with contextlib.ExitStack() as stack:
-                    for handler in intervention_handlers:
-                        stack.enter_context(handler)
-                    full_trajectory = model(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        logging_times=logging_times,
-                        is_traced=True,
-                    )
+            with ParameterInterventionTracer():
+                with TorchDiffEq(method=solver_method, options=solver_options):
+                    with contextlib.ExitStack() as stack:
+                        for handler in intervention_handlers:
+                            stack.enter_context(handler)
+                        full_trajectory = model(
+                            torch.as_tensor(start_time),
+                            torch.as_tensor(end_time),
+                            logging_times=logging_times,
+                            is_traced=True,
+                        )
 
             if noise_model is not None:
                 compiled_noise_model = compile_noise_model(

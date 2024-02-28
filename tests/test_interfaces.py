@@ -211,6 +211,56 @@ def test_sample_with_interventions(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_sample_with_multiple_parameter_interventions(
+    model_fixture,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+):
+
+    model_url = model_fixture.url
+    model = CompiledDynamics.load(model_url)
+
+    important_parameter_name = model_fixture.important_parameter
+    important_parameter = getattr(model, important_parameter_name)
+
+    intervention_effect = 1.0
+    intervention_time = (end_time + start_time) / 4  # Quarter of the way through
+    intervention_time_2 = (end_time + start_time) / 2  # Half way through
+
+    intervention = {
+        important_parameter_name: important_parameter.detach() + intervention_effect
+    }
+
+    intervention_2 = {
+        important_parameter_name: important_parameter.detach() - intervention_effect
+    }
+
+    model_args = [model_url, end_time, logging_step_size, num_samples]
+    model_kwargs = {"start_time": start_time}
+
+    with pyro.poutine.seed(rng_seed=0):
+        intervened_result = sample(
+            *model_args,
+            **model_kwargs,
+            static_parameter_interventions={intervention_time: intervention, intervention_time_2: intervention_2},
+        )["unprocessed_result"]
+
+    assert "parameter_intervention_time_0" in intervened_result.keys()
+    assert f"parameter_intervention_value_{important_parameter_name}_0" in intervened_result.keys()
+    assert "parameter_intervention_time_1" in intervened_result.keys()
+    assert f"parameter_intervention_value_{important_parameter_name}_1" in intervened_result.keys()
+
+    check_result_sizes(
+        intervened_result, start_time, end_time, logging_step_size, num_samples
+    )
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_size):
     model_url = model_fixture.url
     _, _, sample_args, sample_kwargs = setup_calibrate(
