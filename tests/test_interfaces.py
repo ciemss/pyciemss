@@ -245,17 +245,27 @@ def test_sample_with_multiple_parameter_interventions(
         intervened_result = sample(
             *model_args,
             **model_kwargs,
-            static_parameter_interventions={intervention_time: intervention, intervention_time_2: intervention_2},
+            static_parameter_interventions={
+                intervention_time: intervention,
+                intervention_time_2: intervention_2,
+            },
         )["unprocessed_result"]
 
     assert "parameter_intervention_time_0" in intervened_result.keys()
-    assert f"parameter_intervention_value_{important_parameter_name}_0" in intervened_result.keys()
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_0"
+        in intervened_result.keys()
+    )
     assert "parameter_intervention_time_1" in intervened_result.keys()
-    assert f"parameter_intervention_value_{important_parameter_name}_1" in intervened_result.keys()
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_1"
+        in intervened_result.keys()
+    )
 
     check_result_sizes(
         intervened_result, start_time, end_time, logging_step_size, num_samples
     )
+
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)

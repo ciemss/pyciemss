@@ -270,7 +270,9 @@ def sample(
             for time, static_intervention_assignment in static_state_interventions.items()
         ]
         static_parameter_intervention_handlers = [
-            StaticParameterIntervention(time, dict(**static_intervention_assignment), is_traced=True)
+            StaticParameterIntervention(
+                time, dict(**static_intervention_assignment), is_traced=True
+            )
             for time, static_intervention_assignment in static_parameter_interventions.items()
         ]
 
