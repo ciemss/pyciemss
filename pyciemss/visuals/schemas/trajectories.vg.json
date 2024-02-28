@@ -334,7 +334,48 @@
             }
           ]
         }
-      ]}
+      ]},
+      {
+        "type": "group",
+        "name": "_hmarkers",
+        "marks": [
+          {
+            "type": "rule",
+            "name": "_h_marker text",
+            "from": {"data": "h_markers"},
+            "encode": {
+              "enter": {"stroke": {"value": "lightgray"}},
+              "update": {
+                "y": {"scale": "yscale", "field": "timepoint"},
+                "x2": {"value": 0},
+                "x": {"signal": "width"},
+                "opacity": {"value": 1}
+              }
+            }
+          },
+          {
+            "type": "text",
+            "name": "_h_marker flags",
+            "from": {"data": "_h_marker text"},
+            "encode": {
+              "enter": {
+                "text": {"field": "datum.label"},
+                "x": {"signal": "width"},
+                "fontSize": {"value": 8}
+              }
+            },
+            "transform": [
+              {
+                "type": "label",
+                "lineAnchor": "start",
+                "as": ["_x", "y", "opacity", "align", "baseline"],
+                "offset": [1],
+                "size": {"signal": "[height, width]"}
+              }
+            ]
+          }
+        ]}
+
   ],
 
   "data": [
@@ -378,6 +419,11 @@
     },
     {
       "name": "markers",
+      "values": [{"timepoint": 3, "label": "Low marker"},
+                 {"timepoint": 7, "label": "High marker"}]
+    },
+    {
+      "name": "h_markers",
       "values": [{"timepoint": 3, "label": "Low marker"},
                  {"timepoint": 7, "label": "High marker"}]
     },
