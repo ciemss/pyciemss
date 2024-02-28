@@ -26,37 +26,37 @@ def make_nice_labels(labels):
         if "_" in k and k not in ["sample_id"] and not k.startswith("timepoint_")
     }
 
+def create_distributions(logging_step_size=20, time_unit="twenty"):
+    model_1_path = (
+        "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
+        "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
+    )
+    start_time = 0.0
+    end_time = 100.0
+    num_samples = 30
+    sample = pyciemss.sample(
+        model_1_path,
+        end_time,
+        logging_step_size,
+        num_samples,
+        time_unit = time_unit,
+        start_time=start_time,
+        solver_method="euler",
+    )["unprocessed_result"]
+
+    return convert_to_output_format(
+        sample,
+        timepoints = np.arange(start_time + logging_step_size, end_time, logging_step_size),
+        time_unit=time_unit,
+    )
 
 class TestTrajectory:
-    @staticmethod
-    def create_distributions(logging_step_size=20, time_unit="twenty"):
-        model_1_path = (
-            "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
-            "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
-        )
-        start_time = 0.0
-        end_time = 100.0
-        num_samples = 30
-        sample = pyciemss.sample(
-            model_1_path,
-            end_time,
-            logging_step_size,
-            num_samples,
-            time_unit = time_unit,
-            start_time=start_time,
-            solver_method="euler",
-        )["unprocessed_result"]
 
-        return convert_to_output_format(
-            sample,
-            timepoints = np.arange(start_time + logging_step_size, end_time, logging_step_size),
-            time_unit=time_unit,
-        )
     
     @staticmethod
     @pytest.fixture
-    def distributions(self):
-        return  self.create_distribution(logging_step_size=1, time_unit="notional")
+    def distributions():
+        return create_distributions(logging_step_size=1, time_unit="notional")
 
     @staticmethod
     @pytest.fixture
@@ -84,15 +84,15 @@ class TestTrajectory:
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
-    def test_timepoints(self):
-        logging_step_size =20
-        time_unit = "twenty"
-        end_time = 100
-        new_distribution = self.create_distributions(logging_step_size=logging_step_size, time_unit=time_unit)
+    @pytest.mark.parametrize("logging_step_size", [5, 1])
+    @pytest.mark.parametrize("time_unit", ["five", None])
+    @pytest.mark.parametrize("end_time", [80, 100])
+    def test_timepoints(self, logging_step_size, time_unit, end_time):
+        new_distribution = create_distributions(logging_step_size=logging_step_size, time_unit=time_unit)
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
         assert label in new_distribution.columns
 
-        schema = plots.trajectories(self.create_distributions(logging_step_size=logging_step_size, time_unit=time_unit))
+        schema = plots.trajectories(create_distributions(logging_step_size=logging_step_size, time_unit=time_unit))
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         new_timepoints = [float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)]
         assert df.timepoint[:len(new_timepoints)].tolist() == new_timepoints
