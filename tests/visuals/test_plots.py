@@ -5,7 +5,6 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import pytest
-import torch
 
 import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
@@ -23,7 +22,7 @@ def make_nice_labels(labels):
     return {
         k: "_".join(k.split("_")[:-1])
         for k in labels
-        if "_" in k and k not in ["sample_id"] and not k.startswith("timepoint_")
+        if "_" in k and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
     }
 
 def create_distributions(logging_step_size=20, time_unit="twenty"):
@@ -61,10 +60,9 @@ class TestTrajectory:
     @staticmethod
     @pytest.fixture
     def traces(distributions):
-        timepoint_col = [c for c in distributions.columns if c.startswith("timepoint_") and c != "timepoint_id"][0]
         return (
             distributions[distributions["sample_id"] == 0]
-            .set_index(timepoint_col)[["dead_observable_state", "I_state"]]
+            .set_index("timepoint_notional")[["dead_observable_state", "I_state"]]
             .rename(
                 columns={
                     "dead_observable_state": "dead_exemplar",
@@ -148,7 +146,7 @@ class TestTrajectory:
             p
             for p in distributions.columns
             if "_state" not in p
-            and p not in ["sample_id"] and not p.startswith("timepoint_")
+            and p not in ["sample_id", "timepoint_id", "timepoint_notional"]
         ]
         should_drop = [p for p in distributions.columns if "_state" in p]
 
