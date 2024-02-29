@@ -236,11 +236,11 @@ def test_sample_with_multiple_parameter_interventions(
     intervention_time_0 = (end_time + start_time) / 4  # Quarter of the way through
     intervention_time_1 = (end_time + start_time) / 2  # Half way through
 
-    intervention = {
+    intervention_0 = {
         important_parameter_name: important_parameter.detach() + intervention_effect
     }
 
-    intervention_2 = {
+    intervention_1 = {
         important_parameter_name: important_parameter.detach() - intervention_effect
     }
 
@@ -252,8 +252,8 @@ def test_sample_with_multiple_parameter_interventions(
             *model_args,
             **model_kwargs,
             static_parameter_interventions={
-                intervention_time_0: intervention,
-                intervention_time_1: intervention_2,
+                intervention_time_0: intervention_0,
+                intervention_time_1: intervention_1,
             },
         )["unprocessed_result"]
 
