@@ -5,6 +5,7 @@ import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
@@ -43,7 +44,7 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Dict[str, List[Any]],
+        interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
@@ -84,34 +85,11 @@ class computeRisk:
         """
         pyro.set_rng_seed(0)
         x = np.atleast_1d(x)
-        # static_parameter_intervention_handlers = [
-        #     StaticParameterIntervention(time, dict(**static_intervention_assignment))
-        #     for time, static_intervention_assignment in StaticParameterIntervention.items()
-        # ]
-        # Create intervention handlers
-        static_parameter_intervention_handlers = []
-        if self.interventions.get("param_value") is None:
-            for count in range(len(self.interventions["params"])):
-                static_parameter_intervention_handlers = (
-                    static_parameter_intervention_handlers
-                    + [
-                        StaticParameterIntervention(
-                            self.interventions["start_time"][count], dict([(self.interventions["params"][count], torch.as_tensor(x[count]))])
-                        )
-                    ]
-                )
-        elif self.interventions.get("start_time") is None:
-            for count in range(len(self.interventions["params"])):
-                static_parameter_intervention_handlers = (
-                    static_parameter_intervention_handlers
-                    + [
-                        StaticParameterIntervention(
-                            torch.as_tensor(x[count]), dict([(self.interventions["params"][count], self.interventions["param_value"])])
-                        )
-                    ]
-                )
-        else:
-            print("Error in keys used in intervention definition.")        
+        static_parameter_interventions = self.interventions(torch.from_numpy(x))
+        static_parameter_intervention_handlers = [
+            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_parameter_interventions.items()
+        ]
 
         def wrapped_model():
             with TorchDiffEq(method=self.solver_method, options=self.solver_options):
