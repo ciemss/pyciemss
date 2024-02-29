@@ -160,10 +160,10 @@ def set_intervention_values(
 ):
     """
     df -- Results similar to those returned from 'sample'
-          (but not including columsn that describe parameter interventions)
+          (but not including columns that describe parameter interventions)
     intervention -- Target intervention name
     intervention_values -- The values for the target intervention
-    interventino_times -- The dictionary of all intervention
+    intervention_times -- The dictionary of all intervention
     """
     times = get_times_for(intervention, intervention_times)
     target_var = "_".join(intervention.split("_")[3:-1])
