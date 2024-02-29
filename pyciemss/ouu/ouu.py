@@ -5,6 +5,7 @@ import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
@@ -43,7 +44,7 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Dict[torch.Tensor, str],
+        interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
@@ -84,19 +85,11 @@ class computeRisk:
         """
         pyro.set_rng_seed(0)
         x = np.atleast_1d(x)
-        # Create intervention handlers
-        static_parameter_intervention_handlers = []
-        count = 0
-        for time, param in self.interventions.items():
-            static_parameter_intervention_handlers = (
-                static_parameter_intervention_handlers
-                + [
-                    StaticParameterIntervention(
-                        time, dict([(param, torch.as_tensor(x[count]))])
-                    )
-                ]
-            )
-            count = count + 1
+        static_parameter_interventions = self.interventions(torch.from_numpy(x))
+        static_parameter_intervention_handlers = [
+            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            for time, static_intervention_assignment in static_parameter_interventions.items()
+        ]
 
         def wrapped_model():
             with TorchDiffEq(method=self.solver_method, options=self.solver_options):

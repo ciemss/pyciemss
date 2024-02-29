@@ -5,6 +5,10 @@ from typing import Any, Dict, Optional, TypeVar
 import numpy as np
 import torch
 
+from pyciemss.integration_utils.intervention_builder import (
+    param_value_objective,
+    start_time_objective,
+)
 from pyciemss.ouu.qoi import obs_nday_average_qoi
 
 T = TypeVar("T")
@@ -80,20 +84,41 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
-optimize_kwargs_SIRstockflow = {
+optimize_kwargs_SIRstockflow_param = {
     "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
     "risk_bound": 300.0,
-    "static_parameter_interventions": {torch.tensor(1.0): "p_cbeta"},
+    "static_parameter_interventions": param_value_objective(
+        param_name=["p_cbeta"],
+        param_value=[lambda x: torch.tensor([x])],
+        start_time=[torch.tensor(1.0)],
+    ),
     "objfun": lambda x: np.abs(0.35 - x),
     "initial_guess_interventions": 0.15,
     "bounds_interventions": [[0.1], [0.5]],
+}
+
+optimize_kwargs_SIRstockflow_time = {
+    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
+    "risk_bound": 300.0,
+    "static_parameter_interventions": start_time_objective(
+        param_name=["p_cbeta"],
+        param_value=[torch.tensor([0.15])],
+    ),
+    "objfun": lambda x: -x,
+    "initial_guess_interventions": 1.0,
+    "bounds_interventions": [[0.0], [40.0]],
 }
 
 OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         important_parameter="p_cbeta",
-        optimize_kwargs=optimize_kwargs_SIRstockflow,
+        optimize_kwargs=optimize_kwargs_SIRstockflow_param,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        important_parameter="p_cbeta",
+        optimize_kwargs=optimize_kwargs_SIRstockflow_time,
     ),
 ]
 
