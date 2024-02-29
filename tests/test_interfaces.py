@@ -232,16 +232,16 @@ def test_sample_with_multiple_parameter_interventions(
     important_parameter_name = model_fixture.important_parameter
     important_parameter = getattr(model, important_parameter_name)
 
-    intervention_effect = 1.0
+    intervention_effect = 1.1
     intervention_time_0 = (end_time + start_time) / 4  # Quarter of the way through
     intervention_time_1 = (end_time + start_time) / 2  # Half way through
 
     intervention_0 = {
-        important_parameter_name: important_parameter.detach() + intervention_effect
+        important_parameter_name: important_parameter.detach() * intervention_effect
     }
 
     intervention_1 = {
-        important_parameter_name: important_parameter.detach() - intervention_effect
+        important_parameter_name: important_parameter.detach() / intervention_effect
     }
 
     model_args = [model_url, end_time, logging_step_size, num_samples]
