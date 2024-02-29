@@ -233,8 +233,8 @@ def test_sample_with_multiple_parameter_interventions(
     important_parameter = getattr(model, important_parameter_name)
 
     intervention_effect = 1.0
-    intervention_time = (end_time + start_time) / 4  # Quarter of the way through
-    intervention_time_2 = (end_time + start_time) / 2  # Half way through
+    intervention_time_0 = (end_time + start_time) / 4  # Quarter of the way through
+    intervention_time_1 = (end_time + start_time) / 2  # Half way through
 
     intervention = {
         important_parameter_name: important_parameter.detach() + intervention_effect
@@ -252,17 +252,19 @@ def test_sample_with_multiple_parameter_interventions(
             *model_args,
             **model_kwargs,
             static_parameter_interventions={
-                intervention_time: intervention,
-                intervention_time_2: intervention_2,
+                intervention_time_0: intervention,
+                intervention_time_1: intervention_2,
             },
         )["unprocessed_result"]
 
     assert "parameter_intervention_time_0" in intervened_result.keys()
+    assert torch.isclose(intervened_result["parameter_intervention_time_0"], torch.as_tensor(intervention_time_0)).all().item()
     assert (
         f"parameter_intervention_value_{important_parameter_name}_0"
         in intervened_result.keys()
     )
     assert "parameter_intervention_time_1" in intervened_result.keys()
+    assert torch.isclose(intervened_result["parameter_intervention_time_1"], torch.as_tensor(intervention_time_1)).all().item()
     assert (
         f"parameter_intervention_value_{important_parameter_name}_1"
         in intervened_result.keys()

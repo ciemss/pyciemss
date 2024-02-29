@@ -109,7 +109,7 @@ class ParameterInterventionTracer(pyro.poutine.messenger.Messenger):
         if self.in_parameter_intervention:
             pyro.deterministic(
                 f"parameter_intervention_time_{self.parameter_intervention_id}",
-                msg["value"][1],
+                msg["args"][3],
             )
             self.parameter_intervention_id += 1
             self.in_parameter_intervention = False
