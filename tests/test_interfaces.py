@@ -200,7 +200,13 @@ def test_sample_with_interventions(
     with pyro.poutine.seed(rng_seed=0):
         result = sample(*model_args, **model_kwargs)["unprocessed_result"]
 
-    check_states_match_in_all_but_values(result, intervened_result)
+    intervened_result_subset = {
+        k: v
+        for k, v in intervened_result.items()
+        if not k.startswith("parameter_intervention_")
+    }
+    check_states_match_in_all_but_values(result, intervened_result_subset)
+
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
     check_result_sizes(
         intervened_result, start_time, end_time, logging_step_size, num_samples
@@ -550,8 +556,16 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         solver_method=optimize_kwargs["solver_method"],
     )["unprocessed_result"]
 
-    assert isinstance(result_opt, dict)
-    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
+    intervened_result_subset = {
+        k: v
+        for k, v in result_opt.items()
+        if not k.startswith("parameter_intervention_")
+    }
+
+    assert isinstance(intervened_result_subset, dict)
+    check_result_sizes(
+        intervened_result_subset, start_time, end_time, logging_step_size, num_samples
+    )
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
