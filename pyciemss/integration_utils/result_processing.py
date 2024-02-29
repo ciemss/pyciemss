@@ -179,4 +179,4 @@ def set_intervention_values(
 
         return group
 
-    return df.groupby("sample_id", as_index=False).apply(rework, include_groups=True)
+    return df.groupby("sample_id").apply(rework).reset_index(drop=True)
