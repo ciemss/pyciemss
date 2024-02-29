@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from typing import Dict, List
 
 import torch
 from chirho.interventional.ops import Intervention
