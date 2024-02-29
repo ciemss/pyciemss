@@ -5,9 +5,8 @@ from typing import Any, Dict, Optional, TypeVar
 import numpy as np
 import torch
 
-from pyciemss.ouu.qoi import obs_nday_average_qoi
 from pyciemss.integration_utils.intervention_builder import param_value_objective
-)
+from pyciemss.ouu.qoi import obs_nday_average_qoi
 
 T = TypeVar("T")
 
@@ -83,10 +82,11 @@ STOCKFLOW_MODELS = [
 ]
 
 static_parameter_interventions = param_value_objective(
-    param_name="p_cbeta",
+    param_name=["p_cbeta"],
     param_value=[lambda x: torch.tensor([x])],
-    start_time=torch.tensor(1.0),
+    start_time=[torch.tensor(1.0)],
 )
+
 optimize_kwargs_SIRstockflow = {
     "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
     "risk_bound": 300.0,

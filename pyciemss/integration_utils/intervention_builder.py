@@ -1,6 +1,7 @@
-from typing import Dict, Any, List, Callable
-from chirho.interventional.ops import Intervention
+from typing import Callable, Dict, List
+
 import torch
+from chirho.interventional.ops import Intervention
 
 
 def param_value_objective(
@@ -8,7 +9,6 @@ def param_value_objective(
     start_time: List[torch.Tensor],
     param_value: List[Intervention] = [None],
 ):
-
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
@@ -30,7 +30,6 @@ def param_value_objective(
 
 
 def start_time_objective(param_name: List[str], param_value: List[Intervention]):
-
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
