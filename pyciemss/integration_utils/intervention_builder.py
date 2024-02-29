@@ -15,7 +15,7 @@ def param_value_objective(
         static_parameter_interventions = {}
         for count in range(len(param_name)):
             if param_value[count] is None:
-                if not isinstance(param_value[count], Callable):
+                if not callable(param_value[count]):
                     param_value[count] = lambda x: torch.tensor(x)
             static_parameter_interventions.update(
                 {
