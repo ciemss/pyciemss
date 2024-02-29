@@ -13,6 +13,8 @@ def prepare_interchange_dictionary(
     timepoints: Optional[Iterable[float]] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
+
     processed_samples = convert_to_output_format(
         samples, time_unit=time_unit, timepoints=timepoints
     )
