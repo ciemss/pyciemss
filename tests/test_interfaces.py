@@ -258,13 +258,27 @@ def test_sample_with_multiple_parameter_interventions(
         )["unprocessed_result"]
 
     assert "parameter_intervention_time_0" in intervened_result.keys()
-    assert torch.isclose(intervened_result["parameter_intervention_time_0"], torch.as_tensor(intervention_time_0)).all().item()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_0"],
+            torch.as_tensor(intervention_time_0),
+        )
+        .all()
+        .item()
+    )
     assert (
         f"parameter_intervention_value_{important_parameter_name}_0"
         in intervened_result.keys()
     )
     assert "parameter_intervention_time_1" in intervened_result.keys()
-    assert torch.isclose(intervened_result["parameter_intervention_time_1"], torch.as_tensor(intervention_time_1)).all().item()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_1"],
+            torch.as_tensor(intervention_time_1),
+        )
+        .all()
+        .item()
+    )
     assert (
         f"parameter_intervention_value_{important_parameter_name}_1"
         in intervened_result.keys()
