@@ -33,8 +33,11 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
 
 
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
-    if model_fixture.data_path is None or model_fixture.data_mapped_to_observable:
+    if model_fixture.data_path is None:
         pytest.skip("TODO: create temporary file")
+
+    if model_fixture.data_mapped_to_observable:
+        pytest.skip("Skipping until data can be mapped to observables")
 
     data_timepoints = load_data(model_fixture.data_path)[0]
 
