@@ -8,7 +8,7 @@
 <body>
   <div id="vis"/>
     <script>
-      $.getJSON('./tests/visuals/modified_schemas/modified_map_heatmap.json', function(spec) {
+      $.getJSON('../modified_schema/modified_map_heatmap.json', function(spec) {
    
         vegaEmbed("#vis", spec, {mode: "vega"}).then(console.log).catch(console.warn);
 });

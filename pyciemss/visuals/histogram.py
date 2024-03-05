@@ -239,7 +239,7 @@ def map_heatmap(
     # add in country names
 
     ##TODO rename the files!
-    name_data = pd.read_csv('data/all.csv').to_json(orient='records')
+    name_data = pd.read_csv('data/country_names.csv').to_json(orient='records')
     schema["data"] = vega.replace_named_with(
             schema["data"], "names", ["values"], json.loads(name_data)
         )

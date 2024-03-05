@@ -82,6 +82,13 @@ def ipy_display(
             kwargs["scale"] = dpi // 72
         png_data = vl_convert.vega_to_png(schema, **kwargs)
         return IPython.display.Image(png_data)
+    
+    elif format in ['html']:
+        # saving the modified schema (with updated mesh)
+        schema_path = "pyciemss/visuals/modified_schema/modified_map_heatmap.json"
+        save_schema(schema, schema_path)
+        print("Open html file at pyciemss/visuals/html/visualize_map.html to view")
+
 
     elif format in ["svg", "SVG"]:
         png_data = vl_convert.vega_to_svg(schema, **kwargs)
