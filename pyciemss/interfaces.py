@@ -311,7 +311,10 @@ def sample(
 
             if noise_model is not None:
                 compiled_noise_model = compile_noise_model(
-                    noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
+                    noise_model,
+                    vars=set(full_trajectory.keys()),
+                    observables=model.observables,
+                    **noise_model_kwargs,
                 )
                 # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
                 compiled_noise_model(full_trajectory)
@@ -528,6 +531,7 @@ def calibrate(
     _noise_model = compile_noise_model(
         noise_model,
         vars=set(data.keys()),
+        observables=model.observables,
         **noise_model_kwargs,
     )
 
