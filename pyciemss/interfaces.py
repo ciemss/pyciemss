@@ -22,6 +22,7 @@ from pyciemss.integration_utils.observation import compile_noise_model, load_dat
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 from pyciemss.interruptions import (
     DynamicParameterIntervention,
+    ParameterInterventionTracer,
     StaticParameterIntervention,
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
@@ -45,6 +46,7 @@ def ensemble_sample(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    time_unit: Optional[str] = None,
 ):
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -141,7 +143,9 @@ def ensemble_sample(
             parallel=True,
         )()
 
-        return prepare_interchange_dictionary(samples)
+        return prepare_interchange_dictionary(
+            samples, timepoints=logging_times, time_unit=time_unit
+        )
 
 
 @pyciemss_logging_wrapper
@@ -156,6 +160,7 @@ def sample(
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
+    time_unit: Optional[str] = None,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
     static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
@@ -167,8 +172,9 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
-) -> Dict[str, torch.Tensor]:
-    """
+    alpha: float = 0.95,
+) -> Dict[str, Any]:
+    r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
 
     Args:
@@ -226,13 +232,27 @@ def sample(
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
+        alpha: float
+            - Risk level for alpha-superquantile outputs in the results dictionary.
 
     Returns:
         result: Dict[str, torch.Tensor]
-            - Dictionary of outputs from the model.
-                - Each key is the name of a parameter or state variable in the model.
-                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+            - Dictionary of outputs with following attributes:
+                - data: The samples from the model as a pandas DataFrame.
+                - unprocessed_result: Dictionary of outputs from the model.
+                    - Each key is the name of a parameter or state variable in the model.
+                    - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
+                - quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                - risk: Dictionary with each key as the name of a state with
+                a dictionary of risk estimates for each state at the final timepoint.
+                    - risk: alpha-superquantile risk estimate
+                    Superquantiles can be intuitively thought of as a tail expectation, or an average
+                    over a portion of worst-case outcomes. Given a distribution of a
+                    quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is
+                    the expected value of the largest 100(1 -\alpha)% realizations of the QoI.
+                    - qoi: Samples of quantity of interest (value of the state at the final timepoint)
+                - schema: Visualization. (If visual_options is truthy)
     """
 
     with torch.no_grad():
@@ -251,7 +271,9 @@ def sample(
             for time, static_intervention_assignment in static_state_interventions.items()
         ]
         static_parameter_intervention_handlers = [
-            StaticParameterIntervention(time, dict(**static_intervention_assignment))
+            StaticParameterIntervention(
+                time, dict(**static_intervention_assignment), is_traced=True
+            )
             for time, static_intervention_assignment in static_parameter_interventions.items()
         ]
 
@@ -262,7 +284,7 @@ def sample(
 
         dynamic_parameter_intervention_handlers = [
             DynamicParameterIntervention(
-                event_fn, dict(**dynamic_intervention_assignment)
+                event_fn, dict(**dynamic_intervention_assignment), is_traced=True
             )
             for event_fn, dynamic_intervention_assignment in dynamic_parameter_interventions.items()
         ]
@@ -275,25 +297,37 @@ def sample(
         )
 
         def wrapped_model():
-            with TorchDiffEq(method=solver_method, options=solver_options):
-                with contextlib.ExitStack() as stack:
-                    for handler in intervention_handlers:
-                        stack.enter_context(handler)
-                    full_trajectory = model(
-                        torch.as_tensor(start_time),
-                        torch.as_tensor(end_time),
-                        logging_times=logging_times,
-                        is_traced=True,
-                    )
+            with ParameterInterventionTracer():
+                with TorchDiffEq(method=solver_method, options=solver_options):
+                    with contextlib.ExitStack() as stack:
+                        for handler in intervention_handlers:
+                            stack.enter_context(handler)
+                        full_trajectory = model(
+                            torch.as_tensor(start_time),
+                            torch.as_tensor(end_time),
+                            logging_times=logging_times,
+                            is_traced=True,
+                        )
 
             if noise_model is not None:
                 compiled_noise_model = compile_noise_model(
-                    noise_model, vars=set(full_trajectory.keys()), **noise_model_kwargs
+                    noise_model,
+                    vars=set(full_trajectory.keys()),
+                    observables=model.observables,
+                    **noise_model_kwargs,
                 )
                 # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
                 compiled_noise_model(full_trajectory)
 
-        parallel = False if len(intervention_handlers) > 0 else True
+        parallel = (
+            False
+            if len(
+                dynamic_parameter_intervention_handlers
+                + dynamic_state_intervention_handlers
+            )
+            > 0
+            else True
+        )
 
         samples = pyro.infer.Predictive(
             wrapped_model,
@@ -302,7 +336,20 @@ def sample(
             parallel=parallel,
         )()
 
-        return prepare_interchange_dictionary(samples)
+        risk_results = {}
+        for k, vals in samples.items():
+            if "_state" in k:
+                # qoi is assumed to be the last day of simulation
+                qoi_sample = vals[:, -1]
+                sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
+                risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
+
+        return {
+            **prepare_interchange_dictionary(
+                samples, timepoints=logging_times, time_unit=time_unit
+            ),
+            "risk": risk_results,
+        }
 
 
 @pyciemss_logging_wrapper
@@ -484,6 +531,7 @@ def calibrate(
     _noise_model = compile_noise_model(
         noise_model,
         vars=set(data.keys()),
+        observables=model.observables,
         **noise_model_kwargs,
     )
 
@@ -527,11 +575,14 @@ def optimize(
     logging_step_size: float,
     qoi: Callable,
     risk_bound: float,
-    static_parameter_interventions: Dict[torch.Tensor, str],
+    static_parameter_interventions: Callable[
+        [torch.Tensor], Dict[float, Dict[str, Intervention]]
+    ],
     objfun: Callable,
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
+    alpha: float = 0.95,
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -542,9 +593,12 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
 ) -> Dict[str, Any]:
-    """
-    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty
-    with risk-based constraints over dynamical models.
+    r"""
+    Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
+    constraints over dynamical models. This uses \alpha-superquantile as the risk measure. Superquantiles can be
+    intuitively thought of as a tail expectation, or an average over a portion of worst-case outcomes. Given a
+    distribution of a quantity of interest (QoI), the superquantile at level \alpha\in[0, 1] is the expected
+    value of the largest 100(1 -\alpha)% realizations of the QoI.
     Args:
         model_path_or_json: Union[str, Dict]
             - A path to a AMR model file or JSON containing a model in AMR form.
@@ -616,7 +670,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=1,
             guide=inferred_parameters,
             solver_method=solver_method,
@@ -641,7 +695,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=0.95),
+            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=n_samples_ouu,
             guide=inferred_parameters,
             solver_method=solver_method,

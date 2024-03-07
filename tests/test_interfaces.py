@@ -9,8 +9,10 @@ from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
+    BADLY_FORMATTED_DATAFRAMES,
     END_TIMES,
     LOGGING_STEP_SIZES,
+    MAPPING_FOR_DATA_TESTS,
     MODEL_URLS,
     MODELS,
     NON_POS_INTS,
@@ -33,7 +35,7 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
 
 
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
-    if model_fixture.data_path is None or model_fixture.data_mapped_to_observable:
+    if model_fixture.data_path is None:
         pytest.skip("TODO: create temporary file")
 
     data_timepoints = load_data(model_fixture.data_path)[0]
@@ -200,8 +202,90 @@ def test_sample_with_interventions(
     with pyro.poutine.seed(rng_seed=0):
         result = sample(*model_args, **model_kwargs)["unprocessed_result"]
 
-    check_states_match_in_all_but_values(result, intervened_result)
+    intervened_result_subset = {
+        k: v
+        for k, v in intervened_result.items()
+        if not k.startswith("parameter_intervention_")
+    }
+    check_states_match_in_all_but_values(result, intervened_result_subset)
+
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
+    check_result_sizes(
+        intervened_result, start_time, end_time, logging_step_size, num_samples
+    )
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_sample_with_multiple_parameter_interventions(
+    model_fixture,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+):
+
+    model_url = model_fixture.url
+    model = CompiledDynamics.load(model_url)
+
+    important_parameter_name = model_fixture.important_parameter
+    important_parameter = getattr(model, important_parameter_name)
+
+    intervention_effect = 1.1
+    intervention_time_0 = (end_time + start_time) / 4  # Quarter of the way through
+    intervention_time_1 = (end_time + start_time) / 2  # Half way through
+
+    intervention_0 = {
+        important_parameter_name: important_parameter.detach() * intervention_effect
+    }
+
+    intervention_1 = {
+        important_parameter_name: important_parameter.detach() / intervention_effect
+    }
+
+    model_args = [model_url, end_time, logging_step_size, num_samples]
+    model_kwargs = {"start_time": start_time}
+
+    with pyro.poutine.seed(rng_seed=0):
+        intervened_result = sample(
+            *model_args,
+            **model_kwargs,
+            static_parameter_interventions={
+                intervention_time_0: intervention_0,
+                intervention_time_1: intervention_1,
+            },
+        )["unprocessed_result"]
+
+    assert "parameter_intervention_time_0" in intervened_result.keys()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_0"],
+            torch.as_tensor(intervention_time_0),
+        )
+        .all()
+        .item()
+    )
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_0"
+        in intervened_result.keys()
+    )
+    assert "parameter_intervention_time_1" in intervened_result.keys()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_1"],
+            torch.as_tensor(intervention_time_1),
+        )
+        .all()
+        .item()
+    )
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_1"
+        in intervened_result.keys()
+    )
+
     check_result_sizes(
         intervened_result, start_time, end_time, logging_step_size, num_samples
     )
@@ -422,15 +506,24 @@ def test_output_format(
     sample_method, url, start_time, end_time, logging_step_size, num_samples
 ):
     processed_result = sample_method(
-        url, end_time, logging_step_size, num_samples, start_time=start_time
+        url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        time_unit="nominal",
     )["data"]
     assert isinstance(processed_result, pd.DataFrame)
     assert processed_result.shape[0] == num_samples * len(
         torch.arange(start_time + logging_step_size, end_time, logging_step_size)
     )
     assert processed_result.shape[1] >= 2
-    assert list(processed_result.columns)[:2] == ["timepoint_id", "sample_id"]
-    for col_name in processed_result.columns[2:]:
+    assert list(processed_result.columns)[:3] == [
+        "timepoint_id",
+        "sample_id",
+        "timepoint_nominal",
+    ]
+    for col_name in processed_result.columns[3:]:
         assert col_name.split("_")[-1] in ("param", "state")
         assert processed_result[col_name].dtype == np.float64
 
@@ -465,24 +558,28 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
 
-    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())
-    intervened_params = optimize_kwargs["static_parameter_interventions"][
-        intervention_time[0]
-    ]
     result_opt = sample(
         model_url,
         end_time,
         logging_step_size,
         num_samples,
         start_time=start_time,
-        static_parameter_interventions={
-            intervention_time[0]: {intervened_params: opt_policy}
-        },
+        static_parameter_interventions=optimize_kwargs[
+            "static_parameter_interventions"
+        ](opt_result["policy"]),
         solver_method=optimize_kwargs["solver_method"],
     )["unprocessed_result"]
 
-    assert isinstance(result_opt, dict)
-    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
+    intervened_result_subset = {
+        k: v
+        for k, v in result_opt.items()
+        if not k.startswith("parameter_intervention_")
+    }
+
+    assert isinstance(intervened_result_subset, dict)
+    check_result_sizes(
+        intervened_result_subset, start_time, end_time, logging_step_size, num_samples
+    )
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
@@ -515,4 +612,15 @@ def test_non_pos_int_sample(
             end_time,
             logging_step_size,
             num_samples=bad_num_samples,
+        )
+
+
+@pytest.mark.parametrize("bad_data", BADLY_FORMATTED_DATAFRAMES)
+@pytest.mark.parametrize("data_mapping", MAPPING_FOR_DATA_TESTS)
+def test_load_data(bad_data, data_mapping):
+    # Assert that a ValueError is raised for improperly formatted data
+    with pytest.raises(ValueError):
+        load_data(
+            bad_data,
+            data_mapping,
         )

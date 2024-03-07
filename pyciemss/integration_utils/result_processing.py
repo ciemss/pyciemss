@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,8 @@ def prepare_interchange_dictionary(
     timepoints: Optional[Iterable[float]] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
+
     processed_samples = convert_to_output_format(
         samples, time_unit=time_unit, timepoints=timepoints
     )
@@ -37,8 +39,21 @@ def convert_to_output_format(
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
     """
 
+    # Remove intervention data from the samples...
+    intervention_data = {
+        k: v for k, v in samples.items() if "parameter_intervention_value" in k
+    }
+    intervention_times = {
+        k: v for k, v in samples.items() if "parameter_intervention_time" in k
+    }
+    samples = {
+        k: v
+        for k, v in samples.items()
+        if k not in intervention_data.keys() and k not in intervention_times.keys()
+    }
+
     if time_unit is not None and timepoints is None:
-        raise ValueError("`timeponts` must be supplied when a `time_unit` is supplied")
+        raise ValueError("`timepoints` must be supplied when a `time_unit` is supplied")
 
     pyciemss_results: Dict[str, Dict[str, torch.Tensor]] = {
         "parameters": {},
@@ -70,6 +85,11 @@ def convert_to_output_format(
         "sample_id": np.repeat(np.array(range(num_samples)), num_timepoints),
     }
 
+    if timepoints is not None:
+        timepoints = [*timepoints]
+        label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
+        output[label] = np.array(float(timepoints[v]) for v in output["timepoint_id"])
+
     # Parameters
     output = {
         **output,
@@ -89,9 +109,76 @@ def convert_to_output_format(
     }
 
     result = pd.DataFrame(output)
-    if time_unit is not None and timepoints is not None:
-        timepoints = [*timepoints]
-        all_timepoints = result["timepoint_id"].map(lambda v: timepoints[v])
-        result = result.assign(**{f"timepoint_{time_unit}": all_timepoints})
+
+    # Set values to reflect interventions in time-order
+    for name, values in sorted(
+        intervention_data.items(), key=lambda item: int(item[0].split("_")[-1])
+    ):
+        result = set_intervention_values(result, name, values, intervention_times)
 
     return result
+
+
+# --- Intervention weaving utilities ----
+def get_times_for(intervention: str, intervention_times: Mapping[str, Iterable[float]]):
+    """intervention -- Full name of the intervention entry (will be parsed to get the time)
+    intervention_times --
+    """
+    time_id = f"_{intervention.split('_')[-1]}"
+    valid = [o for o in intervention_times.keys() if o.endswith(time_id)]
+
+    if len(valid) > 1:
+        raise ValueError(f"Time-alignment was not clear for {intervention}")
+    if len(valid) == 0:
+        raise KeyError(f"Time-alignment not found for {intervention}")
+
+    return intervention_times[valid[0]]
+
+
+def find_target_col(var: str, options: List[str]):
+    """
+    Find the column that corresponds to the var
+    var -- The parsed variable name
+    options -- Column names to search for the variable name
+    """
+    # TODO: This "underscore-trailing-name matching" seems very fragile....
+    #       It is done this way since you can intervene on params & states
+    #       and that will match either.
+    options = [c for c in options if f"{var}_" in c]
+    if len(options) == 0:
+        raise KeyError(f"No target column match found for '{var}'.")
+    if len(options) > 1:
+        raise ValueError(
+            f"Could not uniquely determine target column for '{var}'.  Found: {options}"
+        )
+    return options[0]
+
+
+def set_intervention_values(
+    df: pd.DataFrame,
+    intervention: str,
+    intervention_values: torch.Tensor,
+    intervention_times: Dict[str, torch.Tensor],
+):
+    """
+    df -- Results similar to those returned from 'sample'
+          (but not including columns that describe parameter interventions)
+    intervention -- Target intervention name
+    intervention_values -- The values for the target intervention
+    intervention_times -- The dictionary of all intervention
+    """
+    times = get_times_for(intervention, intervention_times)
+    target_var = "_".join(intervention.split("_")[3:-1])
+    target_col = find_target_col(target_var, df.columns)
+    time_col = [
+        c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"
+    ][0]
+
+    def rework(group):
+        mask = group[time_col] < float(times[group.name])
+        replacement_value = float(intervention_values[group.name])
+        group[target_col] = group[target_col].where(mask, replacement_value)
+
+        return group
+
+    return df.groupby("sample_id").apply(rework).reset_index(drop=True)

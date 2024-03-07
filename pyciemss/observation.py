@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Callable, Dict, Optional, Set
 
 import pyro
 import torch
@@ -18,8 +18,15 @@ class NoiseModel(pyro.nn.PyroModule):
 
 
 class StateIndependentNoiseModel(NoiseModel):
-    def __init__(self, vars: Set[str] = set()):
+    def __init__(
+        self,
+        vars: Set[str] = set(),
+        observables: Optional[
+            Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+        ] = None,
+    ):
         super().__init__(vars=vars)
+        self.observables = observables
 
     def markov_kernel(
         self, name: str, val: torch.Tensor
@@ -27,6 +34,11 @@ class StateIndependentNoiseModel(NoiseModel):
         raise NotImplementedError
 
     def forward(self, state: Dict[str, torch.Tensor]) -> None:
+
+        if self.observables is not None:
+            for k, v in self.observables(state).items():
+                state[k] = v
+
         for k in self.vars:
             pyro.sample(
                 f"{k}_noisy",
@@ -35,8 +47,15 @@ class StateIndependentNoiseModel(NoiseModel):
 
 
 class NormalNoiseModel(StateIndependentNoiseModel):
-    def __init__(self, vars: Set[str] = set(), scale: float = 1.0):
-        super().__init__(vars=vars)
+    def __init__(
+        self,
+        vars: Set[str] = set(),
+        observables: Optional[
+            Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+        ] = None,
+        scale: float = 1.0,
+    ):
+        super().__init__(vars=vars, observables=observables)
         self.scale = scale
 
     def markov_kernel(
