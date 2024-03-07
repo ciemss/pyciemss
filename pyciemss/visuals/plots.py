@@ -33,7 +33,7 @@ __all__ = [
 _output_schema = Path(__file__).parent / "modified_schema"
 _output_html = Path(__file__).parent / "html"
 
-def save_schema(schema: Dict[str, Any], path: str):
+def save_schema(schema: Dict[str, Any], path: Path):
     """Save the schema using common convention"""
     with open(path, "w") as f:
         json.dump(schema, f, indent=3)
