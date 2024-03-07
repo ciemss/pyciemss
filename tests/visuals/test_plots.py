@@ -83,11 +83,14 @@ class TestTrajectory:
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
     def test_markers(self, distributions):
-        schema = plots.trajectories(distributions, base_markers_h = {"Low marker": 10000000, "High marker": 20000000})
+        schema = plots.trajectories(
+            distributions,
+            base_markers_h={"Low marker": 10000000, "High marker": 20000000},
+        )
 
         plots.save_schema(schema, "test_markers_schema.vg.json")
         df = pd.DataFrame(vega.find_named(schema["data"], "markers_h")["values"])
-        assert {'axis_value', 'label'} == set(df.columns)
+        assert {"axis_value", "label"} == set(df.columns)
 
     def test_rename(self, distributions):
         nice_labels = make_nice_labels(distributions.columns)
