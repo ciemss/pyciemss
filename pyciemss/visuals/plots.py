@@ -40,11 +40,12 @@ def save_schema(schema: Dict[str, Any], path: str):
 
 def check_geoscale(schema):
     geoscale = False
-    for i in range(len(schema['signals'])):
-        signal = schema['signals'][i]
-        if "on" in signal.keys():
-            if "geoscale" in signal['on'][0]['update'].lower():
-                 geoscale = True
+    if "signals'" in schema.keys():
+        for i in range(len(schema['signals'])):
+            signal = schema['signals'][i]
+            if "on" in signal.keys():
+                if "geoscale" in signal['on'][0]['update'].lower():
+                    geoscale = True
     return geoscale
 
 def ipy_display(
@@ -84,17 +85,15 @@ def ipy_display(
     if force_clear:
         IPython.display.clear_output(wait=True)
 
-    if format in ["interactive", "INTERACTIVE"]:
-        
-        if check_geoscale(schema):
-            schema_path = _output_schema / f"modified_map_heatmap.json"
-            html_location = _output_html / f"visualize_map.html"
-            save_schema(schema, schema_path)
-            print(f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}")
-        else:
-            bundle = {"application/vnd.vega.v5+json": schema}
-            print("", end=None)
-            IPython.display.display(bundle, raw=True)
+    if check_geoscale(schema):
+        schema_path = _output_schema / f"modified_map_heatmap.json"
+        html_location = _output_html / f"visualize_map.html"
+        save_schema(schema, schema_path)
+        print(f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}")
+    elif format in ["interactive", "INTERACTIVE"]:
+        bundle = {"application/vnd.vega.v5+json": schema}
+        print("", end=None)
+        IPython.display.display(bundle, raw=True)
 
     elif format in ["png", "PNG"]:
         if dpi and "scale" not in kwargs:

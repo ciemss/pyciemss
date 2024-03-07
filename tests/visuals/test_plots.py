@@ -456,5 +456,3 @@ class TestGraph:
             n = [n for n in nodes if n["label"] == id][0]
             assert n["inputX"] == x, f"Layout lost for {id}"
             assert n["inputY"] == y, f"Layout lost for {id}"
-
-

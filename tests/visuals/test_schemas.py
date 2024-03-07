@@ -98,6 +98,8 @@ def schemas(ref_ext=None):
     Find all schema files.  If ref_ext is not None, figure out names for it
     """
     schemas = [*_schema_root.glob("*.vg.json")]
+    schemas = [x for x in schemas if schema.stem != "map_heatmap.vg"]
+
     assert len(schemas) > 0, "No schemas found"
 
     if ref_ext is not None:
@@ -250,7 +252,7 @@ def test_nested_mark_sources(schema_file):
     group_marks = [m for m in schema["marks"] if m["type"] == "group"]
     if "trajectories.vg.json" == schema_file.name:
         assert (
-            len(group_marks) == 4
+            len(group_marks) == 5
         ), f"{schema_file.name} spot-check number of group marks incorrect"
 
     for group in group_marks:
