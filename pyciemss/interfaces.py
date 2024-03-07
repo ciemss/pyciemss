@@ -310,7 +310,7 @@ def sample(
                 )
                 # Adding noise to the model so that we can access the noisy trajectory in the Predictive object.
                 compiled_noise_model(full_trajectory)
-        # with input num_sample =30, return 16 samples
+
         samples = pyro.infer.Predictive(
             wrapped_model,
             guide=inferred_parameters,

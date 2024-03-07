@@ -45,6 +45,7 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
 
     return convert_to_output_format(
         sample,
+        # using same time point formula as in 'logging_times' from  pyciemms interfaces formula 'sample'
         timepoints = np.arange(start_time + logging_step_size, end_time, logging_step_size),
         time_unit=time_unit,
     )
