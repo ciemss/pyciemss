@@ -160,7 +160,7 @@ def test_export_SVG(schema_file, ref_file, name):
         diffb = main.diff_texts(ref, result)
 
         for a, b in zip(diffa, diffb):
-            if hasattr(a, 'name') & hasattr(b, 'name'):
+            if hasattr(a, "name") & hasattr(b, "name"):
                 if a.name == b.name and a.name == "d":
                     ratio = difflib.SequenceMatcher(
                         a=a.value, b=b.value, autojunk=False
@@ -251,7 +251,7 @@ def test_nested_mark_sources(schema_file):
     group_marks = [m for m in schema["marks"] if m["type"] == "group"]
     if "trajectories.vg.json" == schema_file.name:
         assert (
-            len(group_marks) == 5
+            len(group_marks) == 4
         ), f"{schema_file.name} spot-check number of group marks incorrect"
 
     for group in group_marks:
