@@ -4,9 +4,9 @@ from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 import numpy as np
 import pandas as pd
 import json
+from pathlib import Path
 
 from . import vega
-from pathlib import Path
 
 _output_root = Path(__file__).parent / "data"
 

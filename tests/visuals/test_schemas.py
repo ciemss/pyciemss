@@ -4,7 +4,8 @@ import json
 import os
 import re
 from pathlib import Path
-
+import argparse
+import sys
 import IPython
 import numpy as np
 import pytest
@@ -98,7 +99,7 @@ def schemas(ref_ext=None):
     Find all schema files.  If ref_ext is not None, figure out names for it
     """
     schemas = [*_schema_root.glob("*.vg.json")]
-    schemas = [x for x in schemas if schemas.stem != "map_heatmap.vg"]
+    schemas = [x for x in schemas if x.stem != "map_heatmap.vg"]
 
     assert len(schemas) > 0, "No schemas found"
 
@@ -287,9 +288,7 @@ def test_nested_mark_sources(schema_file):
 
 
 if __name__ == "__main__":
-    import argparse
-    import sys
-    from pathlib import Path
+
 
     parser = argparse.ArgumentParser("Utility to generate reference images")
     parser.add_argument(

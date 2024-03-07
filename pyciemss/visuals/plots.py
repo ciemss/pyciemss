@@ -3,6 +3,7 @@ from typing import Any, Dict, Literal, Optional
 
 import IPython.display
 import vl_convert
+from pathlib import Path
 
 from .barycenter import triangle_contour
 from .calibration import calibration
@@ -10,8 +11,6 @@ from .graphs import attributed_graph, spring_force_graph
 from .histogram import heatmap_scatter, histogram_multi, map_heatmap
 from .trajectories import trajectories
 from .vega import VegaSchema, orient_legend, pad, rescale, resize, set_title
-
-from pathlib import Path
 
 __all__ = [
     "VegaSchema",
