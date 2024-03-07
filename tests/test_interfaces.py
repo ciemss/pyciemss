@@ -44,7 +44,7 @@ def dummy_ensemble_calibrate(model_path_or_json, *args, **kwargs):
     model_paths_or_jsons = [model_path_or_json, model_path_or_json]
     solution_mappings = [
         lambda x: x,
-        lambda x: {k: v/2 for k, v in x.items()},
+        lambda x: {k: v / 2 for k, v in x.items()},
     ]
     return ensemble_calibrate(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
