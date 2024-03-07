@@ -229,7 +229,7 @@ def map_heatmap(mesh: pd.DataFrame = None) -> vega.VegaSchema:
     )
     #
     # add in map topology data
-    world_path = _output_root / f"world-110m.json"
+    world_path = _output_root / "world-110m.json"
     f = open(world_path)
     world_data = json.load(f)
     schema["data"] = vega.replace_named_with(
@@ -237,7 +237,7 @@ def map_heatmap(mesh: pd.DataFrame = None) -> vega.VegaSchema:
     )
 
     # add in country names
-    country_names_path = _output_root / f"country_names.csv"
+    country_names_path = _output_root / "country_names.csv"
 
     name_data = pd.read_csv(country_names_path).to_json(orient="records")
     schema["data"] = vega.replace_named_with(

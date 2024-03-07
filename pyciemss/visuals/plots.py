@@ -88,8 +88,8 @@ def ipy_display(
         IPython.display.clear_output(wait=True)
 
     if check_geoscale(schema):
-        schema_path = _output_schema / f"modified_map_heatmap.json"
-        html_location = _output_html / f"visualize_map.html"
+        schema_path = _output_schema / "modified_map_heatmap.json"
+        html_location = _output_html / "visualize_map.html"
         save_schema(schema, schema_path)
         print(
             f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}"
