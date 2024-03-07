@@ -1,10 +1,10 @@
 from numbers import Number
+import json
+from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
-import json
-from pathlib import Path
 
 from . import vega
 

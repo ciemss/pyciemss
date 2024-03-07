@@ -1,11 +1,12 @@
+import argparse
 import difflib
 import io
 import json
 import os
 import re
-from pathlib import Path
-import argparse
 import sys
+
+from pathlib import Path
 import IPython
 import numpy as np
 import pytest

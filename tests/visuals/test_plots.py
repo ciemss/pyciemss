@@ -1,11 +1,11 @@
 import random
 from itertools import chain
+from pathlib import Path
 
 import networkx as nx
 import numpy as np
 import pandas as pd
 import pytest
-from pathlib import Path
 
 import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
