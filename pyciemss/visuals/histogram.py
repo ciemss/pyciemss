@@ -6,7 +6,9 @@ import pandas as pd
 import json
 
 from . import vega
+from pathlib import Path
 
+_output_root = Path(__file__).parent / "data"
 
 def sturges_bin(data):
     """Determine number of bin susing sturge's rule.
@@ -230,16 +232,17 @@ def map_heatmap(
     )
     #
     # add in map topology data
-    f = open('data/world-110m.json')
+    world_path = _output_root / f"world-110m.json"
+    f = open(world_path)
     world_data = json.load(f)
     schema["data"] = vega.replace_named_with(
             schema["data"], "world", ["values"], world_data
         )
     
     # add in country names
+    country_names_path = _output_root / f"country_names.csv"
 
-    ##TODO rename the files!
-    name_data = pd.read_csv('data/country_names.csv').to_json(orient='records')
+    name_data = pd.read_csv(country_names_path).to_json(orient='records')
     schema["data"] = vega.replace_named_with(
             schema["data"], "names", ["values"], json.loads(name_data)
         )

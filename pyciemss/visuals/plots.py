@@ -11,6 +11,8 @@ from .histogram import heatmap_scatter, histogram_multi, map_heatmap
 from .trajectories import trajectories
 from .vega import VegaSchema, orient_legend, pad, rescale, resize, set_title
 
+from pathlib import Path
+
 __all__ = [
     "VegaSchema",
     "pad",
@@ -28,12 +30,22 @@ __all__ = [
     "map_heatmap",
 ]
 
+_output_schema = Path(__file__).parent / "modified_schema"
+_output_html = Path(__file__).parent / "html"
 
 def save_schema(schema: Dict[str, Any], path: str):
     """Save the schema using common convention"""
     with open(path, "w") as f:
         json.dump(schema, f, indent=3)
 
+def check_geoscale(schema):
+    geoscale = False
+    for i in range(len(schema['signals'])):
+        signal = schema['signals'][i]
+        if "on" in signal.keys():
+            if "geoscale" in signal['on'][0]['update'].lower():
+                 geoscale = True
+    return geoscale
 
 def ipy_display(
     schema: Dict[str, Any],
@@ -73,21 +85,22 @@ def ipy_display(
         IPython.display.clear_output(wait=True)
 
     if format in ["interactive", "INTERACTIVE"]:
-        bundle = {"application/vnd.vega.v5+json": schema}
-        print("", end=None)
-        IPython.display.display(bundle, raw=True)
+        
+        if check_geoscale(schema):
+            schema_path = _output_schema / f"modified_map_heatmap.json"
+            html_location = _output_html / f"visualize_map.html"
+            save_schema(schema, schema_path)
+            print(f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}")
+        else:
+            bundle = {"application/vnd.vega.v5+json": schema}
+            print("", end=None)
+            IPython.display.display(bundle, raw=True)
 
     elif format in ["png", "PNG"]:
         if dpi and "scale" not in kwargs:
             kwargs["scale"] = dpi // 72
         png_data = vl_convert.vega_to_png(schema, **kwargs)
         return IPython.display.Image(png_data)
-    
-    elif format in ['html']:
-        # saving the modified schema (with updated mesh)
-        schema_path = "pyciemss/visuals/modified_schema/modified_map_heatmap.json"
-        save_schema(schema, schema_path)
-        print("Open html file at pyciemss/visuals/html/visualize_map.html to view")
 
 
     elif format in ["svg", "SVG"]:
