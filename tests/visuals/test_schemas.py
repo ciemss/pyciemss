@@ -98,7 +98,7 @@ def schemas(ref_ext=None):
     Find all schema files.  If ref_ext is not None, figure out names for it
     """
     schemas = [*_schema_root.glob("*.vg.json")]
-    schemas = [x for x in schemas if schema.stem != "map_heatmap.vg"]
+    schemas = [x for x in schemas if schemas.stem != "map_heatmap.vg"]
 
     assert len(schemas) > 0, "No schemas found"
 
