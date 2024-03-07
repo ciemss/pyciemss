@@ -6,7 +6,13 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
+from pyciemss.interfaces import (
+    calibrate,
+    ensemble_calibrate,
+    ensemble_sample,
+    optimize,
+    sample,
+)
 
 from .fixtures import (
     BADLY_FORMATTED_DATAFRAMES,
@@ -34,6 +40,15 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
+def dummy_ensemble_calibrate(model_path_or_json, *args, **kwargs):
+    model_paths_or_jsons = [model_path_or_json, model_path_or_json]
+    solution_mappings = [
+        lambda x: x,
+        lambda x: {k: v/2 for k, v in x.items()},
+    ]
+    return ensemble_calibrate(model_paths_or_jsons, solution_mappings, *args, **kwargs)
+
+
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
     if model_fixture.data_path is None:
         pytest.skip("TODO: create temporary file")
@@ -55,6 +70,7 @@ def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
 
 
 SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+CALIBRATE_METHODS = [calibrate, dummy_ensemble_calibrate]
 INTERVENTION_TYPES = ["static", "dynamic"]
 INTERVENTION_TARGETS = ["state", "parameter"]
 
@@ -291,11 +307,14 @@ def test_sample_with_multiple_parameter_interventions(
     )
 
 
+@pytest.mark.parametrize("calibrate_method", CALIBRATE_METHODS)
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_size):
+def test_calibrate_no_kwargs(
+    calibrate_method, model_fixture, start_time, end_time, logging_step_size
+):
     model_url = model_fixture.url
     _, _, sample_args, sample_kwargs = setup_calibrate(
         model_fixture, start_time, end_time, logging_step_size
@@ -310,7 +329,7 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+        inferred_parameters = calibrate_method(*calibrate_args, **calibrate_kwargs)[
             "inferred_parameters"
         ]
 

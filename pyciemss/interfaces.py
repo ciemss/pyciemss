@@ -14,6 +14,7 @@ from chirho.dynamical.handlers import (
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
+from chirho.observational.ops import observe
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
@@ -146,6 +147,105 @@ def ensemble_sample(
         return prepare_interchange_dictionary(
             samples, timepoints=logging_times, time_unit=time_unit
         )
+
+
+@pyciemss_logging_wrapper
+def ensemble_calibrate(
+    model_paths_or_jsons: List[Union[str, Dict]],
+    solution_mappings: List[
+        Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]
+    ],
+    data_path: str,
+    *,
+    dirichlet_alpha: Optional[torch.Tensor] = None,
+    data_mapping: Dict[str, str] = {},
+    noise_model: str = "normal",
+    noise_model_kwargs: Dict[str, Any] = {"scale": 0.1},
+    solver_method: str = "dopri5",
+    solver_options: Dict[str, Any] = {},
+    start_time: float = 0.0,
+    num_iterations: int = 1000,
+    lr: float = 0.03,
+    verbose: bool = False,
+    num_particles: int = 1,
+    deterministic_learnable_parameters: List[str] = [],
+    progress_hook: Callable = lambda i, loss: None,
+) -> Dict[str, Any]:
+
+    pyro.clear_param_store()
+
+    if dirichlet_alpha is None:
+        dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
+
+    model = EnsembleCompiledDynamics.load(
+        model_paths_or_jsons, dirichlet_alpha, solution_mappings
+    )
+
+    data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
+
+    # Check that num_iterations is a positive integer
+    if not (isinstance(num_iterations, int) and num_iterations > 0):
+        raise ValueError("num_iterations must be a positive integer")
+
+    def autoguide(model):
+        guide = pyro.infer.autoguide.AutoGuideList(model)
+        guide.append(
+            pyro.infer.autoguide.AutoDelta(
+                pyro.poutine.block(model, expose=deterministic_learnable_parameters)
+            )
+        )
+
+        try:
+            mvn_guide = pyro.infer.autoguide.AutoLowRankMultivariateNormal(
+                pyro.poutine.block(model, hide=deterministic_learnable_parameters)
+            )
+            mvn_guide._setup_prototype()
+            guide.append(mvn_guide)
+        except RuntimeError as re:
+            if (
+                re.args[0]
+                != "AutoLowRankMultivariateNormal found no latent variables; Use an empty guide instead"
+            ):
+                raise re
+
+        return guide
+
+    _noise_model = compile_noise_model(
+        noise_model,
+        vars=set(data.keys()),
+        **noise_model_kwargs,
+    )
+
+    _data = {f"{k}_noisy": v for k, v in data.items()}
+
+    def wrapped_model():
+        obs = condition(data=_data)(_noise_model)
+
+        with TorchDiffEq(method=solver_method, options=solver_options):
+            solution = model(
+                torch.as_tensor(start_time),
+                torch.as_tensor(data_timepoints[-1]),
+                logging_times=data_timepoints,
+                is_traced=True,
+            )
+
+            observe(solution, obs)
+
+    inferred_parameters = autoguide(wrapped_model)
+
+    optim = pyro.optim.Adam({"lr": lr})
+    loss = pyro.infer.Trace_ELBO(num_particles=num_particles)
+    svi = pyro.infer.SVI(wrapped_model, inferred_parameters, optim, loss=loss)
+
+    for i in range(num_iterations):
+        # Call a progress hook at the beginning of each iteration. This is used to implement custom progress bars.
+        progress_hook(i, loss)
+        loss = svi.step()
+        if verbose:
+            if i % 25 == 0:
+                print(f"iteration {i}: loss = {loss}")
+
+    return {"inferred_parameters": inferred_parameters, "loss": loss}
 
 
 @pyciemss_logging_wrapper
