@@ -25,6 +25,7 @@ def make_nice_labels(labels):
         if "_" in k and k not in ["sample_id", "timepoint_id", "timepoint_notional"]
     }
 
+
 def create_distributions(logging_step_size=20, time_unit="twenty"):
     model_1_path = (
         "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
@@ -38,7 +39,7 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
         end_time,
         logging_step_size,
         num_samples,
-        time_unit = time_unit,
+        time_unit=time_unit,
         start_time=start_time,
         solver_method="euler",
     )["unprocessed_result"]
@@ -46,13 +47,14 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
     return convert_to_output_format(
         sample,
         # using same time point formula as in 'logging_times' from  pyciemms interfaces formula 'sample'
-        timepoints = np.arange(start_time + logging_step_size, end_time, logging_step_size),
+        timepoints=np.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        ),
         time_unit=time_unit,
     )
 
-class TestTrajectory:
 
-    
+class TestTrajectory:
     @staticmethod
     @pytest.fixture
     def distributions():
@@ -88,16 +90,20 @@ class TestTrajectory:
     @pytest.mark.parametrize("end_time", [80, 100])
     def test_timepoints(self, logging_step_size, time_unit, end_time):
         # distribution will create timepoint from logging_step_size, and start and end time
-        new_distribution = create_distributions(logging_step_size=logging_step_size, time_unit=time_unit)
+        new_distribution = create_distributions(
+            logging_step_size=logging_step_size, time_unit=time_unit
+        )
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
         # check if new time label is correct
         assert label in new_distribution.columns
 
         schema = plots.trajectories(new_distribution)
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
-        new_timepoints = [float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)]
+        new_timepoints = [
+            float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)
+        ]
         # check timepoint created match the input logging_step_size and start and end time
-        assert df.timepoint[:len(new_timepoints)].tolist() == new_timepoints
+        assert df.timepoint[: len(new_timepoints)].tolist() == new_timepoints
 
     def test_rename(self, distributions):
         nice_labels = make_nice_labels(distributions.columns)
