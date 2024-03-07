@@ -1,9 +1,9 @@
 import json
+from pathlib import Path
 from typing import Any, Dict, Literal, Optional
 
 import IPython.display
 import vl_convert
-from pathlib import Path
 
 from .barycenter import triangle_contour
 from .calibration import calibration

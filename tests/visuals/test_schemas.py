@@ -5,8 +5,8 @@ import json
 import os
 import re
 import sys
-
 from pathlib import Path
+
 import IPython
 import numpy as np
 import pytest

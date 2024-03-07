@@ -1,5 +1,5 @@
-from numbers import Number
 import json
+from numbers import Number
 from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 
