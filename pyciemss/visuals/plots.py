@@ -32,20 +32,23 @@ __all__ = [
 _output_schema = Path(__file__).parent / "modified_schema"
 _output_html = Path(__file__).parent / "html"
 
+
 def save_schema(schema: Dict[str, Any], path: Path):
     """Save the schema using common convention"""
     with open(path, "w") as f:
         json.dump(schema, f, indent=3)
 
+
 def check_geoscale(schema):
     geoscale = False
     if "signals'" in schema.keys():
-        for i in range(len(schema['signals'])):
-            signal = schema['signals'][i]
+        for i in range(len(schema["signals"])):
+            signal = schema["signals"][i]
             if "on" in signal.keys():
-                if "geoscale" in signal['on'][0]['update'].lower():
+                if "geoscale" in signal["on"][0]["update"].lower():
                     geoscale = True
     return geoscale
+
 
 def ipy_display(
     schema: Dict[str, Any],
@@ -88,7 +91,9 @@ def ipy_display(
         schema_path = _output_schema / f"modified_map_heatmap.json"
         html_location = _output_html / f"visualize_map.html"
         save_schema(schema, schema_path)
-        print(f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}")
+        print(
+            f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}"
+        )
     elif format in ["interactive", "INTERACTIVE"]:
         bundle = {"application/vnd.vega.v5+json": schema}
         print("", end=None)
@@ -99,7 +104,6 @@ def ipy_display(
             kwargs["scale"] = dpi // 72
         png_data = vl_convert.vega_to_png(schema, **kwargs)
         return IPython.display.Image(png_data)
-
 
     elif format in ["svg", "SVG"]:
         png_data = vl_convert.vega_to_svg(schema, **kwargs)

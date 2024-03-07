@@ -290,7 +290,6 @@ def test_nested_mark_sources(schema_file):
 
 if __name__ == "__main__":
 
-
     parser = argparse.ArgumentParser("Utility to generate reference images")
     parser.add_argument(
         "schema",

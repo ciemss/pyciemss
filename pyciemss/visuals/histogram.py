@@ -10,6 +10,7 @@ from . import vega
 
 _output_root = Path(__file__).parent / "data"
 
+
 def sturges_bin(data):
     """Determine number of bin susing sturge's rule.
     TODO: Consider Freedman-Diaconis (larger data sizes and spreads)
@@ -214,18 +215,14 @@ def heatmap_scatter(
     return schema
 
 
-
-
-def map_heatmap(
-    mesh:  pd.DataFrame = None
-) -> vega.VegaSchema:
+def map_heatmap(mesh: pd.DataFrame = None) -> vega.VegaSchema:
     """
     mesh -- (Optional) pd.DataFrame with columns
         x_start, x_end, y_start, y_end, __count for each grid
     """
 
     schema = vega.load_schema("map_heatmap.vg.json")
-    mesh_array = mesh.to_json(orient='records')
+    mesh_array = mesh.to_json(orient="records")
     # load heatmap data
     schema["data"] = vega.replace_named_with(
         schema["data"], "mesh", ["values"], json.loads(mesh_array)
@@ -236,14 +233,14 @@ def map_heatmap(
     f = open(world_path)
     world_data = json.load(f)
     schema["data"] = vega.replace_named_with(
-            schema["data"], "world", ["values"], world_data
-        )
-    
+        schema["data"], "world", ["values"], world_data
+    )
+
     # add in country names
     country_names_path = _output_root / f"country_names.csv"
 
-    name_data = pd.read_csv(country_names_path).to_json(orient='records')
+    name_data = pd.read_csv(country_names_path).to_json(orient="records")
     schema["data"] = vega.replace_named_with(
-            schema["data"], "names", ["values"], json.loads(name_data)
-        )
+        schema["data"], "names", ["values"], json.loads(name_data)
+    )
     return schema
