@@ -127,7 +127,7 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
-    base_markers: Optional[Dict[str, Number]] = None,
+    base_markers_v: Optional[Dict[str, Number]] = None,
     base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict] = None,
@@ -229,10 +229,10 @@ def trajectories(
     else:
         points = []
 
-    if base_markers is not None:
-        markers = [{"axis_value": v, "label": k} for k, v in base_markers.items()]
+    if base_markers_v is not None:
+        markers_v = [{"axis_value": v, "label": k} for k, v in base_markers_v.items()]
     else:
-        markers = []
+        markers_v = []
 
     if base_markers_h is not None:
         markers_h = [{"axis_value": v, "label": k} for k, v in base_markers_h.items()]
@@ -251,7 +251,7 @@ def trajectories(
         schema["data"], "traces", ["values"], _clean_nans(traces)
     )
     schema["data"] = vega.replace_named_with(
-        schema["data"], "markers", ["values"], _clean_nans(markers)
+        schema["data"], "markers_v", ["values"], _clean_nans(markers_v)
     )
     schema["data"] = vega.replace_named_with(
         schema["data"], "markers_h", ["values"], _clean_nans(markers_h)
