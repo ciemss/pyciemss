@@ -12,8 +12,7 @@
         "fields": [
           {"data": "distributions", "field": "timepoint"},
           {"data": "traces", "field": "timepoint"},
-          {"data": "points", "field": "timepoint"},
-          {"data": "markers", "field": "timepoint"}
+          {"data": "points", "field": "timepoint"}
          ]
       }
     },
@@ -297,12 +296,12 @@
     },
     {
       "type": "group",
-      "name": "_markers",
+      "name": "_markers_v",
       "marks": [
         {
           "type": "rule",
-          "name": "_marker text",
-          "from": {"data": "markers"},
+          "name": "_marker_v text",
+          "from": {"data": "markers_v"},
           "encode": {
             "enter": {"stroke": {"value": "lightgray"}},
             "update": {
@@ -315,8 +314,8 @@
         },
         {
           "type": "text",
-          "name": "_marker flags",
-          "from": {"data": "_marker text"},
+          "name": "_marker_v flags",
+          "from": {"data": "_marker_v text"},
           "encode": {
             "enter": {
               "text": {"field": "datum.label"},
@@ -418,13 +417,13 @@
                  {"timepoint": 6, "value": 15, "trajectory": "e"}]
     },
     {
-      "name": "markers",
+      "name": "markers_v",
       "values": [{"axis_value": 3, "label": "Low marker"},
                  {"axis_value": 7, "label": "High marker"}]
     },
     {
       "name": "markers_h",
-      "values": [{"axis_value": 20, "label": "Low marker"},
+      "values": [{"axis_value": 10, "label": "Low marker"},
                  {"axis_value": 37, "label": "High marker"}]
     },
     {
