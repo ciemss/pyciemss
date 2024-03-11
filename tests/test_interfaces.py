@@ -214,6 +214,52 @@ def test_sample_with_interventions(
         intervened_result, start_time, end_time, logging_step_size, num_samples
     )
 
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_sample_noop_parameter_intervention(
+    model_fixture,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+):
+    model_url = model_fixture.url
+
+    important_parameter_name = model_fixture.important_parameter
+
+    intervention_time = (end_time + start_time) / 4
+
+    intervention = {important_parameter_name: lambda x : x}
+
+    model_args = [model_url, end_time, logging_step_size, num_samples]
+    model_kwargs = {"start_time": start_time}
+
+    with pyro.poutine.seed(rng_seed=0):
+        intervened_result = sample(
+            *model_args,
+            **model_kwargs,
+            static_parameter_interventions={intervention_time: intervention},
+        )["unprocessed_result"]
+
+    with pyro.poutine.seed(rng_seed=0):
+        result = sample(*model_args, **model_kwargs)["unprocessed_result"]
+
+    intervened_result_subset = {
+        k: v
+        for k, v in intervened_result.items()
+        if not k.startswith("parameter_intervention_")
+    }
+
+    check_states_match(result, intervened_result_subset)
+
+    check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
+    check_result_sizes(
+        intervened_result, start_time, end_time, logging_step_size, num_samples
+    )
+
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
