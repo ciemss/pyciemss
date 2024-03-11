@@ -214,6 +214,7 @@ def test_sample_with_interventions(
         intervened_result, start_time, end_time, logging_step_size, num_samples
     )
 
+
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -232,7 +233,7 @@ def test_sample_noop_parameter_intervention(
 
     intervention_time = (end_time + start_time) / 4
 
-    intervention = {important_parameter_name: lambda x : x}
+    intervention = {important_parameter_name: lambda x: x}
 
     model_args = [model_url, end_time, logging_step_size, num_samples]
     model_kwargs = {"start_time": start_time}

@@ -123,6 +123,7 @@ def test_parameter_intervention_after_end(
     check_is_state(simulation2, torch.Tensor)
     check_states_match(simulation1, simulation2)
 
+
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
@@ -138,7 +139,7 @@ def test_parameter_intervention_noop(
 
     intervention_time = start_time + (end_time - start_time) / 2.0
     parameter = model_fixture.important_parameter
-    intervention = {parameter: lambda x : x}
+    intervention = {parameter: lambda x: x}
 
     if intervention_handler_type == "static":
         intervention_handler = StaticParameterIntervention(
