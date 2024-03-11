@@ -740,11 +740,6 @@ def optimize(
             )
             print(f"Optimal policy:\t{opt_results.x}")
 
-        # Check for some interventions that lead to no feasible solutions
-        if opt_results.x < 0:
-            if verbose:
-                print("No solution found")
-
         ouu_results = {
             "policy": torch.tensor(opt_results.x),
             "OptResults": opt_results,
