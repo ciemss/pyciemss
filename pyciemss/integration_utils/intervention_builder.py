@@ -17,13 +17,18 @@ def param_value_objective(
             if param_value[count] is None:
                 if not callable(param_value[count]):
                     param_value[count] = lambda x: torch.tensor(x)
-            static_parameter_interventions.update(
-                {
-                    start_time[count].item(): {
-                        param_name[count]: param_value[count](x[count].item())
+            if start_time[count].item() in static_parameter_interventions:
+                static_parameter_interventions[start_time[count].item()].update(
+                    {param_name[count]: param_value[count](x[count].item())}
+                )
+            else:
+                static_parameter_interventions.update(
+                    {
+                        start_time[count].item(): {
+                            param_name[count]: param_value[count](x[count].item())
+                        }
                     }
-                }
-            )
+                )
         return static_parameter_interventions
 
     return intervention_generator
@@ -37,9 +42,14 @@ def start_time_objective(
     ) -> Dict[float, Dict[str, Intervention]]:
         static_parameter_interventions = {}
         for count in range(len(param_name)):
-            static_parameter_interventions.update(
-                {x[count].item(): {param_name[count]: param_value[count]}}
-            )
+            if x[count].item() in static_parameter_interventions:
+                static_parameter_interventions[x[count].item()].update(
+                    {param_name[count]: param_value[count]}
+                )
+            else:
+                static_parameter_interventions.update(
+                    {x[count].item(): {param_name[count]: param_value[count]}}
+                )
         return static_parameter_interventions
 
     return intervention_generator
