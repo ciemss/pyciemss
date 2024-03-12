@@ -254,11 +254,6 @@ def sample(
                     - qoi: Samples of quantity of interest (value of the state at the final timepoint)
                 - schema: Visualization. (If visual_options is truthy)
     """
-
-    if solver_method is "euler":
-        if "step_size" not in solver_options:
-            solver_options.update({"step_size": (end_time-start_time)/1e3})
-
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
 
