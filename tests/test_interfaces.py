@@ -9,6 +9,7 @@ from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
 
 from .fixtures import (
+    BAD_MODELS,
     BADLY_FORMATTED_DATAFRAMES,
     END_TIMES,
     LOGGING_STEP_SIZES,
@@ -623,4 +624,17 @@ def test_load_data(bad_data, data_mapping):
         load_data(
             bad_data,
             data_mapping,
+        )
+
+
+@pytest.mark.parametrize("model_fixture", BAD_MODELS)
+@pytest.mark.parametrize("num_iterations", NUM_SAMPLES)
+def test_calibrate_error_no_uncertainty(model_fixture, num_iterations):
+    # Assert that a ValueError is raised when there are no model parameters with uncertainty
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            num_iterations=num_iterations,
         )

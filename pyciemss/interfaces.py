@@ -14,6 +14,7 @@ from chirho.dynamical.handlers import (
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
+from mira.sources.amr import model_from_json_file, model_from_url
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
@@ -472,6 +473,26 @@ def calibrate(
     pyro.clear_param_store()
 
     model = CompiledDynamics.load(model_path_or_json)
+
+    def check_for_uncertainty(model_location):
+        # Function to check that at least one parameter has a distribution
+        if "https://" in model_location:
+            full_model = model_from_url(model_location)
+        else:
+            full_model = model_from_json_file(model_location)
+
+        model_params = full_model.parameters
+
+        for key in model_params.keys():
+            if model_params[str(key)].distribution is not None:
+                return False
+        return True
+
+    # Check that model contains uncertainty and therefore can be calibrated
+    if check_for_uncertainty(model_path_or_json):
+        raise ValueError(
+            "This model cannot be calibrated because there are no parameters with uncertainty. Add a distribution for at least one parameter in order to calibrate."
+        )
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
