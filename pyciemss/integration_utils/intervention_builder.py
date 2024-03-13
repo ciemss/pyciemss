@@ -9,6 +9,9 @@ def param_value_objective(
     start_time: List[torch.Tensor],
     param_value: List[Intervention] = [None],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
+    if len(param_value) < len(param_name) and param_value[0] is None:
+        param_value = [None for _ in param_name]
+
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
@@ -16,7 +19,7 @@ def param_value_objective(
         for count in range(len(param_name)):
             if param_value[count] is None:
                 if not callable(param_value[count]):
-                    param_value[count] = lambda x: torch.tensor(x)
+                    param_value[count] = lambda y: torch.tensor(y)
             if start_time[count].item() in static_parameter_interventions:
                 static_parameter_interventions[start_time[count].item()].update(
                     {param_name[count]: param_value[count](x[count].item())}

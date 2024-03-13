@@ -426,7 +426,6 @@ def sample(
                 - schema: Visualization. (If visual_options is truthy)
     """
 
-
     check_solver(solver_method, solver_options)
 
     with torch.no_grad():
