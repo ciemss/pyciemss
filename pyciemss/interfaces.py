@@ -666,7 +666,7 @@ def calibrate(
     # Check that model contains uncertainty and therefore can be calibrated
     if check_for_uncertainty(model_path_or_json):
         raise ValueError(
-            "This model cannot be calibrated because there are no parameters with uncertainty. Add a distribution for at least one parameter in order to calibrate."
+            "No uncertainty in parameter values, cannot calibrate. Add a distribution for at least one parameter."
         )
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
