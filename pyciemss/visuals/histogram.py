@@ -218,7 +218,7 @@ def heatmap_scatter(
 def map_heatmap(mesh: pd.DataFrame = None) -> vega.VegaSchema:
     """
     mesh -- (Optional) pd.DataFrame with columns
-        x_start, x_end, y_start, y_end, __count for each grid
+        lon_start, lon_end, lat_start, lat_end, count for each grid
     """
 
     schema = vega.load_schema("map_heatmap.vg.json")

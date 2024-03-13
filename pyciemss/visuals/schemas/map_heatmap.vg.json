@@ -192,7 +192,7 @@
     {
       "name": "color",
       "type": "linear",
-      "domain": {"data": "mesh", "field": "__count"},
+      "domain": {"data": "mesh", "field": "count"},
       "range": "heatmap",
       "interpolate": "hcl",
       "zero": true
@@ -202,13 +202,13 @@
     {
       "name": "mesh",
       "values": [
-        {"x_start": 0, "x_end": 50, "y_start": 0, "y_end": 50, "__count": 10},
+        {"lon_start": 0, "lon_end": 50, "lat_start": 0, "lat_end": 50, "count": 10},
         {
-          "x_start": 50,
-          "x_end": 60,
-          "y_start": 50,
-          "y_end": 70,
-          "__count": 3000
+          "lon_start": 50,
+          "lon_end": 60,
+          "lat_start": 50,
+          "lat_end": 70,
+          "count": 3000
         }
       ]
     },
@@ -234,18 +234,18 @@
       "from": {"data": "mesh"},
       "encode": {
         "update": {
-          "fill": {"scale": "color", "field": "__count"},
+          "fill": {"scale": "color", "field": "count"},
           "x2": {
-            "signal": "scale('projection_updated', [datum.x_start, datum.y_start])[0]"
+            "signal": "scale('projection_updated', [datum.lon_start, datum.lat_start])[0]"
           },
           "x": {
-            "signal": "scale('projection_updated', [datum.x_end, datum.y_end])[0]"
+            "signal": "scale('projection_updated', [datum.lon_end, datum.lat_end])[0]"
           },
           "y2": {
-            "signal": "scale('projection_updated', [datum.x_start, datum.y_start])[1]"
+            "signal": "scale('projection_updated', [datum.lon_start, datum.lat_start])[1]"
           },
           "y": {
-            "signal": "scale('projection_updated', [datum.x_end, datum.y_end])[1]"
+            "signal": "scale('projection_updated', [datum.lon_end, datum.lat_end])[1]"
           }
         }
       }
