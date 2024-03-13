@@ -171,6 +171,74 @@ def ensemble_calibrate(
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
 ) -> Dict[str, Any]:
+    """
+    Infer parameters for an ensemble of DynamicalSystem models conditional on data.
+    This uses variational inference with a mean-field variational family to infer the parameters of the model.
+
+    Args:
+    model_paths_or_jsons: List[Union[str, Dict]]
+        - A list of paths to AMR model files or JSONs containing models in AMR form.
+    solution_mappings: List[Callable[[Dict[str, torch.Tensor]], Dict[str, torch.Tensor]]]
+        - A list of functions that map the solution of each model to a common solution space.
+        - Each function takes in a dictionary of the form {state_variable_name: value}
+            and returns a dictionary of the same form.
+    data_path: str
+        - A path to the data file.
+    dirichlet_alpha: Optional[torch.Tensor]
+        - A tensor of shape (num_models,) containing the Dirichlet alpha values for the ensemble.
+            - A higher proportion of alpha values will result in higher weights for the corresponding models.
+            - A larger total alpha values will result in more certain priors.
+            - e.g. torch.tensor([1, 1, 1]) will result in a uniform prior over vectors of length 3 that sum to 1.
+            - e.g. torch.tensor([1, 2, 3]) will result in a prior that is biased towards the third model.
+        - If not provided, we will use a uniform Dirichlet prior.
+    data_mapping: Dict[str, str]
+        - A mapping from column names in the data file to state variable names in the model.
+            - keys: str name of column in dataset
+            - values: str name of state/observable in model
+        - If not provided, we will assume that the column names in the data file match the state variable names.
+        - Note: This mapping must match output of `solution_mappings`.
+    noise_model: str
+        - The noise model to use for the data.
+        - Currently we only support the normal distribution.
+    noise_model_kwargs: Dict[str, Any]
+        - Keyword arguments to pass to the noise model.
+        - Currently we only support the `scale` keyword argument for the normal distribution.
+    solver_method: str
+        - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
+        - If performance is incredibly slow, we suggest using `euler` to debug.
+            If using `euler` results in faster simulation, the issue is likely that the model is stiff.
+    solver_options: Dict[str, Any]
+        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+    start_time: float
+        - The start time of the model. This is used to align the `start_state` from the
+            AMR model with the simulation timepoints.
+        - By default we set the `start_time` to be 0.
+    num_iterations: int
+        - The number of iterations to run the inference algorithm for.
+    lr: float
+        - The learning rate to use for the inference algorithm.
+    verbose: bool
+        - Whether to print out the loss at each iteration.
+    num_particles: int
+        - The number of particles to use for the inference algorithm.
+    deterministic_learnable_parameters: List[str]
+        - A list of parameter names that should be learned deterministically.
+        - By default, all parameters are learned probabilistically.
+    progress_hook: Callable[[int, float], None]
+        - A function that takes in the current iteration and the current loss.
+        - This is called at the beginning of each iteration.
+        - By default, this is a no-op.
+        - This can be used to implement custom progress bars.
+
+    Returns:
+        result: Dict[str, Any]
+            - Dictionary with the following key-value pairs.
+                - inferred_parameters: pyro.nn.PyroModule
+                    - A Pyro module that contains the inferred parameters of the model.
+                    - This can be passed to `ensemble_sample` to sample from the model conditional on the data.
+                - loss: float
+                    - The final loss value of the approximate ELBO loss.
+    """
 
     pyro.clear_param_store()
 
