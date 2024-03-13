@@ -3,6 +3,8 @@ import time
 from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from pyciemss.integration_utils.interface_checks import check_solver
+
 import numpy as np
 import pyro
 import torch
@@ -100,6 +102,8 @@ def ensemble_sample(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
+    check_solver(solver_method, solver_options)
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -254,6 +258,8 @@ def sample(
                     - qoi: Samples of quantity of interest (value of the state at the final timepoint)
                 - schema: Visualization. (If visual_options is truthy)
     """
+
+    check_solver(solver_method, solver_options)
 
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
@@ -469,6 +475,8 @@ def calibrate(
                     - The final loss value of the approximate ELBO loss.
     """
 
+    check_solver(solver_method, solver_options)
+
     pyro.clear_param_store()
 
     model = CompiledDynamics.load(model_path_or_json)
@@ -657,6 +665,8 @@ def optimize(
                 - OptResults: scipy OptimizeResult object
                     - Optimization results as scipy object.
     """
+    check_solver(solver_method, solver_options)
+
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
         bounds_np = np.atleast_2d(bounds_interventions)
