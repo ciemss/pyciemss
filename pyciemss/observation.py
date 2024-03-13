@@ -34,7 +34,6 @@ class StateIndependentNoiseModel(NoiseModel):
         raise NotImplementedError
 
     def forward(self, state: Dict[str, torch.Tensor]) -> None:
-
         if self.observables is not None:
             for k, v in self.observables(state).items():
                 state[k] = v

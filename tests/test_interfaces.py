@@ -227,7 +227,6 @@ def test_sample_with_multiple_parameter_interventions(
     logging_step_size,
     num_samples,
 ):
-
     model_url = model_fixture.url
     model = CompiledDynamics.load(model_url)
 
