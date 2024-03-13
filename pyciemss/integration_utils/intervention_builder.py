@@ -15,7 +15,7 @@ def param_value_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        static_parameter_interventions = {}
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(len(param_name)):
             if param_value[count] is None:
                 if not callable(param_value[count]):
@@ -43,7 +43,7 @@ def start_time_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        static_parameter_interventions = {}
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(len(param_name)):
             if x[count].item() in static_parameter_interventions:
                 static_parameter_interventions[x[count].item()].update(
