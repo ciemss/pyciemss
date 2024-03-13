@@ -236,7 +236,7 @@ class TestTrajectory:
         )
 
         shown_traces = pd.DataFrame(vega.find_named(schema["data"], "traces")["values"])
-        plots.save_schema(schema, "test_traces_schema.vg.json")
+        plots.save_schema(schema, "_schema.vg.json")
 
         assert sorted(traces.columns.unique()) == sorted(
             shown_traces["trajectory"].unique()
