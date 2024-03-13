@@ -541,6 +541,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
+        "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -656,14 +657,24 @@ def test_bad_euler_solver_sample(model_fixture, sample_method):
         )
 
 
-@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
 def test_bad_euler_solver_optimize(model_fixture):
     # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
     with pytest.raises(ValueError):
+        logging_step_size = 1.0
+        model_url = model_fixture.url
+        optimize_kwargs = {
+            **model_fixture.optimize_kwargs,
+            "solver_method": "euler",
+            "start_time": 1.0,
+            "n_samples_ouu": int(2),
+            "maxiter": 1,
+            "maxfeval": 2,
+            "solver_options": {},
+        }
         optimize(
-            model_fixture.url,
-            1,
-            1,
-            solver_method="euler",
-            solver_options={},
+            model_url,
+            2.0,
+            logging_step_size,
+            **optimize_kwargs,
         )
