@@ -6,7 +6,13 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
+from pyciemss.interfaces import (
+    calibrate,
+    ensemble_calibrate,
+    ensemble_sample,
+    optimize,
+    sample,
+)
 
 from .fixtures import (
     BAD_MODELS,
@@ -35,6 +41,15 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
+def dummy_ensemble_calibrate(model_path_or_json, *args, **kwargs):
+    model_paths_or_jsons = [model_path_or_json, model_path_or_json]
+    solution_mappings = [
+        lambda x: x,
+        lambda x: {k: v / 2 for k, v in x.items()},
+    ]
+    return ensemble_calibrate(model_paths_or_jsons, solution_mappings, *args, **kwargs)
+
+
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
     if model_fixture.data_path is None:
         pytest.skip("TODO: create temporary file")
@@ -56,6 +71,7 @@ def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
 
 
 SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+CALIBRATE_METHODS = [calibrate, dummy_ensemble_calibrate]
 INTERVENTION_TYPES = ["static", "dynamic"]
 INTERVENTION_TARGETS = ["state", "parameter"]
 
@@ -292,11 +308,14 @@ def test_sample_with_multiple_parameter_interventions(
     )
 
 
+@pytest.mark.parametrize("calibrate_method", CALIBRATE_METHODS)
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_size):
+def test_calibrate_no_kwargs(
+    calibrate_method, model_fixture, start_time, end_time, logging_step_size
+):
     model_url = model_fixture.url
     _, _, sample_args, sample_kwargs = setup_calibrate(
         model_fixture, start_time, end_time, logging_step_size
@@ -311,7 +330,7 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+        inferred_parameters = calibrate_method(*calibrate_args, **calibrate_kwargs)[
             "inferred_parameters"
         ]
 
@@ -542,6 +561,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
+        "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -569,6 +589,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
             "static_parameter_interventions"
         ](opt_result["policy"]),
         solver_method=optimize_kwargs["solver_method"],
+        solver_options=optimize_kwargs["solver_options"],
     )["unprocessed_result"]
 
     intervened_result_subset = {
@@ -637,4 +658,56 @@ def test_calibrate_error_no_uncertainty(model_fixture, num_iterations):
             model_fixture.data_path,
             data_mapping=model_fixture.data_mapping,
             num_iterations=num_iterations,
+        )
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+def test_bad_euler_solver_calibrate(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            solver_method="euler",
+            solver_options={},
+        )
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+def test_bad_euler_solver_sample(model_fixture, sample_method):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        sample_method(
+            model_fixture.url,
+            1,
+            1,
+            1,
+            solver_method="euler",
+            solver_options={},
+        )
+
+
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
+def test_bad_euler_solver_optimize(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        logging_step_size = 1.0
+        model_url = model_fixture.url
+        optimize_kwargs = {
+            **model_fixture.optimize_kwargs,
+            "solver_method": "euler",
+            "start_time": 1.0,
+            "n_samples_ouu": int(2),
+            "maxiter": 1,
+            "maxfeval": 2,
+            "solver_options": {},
+        }
+        optimize(
+            model_url,
+            2.0,
+            logging_step_size,
+            **optimize_kwargs,
         )
