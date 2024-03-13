@@ -1,4 +1,5 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def check_solver(solver_method: str, solver_options: Dict[str, Any]) -> None:
     """
@@ -13,5 +14,7 @@ def check_solver(solver_method: str, solver_options: Dict[str, Any]) -> None:
     """
     if solver_method == "euler":
         if "step_size" not in solver_options:
-            raise ValueError("The 'step_size' option is required for the 'euler' solver method."
-                             "Please provide a value for 'step_size' in the 'solver_options' dictionary.")
+            raise ValueError(
+                "The 'step_size' option is required for the 'euler' solver method."
+                "Please provide a value for 'step_size' in the 'solver_options' dictionary."
+            )

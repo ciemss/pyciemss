@@ -625,6 +625,7 @@ def test_load_data(bad_data, data_mapping):
             data_mapping,
         )
 
+
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_bad_euler_solver_calibrate(model_fixture):
     # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
@@ -639,6 +640,7 @@ def test_bad_euler_solver_calibrate(model_fixture):
             solver_options={},
         )
 
+
 @pytest.mark.parametrize("model_fixture", MODELS)
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 def test_bad_euler_solver_sample(model_fixture, sample_method):
@@ -652,6 +654,7 @@ def test_bad_euler_solver_sample(model_fixture, sample_method):
             solver_method="euler",
             solver_options={},
         )
+
 
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_bad_euler_solver_optimize(model_fixture):

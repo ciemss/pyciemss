@@ -3,8 +3,6 @@ import time
 from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pyciemss.integration_utils.interface_checks import check_solver
-
 import numpy as np
 import pyro
 import torch
@@ -20,6 +18,7 @@ from chirho.observational.handlers import condition
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.integration_utils.interface_checks import check_solver
 from pyciemss.integration_utils.observation import compile_noise_model, load_data
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 from pyciemss.interruptions import (
