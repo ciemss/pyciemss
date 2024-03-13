@@ -660,6 +660,7 @@ def test_calibrate_error_no_uncertainty(model_fixture, num_iterations):
             num_iterations=num_iterations,
         )
 
+
 @pytest.mark.parametrize("model_fixture", MODELS)
 def test_bad_euler_solver_calibrate(model_fixture):
     # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method

@@ -15,7 +15,6 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from chirho.observational.ops import observe
-
 from mira.sources.amr import model_from_json_file, model_from_url
 
 from pyciemss.compiled_dynamics import CompiledDynamics

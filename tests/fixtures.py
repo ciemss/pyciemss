@@ -176,8 +176,7 @@ MAPPING_FOR_DATA_TESTS = {"case": "I", "hosp": "H"}
 
 BAD_MODELS = [
     ModelFixture(
-        "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/sabinala-patch-2/data/models/SEIR_stockflow_no_uncertainty",
-        # os.path.join(MODEL_PATH, "SEIR_stockflow_no_uncertainty"),
+        os.path.join(MODELS_PATH, "SEIR_stockflow_no_uncertainty"),
         "p_cbeta",
         os.path.join(DATA_PATH, "traditional.csv"),
         {"Infected": "I"},
