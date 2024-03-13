@@ -1,4 +1,6 @@
 import json
+import os
+import shutil
 from pathlib import Path
 from typing import Any, Dict, Literal, Optional
 
@@ -29,9 +31,6 @@ __all__ = [
     "map_heatmap",
 ]
 
-_output_schema = Path(__file__).parent / "modified_schema"
-_output_html = Path(__file__).parent / "html"
-
 
 def save_schema(schema: Dict[str, Any], path: Path):
     """Save the schema using common convention"""
@@ -41,7 +40,7 @@ def save_schema(schema: Dict[str, Any], path: Path):
 
 def check_geoscale(schema):
     geoscale = False
-    if "signals'" in schema.keys():
+    if "signals" in schema.keys():
         for i in range(len(schema["signals"])):
             signal = schema["signals"][i]
             if "on" in signal.keys():
@@ -56,6 +55,7 @@ def ipy_display(
     format: Literal["png", "svg", "PNG", "SVG", "interactive", "INTERACTIVE"] = "png",
     force_clear: bool = False,
     dpi: Optional[int] = None,
+    output_root: Optional[str | os.PathLike] = None,
     **kwargs,
 ):
     """Wrap for dispaly in an ipython notebook.
@@ -88,11 +88,22 @@ def ipy_display(
         IPython.display.clear_output(wait=True)
 
     if check_geoscale(schema):
-        schema_path = _output_schema / "modified_map_heatmap.json"
-        html_location = _output_html / "visualize_map.html"
-        save_schema(schema, schema_path)
+        if output_root is None:
+            raise ValueError(
+                "Must supply an writeable output directory when visualizing this type of schema"
+            )
+
+        output_schema = output_root / "modified_map_heatmap.json"
+        output_html = output_root / "visualize_map.html"
+        input_html = Path(__file__).parent / "html" / "visualize_map.html"
+
+        if not output_root.exists():
+            output_root.mkdir(parents=True)
+
+        shutil.copy(input_html, output_html)
+        save_schema(schema, output_schema)
         print(
-            f"Schema includes 'geoscale' which can't be interactively rendered. Open html file at {html_location}"
+            f"Schema includes 'geoscale' which can't be interactively rendered. View at {output_html}"
         )
     elif format in ["interactive", "INTERACTIVE"]:
         bundle = {"application/vnd.vega.v5+json": schema}

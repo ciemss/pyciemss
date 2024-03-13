@@ -1,6 +1,5 @@
 import random
 from itertools import chain
-from pathlib import Path
 
 import networkx as nx
 import numpy as np
@@ -10,8 +9,6 @@ import pytest
 import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
 from pyciemss.visuals import plots, vega
-
-_output_root = Path(__file__).parent / "modified_schemas"
 
 
 def by_key_value(targets, key, value):
