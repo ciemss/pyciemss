@@ -624,3 +624,43 @@ def test_load_data(bad_data, data_mapping):
             bad_data,
             data_mapping,
         )
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+def test_bad_euler_solver_calibrate(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            solver_method="euler",
+            solver_options={},
+        )
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+def test_bad_euler_solver_sample(model_fixture, sample_method):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        sample_method(
+            model_fixture.url,
+            1,
+            1,
+            1,
+            solver_method="euler",
+            solver_options={},
+        )
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+def test_bad_euler_solver_optimize(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        optimize(
+            model_fixture.url,
+            1,
+            1,
+            solver_method="euler",
+            solver_options={},
+        )
