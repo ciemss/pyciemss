@@ -127,7 +127,8 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
-    base_markers: Optional[Dict[str, Number]] = None,
+    base_markers_v: Optional[Dict[str, Number]] = None,
+    base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict] = None,
     qlow: float = 0.05,
@@ -147,7 +148,8 @@ def trajectories(
            These will be plotted as spans based on the qlow/qhigh parameters
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
-        markers (None, list[Number]): Timepoint markers. Key is the label, value is the timepoint
+        base_markers (None, Dict[str, Number]): Timepoint markers. Key is the label, value is the timepoint
+        base_markers_h (None, Dict[str, Number]): Horizontal markers. Key is the label, value is the horizonal value
         keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
            - Default is the string "all", and it keeps all columns
            - If a any other string is present, it is treated as a regex and matched against the columns.
@@ -227,10 +229,15 @@ def trajectories(
     else:
         points = []
 
-    if base_markers is not None:
-        markers = [{"timepoint": v, "label": k} for k, v in base_markers.items()]
+    if base_markers_v is not None:
+        markers_v = [{"axis_value": v, "label": k} for k, v in base_markers_v.items()]
     else:
-        markers = []
+        markers_v = []
+
+    if base_markers_h is not None:
+        markers_h = [{"axis_value": v, "label": k} for k, v in base_markers_h.items()]
+    else:
+        markers_h = []
 
     schema = vega.load_schema("trajectories.vg.json")
     schema["data"] = vega.replace_named_with(
@@ -244,7 +251,10 @@ def trajectories(
         schema["data"], "traces", ["values"], _clean_nans(traces)
     )
     schema["data"] = vega.replace_named_with(
-        schema["data"], "markers", ["values"], _clean_nans(markers)
+        schema["data"], "markers_v", ["values"], _clean_nans(markers_v)
+    )
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "markers_h", ["values"], _clean_nans(markers_h)
     )
 
     if colors is not None:

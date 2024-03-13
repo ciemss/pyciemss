@@ -12,8 +12,7 @@
         "fields": [
           {"data": "distributions", "field": "timepoint"},
           {"data": "traces", "field": "timepoint"},
-          {"data": "points", "field": "timepoint"},
-          {"data": "markers", "field": "timepoint"}
+          {"data": "points", "field": "timepoint"}
          ]
       }
     },
@@ -297,16 +296,16 @@
     },
     {
       "type": "group",
-      "name": "_markers",
+      "name": "_markers_v",
       "marks": [
         {
           "type": "rule",
-          "name": "_marker text",
-          "from": {"data": "markers"},
+          "name": "_marker_v text",
+          "from": {"data": "markers_v"},
           "encode": {
             "enter": {"stroke": {"value": "lightgray"}},
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
+              "x": {"scale": "xscale", "field": "axis_value"},
               "y2": {"value": 0},
               "y": {"signal": "height"},
               "opacity": {"value": 1}
@@ -315,8 +314,8 @@
         },
         {
           "type": "text",
-          "name": "_marker flags",
-          "from": {"data": "_marker text"},
+          "name": "_marker_v flags",
+          "from": {"data": "_marker_v text"},
           "encode": {
             "enter": {
               "text": {"field": "datum.label"},
@@ -334,7 +333,48 @@
             }
           ]
         }
-      ]}
+      ]},
+      {
+        "type": "group",
+        "name": "_markers_h",
+        "marks": [
+          {
+            "type": "rule",
+            "name": "_marker_h text",
+            "from": {"data": "markers_h"},
+            "encode": {
+              "enter": {"stroke": {"value": "lightgray"}},
+              "update": {
+                "y": {"scale": "yscale", "field": "axis_value"},
+                "x2": {"value": 0},
+                "x": {"signal": "width"},
+                "opacity": {"value": 1}
+              }
+            }
+          },
+          {
+            "type": "text",
+            "name": "_marker_h flags",
+            "from": {"data": "_marker_h text"},
+            "encode": {
+              "enter": {
+                "text": {"field": "datum.label"},
+                "x": {"signal": "width+20"},
+                "fontSize": {"value": 8}
+              }
+            },
+            "transform": [
+              {
+                "type": "label",
+                "lineAnchor": "start",
+                "as": ["_x", "y", "opacity", "align", "baseline"],
+                "offset": [1],
+                "size": {"signal": "[width, height]"}
+              }
+            ]
+          }
+        ]}
+
   ],
 
   "data": [
@@ -377,9 +417,14 @@
                  {"timepoint": 6, "value": 15, "trajectory": "e"}]
     },
     {
-      "name": "markers",
-      "values": [{"timepoint": 3, "label": "Low marker"},
-                 {"timepoint": 7, "label": "High marker"}]
+      "name": "markers_v",
+      "values": [{"axis_value": 3, "label": "Low marker"},
+                 {"axis_value": 7, "label": "High marker"}]
+    },
+    {
+      "name": "markers_h",
+      "values": [{"axis_value": 10, "label": "Low marker"},
+                 {"axis_value": 37, "label": "High marker"}]
     },
     {
       "name": "selected",
