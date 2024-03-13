@@ -569,6 +569,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
             "static_parameter_interventions"
         ](opt_result["policy"]),
         solver_method=optimize_kwargs["solver_method"],
+        solver_options=optimize_kwargs["solver_options"],
     )["unprocessed_result"]
 
     intervened_result_subset = {
