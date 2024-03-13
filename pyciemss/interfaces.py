@@ -19,6 +19,7 @@ from chirho.observational.ops import observe
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
+from pyciemss.integration_utils.interface_checks import check_solver
 from pyciemss.integration_utils.observation import compile_noise_model, load_data
 from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
 from pyciemss.interruptions import (
@@ -101,6 +102,8 @@ def ensemble_sample(
                 - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
     """
+    check_solver(solver_method, solver_options)
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -423,6 +426,8 @@ def sample(
                 - schema: Visualization. (If visual_options is truthy)
     """
 
+    check_solver(solver_method, solver_options)
+
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
 
@@ -637,6 +642,8 @@ def calibrate(
                     - The final loss value of the approximate ELBO loss.
     """
 
+    check_solver(solver_method, solver_options)
+
     pyro.clear_param_store()
 
     model = CompiledDynamics.load(model_path_or_json)
@@ -825,6 +832,8 @@ def optimize(
                 - OptResults: scipy OptimizeResult object
                     - Optimization results as scipy object.
     """
+    check_solver(solver_method, solver_options)
+
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
         bounds_np = np.atleast_2d(bounds_interventions)

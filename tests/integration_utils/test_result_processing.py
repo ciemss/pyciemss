@@ -85,6 +85,7 @@ def test_set_intervention_values(logging_step_size):
         num_samples=num_samples,
         start_time=0.0,
         solver_method="euler",
+        solver_options={"step_size": 0.1},
         time_unit="nominal",
     )
 

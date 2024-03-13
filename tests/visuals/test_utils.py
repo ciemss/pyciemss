@@ -25,6 +25,7 @@ def distributions():
         num_samples,
         start_time=start_time,
         solver_method="euler",
+        solver_options={"step_size": 0.1},
     )["unprocessed_result"]
 
     for e in sample.values():
