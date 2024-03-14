@@ -42,6 +42,7 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
         time_unit=time_unit,
         start_time=start_time,
         solver_method="euler",
+        solver_options={"step_size": logging_step_size}
     )["unprocessed_result"]
 
     return convert_to_output_format(
