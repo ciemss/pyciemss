@@ -513,7 +513,8 @@ def sample(
         for k, vals in samples.items():
             if "_state" in k:
                 # qoi is assumed to be the last day of simulation
-                qoi_sample = vals.detach().numpy()[:, -1]
+                # qoi_sample = torch.squeeze(vals).detach().numpy()[:, -1]
+                qoi_sample = torch.squeeze(vals).detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
@@ -762,7 +763,7 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    n_samples_ouu: int = int(1e2),
+    n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
     verbose: bool = False,
@@ -901,7 +902,7 @@ def optimize(
         # Updating the objective function to penalize out of bounds interventions
         def objfun_penalty(x):
             if np.any(x - u_min < 0) or np.any(u_max - x < 0):
-                return objfun(x) + max(2 * np.abs(objfun(x)), 5.0)
+                return objfun(x) + max(5 * np.abs(objfun(x)), 5.0)
             else:
                 return objfun(x)
 
