@@ -897,13 +897,18 @@ def optimize(
             print(
                 f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
             )
+
         # Updating the objective function to penalize out of bounds interventions
-        penalty_func = lambda x: max(2*np.abs(objfun(x)), 5.) if np.any(x-u_min < 0) or np.any(u_max-x < 0) else 0.
-        obj_fun_penalty = lambda x: objfun(x) + penalty_func(x)
+        def objfun_penalty(x):
+            if np.any(x - u_min < 0) or np.any(u_max - x < 0):
+                return objfun(x) + max(2 * np.abs(objfun(x)), 5.0)
+            else:
+                return objfun(x)
+
         start_time = time.time()
         opt_results = solveOUU(
             x0=initial_guess_interventions,
-            objfun=obj_fun_penalty,
+            objfun=objfun_penalty,
             constraints=constraints,
             maxiter=maxiter,
             maxfeval=maxfeval,

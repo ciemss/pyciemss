@@ -1,6 +1,6 @@
 import contextlib
-from typing import Any, Callable, Dict, List, Tuple
 import warnings
+from typing import Any, Callable, Dict, List, Tuple
 
 import numpy as np
 import pyro
