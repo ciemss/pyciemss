@@ -85,7 +85,6 @@ class TestTrajectory:
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         assert {"trajectory", "timepoint", "lower", "upper"} == set(df.columns)
 
-
     @pytest.mark.parametrize("logging_step_size", [5, 1])
     @pytest.mark.parametrize("time_unit", ["five", None])
     @pytest.mark.parametrize("end_time", [80, 100])
@@ -115,7 +114,6 @@ class TestTrajectory:
         plots.save_schema(schema, "test_markers_schema.vg.json")
         df = pd.DataFrame(vega.find_named(schema["data"], "markers_h")["values"])
         assert {"axis_value", "label"} == set(df.columns)
-
 
     def test_rename(self, distributions):
         nice_labels = make_nice_labels(distributions.columns)
