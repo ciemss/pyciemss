@@ -2,4 +2,5 @@
 
 INCLUDED_NOTEBOOKS="docs/source/*.ipynb"
 
-CI=1 pytest --nbval-lax --dist loadscope -n auto $INCLUDED_NOTEBOOKS
+jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace --to notebook $INCLUDED_NOTEBOOKS
+CI=1 pytest --nbval-lax $INCLUDED_NOTEBOOKS

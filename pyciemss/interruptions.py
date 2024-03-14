@@ -1,6 +1,7 @@
 from types import MethodType
 from typing import Callable, Dict, Tuple
 
+import pyro
 import torch
 from chirho.dynamical.handlers.interruption import StaticEvent, ZeroEvent
 from chirho.dynamical.ops import State, on
@@ -8,7 +9,7 @@ from chirho.interventional.ops import Intervention, intervene
 
 
 def StaticParameterIntervention(
-    time: torch.Tensor, intervention: Dict[str, Intervention]
+    time: torch.Tensor, intervention: Dict[str, Intervention], is_traced: bool = False
 ):
     """
     This effect handler interrupts a simulation at a specified time, and applies an intervention to the parameter
@@ -33,12 +34,13 @@ def StaticParameterIntervention(
         This includes parameter dependent interventions specified by a function, such as
         `lambda parameter: parameter + 1.0`.
     """
-    return _ParameterIntervention(StaticEvent(time), intervention)
+    return _ParameterIntervention(StaticEvent(time), intervention, is_traced)
 
 
 def DynamicParameterIntervention(
     event_fn: Callable[[torch.Tensor, State[torch.Tensor]], torch.Tensor],
     intervention: Dict[str, Intervention],
+    is_traced: bool = False,
 ):
     """
     This effect handler interrupts a simulation `event_fn` crosses 0, and applies an intervention to the parameter
@@ -68,10 +70,12 @@ def DynamicParameterIntervention(
         `lambda parameter: parameter + 1.0`.
     """
 
-    return _ParameterIntervention(ZeroEvent(event_fn), intervention)
+    return _ParameterIntervention(ZeroEvent(event_fn), intervention, is_traced)
 
 
-def _ParameterIntervention(event: ZeroEvent, intervention: Dict[str, Intervention]):
+def _ParameterIntervention(
+    event: ZeroEvent, intervention: Dict[str, Intervention], is_traced: bool = False
+):
     @on(event)
     def callback(
         dynamics: MethodType, state: State[torch.Tensor]
@@ -81,6 +85,31 @@ def _ParameterIntervention(event: ZeroEvent, intervention: Dict[str, Interventio
             old_parameter = getattr(dynamics_obj, parameter_name)
             new_parameter = intervene(old_parameter, intervention_assignment)
             setattr(dynamics_obj, parameter_name, new_parameter)
+            if is_traced:
+                pyro.deterministic(
+                    f"parameter_intervention_value_{parameter_name}", new_parameter
+                )
         return dynamics, state
 
     return callback
+
+
+class ParameterInterventionTracer(pyro.poutine.messenger.Messenger):
+    def __init__(self):
+        super().__init__()
+        self.in_parameter_intervention = False
+        self.parameter_intervention_id = 0
+
+    def _pyro_sample(self, msg):
+        if msg["name"].startswith("parameter_intervention_value"):
+            self.in_parameter_intervention = True
+            msg["name"] = f"{msg['name']}_{self.parameter_intervention_id}"
+
+    def _pyro_post_simulate_to_interruption(self, msg):
+        if self.in_parameter_intervention:
+            pyro.deterministic(
+                f"parameter_intervention_time_{self.parameter_intervention_id}",
+                msg["args"][3],
+            )
+            self.parameter_intervention_id += 1
+            self.in_parameter_intervention = False

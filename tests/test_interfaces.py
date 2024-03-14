@@ -6,11 +6,19 @@ import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.integration_utils.observation import load_data
-from pyciemss.interfaces import calibrate, ensemble_sample, optimize, sample
+from pyciemss.interfaces import (
+    calibrate,
+    ensemble_calibrate,
+    ensemble_sample,
+    optimize,
+    sample,
+)
 
 from .fixtures import (
+    BADLY_FORMATTED_DATAFRAMES,
     END_TIMES,
     LOGGING_STEP_SIZES,
+    MAPPING_FOR_DATA_TESTS,
     MODEL_URLS,
     MODELS,
     NON_POS_INTS,
@@ -32,8 +40,17 @@ def dummy_ensemble_sample(model_path_or_json, *args, **kwargs):
     return ensemble_sample(model_paths_or_jsons, solution_mappings, *args, **kwargs)
 
 
+def dummy_ensemble_calibrate(model_path_or_json, *args, **kwargs):
+    model_paths_or_jsons = [model_path_or_json, model_path_or_json]
+    solution_mappings = [
+        lambda x: x,
+        lambda x: {k: v / 2 for k, v in x.items()},
+    ]
+    return ensemble_calibrate(model_paths_or_jsons, solution_mappings, *args, **kwargs)
+
+
 def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
-    if model_fixture.data_path is None or model_fixture.data_mapped_to_observable:
+    if model_fixture.data_path is None:
         pytest.skip("TODO: create temporary file")
 
     data_timepoints = load_data(model_fixture.data_path)[0]
@@ -53,6 +70,7 @@ def setup_calibrate(model_fixture, start_time, end_time, logging_step_size):
 
 
 SAMPLE_METHODS = [sample, dummy_ensemble_sample]
+CALIBRATE_METHODS = [calibrate, dummy_ensemble_calibrate]
 INTERVENTION_TYPES = ["static", "dynamic"]
 INTERVENTION_TARGETS = ["state", "parameter"]
 
@@ -200,7 +218,13 @@ def test_sample_with_interventions(
     with pyro.poutine.seed(rng_seed=0):
         result = sample(*model_args, **model_kwargs)["unprocessed_result"]
 
-    check_states_match_in_all_but_values(result, intervened_result)
+    intervened_result_subset = {
+        k: v
+        for k, v in intervened_result.items()
+        if not k.startswith("parameter_intervention_")
+    }
+    check_states_match_in_all_but_values(result, intervened_result_subset)
+
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
     check_result_sizes(
         intervened_result, start_time, end_time, logging_step_size, num_samples
@@ -211,7 +235,86 @@ def test_sample_with_interventions(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
-def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_size):
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_sample_with_multiple_parameter_interventions(
+    model_fixture,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+):
+
+    model_url = model_fixture.url
+    model = CompiledDynamics.load(model_url)
+
+    important_parameter_name = model_fixture.important_parameter
+    important_parameter = getattr(model, important_parameter_name)
+
+    intervention_effect = 1.1
+    intervention_time_0 = (end_time + start_time) / 4  # Quarter of the way through
+    intervention_time_1 = (end_time + start_time) / 2  # Half way through
+
+    intervention_0 = {
+        important_parameter_name: important_parameter.detach() * intervention_effect
+    }
+
+    intervention_1 = {
+        important_parameter_name: important_parameter.detach() / intervention_effect
+    }
+
+    model_args = [model_url, end_time, logging_step_size, num_samples]
+    model_kwargs = {"start_time": start_time}
+
+    with pyro.poutine.seed(rng_seed=0):
+        intervened_result = sample(
+            *model_args,
+            **model_kwargs,
+            static_parameter_interventions={
+                intervention_time_0: intervention_0,
+                intervention_time_1: intervention_1,
+            },
+        )["unprocessed_result"]
+
+    assert "parameter_intervention_time_0" in intervened_result.keys()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_0"],
+            torch.as_tensor(intervention_time_0),
+        )
+        .all()
+        .item()
+    )
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_0"
+        in intervened_result.keys()
+    )
+    assert "parameter_intervention_time_1" in intervened_result.keys()
+    assert (
+        torch.isclose(
+            intervened_result["parameter_intervention_time_1"],
+            torch.as_tensor(intervention_time_1),
+        )
+        .all()
+        .item()
+    )
+    assert (
+        f"parameter_intervention_value_{important_parameter_name}_1"
+        in intervened_result.keys()
+    )
+
+    check_result_sizes(
+        intervened_result, start_time, end_time, logging_step_size, num_samples
+    )
+
+
+@pytest.mark.parametrize("calibrate_method", CALIBRATE_METHODS)
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+def test_calibrate_no_kwargs(
+    calibrate_method, model_fixture, start_time, end_time, logging_step_size
+):
     model_url = model_fixture.url
     _, _, sample_args, sample_kwargs = setup_calibrate(
         model_fixture, start_time, end_time, logging_step_size
@@ -226,7 +329,7 @@ def test_calibrate_no_kwargs(model_fixture, start_time, end_time, logging_step_s
     }
 
     with pyro.poutine.seed(rng_seed=0):
-        inferred_parameters = calibrate(*calibrate_args, **calibrate_kwargs)[
+        inferred_parameters = calibrate_method(*calibrate_args, **calibrate_kwargs)[
             "inferred_parameters"
         ]
 
@@ -457,6 +560,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
+        "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -474,24 +578,29 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
 
-    intervention_time = list(optimize_kwargs["static_parameter_interventions"].keys())
-    intervened_params = optimize_kwargs["static_parameter_interventions"][
-        intervention_time[0]
-    ]
     result_opt = sample(
         model_url,
         end_time,
         logging_step_size,
         num_samples,
         start_time=start_time,
-        static_parameter_interventions={
-            intervention_time[0]: {intervened_params: opt_policy}
-        },
+        static_parameter_interventions=optimize_kwargs[
+            "static_parameter_interventions"
+        ](opt_result["policy"]),
         solver_method=optimize_kwargs["solver_method"],
+        solver_options=optimize_kwargs["solver_options"],
     )["unprocessed_result"]
 
-    assert isinstance(result_opt, dict)
-    check_result_sizes(result_opt, start_time, end_time, logging_step_size, num_samples)
+    intervened_result_subset = {
+        k: v
+        for k, v in result_opt.items()
+        if not k.startswith("parameter_intervention_")
+    }
+
+    assert isinstance(intervened_result_subset, dict)
+    check_result_sizes(
+        intervened_result_subset, start_time, end_time, logging_step_size, num_samples
+    )
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
@@ -524,4 +633,68 @@ def test_non_pos_int_sample(
             end_time,
             logging_step_size,
             num_samples=bad_num_samples,
+        )
+
+
+@pytest.mark.parametrize("bad_data", BADLY_FORMATTED_DATAFRAMES)
+@pytest.mark.parametrize("data_mapping", MAPPING_FOR_DATA_TESTS)
+def test_load_data(bad_data, data_mapping):
+    # Assert that a ValueError is raised for improperly formatted data
+    with pytest.raises(ValueError):
+        load_data(
+            bad_data,
+            data_mapping,
+        )
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+def test_bad_euler_solver_calibrate(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    if model_fixture.data_path is None or model_fixture.data_mapping is None:
+        pytest.skip("Skip models with no data attached")
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
+            solver_method="euler",
+            solver_options={},
+        )
+
+
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+def test_bad_euler_solver_sample(model_fixture, sample_method):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        sample_method(
+            model_fixture.url,
+            1,
+            1,
+            1,
+            solver_method="euler",
+            solver_options={},
+        )
+
+
+@pytest.mark.parametrize("model_fixture", OPT_MODELS)
+def test_bad_euler_solver_optimize(model_fixture):
+    # Assert that a ValueError is raised when the 'step_size' option is not provided for the 'euler' solver method
+    with pytest.raises(ValueError):
+        logging_step_size = 1.0
+        model_url = model_fixture.url
+        optimize_kwargs = {
+            **model_fixture.optimize_kwargs,
+            "solver_method": "euler",
+            "start_time": 1.0,
+            "n_samples_ouu": int(2),
+            "maxiter": 1,
+            "maxfeval": 2,
+            "solver_options": {},
+        }
+        optimize(
+            model_url,
+            2.0,
+            logging_step_size,
+            **optimize_kwargs,
         )

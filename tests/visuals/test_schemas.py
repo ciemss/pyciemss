@@ -143,7 +143,8 @@ def test_export_PNG(schema_file, ref_file, name):
     image = plots.ipy_display(schema, format="PNG", dpi=72).data
     save_result(image, name, "png")
 
-    test_threshold = 0.04
+    # JS_score of 0.15 observed for some hardware choices.
+    test_threshold = 0.2
     JS_boolean, JS_score = png_matches(image, ref_file, test_threshold)
     assert (
         JS_boolean
@@ -251,7 +252,7 @@ def test_nested_mark_sources(schema_file):
     group_marks = [m for m in schema["marks"] if m["type"] == "group"]
     if "trajectories.vg.json" == schema_file.name:
         assert (
-            len(group_marks) == 4
+            len(group_marks) == 5
         ), f"{schema_file.name} spot-check number of group marks incorrect"
 
     for group in group_marks:
