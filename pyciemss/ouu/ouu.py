@@ -1,5 +1,6 @@
 import contextlib
 from typing import Any, Callable, Dict, List, Tuple
+import warnings
 
 import numpy as np
 import pyro
@@ -55,6 +56,8 @@ class computeRisk:
         guide=None,
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
+        u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
+        risk_bound: float = 200.0,
     ):
         self.model = model
         self.interventions = interventions
@@ -70,14 +73,25 @@ class computeRisk:
         self.logging_times = torch.arange(
             start_time + logging_step_size, end_time, logging_step_size
         )
+        self.u_bounds = u_bounds
+        self.risk_bound = risk_bound  # used for defining penalty
 
     def __call__(self, x):
-        # Apply intervention and perform forward uncertainty propagation
-        samples = self.propagate_uncertainty(x)
-        # Compute quanity of interest
-        sample_qoi = self.qoi(samples)
-        # Estimate risk
-        return self.risk_measure(sample_qoi)
+        if np.any(x - self.u_bounds[0, :] < 0) or np.any(self.u_bounds[1, :] - x < 0):
+            warnings.warn(
+                "Selected interventions are out of bounds. Will use a penalty instead of estimating risk."
+            )
+            risk_estimate = max(
+                2 * self.risk_bound, 10.0
+            )  # used as a penalty and the model is not run
+        else:
+            # Apply intervention and perform forward uncertainty propagation
+            samples = self.propagate_uncertainty(x)
+            # Compute quanity of interest
+            sample_qoi = self.qoi(samples)
+            # Estimate risk
+            risk_estimate = self.risk_measure(sample_qoi)
+        return risk_estimate
 
     def propagate_uncertainty(self, x):
         """

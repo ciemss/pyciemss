@@ -513,7 +513,7 @@ def sample(
         for k, vals in samples.items():
             if "_state" in k:
                 # qoi is assumed to be the last day of simulation
-                qoi_sample = vals[:, -1]
+                qoi_sample = vals.detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
@@ -852,6 +852,8 @@ def optimize(
             guide=inferred_parameters,
             solver_method=solver_method,
             solver_options=solver_options,
+            u_bounds=bounds_np,
+            risk_bound=risk_bound,
         )
 
         # Run one sample to estimate model evaluation time
@@ -877,6 +879,8 @@ def optimize(
             guide=inferred_parameters,
             solver_method=solver_method,
             solver_options=solver_options,
+            u_bounds=bounds_np,
+            risk_bound=risk_bound,
         )
         # Define constraints >= 0
         constraints = (
@@ -893,10 +897,13 @@ def optimize(
             print(
                 f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
             )
+        # Updating the objective function to penalize out of bounds interventions
+        penalty_func = lambda x: max(2*np.abs(objfun(x)), 5.) if np.any(x-u_min < 0) or np.any(u_max-x < 0) else 0.
+        obj_fun_penalty = lambda x: objfun(x) + penalty_func(x)
         start_time = time.time()
         opt_results = solveOUU(
             x0=initial_guess_interventions,
-            objfun=objfun,
+            objfun=obj_fun_penalty,
             constraints=constraints,
             maxiter=maxiter,
             maxfeval=maxfeval,
