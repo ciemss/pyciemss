@@ -10,10 +10,12 @@ from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
-from pyciemss.interruptions import ParameterInterventionTracer, StaticParameterIntervention
+from pyciemss.interruptions import (
+    ParameterInterventionTracer,
+    StaticParameterIntervention,
+)
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
-import time
 
 class RandomDisplacementBounds:
     """
@@ -101,16 +103,12 @@ class computeRisk:
                 2 * self.risk_bound, 10.0
             )  # used as a penalty and the model is not run
         else:
-            st = time.time()
             # Apply intervention and perform forward uncertainty propagation
             samples = self.propagate_uncertainty(x)
-            print("Model simulation: ", time.time()-st)
-            st = time.time()
             # Compute quanity of interest
             sample_qoi = self.qoi(samples)
             # Estimate risk
             risk_estimate = self.risk_measure(sample_qoi)
-            print("Risk: ", time.time()-st, risk_estimate)
         return risk_estimate
 
     def propagate_uncertainty(self, x):
@@ -122,13 +120,17 @@ class computeRisk:
                 x = np.atleast_1d(x)
                 static_parameter_interventions = self.interventions(torch.from_numpy(x))
                 static_parameter_intervention_handlers = [
-                    StaticParameterIntervention(time, dict(**static_intervention_assignment))
+                    StaticParameterIntervention(
+                        time, dict(**static_intervention_assignment)
+                    )
                     for time, static_intervention_assignment in static_parameter_interventions.items()
                 ]
 
                 def wrapped_model():
                     with ParameterInterventionTracer():
-                        with TorchDiffEq(method=self.solver_method, options=self.solver_options):
+                        with TorchDiffEq(
+                            method=self.solver_method, options=self.solver_options
+                        ):
                             with contextlib.ExitStack() as stack:
                                 for handler in static_parameter_intervention_handlers:
                                     stack.enter_context(handler)
@@ -151,7 +153,10 @@ class computeRisk:
 
                 # Sample from intervened model
                 samples = pyro.infer.Predictive(
-                    wrapped_model, guide=self.guide, num_samples=self.num_samples, parallel=True,
+                    wrapped_model,
+                    guide=self.guide,
+                    num_samples=self.num_samples,
+                    parallel=True,
                 )()
         return samples
 
