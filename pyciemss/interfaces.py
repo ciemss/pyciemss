@@ -513,8 +513,7 @@ def sample(
         for k, vals in samples.items():
             if "_state" in k:
                 # qoi is assumed to be the last day of simulation
-                # qoi_sample = torch.squeeze(vals).detach().numpy()[:, -1]
-                qoi_sample = torch.squeeze(vals).detach().numpy()[:, -1]
+                qoi_sample = vals.detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
