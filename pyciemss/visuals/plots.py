@@ -1,9 +1,9 @@
+from __future__ import annotations
 import json
 import os
 import shutil
 from pathlib import Path
 from typing import Any, Dict, Literal, Optional
-from __future__ import annotations
 
 import IPython.display
 import vl_convert
