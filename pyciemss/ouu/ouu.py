@@ -94,7 +94,6 @@ class computeRisk:
         warnings.simplefilter("always", UserWarning)
 
     def __call__(self, x):
-        print(x)
         if np.any(x - self.u_bounds[0, :] < 0.0) or np.any(
             self.u_bounds[1, :] - x < 0.0
         ):
@@ -111,7 +110,6 @@ class computeRisk:
             sample_qoi = self.qoi(samples)
             # Estimate risk
             risk_estimate = self.risk_measure(sample_qoi)
-            print("Risk: ", risk_estimate)
         return risk_estimate
 
     def propagate_uncertainty(self, x):
@@ -143,16 +141,6 @@ class computeRisk:
                                     logging_times=self.logging_times,
                                     is_traced=True,
                                 )
-                    # with TorchDiffEq(method=self.solver_method, options=self.solver_options):
-                    #     with contextlib.ExitStack() as stack:
-                    #         for handler in static_parameter_intervention_handlers:
-                    #             stack.enter_context(handler)
-                    #         self.model(
-                    #             torch.as_tensor(self.start_time),
-                    #             torch.as_tensor(self.end_time),
-                    #             logging_times=self.logging_times,
-                    #             is_traced=True,
-                    #         )
 
                 # Sample from intervened model
                 samples = pyro.infer.Predictive(
