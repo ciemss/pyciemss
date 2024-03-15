@@ -32,13 +32,13 @@ class RandomDisplacementBounds:
             self.stepsize = 0.3 * np.linalg.norm(xmax - xmin)
 
     def __call__(self, x):
-        if np.any(x -self.xmax >= 0.):
+        if np.any(x - self.xmax >= 0.0):
             xnew = np.clip(
                 x + np.random.uniform(-self.stepsize, 0, np.shape(x)),
                 self.xmin,
                 self.xmax,
             )
-        elif np.any(x-self.xmin <= 0.):
+        elif np.any(x - self.xmin <= 0.0):
             xnew = np.clip(
                 x + np.random.uniform(0, self.stepsize, np.shape(x)),
                 self.xmin,
@@ -95,7 +95,9 @@ class computeRisk:
 
     def __call__(self, x):
         print(x)
-        if np.any(x - self.u_bounds[0, :] < 0.) or np.any(self.u_bounds[1, :] - x < 0.):
+        if np.any(x - self.u_bounds[0, :] < 0.0) or np.any(
+            self.u_bounds[1, :] - x < 0.0
+        ):
             warnings.warn(
                 "Selected interventions are out of bounds. Will use a penalty instead of estimating risk."
             )
