@@ -1,9 +1,8 @@
-from __future__ import annotations
 import json
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional, Union
 
 import IPython.display
 import vl_convert
@@ -56,7 +55,7 @@ def ipy_display(
     format: Literal["png", "svg", "PNG", "SVG", "interactive", "INTERACTIVE"] = "png",
     force_clear: bool = False,
     dpi: Optional[int] = None,
-    output_root: Optional[str | os.PathLike] = None,
+    output_root: Union[str, os.PathLike, None] = None,
     **kwargs,
 ):
     """Wrap for dispaly in an ipython notebook.
@@ -66,6 +65,7 @@ def ipy_display(
               Format specifier is case-insensitive.
     force_clear -- Force clear the result cell (sometimes required after an error)
     dpi -- approximates DPI for output (other factors apply)
+    output_root -- Location of output files. String name of new folder will be converted to Pathlib Path
     **kwargs -- Passed on to the selected vl_convert function
 
     The vlc_convert PNG export function takes a 'scale' factor,
@@ -87,6 +87,8 @@ def ipy_display(
     """
     if force_clear:
         IPython.display.clear_output(wait=True)
+    if isinstance(output_root, str):
+        output_root = Path(output_root)
 
     if check_geoscale(schema):
         if output_root is None:
