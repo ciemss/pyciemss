@@ -55,7 +55,7 @@ def ipy_display(
     format: Literal["png", "svg", "PNG", "SVG", "interactive", "INTERACTIVE"] = "png",
     force_clear: bool = False,
     dpi: Optional[int] = None,
-    output_root: Union[str, os.PathLike, None] = None,
+    output_root: Union[str, Path, None] = None,
     **kwargs,
 ):
     """Wrap for dispaly in an ipython notebook.
