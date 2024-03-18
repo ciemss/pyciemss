@@ -9,21 +9,30 @@ def param_value_objective(
     start_time: List[torch.Tensor],
     param_value: List[Intervention] = [None],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
+    if len(param_value) < len(param_name) and param_value[0] is None:
+        param_value = [None for _ in param_name]
+    for count in range(len(param_name)):
+        if param_value[count] is None:
+            if not callable(param_value[count]):
+                param_value[count] = lambda y: torch.tensor(y)
+
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        static_parameter_interventions = {}
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(len(param_name)):
-            if param_value[count] is None:
-                if not callable(param_value[count]):
-                    param_value[count] = lambda x: torch.tensor(x)
-            static_parameter_interventions.update(
-                {
-                    start_time[count].item(): {
-                        param_name[count]: param_value[count](x[count].item())
+            if start_time[count].item() in static_parameter_interventions:
+                static_parameter_interventions[start_time[count].item()].update(
+                    {param_name[count]: param_value[count](x[count].item())}
+                )
+            else:
+                static_parameter_interventions.update(
+                    {
+                        start_time[count].item(): {
+                            param_name[count]: param_value[count](x[count].item())
+                        }
                     }
-                }
-            )
+                )
         return static_parameter_interventions
 
     return intervention_generator
@@ -35,11 +44,16 @@ def start_time_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        static_parameter_interventions = {}
+        static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(len(param_name)):
-            static_parameter_interventions.update(
-                {x[count].item(): {param_name[count]: param_value[count]}}
-            )
+            if x[count].item() in static_parameter_interventions:
+                static_parameter_interventions[x[count].item()].update(
+                    {param_name[count]: param_value[count]}
+                )
+            else:
+                static_parameter_interventions.update(
+                    {x[count].item(): {param_name[count]: param_value[count]}}
+                )
         return static_parameter_interventions
 
     return intervention_generator

@@ -513,7 +513,7 @@ def sample(
         for k, vals in samples.items():
             if "_state" in k:
                 # qoi is assumed to be the last day of simulation
-                qoi_sample = vals[:, -1]
+                qoi_sample = vals.detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
@@ -762,7 +762,7 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    n_samples_ouu: int = int(1e2),
+    n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
     verbose: bool = False,
@@ -852,6 +852,8 @@ def optimize(
             guide=inferred_parameters,
             solver_method=solver_method,
             solver_options=solver_options,
+            u_bounds=bounds_np,
+            risk_bound=risk_bound,
         )
 
         # Run one sample to estimate model evaluation time
@@ -877,6 +879,8 @@ def optimize(
             guide=inferred_parameters,
             solver_method=solver_method,
             solver_options=solver_options,
+            u_bounds=bounds_np,
+            risk_bound=risk_bound,
         )
         # Define constraints >= 0
         constraints = (
@@ -893,10 +897,18 @@ def optimize(
             print(
                 f"Estimated wait time {time_per_eval*n_samples_ouu*(maxiter+1)*maxfeval:.1f} seconds..."
             )
+
+        # Updating the objective function to penalize out of bounds interventions
+        def objfun_penalty(x):
+            if np.any(x - u_min < 0) or np.any(u_max - x < 0):
+                return objfun(x) + max(5 * np.abs(objfun(x)), 5.0)
+            else:
+                return objfun(x)
+
         start_time = time.time()
         opt_results = solveOUU(
             x0=initial_guess_interventions,
-            objfun=objfun,
+            objfun=objfun_penalty,
             constraints=constraints,
             maxiter=maxiter,
             maxfeval=maxfeval,
@@ -916,11 +928,6 @@ def optimize(
                 f"Optimization completed in time {time.time()-start_time:.2f} seconds."
             )
             print(f"Optimal policy:\t{opt_results.x}")
-
-        # Check for some interventions that lead to no feasible solutions
-        if opt_results.x < 0:
-            if verbose:
-                print("No solution found")
 
         ouu_results = {
             "policy": torch.tensor(opt_results.x),
