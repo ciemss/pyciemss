@@ -87,7 +87,7 @@ def ipy_display(
     """
     if force_clear:
         IPython.display.clear_output(wait=True)
-        
+
     if isinstance(output_root, str):
         output_root = Path(output_root)
 
