@@ -521,7 +521,7 @@ def sample(
             **prepare_interchange_dictionary(
                 samples, timepoints=logging_times, time_unit=time_unit
             ),
-            "risk": risk_results,
+            "risk": risk_results
         }
 
 

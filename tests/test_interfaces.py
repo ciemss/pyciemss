@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
+from pyciemss.integration_utils.result_processing import convert_to_output_format
 from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import (
     calibrate,
@@ -223,6 +224,14 @@ def test_sample_with_interventions(
         for k, v in intervened_result.items()
         if not k.startswith("parameter_intervention_")
     }
+
+    output_sample = convert_to_output_format(
+        result,
+        # using same time point formula as in 'logging_times' from  pyciemms interfaces formula 'sample'
+        timepoints=np.arange(
+            start_time + logging_step_size, end_time, logging_step_size
+        )
+    )
     check_states_match_in_all_but_values(result, intervened_result_subset)
 
     check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
