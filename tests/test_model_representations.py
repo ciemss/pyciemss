@@ -1,6 +1,7 @@
 import pytest
 import requests
-from askem_model_representations import model_inventory
+
+from pyciemss.compiled_dynamics import CompiledDynamics
 
 
 def is_satisfactory(inventory):
@@ -46,15 +47,8 @@ def test_representations(model_file):
         model = requests.get(model_file).json()
     except BaseException:
         assert False, "Could not load model"
-    inventory = model_inventory.check_amr(model, summary=True)
 
-    keys_to_check = [
-        "parameter distribution exists",
-        "parameter dist/value set",
-        "rate laws present",
-        "rate law vars defined",
-        "initial values present",
-    ]
+    CompiledDynamics.check_model(model)
 
-    for key in keys_to_check:
-        assert inventory[key], f"'{key}' check failed in {inventory}"
+
+# TODO:  Need to do some tests for BAD models to see if it raises the right exception

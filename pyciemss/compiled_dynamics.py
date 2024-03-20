@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import functools
+import warnings
 from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
@@ -10,11 +11,14 @@ import mira.sources
 import mira.sources.amr
 import pyro
 import torch
+from askem_model_representations import model_inventory
 from chirho.dynamical.handlers import LogTrajectory
 from chirho.dynamical.ops import State, simulate
 
 S = TypeVar("S")
 T = TypeVar("T")
+
+RAISE_ON_MODEL_CHECK_ERROR = True
 
 
 class CompiledDynamics(pyro.nn.PyroModule):
@@ -106,22 +110,58 @@ class CompiledDynamics(pyro.nn.PyroModule):
             model = mira.sources.amr.model_from_url(path)
         else:
             model = mira.sources.amr.model_from_json_file(path)
-        return cls.load(model)
+        model = cls.load(model)
+        cls.check_model(model)
+        return model
 
     @load.register(dict)
     @classmethod
     def _load_from_json(cls, model_json: dict):
-        return cls.load(mira.sources.amr.model_from_json(model_json))
+        model = cls.load(mira.sources.amr.model_from_json(model_json))
+        cls.check_model(model)
+        return model
 
     @load.register(mira.metamodel.TemplateModel)
     @classmethod
     def _load_from_template_model(cls, template: mira.metamodel.TemplateModel):
-        return cls.load(mira.modeling.Model(template))
+        model = cls.load(mira.modeling.Model(template))
+        cls.check_model(model)
+        return model
 
     @load.register(mira.modeling.Model)
     @classmethod
     def _load_from_mira_model(cls, src: mira.modeling.Model):
-        return cls(src)
+        model = cls(src)
+        cls.check_model(model)
+        return model
+
+    @classmethod
+    def check_model(cls, model):
+        """
+        Check a model for 'goodness'.  If it 'bad', raise a descriptive error.
+        elide -- If 'True', does warnings intead of errors.
+        """
+
+        def _warn(msg):
+            warnings.warn(msg)
+
+        def _raise(msg):
+            raise ValueError(msg)
+
+        on_issue = _raise if RAISE_ON_MODEL_CHECK_ERROR else _warn
+        inventory = model_inventory.check_amr(model, summary=True)
+
+        keys_to_check = [
+            "parameter distribution exists",
+            "parameter dist/value set",
+            "rate laws present",
+            "rate law vars defined",
+            "initial values present",
+        ]
+
+        for key in keys_to_check:
+            if not inventory[key]:
+                on_issue(f"'{key}' check failed in {inventory}")
 
 
 @functools.singledispatch
