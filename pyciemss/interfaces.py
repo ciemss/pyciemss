@@ -431,6 +431,14 @@ def sample(
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
 
+        true_checks = {
+            "parameter dist/value set": "Not all expected parameter values set",
+            "rate laws present": "Not all expected rate laws found",
+            "rate law vars defined": "Not all expected raw law variables found",
+            "initial values present": "Not all expected initial values found",
+        }
+        CompiledDynamics.check_model(model, must_be_true=true_checks)
+
         logging_times = torch.arange(
             start_time + logging_step_size, end_time, logging_step_size
         )
@@ -647,6 +655,14 @@ def calibrate(
     pyro.clear_param_store()
 
     model = CompiledDynamics.load(model_path_or_json)
+    true_checks = {
+        "parameter distribution exists": "Not all expected parameter distributions found",
+        "parameter dist/value set": "Not all expected parameter values set",
+        "rate laws present": "Not all expected rate laws found",
+        "rate law vars defined": "Not all expected raw law variables found",
+        "initial values present": "Not all expected initial values found",
+    }
+    CompiledDynamics.check_model(model, must_be_true=true_checks)
 
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 

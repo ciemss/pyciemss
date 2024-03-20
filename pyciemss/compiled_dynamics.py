@@ -117,7 +117,6 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @classmethod
     def _load_from_json(cls, model_json: dict):
         model = cls.load(mira.sources.amr.model_from_json(model_json))
-        cls.check_model(model)
         return model
 
     @load.register(mira.metamodel.TemplateModel)
@@ -166,10 +165,20 @@ class CompiledDynamics(pyro.nn.PyroModule):
         inventory = model_inventory.check_amr(model, summary=True)
 
         for key, message in must_be_true.items():
+            if key not in inventory:
+                on_issue(
+                    f"Malformed model inventory for requested checks. Could not find '{key}'"
+                )
+
             if not inventory[key]:
                 on_issue(message)
 
         for key, message in must_be_false.items():
+            if key not in inventory:
+                on_issue(
+                    f"Malformed model inventory for requested checks. Could not find '{key}'"
+                )
+
             if inventory[key]:
                 on_issue(message)
 
