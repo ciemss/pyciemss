@@ -111,7 +111,6 @@ class CompiledDynamics(pyro.nn.PyroModule):
         else:
             model = mira.sources.amr.model_from_json_file(path)
         model = cls.load(model)
-        cls.check_model(model)
         return model
 
     @load.register(dict)
@@ -125,21 +124,32 @@ class CompiledDynamics(pyro.nn.PyroModule):
     @classmethod
     def _load_from_template_model(cls, template: mira.metamodel.TemplateModel):
         model = cls.load(mira.modeling.Model(template))
-        cls.check_model(model)
         return model
 
     @load.register(mira.modeling.Model)
     @classmethod
     def _load_from_mira_model(cls, src: mira.modeling.Model):
         model = cls(src)
-        cls.check_model(model)
         return model
 
     @classmethod
-    def check_model(cls, model):
+    def check_model(
+        cls,
+        model,
+        *,
+        must_be_true: Dict[str, str] = {},
+        must_be_false: Dict[str, str] = {},
+    ):
         """
-        Check a model for 'goodness'.  If it 'bad', raise a descriptive error.
-        elide -- If 'True', does warnings intead of errors.
+        Check a model for 'goodness'.  If it 'bad', raise/warn a descriptive error.
+
+        Will raise an exception on RAISE_ON_MODEL_CHECK_ERROR is True, or warn if RAISE_ON_MODEL_CHECK_ERROR is False.
+
+        must_be_true -- Key/Message pairs.  If the value in an askem_model_representations.model_inventory
+                under the key is not True, then it will raise/warn with the message.
+        must_be_false -- Key/Message pairs. Same semantics as must_be_true except the value must be False instead.
+
+        NOTE: This tool checks for boolean Truthy/Falsy values (not literal True/False).
         """
 
         def _warn(msg):
@@ -149,19 +159,19 @@ class CompiledDynamics(pyro.nn.PyroModule):
             raise ValueError(msg)
 
         on_issue = _raise if RAISE_ON_MODEL_CHECK_ERROR else _warn
+
+        # TODO: To provide more descriptive error messages, don't use "summary"
+        #      Then we can pipe the details into the message.
+        #      For this, remove must_be_X and make it checks: Dict[str, Callable]
         inventory = model_inventory.check_amr(model, summary=True)
 
-        keys_to_check = [
-            "parameter distribution exists",
-            "parameter dist/value set",
-            "rate laws present",
-            "rate law vars defined",
-            "initial values present",
-        ]
-
-        for key in keys_to_check:
+        for key, message in must_be_true.items():
             if not inventory[key]:
-                on_issue(f"'{key}' check failed in {inventory}")
+                on_issue(message)
+
+        for key, message in must_be_false.items():
+            if inventory[key]:
+                on_issue(message)
 
 
 @functools.singledispatch

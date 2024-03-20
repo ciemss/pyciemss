@@ -48,7 +48,15 @@ def test_representations(model_file):
     except BaseException:
         assert False, "Could not load model"
 
-    CompiledDynamics.check_model(model)
+    true_checks = {
+        "parameter distribution exists": "Not all expected parameter distributions found",
+        "parameter dist/value set": "Not all expected parameter values set",
+        "rate laws present": "Not all expected rate laws found",
+        "rate law vars defined": "Not all expected raw law variables found",
+        "initial values present": "Not all expected initial values found",
+    }
+
+    CompiledDynamics.check_model(model, must_be_true=true_checks)
 
 
 # TODO:  Need to do some tests for BAD models to see if it raises the right exception
