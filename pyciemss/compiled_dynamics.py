@@ -66,15 +66,33 @@ class CompiledDynamics(pyro.nn.PyroModule):
 
     @pyro.nn.pyro_method
     def deriv(self, X: State[torch.Tensor]) -> None:
-        return eval_deriv(self.src, self, X)
+        try:
+            return eval_deriv(self.src, self, X)
+        except Exception:
+            raise ValueError(
+                "The model derivative could not be evaluated. Please check the model definition."
+                "This could be due to to a missing state variable or parameter, or an error in the derivative definition."
+            )
 
     @pyro.nn.pyro_method
     def initial_state(self) -> State[torch.Tensor]:
-        return eval_initial_state(self.src, self)
+        try:
+            return eval_initial_state(self.src, self)
+        except Exception:
+            raise ValueError(
+                "The model initial state could not be evaluated. Please check the model definition."
+                "This could be due to to a missing state variable or parameter, or an error in the initial state definition."
+            )
 
     @pyro.nn.pyro_method
     def observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
-        return eval_observables(self.src, self, X)
+        try:
+            return eval_observables(self.src, self, X)
+        except Exception:
+            raise ValueError(
+                "The model observables could not be evaluated. Please check the model definition."
+                "This could be due to to a missing state variable or parameter, or an error in the observables definition."
+            )
 
     @pyro.nn.pyro_method
     def instantiate_parameters(self):
