@@ -1,5 +1,6 @@
 import contextlib
 import time
+import warnings
 from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -29,6 +30,8 @@ from pyciemss.interruptions import (
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
+
+warnings.simplefilter("always", UserWarning)
 
 
 @pyciemss_logging_wrapper
@@ -648,12 +651,6 @@ def calibrate(
 
     model = CompiledDynamics.load(model_path_or_json)
 
-    if len(model.params_with_distributions()) == 0:
-        raise ValueError(
-            "The model does not contain distributions representing uncertainty over any parameters."
-            "As there is no uncertainty, `calibrate` will not update any parameters."
-        )
-
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
     # Check that num_iterations is a positive integer
@@ -941,4 +938,20 @@ def optimize(
             "policy": torch.tensor(opt_results.x),
             "OptResults": opt_results,
         }
+
+        # Check optimize results and provide appropriate warnings
+        if not opt_results["success"]:
+            if np.any(opt_results.x - u_min < 0) or np.any(u_max - opt_results.x < 0):
+                warnings.warn(
+                    "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or"
+                    "(ii) different initial_guess_interventions."
+                )
+            if opt_results["lowest_optimization_result"]["maxcv"] > 0:
+                warnings.warn(
+                    "Optimal intervention policy does not satisfy constraints."
+                    "Check if the risk_bounds value is appropriate for given problem."
+                    "Otherwise, try (i) different initial_guess_interventions, (ii) increasing maxiter/maxfeval,"
+                    "and/or (iii) increase n_samples_ouu to improve accuracy of Monte Carlo risk estimation. "
+                )
+
         return ouu_results
