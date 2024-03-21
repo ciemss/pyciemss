@@ -24,10 +24,10 @@ class CompiledDynamics(pyro.nn.PyroModule):
 
         try:
             params = _compile_param_values(self.src)
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model parameters could not be compiled. Please check the model definition."
-            )
+            ) from e
 
         for k, v in params.items():
             if hasattr(self, get_name(k)):
@@ -43,24 +43,24 @@ class CompiledDynamics(pyro.nn.PyroModule):
         # Compile the numeric derivative of the model from the transition rate laws.
         try:
             setattr(self, "numeric_deriv_func", _compile_deriv(src))
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model derivative could not be compiled. Please check the model definition."
-            )
+            ) from e
 
         try:
             setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model initial state could not be compiled. Please check the model definition."
-            )
+            ) from e
 
         try:
             setattr(self, "numeric_observables_func", _compile_observables(src))
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model observables could not be compiled. Please check the model definition."
-            )
+            ) from e
 
         self.instantiate_parameters()
 
@@ -68,34 +68,34 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def deriv(self, X: State[torch.Tensor]) -> None:
         try:
             return eval_deriv(self.src, self, X)
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model derivative could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, "
                 "or an error in the derivative definition."
-            )
+            ) from e
 
     @pyro.nn.pyro_method
     def initial_state(self) -> State[torch.Tensor]:
         try:
             return eval_initial_state(self.src, self)
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model initial state could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, "
                 "or an error in the initial state definition."
-            )
+            ) from e
 
     @pyro.nn.pyro_method
     def observables(self, X: State[torch.Tensor]) -> State[torch.Tensor]:
         try:
             return eval_observables(self.src, self, X)
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The model observables could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, "
                 "or an error in the observables definition."
-            )
+            ) from e
 
     @pyro.nn.pyro_method
     def instantiate_parameters(self):
