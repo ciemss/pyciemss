@@ -8,7 +8,13 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
-from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state, MODELS_WITHOUT_DISTRIBUTIONS
+from .fixtures import (
+    END_TIMES,
+    MODEL_URLS,
+    MODELS_WITHOUT_DISTRIBUTIONS,
+    START_TIMES,
+    check_is_state,
+)
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
