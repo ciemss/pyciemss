@@ -1,5 +1,6 @@
 import contextlib
 import time
+import warnings
 from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -29,6 +30,8 @@ from pyciemss.interruptions import (
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
+
+warnings.simplefilter("always", UserWarning)
 
 
 @pyciemss_logging_wrapper
@@ -933,4 +936,19 @@ def optimize(
             "policy": torch.tensor(opt_results.x),
             "OptResults": opt_results,
         }
+        # Check optimize results and provide appropriate warnings
+        if opt_results["success"]:
+            warnings.warn(
+                "Optimal intervention policy satisfies constraints and is within set bounds. If better policy is desired, try (i) expanding the bounds_interventions, (ii) relaxing risk_bounds, and/or (iii) increasing maxiter and maxfeval or different initial_guess_interventions."
+            )
+        else:
+            if np.any(opt_results.x - u_min < 0) or np.any(u_max - opt_results.x < 0):
+                warnings.warn(
+                    "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or (ii) different initial_guess_interventions."
+                )
+            if opt_results["lowest_optimization_result"]["maxcv"] > 0:
+                warnings.warn(
+                    "Optimal intervention policy does not satisfy constraints. Check if the risk_bounds value is appropriate for given problem. Otherwise, try (i) different initial_guess_interventions, (ii) increasing maxiter and maxfeval, and/or (iii) increase n_samples_ouu to improve accuracy of Monte Carlo risk estimation. "
+                )
+
         return ouu_results
