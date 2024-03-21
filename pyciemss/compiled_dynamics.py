@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import functools
 import warnings
-from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -100,55 +100,58 @@ class CompiledDynamics(pyro.nn.PyroModule):
 
     @functools.singledispatchmethod
     @classmethod
-    def load(cls, src) -> "CompiledDynamics":
+    def load(cls, src, *, checks={}) -> "CompiledDynamics":
         raise NotImplementedError
 
     @load.register(str)
     @classmethod
-    def _load_from_url_or_path(cls, path: str):
+    def _load_from_url_or_path(cls, path: str, *, checks={}):
+        cls.check_model(path, checks)
+
         if "https://" in path:
             model = mira.sources.amr.model_from_url(path)
         else:
             model = mira.sources.amr.model_from_json_file(path)
+
         model = cls.load(model)
         return model
 
     @load.register(dict)
     @classmethod
-    def _load_from_json(cls, model_json: dict):
+    def _load_from_json(cls, model_json: dict, *, checks={}):
+        cls.check_model(model_json, checks)
         model = cls.load(mira.sources.amr.model_from_json(model_json))
         return model
 
     @load.register(mira.metamodel.TemplateModel)
     @classmethod
-    def _load_from_template_model(cls, template: mira.metamodel.TemplateModel):
+    def _load_from_template_model(
+        cls, template: mira.metamodel.TemplateModel, *, checks={}
+    ):
         model = cls.load(mira.modeling.Model(template))
+        # TODO: We cannot directly check mira models, only the JSONs.
+        #      Should we reformulate model-inventory to load mira instead?
+        # check_model(model)
         return model
 
     @load.register(mira.modeling.Model)
     @classmethod
-    def _load_from_mira_model(cls, src: mira.modeling.Model):
+    def _load_from_mira_model(cls, src: mira.modeling.Model, *, checks={}):
         model = cls(src)
+        # TODO: We cannot directly check mira models, only the JSONs.
+        #      Should we reformulate model-inventory to load mira instead?
+        # check_model(model)
         return model
 
     @classmethod
-    def check_model(
-        cls,
-        model,
-        *,
-        must_be_true: Dict[str, str] = {},
-        must_be_false: Dict[str, str] = {},
-    ):
+    def check_model(cls, model: Dict, checks: Dict[str, Tuple[Any, str]]):
         """
         Check a model for 'goodness'.  If it 'bad', raise/warn a descriptive error.
 
         Will raise an exception on RAISE_ON_MODEL_CHECK_ERROR is True, or warn if RAISE_ON_MODEL_CHECK_ERROR is False.
+        checks -- The key is th expected key in an askem_model_representations.model_inventory result.
+                 The value is a pair of expected-value  and a message if the expected value is not found.
 
-        must_be_true -- Key/Message pairs.  If the value in an askem_model_representations.model_inventory
-                under the key is not True, then it will raise/warn with the message.
-        must_be_false -- Key/Message pairs. Same semantics as must_be_true except the value must be False instead.
-
-        NOTE: This tool checks for boolean Truthy/Falsy values (not literal True/False).
         """
 
         def _warn(msg):
@@ -164,22 +167,13 @@ class CompiledDynamics(pyro.nn.PyroModule):
         #      For this, remove must_be_X and make it checks: Dict[str, Callable]
         inventory = model_inventory.check_amr(model, summary=True)
 
-        for key, message in must_be_true.items():
+        for key, (value, message) in checks.items():
             if key not in inventory:
                 on_issue(
-                    f"Malformed model inventory for requested checks. Could not find '{key}'"
+                    f"Malformed model inventory for requested checks. Could not find '{key}' in {inventory}"
                 )
 
-            if not inventory[key]:
-                on_issue(message)
-
-        for key, message in must_be_false.items():
-            if key not in inventory:
-                on_issue(
-                    f"Malformed model inventory for requested checks. Could not find '{key}'"
-                )
-
-            if inventory[key]:
+            if inventory[key] != value:
                 on_issue(message)
 
 
