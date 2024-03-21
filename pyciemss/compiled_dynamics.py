@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -38,13 +38,6 @@ class CompiledDynamics(pyro.nn.PyroModule):
         setattr(self, "numeric_observables_func", _compile_observables(src))
 
         self.instantiate_parameters()
-
-    def params_with_distributions(self) -> List:
-        return [
-            get_name(k)
-            for k, v in _compile_param_values(self.src).items()
-            if isinstance(v, pyro.nn.PyroSample)
-        ]
 
     @pyro.nn.pyro_method
     def deriv(self, X: State[torch.Tensor]) -> None:

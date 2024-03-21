@@ -8,13 +8,7 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
-from .fixtures import (
-    END_TIMES,
-    MODEL_URLS,
-    MODELS_WITHOUT_DISTRIBUTIONS,
-    START_TIMES,
-    check_is_state,
-)
+from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -61,17 +55,3 @@ def test_compiled_dynamics_load_json(url, start_time, end_time):
     with TorchDiffEq():
         simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
     check_is_state(simulation, torch.Tensor)
-
-
-@pytest.mark.parametrize("url", MODEL_URLS)
-def test_params_with_distributions(url):
-    model = CompiledDynamics.load(url)
-    assert isinstance(model, CompiledDynamics)
-    assert len(model.params_with_distributions()) > 0
-
-
-@pytest.mark.parametrize("models", MODELS_WITHOUT_DISTRIBUTIONS)
-def test_params_without_distributions(models):
-    model = CompiledDynamics.load(models.url)
-    assert isinstance(model, CompiledDynamics)
-    assert len(model.params_with_distributions()) == 0
