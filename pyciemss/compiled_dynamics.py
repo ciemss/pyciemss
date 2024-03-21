@@ -47,14 +47,14 @@ class CompiledDynamics(pyro.nn.PyroModule):
             raise ValueError(
                 "The model derivative could not be compiled. Please check the model definition."
             )
-        
+
         try:
             setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
         except:
             raise ValueError(
                 "The model initial state could not be compiled. Please check the model definition."
             )
-        
+
         try:
             setattr(self, "numeric_observables_func", _compile_observables(src))
         except:
