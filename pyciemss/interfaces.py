@@ -651,6 +651,12 @@ def calibrate(
 
     model = CompiledDynamics.load(model_path_or_json)
 
+    if len(model.params_with_distributions()) == 0:
+        raise ValueError(
+            "The model does not contain distributions representing uncertainty over any parameters."
+            "As there is no uncertainty, `calibrate` will not update any parameters."
+        )
+
     data_timepoints, data = load_data(data_path, data_mapping=data_mapping)
 
     # Check that num_iterations is a positive integer
