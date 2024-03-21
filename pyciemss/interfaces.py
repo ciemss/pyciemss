@@ -938,14 +938,7 @@ def optimize(
         }
 
         # Check optimize results and provide appropriate warnings
-        if opt_results["success"]:
-            warnings.warn(
-                "Optimal intervention policy satisfies constraints and is within set bounds."
-                "If better policy is desired, try"
-                "(i) expanding the bounds_interventions, (ii) relaxing risk_bounds, and/or"
-                "(iii) increasing maxiter and maxfeval or different initial_guess_interventions."
-            )
-        else:
+        if not opt_results["success"]:
             if np.any(opt_results.x - u_min < 0) or np.any(u_max - opt_results.x < 0):
                 warnings.warn(
                     "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or"
