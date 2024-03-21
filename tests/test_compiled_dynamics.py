@@ -8,7 +8,7 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 
-from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state
+from .fixtures import END_TIMES, MODEL_URLS, START_TIMES, check_is_state, MODELS_WITHOUT_DISTRIBUTIONS
 
 
 @pytest.mark.parametrize("url", MODEL_URLS)
@@ -63,4 +63,9 @@ def test_params_with_distributions(url):
     assert isinstance(model, CompiledDynamics)
     assert len(model.params_with_distributions()) > 0
 
-    # TODO: add models without distributions to test
+
+@pytest.mark.parametrize("models", MODELS_WITHOUT_DISTRIBUTIONS)
+def test_params_without_distributions(models):
+    model = CompiledDynamics.load(models.url)
+    assert isinstance(model, CompiledDynamics)
+    assert len(model.params_with_distributions()) == 0
