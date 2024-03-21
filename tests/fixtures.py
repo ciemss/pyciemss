@@ -85,6 +85,16 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
+MODELS_WITHOUT_DISTRIBUTIONS = [
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIR_stockflow_no_uncertainty"),
+        "p_cbeta",
+        os.path.join(DATA_PATH, "traditional.csv"),
+        {"Infected": "I"},
+        False,
+    ),
+]
+
 optimize_kwargs_SIRstockflow_param = {
     "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
     "risk_bound": 300.0,
