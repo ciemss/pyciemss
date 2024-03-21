@@ -1,0 +1,182 @@
+{
+  "id": "sir-stockflow",
+  "header": {
+    "name": "SIR Model",
+    "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/stockflow_v0.1/stockflow/stockflow_schema.json",
+    "description": "SIR model",
+    "schema_name": "stockflow",
+    "model_version": "0.1"
+  },
+  "model": {
+    "flows": [
+      {
+        "id": "flow1",
+        "name": "NewIncidence",
+        "upstream_stock": "S",
+        "downstream_stock": "I",
+        "rate_expression": "cbeta * S * I / N",
+        "rate_expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>cbeta</ci></apply><ci>N</ci></apply>"
+      },
+      {
+        "id": "flow2",
+        "name": "NewRecovery",
+        "upstream_stock": "I",
+        "downstream_stock": "R",
+        "rate_expression": "I / tr",
+        "rate_expression_mathml": "<apply><divide/><ci>I</ci><ci>tr</ci></apply>"
+      }
+    ],
+    "stocks": [
+      {
+        "id": "S",
+        "name": "Susceptible",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000514"
+          }
+        }
+      },
+      {
+        "id": "I",
+        "name": "Infected"
+      },
+      {
+        "id": "R",
+        "name": "Recovered"
+      }
+    ],
+    "auxiliaries": [
+      {
+        "id": "cbeta",
+        "name": "cbeta",
+        "expression": "1.0 * p_cbeta",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_cbeta</ci></apply>"
+      },
+      {
+        "id": "N",
+        "name": "N",
+        "expression": "1.0 * p_N * p_DNE",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_N</ci></apply>"
+      },
+      {
+        "id": "tr",
+        "name": "tr",
+        "expression": "1.0 * p_tr",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_tr</ci></apply>"
+      }
+    ],
+    "links": [
+      {
+        "id": "link1",
+        "source": "S",
+        "target": "flow1"
+      },
+      {
+        "id": "link2",
+        "source": "I",
+        "target": "flow1"
+      },
+      {
+        "id": "link3",
+        "source": "I",
+        "target": "flow2"
+      },
+      {
+        "id": "link4",
+        "source": "cbeta",
+        "target": "flow1"
+      },
+      {
+        "id": "link5",
+        "source": "N",
+        "target": "flow1"
+      },
+      {
+        "id": "link6",
+        "source": "tr",
+        "target": "flow2"
+      }
+    ]
+  },
+  "semantics": {
+    "ode": {
+      "parameters": [
+        {
+          "id": "p_cbeta",
+          "name": "p_cbeta",
+          "description": "transmission rate",
+          "value": 0.35,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.25,
+              "maximum": 0.45
+            }
+          }
+        },
+        {
+          "id": "p_N",
+          "name": "p_N",
+          "description": "overall population",
+          "value": 1001
+        },
+        {
+          "id": "p_tr",
+          "name": "p_tr",
+          "description": "recovery time",
+          "value": 14,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 8,
+              "maximum": 20
+            }
+          }
+        },
+        {
+          "id": "S0",
+          "name": "S₀",
+          "description": "Total susceptible population at timestep 0",
+          "value": 1000
+        },
+        {
+          "id": "I0",
+          "name": "I₀",
+          "description": "Total infected population at timestep 0",
+          "value": 1
+        },
+        {
+          "id": "R0",
+          "name": "R₀",
+          "description": "Total recovered population at timestep 0",
+          "value": 0
+        }
+      ],
+      "initials": [
+        {
+          "target": "S",
+          "expression": "S0",
+          "expression_mathml": "<ci>S0</ci>"
+        },
+        {
+          "target": "I",
+          "expression": "I0",
+          "expression_mathml": "<ci>I0</ci>"
+        },
+        {
+          "target": "R",
+          "expression": "R0",
+          "expression_mathml": "<ci>R0</ci>"
+        }
+      ],
+      "observables": [
+        {
+          "id": "I",
+          "name": "infected",
+          "expression": "I",
+          "expression_mathml": "<ci>I</ci>"
+        }
+      ]
+    }
+  }
+}

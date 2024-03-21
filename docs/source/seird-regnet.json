@@ -1,0 +1,164 @@
+{
+ "header": {
+  "name": "SEIRD_base_model01",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/regnet_v0.2/regnet/regnet_schema.json",
+  "schema_name": "regnet",
+  "description": "SEIRD_base_model01",
+  "model_version": "0.1"
+ },
+ "model": {
+  "vertices": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "context": {}
+    },
+    "initial": "-I0 + total_population"
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "context": {}
+    },
+    "initial": "I0"
+   },
+   {
+    "id": "E",
+    "name": "E",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "context": {}
+    },
+    "initial": 40.0
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "context": {}
+    },
+    "initial": 0.0
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "context": {}
+    },
+    "initial": 0.0
+   }
+  ],
+  "edges": [],
+  "parameters": [
+   {
+    "id": "beta",
+    "value": 0.4,
+    "distribution": {
+     "type": "Uniform1",
+     "parameters": {
+      "minimum": 0.05,
+      "maximum": 0.8
+     }
+    }
+   },
+   {
+    "id": "total_population",
+    "value": 19340000.0
+   },
+   {
+    "id": "delta",
+    "value": 0.25
+   },
+   {
+    "id": "death",
+    "value": 0.007,
+    "distribution": {
+     "type": "Uniform1",
+     "parameters": {
+      "minimum": 0.001,
+      "maximum": 0.01
+     }
+    }
+   },
+   {
+    "id": "gamma",
+    "value": 0.2,
+    "distribution": {
+     "type": "Uniform1",
+     "parameters": {
+      "minimum": 0.1,
+      "maximum": 0.5
+     }
+    }
+   },
+   {
+    "id": "I0",
+    "value": 10.0,
+    "distribution": {
+     "type": "Uniform1",
+     "parameters": {
+      "minimum": 1.0,
+      "maximum": 15.0
+     }
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [],
+   "observables": [
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I",
+     "expression_mathml": "<ci>I</ci>"
+    },
+    {
+     "id": "dead",
+     "name": "dead",
+     "expression": "D",
+     "expression_mathml": "<ci>D</ci>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
