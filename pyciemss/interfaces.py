@@ -785,11 +785,13 @@ def optimize(
             - A callable function defining the quantity of interest to optimize over.
         risk_bounds: float
             - The threshold on the risk constraint.
-        static_parameter_interventions: Dict[torch.Tensor, str]
-            - A dictionary of the form {intervention_time: parameter_name}
-              of static parameter interventions to optimize over.
-            - Each key is the time at which the intervention is applied.
-            - Each value is a string with the intervention parameter name.
+        static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
+            - A callable function of static parameter interventions to optimize over.
+            - The callable functions are created using the provided templates:
+                - param_value_objective(): creates a static parameter intervention when optimizing over 
+                (multiple) parameter values
+                - start_time_objective(): creates a static parameter intervention when optimizing over 
+                (multiple) start times for different parameter
         objfun: Callable
             - The objective function defined as a callable function definition.
             - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
