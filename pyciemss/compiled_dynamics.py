@@ -70,7 +70,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
             return eval_deriv(self.src, self, X)
         except Exception:
             raise ValueError(
-                "The model derivative could not be evaluated. Please check the model definition."
+                "The model derivative could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, or an error in the derivative definition."
             )
 
@@ -80,7 +80,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
             return eval_initial_state(self.src, self)
         except Exception:
             raise ValueError(
-                "The model initial state could not be evaluated. Please check the model definition."
+                "The model initial state could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, or an error in the initial state definition."
             )
 
@@ -90,7 +90,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
             return eval_observables(self.src, self, X)
         except Exception:
             raise ValueError(
-                "The model observables could not be evaluated. Please check the model definition."
+                "The model observables could not be evaluated. Please check the model definition. "
                 "This could be due to to a missing state variable or parameter, or an error in the observables definition."
             )
 
