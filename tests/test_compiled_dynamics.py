@@ -55,3 +55,12 @@ def test_compiled_dynamics_load_json(url, start_time, end_time):
     with TorchDiffEq():
         simulation = model(torch.as_tensor(start_time), torch.as_tensor(end_time))
     check_is_state(simulation, torch.Tensor)
+
+
+@pytest.mark.parametrize("url", MODEL_URLS)
+def test_params_with_distributions(url):
+    model = CompiledDynamics.load(url)
+    assert isinstance(model, CompiledDynamics)
+    assert len(model.params_with_distributions()) > 0
+
+    # TODO: add models without distributions to test
