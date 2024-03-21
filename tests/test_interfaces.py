@@ -21,6 +21,7 @@ from .fixtures import (
     MAPPING_FOR_DATA_TESTS,
     MODEL_URLS,
     MODELS,
+    MODELS_WITHOUT_DISTRIBUTIONS,
     NON_POS_INTS,
     NUM_SAMPLES,
     OPT_MODELS,
@@ -696,4 +697,14 @@ def test_bad_euler_solver_optimize(model_fixture):
             2.0,
             logging_step_size,
             **optimize_kwargs,
+        )
+
+
+@pytest.mark.parametrize("model_fixture", MODELS_WITHOUT_DISTRIBUTIONS)
+def test_calibrate_no_distributions(model_fixture):
+    with pytest.raises(ValueError):
+        calibrate(
+            model_fixture.url,
+            model_fixture.data_path,
+            data_mapping=model_fixture.data_mapping,
         )
