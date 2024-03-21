@@ -90,11 +90,10 @@ class CompiledDynamics(pyro.nn.PyroModule):
                             "This is likely due to a stiff system of ODEs. "
                             "Try changing the (distribution on) parameters, the rate laws, "
                             "the initial state, or the time span."
-                        )
+                        ) from e
                     else:
                         raise e
-                    
-                
+
                 state = lt.trajectory
         else:
             state = simulate(self.deriv, self.initial_state(), start_time, end_time)
