@@ -24,7 +24,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
 
         try:
             params = _compile_param_values(self.src)
-        except:
+        except Exception:
             raise ValueError(
                 "The model parameters could not be compiled. Please check the model definition."
             )
@@ -43,21 +43,21 @@ class CompiledDynamics(pyro.nn.PyroModule):
         # Compile the numeric derivative of the model from the transition rate laws.
         try:
             setattr(self, "numeric_deriv_func", _compile_deriv(src))
-        except:
+        except Exception:
             raise ValueError(
                 "The model derivative could not be compiled. Please check the model definition."
             )
 
         try:
             setattr(self, "numeric_initial_state_func", _compile_initial_state(src))
-        except:
+        except Exception:
             raise ValueError(
                 "The model initial state could not be compiled. Please check the model definition."
             )
 
         try:
             setattr(self, "numeric_observables_func", _compile_observables(src))
-        except:
+        except Exception:
             raise ValueError(
                 "The model observables could not be compiled. Please check the model definition."
             )
