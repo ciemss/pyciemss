@@ -791,8 +791,10 @@ def optimize(
         static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
             - A callable function of static parameter interventions to optimize over.
             - The callable functions are created using the provided templates:
-                - param_value_objective(): creates a static parameter intervention when optimizing over (multiple) parameter values
-                - start_time_objective(): creates a static parameter intervention when optimizing over (multiple) start times for different parameter
+                - param_value_objective(): creates a static parameter intervention when optimizing over
+                (multiple) parameter values
+                - start_time_objective(): creates a static parameter intervention when optimizing over
+                (multiple) start times for different parameter
         objfun: Callable
             - The objective function defined as a callable function definition.
             - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
@@ -939,16 +941,23 @@ def optimize(
         # Check optimize results and provide appropriate warnings
         if opt_results["success"]:
             warnings.warn(
-                "Optimal intervention policy satisfies constraints and is within set bounds. If better policy is desired, try (i) expanding the bounds_interventions, (ii) relaxing risk_bounds, and/or (iii) increasing maxiter and maxfeval or different initial_guess_interventions."
+                "Optimal intervention policy satisfies constraints and is within set bounds."
+                "If better policy is desired, try"
+                "(i) expanding the bounds_interventions, (ii) relaxing risk_bounds, and/or"
+                "(iii) increasing maxiter and maxfeval or different initial_guess_interventions."
             )
         else:
             if np.any(opt_results.x - u_min < 0) or np.any(u_max - opt_results.x < 0):
                 warnings.warn(
-                    "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or (ii) different initial_guess_interventions."
+                    "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or"
+                    "(ii) different initial_guess_interventions."
                 )
             if opt_results["lowest_optimization_result"]["maxcv"] > 0:
                 warnings.warn(
-                    "Optimal intervention policy does not satisfy constraints. Check if the risk_bounds value is appropriate for given problem. Otherwise, try (i) different initial_guess_interventions, (ii) increasing maxiter and maxfeval, and/or (iii) increase n_samples_ouu to improve accuracy of Monte Carlo risk estimation. "
+                    "Optimal intervention policy does not satisfy constraints."
+                    "Check if the risk_bounds value is appropriate for given problem."
+                    "Otherwise, try (i) different initial_guess_interventions, (ii) increasing maxiter/maxfeval,"
+                    "and/or (iii) increase n_samples_ouu to improve accuracy of Monte Carlo risk estimation. "
                 )
 
         return ouu_results
