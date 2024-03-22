@@ -7,9 +7,13 @@ PyCIEMSS is a library for causal and probabilistic reasoning with continuous tim
 PyCIEMSS automates the following standard high-level modeling tasks.
 
 `sample`: Sample simulated trajectories from a probabilistic dynamical systems model. Optionally, add causal interventions.
+
 `calibrate`: Update dynamical systems parameters from data. Optionally, add causal interventions.
+
 `optimize`: Find the intervention that best achieves some objective subject to (probabilistic) constraints.
+
 `ensemble_sample`: Sample simulated trajectories from an ensemble of probabilistic dynamical systems models.
+
 `ensemble_calibrate`: Update dynamical systems parameters and mixture weights for an ensemble of probabilistic dynamical systems models.
 
 # Getting Started
