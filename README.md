@@ -24,7 +24,7 @@ See our [interfaces notebook](./docs/source/interfaces.ipynb) for example usage 
 
 # Intermediate Usage
 
-While PyCIEMSS does not require any direct interaction with ChiRho, there are some use-cases where it makes sense to (i) compile models from the [standardized JSON templates](https://github.com/DARPA-ASKEM/Model-Representations) using PyCIEMSS and then (ii) use ChiRho directly to answer advanced probabilsitic and causal questions. For example, one may wish to add an uncertain intervention as described in ChiRho's [dynamical systems tutorial](https://basisresearch.github.io/chirho/dynamical_intro.html).
+While PyCIEMSS does not require any direct interaction with ChiRho, there are some use-cases where it makes sense to (i) compile models from the [standardized JSON templates](https://github.com/DARPA-ASKEM/Model-Representations) using PyCIEMSS and then (ii) use ChiRho directly to answer advanced probabilistic and causal questions. For example, one may wish to add an uncertain intervention as described in ChiRho's [dynamical systems tutorial](https://basisresearch.github.io/chirho/dynamical_intro.html).
 
 
 ```
