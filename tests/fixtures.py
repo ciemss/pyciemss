@@ -123,6 +123,17 @@ OPT_MODELS = [
     ),
 ]
 
+BAD_AMRS = [
+    ModelFixture(
+        os.path.join(MODELS_PATH, "sir-undef-var-initial.json"),
+        "p_cbeta",
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "sir-undef-var-rate-law.json"),
+        "p_cbeta",
+    ),
+]
+
 MODELS = PETRI_MODELS + REGNET_MODELS + STOCKFLOW_MODELS
 
 MODEL_URLS = [model.url for model in MODELS]

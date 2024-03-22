@@ -15,6 +15,7 @@ from pyciemss.interfaces import (
 )
 
 from .fixtures import (
+    BAD_AMRS,
     BADLY_FORMATTED_DATAFRAMES,
     END_TIMES,
     LOGGING_STEP_SIZES,
@@ -696,4 +697,22 @@ def test_bad_euler_solver_optimize(model_fixture):
             2.0,
             logging_step_size,
             **optimize_kwargs,
+        )
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model_fixture", BAD_AMRS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+def test_errors_for_bad_amrs(
+    sample_method, model_fixture, end_time, logging_step_size, num_samples
+):
+    # Assert that a ValueError is raised when AMR contains undefined variables
+    with pytest.raises(ValueError):
+        sample_method(
+            model_fixture.url,
+            end_time,
+            logging_step_size,
+            num_samples,
         )
