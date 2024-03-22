@@ -42,7 +42,7 @@ start_time = torch.tensor(0.0)
 end_time = torch.tensor(10.0)
 
 intervention_time = torch.tensor(10.0)
-intervention_assignment = pyro.sample("intervention_assignment", pyro.distributions.uniform(10., 20.))
+intervention_assignment = pyro.sample("intervention_assignment", pyro.distributions.Uniform(10., 20.))
 
 with StaticIntervention(intervention_time, {"S": intervention_assignment}):
     end_state = sir_model(start_time, end_time)
