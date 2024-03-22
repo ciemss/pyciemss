@@ -1,5 +1,6 @@
 import contextlib
 import time
+import warnings
 from math import ceil
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -29,6 +30,8 @@ from pyciemss.interruptions import (
 )
 from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
+
+warnings.simplefilter("always", UserWarning)
 
 
 @pyciemss_logging_wrapper
@@ -785,11 +788,13 @@ def optimize(
             - A callable function defining the quantity of interest to optimize over.
         risk_bounds: float
             - The threshold on the risk constraint.
-        static_parameter_interventions: Dict[torch.Tensor, str]
-            - A dictionary of the form {intervention_time: parameter_name}
-              of static parameter interventions to optimize over.
-            - Each key is the time at which the intervention is applied.
-            - Each value is a string with the intervention parameter name.
+        static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
+            - A callable function of static parameter interventions to optimize over.
+            - The callable functions are created using the provided templates:
+                - param_value_objective(): creates a static parameter intervention when optimizing over
+                (multiple) parameter values
+                - start_time_objective(): creates a static parameter intervention when optimizing over
+                (multiple) start times for different parameter
         objfun: Callable
             - The objective function defined as a callable function definition.
             - E.g., to minimize the absolute value of intervention parameters use lambda x: np.sum(np.abs(x))
@@ -933,4 +938,20 @@ def optimize(
             "policy": torch.tensor(opt_results.x),
             "OptResults": opt_results,
         }
+
+        # Check optimize results and provide appropriate warnings
+        if not opt_results["success"]:
+            if np.any(opt_results.x - u_min < 0) or np.any(u_max - opt_results.x < 0):
+                warnings.warn(
+                    "Optimal intervention policy is out of bounds. Try (i) expanding the bounds_interventions and/or"
+                    "(ii) different initial_guess_interventions."
+                )
+            if opt_results["lowest_optimization_result"]["maxcv"] > 0:
+                warnings.warn(
+                    "Optimal intervention policy does not satisfy constraints."
+                    "Check if the risk_bounds value is appropriate for given problem."
+                    "Otherwise, try (i) different initial_guess_interventions, (ii) increasing maxiter/maxfeval,"
+                    "and/or (iii) increase n_samples_ouu to improve accuracy of Monte Carlo risk estimation. "
+                )
+
         return ouu_results
