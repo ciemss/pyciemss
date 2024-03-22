@@ -1,0 +1,369 @@
+{
+ "header": {
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "r_1",
+    "name": "r_1",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "1"
+     }
+    }
+   },
+   {
+    "id": "r_2",
+    "name": "r_2",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "2"
+     }
+    }
+   },
+   {
+    "id": "r_3",
+    "name": "r_3",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "3"
+     }
+    }
+   },
+   {
+    "id": "p_1",
+    "name": "p_1",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "1"
+     }
+    }
+   },
+   {
+    "id": "p_2",
+    "name": "p_2",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "2"
+     }
+    }
+   },
+   {
+    "id": "p_3",
+    "name": "p_3",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {
+      "species": "3"
+     }
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "r_1"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "r_2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "r_3"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "r_1"
+    ],
+    "output": [
+     "r_1",
+     "p_1"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "r_2"
+    ],
+    "output": [
+     "r_2",
+     "p_2"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "r_3"
+    ],
+    "output": [
+     "r_3",
+     "p_3"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "p_1"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "p_2"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "p_3"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "p_1"
+    ],
+    "output": [
+     "p_1",
+     "r_1"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "p_1"
+    ],
+    "output": [
+     "p_1",
+     "r_2"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "p_1"
+    ],
+    "output": [
+     "p_1",
+     "r_3"
+    ],
+    "properties": {
+     "name": "t12"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "V_0*r_1",
+     "expression_mathml": "<apply><times/><ci>V_0</ci><ci>r_1</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "V_1*r_2",
+     "expression_mathml": "<apply><times/><ci>V_1</ci><ci>r_2</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "V_2*r_3",
+     "expression_mathml": "<apply><times/><ci>V_2</ci><ci>r_3</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "L_0*r_1",
+     "expression_mathml": "<apply><times/><ci>L_0</ci><ci>r_1</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "L_1*r_2",
+     "expression_mathml": "<apply><times/><ci>L_1</ci><ci>r_2</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "L_2*r_3",
+     "expression_mathml": "<apply><times/><ci>L_2</ci><ci>r_3</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "U_0*p_1",
+     "expression_mathml": "<apply><times/><ci>U_0</ci><ci>p_1</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "U_1*p_2",
+     "expression_mathml": "<apply><times/><ci>U_1</ci><ci>p_2</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "U_2*p_3",
+     "expression_mathml": "<apply><times/><ci>U_2</ci><ci>p_3</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "C_0*p_1",
+     "expression_mathml": "<apply><times/><ci>C_0</ci><ci>p_1</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "C_1*p_1",
+     "expression_mathml": "<apply><times/><ci>C_1</ci><ci>p_1</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "C_2*p_1",
+     "expression_mathml": "<apply><times/><ci>C_2</ci><ci>p_1</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "r_1",
+     "expression": "3.0",
+     "expression_mathml": "<cn>3.0</cn>"
+    },
+    {
+     "target": "r_2",
+     "expression": "6.0",
+     "expression_mathml": "<cn>6.0</cn>"
+    },
+    {
+     "target": "r_3",
+     "expression": "5.0",
+     "expression_mathml": "<cn>5.0</cn>"
+    },
+    {
+     "target": "p_1",
+     "expression": "100.0",
+     "expression_mathml": "<cn>100.0</cn>"
+    },
+    {
+     "target": "p_2",
+     "expression": "500.0",
+     "expression_mathml": "<cn>500.0</cn>"
+    },
+    {
+     "target": "p_3",
+     "expression": "1.0",
+     "expression_mathml": "<cn>1.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "V_0",
+     "value": 0.03
+    },
+    {
+     "id": "V_1",
+     "value": 0.03
+    },
+    {
+     "id": "V_2",
+     "value": 0.03
+    },
+    {
+     "id": "L_0",
+     "value": 2.0
+    },
+    {
+     "id": "L_1",
+     "value": 2.0
+    },
+    {
+     "id": "L_2",
+     "value": 2.0
+    },
+    {
+     "id": "U_0",
+     "value": 0.15
+    },
+    {
+     "id": "U_1",
+     "value": 0.15
+    },
+    {
+     "id": "U_2",
+     "value": 0.015
+    },
+    {
+     "id": "C_0",
+     "value": 0.3
+    },
+    {
+     "id": "C_1",
+     "value": 0.03
+    },
+    {
+     "id": "C_2",
+     "value": 0.024
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {}
+ }
+}
