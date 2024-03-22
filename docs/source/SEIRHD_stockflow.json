@@ -1,0 +1,438 @@
+{
+  "id": "seirhd-stockflow",
+  "header": {
+    "name": "SEIRHD Model",
+    "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/stockflow_v0.1/stockflow/stockflow_schema.json",
+    "description": "SEIRHD model",
+    "schema_name": "stockflow",
+    "model_version": "0.1"
+  },
+  "model": {
+    "flows": [
+      {
+        "id": "flow1",
+        "name": "NewExposed",
+        "upstream_stock": "S",
+        "downstream_stock": "E",
+        "rate_expression": "cbeta * S * I / N",
+        "rate_expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>cbeta</ci></apply><ci>N</ci></apply>"
+      },
+      {
+        "id": "flow2",
+        "name": "NewInfected",
+        "upstream_stock": "E",
+        "downstream_stock": "I",
+        "rate_expression": "E*cdelta",
+        "rate_expression_mathml": "<apply><times/><ci>E</ci><ci>cdelta</ci></apply>"
+      },
+      {
+        "id": "flow3",
+        "name": "NewHosp",
+        "upstream_stock": "I",
+        "downstream_stock": "H",
+        "rate_expression": "I*cgamma*hosp",
+        "rate_expression_mathml": "<apply><times/><ci>I</ci><ci>cgamma</ci><ci>hosp</ci></apply>"
+      },
+      {
+        "id": "flow4",
+        "name": "NewRecovery",
+        "upstream_stock": "I",
+        "downstream_stock": "R",
+        "rate_expression": "I*cgamma*(1 - hosp)",
+        "rate_expression_mathml": "<apply><times/><ci>I</ci><ci>cgamma</ci><apply><minus/><cn>1</cn><ci>hosp</ci></apply></apply>"
+      },
+      {
+        "id": "flow5",
+        "name": "NewRecoveryFromHosp",
+        "upstream_stock": "H",
+        "downstream_stock": "R",
+        "rate_expression": "(1 - death) * H / los",
+        "rate_expression_mathml": "<apply><divide/><apply><times/> <apply><minus/><cn>1</cn><ci>death</ci></apply><ci>H</ci></apply><ci>los</ci></apply>"
+      },
+      {
+        "id": "flow6",
+        "name": "NewDeath",
+        "upstream_stock": "H",
+        "downstream_stock": "D",
+        "rate_expression": "death * H / los",
+        "rate_expression_mathml": "<apply><divide/><apply><times/><ci>death</ci><ci>H</ci></apply><ci>los</ci></apply>"
+      }
+    ],
+    "stocks": [
+      {
+        "id": "S",
+        "name": "Susceptible",
+        "grounding": {
+          "identifiers": {
+            "ido": "0000514"
+          }
+        }
+      },
+      {
+        "id": "E",
+        "name": "Exposed"
+      },
+      {
+        "id": "I",
+        "name": "Infected"
+      },
+      {
+        "id": "R",
+        "name": "Recovered"
+      },
+      {
+        "id": "H",
+        "name": "Hospitalized"
+      },
+      {
+        "id": "D",
+        "name": "Deceased"
+      }
+    ],
+    "auxiliaries": [
+      {
+        "id": "cbeta",
+        "name": "cbeta",
+        "expression": "1.0 * p_cbeta",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_cbeta</ci></apply>"
+      },
+      {
+        "id": "cdelta",
+        "name": "cdelta",
+        "expression": "1.0 * p_cdelta",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_cdelta</ci></apply>"
+      },
+      {
+        "id": "N",
+        "name": "N",
+        "expression": "1.0 * p_N",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_N</ci></apply>"
+      },
+      {
+        "id": "death",
+        "name": "death",
+        "expression": "1.0 * p_death",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_death</ci></apply>"
+      },
+      {
+        "id": "hosp",
+        "name": "hosp",
+        "expression": "1.0 * p_hosp",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_hosp</ci></apply>"
+      },
+      {
+        "id": "los",
+        "name": "los",
+        "expression": "1.0 * p_los",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_los</ci></apply>"
+      },
+      {
+        "id": "cgamma",
+        "name": "cgamma",
+        "expression": "1.0 * p_cgamma",
+        "expression_mathml": "<apply><times/><cn>1.0</cn><ci>p_cgamma</ci></apply>"
+      }
+    ],
+    "links": [
+      {
+        "id": "link1",
+        "source": "S",
+        "target": "flow1"
+      },
+      {
+        "id": "link2",
+        "source": "E",
+        "target": "flow1"
+      },
+      {
+        "id": "link3",
+        "source": "I",
+        "target": "flow1"
+      },
+      {
+        "id": "link4",
+        "source": "cbeta",
+        "target": "flow1"
+      },
+      {
+        "id": "link5",
+        "source": "N",
+        "target": "flow1"
+      },
+      {
+        "id": "link6",
+        "source": "E",
+        "target": "flow2"
+      },
+      {
+        "id": "link7",
+        "source": "I",
+        "target": "flow2"
+      },
+      {
+        "id": "link8",
+        "source": "cdelta",
+        "target": "flow2"
+      },
+      {
+        "id": "link9",
+        "source": "I",
+        "target": "flow3"
+      },
+      {
+        "id": "link10",
+        "source": "H",
+        "target": "flow3"
+      },
+      {
+        "id": "link11",
+        "source": "cgamma",
+        "target": "flow3"
+      },
+      {
+        "id": "link12",
+        "source": "hosp",
+        "target": "flow3"
+      },
+      {
+        "id": "link13",
+        "source": "I",
+        "target": "flow4"
+      },
+      {
+        "id": "link14",
+        "source": "R",
+        "target": "flow4"
+      },
+      {
+        "id": "link15",
+        "source": "cgamma",
+        "target": "flow4"
+      },
+      {
+        "id": "link16",
+        "source": "hosp",
+        "target": "flow4"
+      },
+      {
+        "id": "link17",
+        "source": "H",
+        "target": "flow5"
+      },
+      {
+        "id": "link18",
+        "source": "R",
+        "target": "flow5"
+      },
+      {
+        "id": "link19",
+        "source": "death",
+        "target": "flow5"
+      },
+      {
+        "id": "link20",
+        "source": "los",
+        "target": "flow5"
+      },
+      {
+        "id": "link21",
+        "source": "H",
+        "target": "flow6"
+      },
+      {
+        "id": "link22",
+        "source": "D",
+        "target": "flow6"
+      },
+      {
+        "id": "link23",
+        "source": "death",
+        "target": "flow6"
+      },
+      {
+        "id": "link24",
+        "source": "los",
+        "target": "flow6"
+      }
+    ]
+  },
+  "semantics": {
+    "ode": {
+      "parameters": [
+        {
+          "id": "p_cbeta",
+          "name": "p_cbeta",
+          "description": "transmission rate",
+          "value": 0.35,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.25,
+              "maximum": 0.45
+            }
+          }
+        },
+        {
+          "id": "p_N",
+          "name": "p_N",
+          "description": "overall population",
+          "value": 1001
+        },
+        {
+          "id": "p_cdelta",
+          "name": "p_cdelta",
+          "description": "latency period",
+          "value": 0.2,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.1,
+              "maximum": 0.3
+            }
+          }
+        },
+        {
+          "id": "p_cgamma",
+          "name": "p_cgamma",
+          "description": "infectiousness period",
+          "value": 0.2,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.1,
+              "maximum": 0.3
+            }
+          }
+        },
+        {
+          "id": "p_death",
+          "name": "p_death",
+          "description": "death rate of hospitalized",
+          "value": 0.08,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.01,
+              "maximum": 0.1
+            }
+          }
+        },
+        {
+          "id": "p_hosp",
+          "name": "p_hosp",
+          "description": "hospitalization rate of infectious",
+          "value": 0.1,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 0.01,
+              "maximum": 0.2
+            }
+          }
+        },
+        {
+          "id": "p_los",
+          "name": "p_los",
+          "description": "hospitalization length of stay",
+          "value": 7.0,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 5.0,
+              "maximum": 9.0
+            }
+          }
+        },
+        {
+          "id": "S0",
+          "name": "S₀",
+          "description": "Total susceptible population at timestep 0",
+          "value": 1000
+        },
+        {
+          "id": "E0",
+          "name": "E₀",
+          "description": "Total exposed population at timestep 0",
+          "value": 0
+        },
+        {
+          "id": "I0",
+          "name": "I₀",
+          "description": "Total infected population at timestep 0",
+          "value": 3.0,
+          "distribution": {
+            "type": "Uniform1",
+            "parameters": {
+              "minimum": 1.0,
+              "maximum": 10.0
+            }
+          }
+        },
+        {
+          "id": "R0",
+          "name": "R₀",
+          "description": "Total recovered population at timestep 0",
+          "value": 0
+        },
+        {
+          "id": "H0",
+          "name": "H₀",
+          "description": "Total hospitalized population at timestep 0",
+          "value": 0
+        },
+        {
+          "id": "D0",
+          "name": "D₀",
+          "description": "Total deceased population at timestep 0",
+          "value": 0
+        }
+      ],
+      "initials": [
+        {
+          "target": "S",
+          "expression": "p_N - I0",
+          "expression_mathml": "<apply><minus/><ci>p_N</ci><ci>I0</ci></apply>"
+        },
+        {
+          "target": "E",
+          "expression": "E0",
+          "expression_mathml": "<ci>E0</ci>"
+        },
+        {
+          "target": "I",
+          "expression": "I0",
+          "expression_mathml": "<ci>I0</ci>"
+        },
+        {
+          "target": "R",
+          "expression": "R0",
+          "expression_mathml": "<ci>R0</ci>"
+        },
+        {
+          "target": "H",
+          "expression": "H0",
+          "expression_mathml": "<ci>H0</ci>"
+        },
+        {
+          "target": "D",
+          "expression": "D0",
+          "expression_mathml": "<ci>D0</ci>"
+        }
+      ],
+      "observables": [
+        {
+          "id": "I",
+          "name": "infected",
+          "expression": "I",
+          "expression_mathml": "<ci>I</ci>"
+        },
+        {
+          "id": "H",
+          "name": "hospitalized",
+          "expression": "H",
+          "expression_mathml": "<ci>H</ci>"
+        }
+      ]
+    }
+  }
+}
