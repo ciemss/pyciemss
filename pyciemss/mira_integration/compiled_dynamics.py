@@ -36,6 +36,7 @@ def _compile_deriv_mira(src: mira.modeling.Model) -> Callable[..., Tuple[torch.T
     symbolic_deriv = {get_name(var): 0 for var in src.variables.values()}
     for transition in src.transitions.values():
         flux = transition.template.rate_law.args[0]
+        print(flux)
         for c in transition.consumed:
             symbolic_deriv[get_name(c)] -= flux
         for p in transition.produced:
