@@ -1,10 +1,14 @@
+import json
 from numbers import Number
+from pathlib import Path
 from typing import Callable, List, Literal, Optional, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
 
 from . import vega
+
+_output_root = Path(__file__).parent / "data"
 
 
 def sturges_bin(data):
@@ -208,4 +212,35 @@ def heatmap_scatter(
             schema["data"], "mesh", ["values"], json_heatmap
         )
 
+    return schema
+
+
+def map_heatmap(mesh: pd.DataFrame = None) -> vega.VegaSchema:
+    """
+    mesh -- (Optional) pd.DataFrame with columns
+        lon_start, lon_end, lat_start, lat_end, count for each grid
+    """
+
+    schema = vega.load_schema("map_heatmap.vg.json")
+    mesh_array = mesh.to_json(orient="records")
+    # load heatmap data
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "mesh", ["values"], json.loads(mesh_array)
+    )
+    #
+    # add in map topology data
+    world_path = _output_root / "world-110m.json"
+    f = open(world_path)
+    world_data = json.load(f)
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "world", ["values"], world_data
+    )
+
+    # add in country names
+    country_names_path = _output_root / "country_names.csv"
+
+    name_data = pd.read_csv(country_names_path).to_json(orient="records")
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "names", ["values"], json.loads(name_data)
+    )
     return schema
