@@ -1,7 +1,7 @@
+import json
 import random
 from itertools import chain
 from pathlib import Path
-import json
 
 import networkx as nx
 import numpy as np
