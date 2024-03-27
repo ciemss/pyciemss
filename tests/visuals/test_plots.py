@@ -1,5 +1,7 @@
 import random
 from itertools import chain
+from pathlib import Path
+import json
 
 import networkx as nx
 import numpy as np
@@ -453,3 +455,23 @@ class TestGraph:
             n = [n for n in nodes if n["label"] == id][0]
             assert n["inputX"] == x, f"Layout lost for {id}"
             assert n["inputY"] == y, f"Layout lost for {id}"
+
+class TestHeatmap:
+    def test_heatmap(self):
+        # load the heatmap with mesh data
+        output_root = 'heatmap'
+        mesh_input = pd.DataFrame([
+                {"lon_start": 0, "lon_end": 50, "lat_start": 0, "lat_end": 50, "count": 10},
+                {"lon_start": 50, "lon_end": 60, "lat_start": 50, "lat_end": 70, "count": 3000}
+            ])
+        schema = plots.map_heatmap(mesh_input)
+        plots.ipy_display(schema, format="interactive", output_root = output_root)
+        if isinstance(output_root, str):
+                output_root = Path(output_root)
+
+        # check output schema matches mesh input
+        output_schema_file = output_root / "modified_map_heatmap.json"
+        with open(output_schema_file, 'r') as json_data:
+            output_schema = json.load(json_data)
+        mesh_output = vega.find_named(output_schema["data"], "mesh")["values"]
+        assert pd.DataFrame.from_dict(mesh_output).equals(mesh_input)
