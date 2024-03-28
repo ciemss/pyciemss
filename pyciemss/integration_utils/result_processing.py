@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
 
 import numpy as np
@@ -144,7 +145,8 @@ def find_target_col(var: str, options: List[str]):
     # TODO: This "underscore-trailing-name matching" seems very fragile....
     #       It is done this way since you can intervene on params & states
     #       and that will match either.
-    options = [c for c in options if f"{var}_" in c]
+    pattern = re.compile(f"(?:^|_){var}_(state|param)")
+    options = [c for c in options if pattern.search(c)]
     if len(options) == 0:
         raise KeyError(f"No target column match found for '{var}'.")
     if len(options) > 1:
