@@ -59,15 +59,34 @@ def test_get_times_for(intervention):
 
 @pytest.mark.parametrize("name", ["underscored", "with_underscore", "I", "i"])
 def test_find_target_col(name):
-    columns = [
-        "before_underscored",
-        "underscored_after",
-        "before_with_underscore_after",
-        "stuff_I_stuff",
+    good_columns = [
+        "before_underscored_param",
+        "underscored_after_state",
+        "sample_with_underscore_state",
         "i_state",
+        "sampli_id_state",
+        "persistent_I_param"
     ]
-    result = result_processing.find_target_col(name, columns)
+    result = result_processing.find_target_col(name, good_columns)
     assert name in result
+    multiple_match_columns = ["i_state",
+                              "persistent_i_param",
+                              "before_underscored_param",
+                              "underscored_param",
+                              "with_underscore_param",
+                              "not_with_underscore_state",
+                              "With_I_param",
+                              "I_state",
+                              ]
+    with pytest.raises(ValueError):
+        result_processing.find_target_col(name, multiple_match_columns)
+    no_match_columns = ["stuff_I_stuff_state",
+                        "sampli_state",
+                        "before_with_underscore_after_param",
+                        "underscored_after_state"]
+    with pytest.raises(KeyError):
+        result_processing.find_target_col(name, no_match_columns)
+
 
 
 @pytest.mark.parametrize("logging_step_size", [1, 5, 10, 12, 23])
