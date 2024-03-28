@@ -1,0 +1,331 @@
+{
+  "id": "bde0f482-9de0-44a1-8bd9-abe2d43e99ba",
+  "name": "3a_conf2",
+  "createdOn": "2024-03-27T17:39:33.302+00:00",
+  "temporary": false,
+  "publicAsset": false,
+  "description": "",
+  "configuration": {
+    "id": "348d0c7a-87af-4c5e-9182-75deda5551d9",
+    "name": "s2_3",
+    "createdOn": "2024-03-26T18:34:48.497+00:00",
+    "temporary": false,
+    "publicAsset": false,
+    "header": {
+      "name": "s2_3",
+      "description": "This is a model from equations",
+      "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+      "schema_name": "petrinet",
+      "model_version": "0.1"
+    },
+    "model": {
+      "states": [
+        {
+          "id": "S",
+          "name": "S",
+          "grounding": {
+            "identifiers": {},
+            "modifiers": {}
+          }
+        },
+        {
+          "id": "I",
+          "name": "I",
+          "grounding": {
+            "identifiers": {},
+            "modifiers": {}
+          }
+        },
+        {
+          "id": "H",
+          "name": "H",
+          "grounding": {
+            "identifiers": {},
+            "modifiers": {}
+          }
+        },
+        {
+          "id": "D",
+          "name": "D",
+          "grounding": {
+            "identifiers": {},
+            "modifiers": {}
+          }
+        },
+        {
+          "id": "R",
+          "name": "R",
+          "grounding": {
+            "identifiers": {},
+            "modifiers": {}
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t0",
+          "input": [
+            "I",
+            "S"
+          ],
+          "output": [
+            "I",
+            "I"
+          ],
+          "properties": {
+            "name": "t0"
+          }
+        },
+        {
+          "id": "t1",
+          "input": [
+            "H"
+          ],
+          "output": [
+            "D"
+          ],
+          "properties": {
+            "name": "t1"
+          }
+        },
+        {
+          "id": "t2",
+          "input": [
+            "I"
+          ],
+          "output": [
+            "H"
+          ],
+          "properties": {
+            "name": "t2"
+          }
+        },
+        {
+          "id": "t3",
+          "input": [
+            "I"
+          ],
+          "output": [
+            "R"
+          ],
+          "properties": {
+            "name": "t3"
+          }
+        },
+        {
+          "id": "t4",
+          "input": [
+            "H"
+          ],
+          "output": [
+            "R"
+          ],
+          "properties": {
+            "name": "t4"
+          }
+        }
+      ]
+    },
+    "properties": {},
+    "semantics": {
+      "ode": {
+        "rates": [
+          {
+            "target": "t0",
+            "expression": "I*S*beta/N",
+            "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><ci>N</ci></apply>"
+          },
+          {
+            "target": "t1",
+            "expression": "H*d*h",
+            "expression_mathml": "<apply><times/><ci>H</ci><ci>d</ci><ci>h</ci></apply>"
+          },
+          {
+            "target": "t2",
+            "expression": "I*b*f",
+            "expression_mathml": "<apply><times/><ci>I</ci><ci>b</ci><ci>f</ci></apply>"
+          },
+          {
+            "target": "t3",
+            "expression": "I*a*e",
+            "expression_mathml": "<apply><times/><ci>I</ci><ci>a</ci><ci>e</ci></apply>"
+          },
+          {
+            "target": "t4",
+            "expression": "H*c*g",
+            "expression_mathml": "<apply><times/><ci>H</ci><ci>c</ci><ci>g</ci></apply>"
+          }
+        ],
+        "initials": [
+          {
+            "target": "S",
+            "expression": "149808412.0",
+            "expression_mathml": "<cn>149808412.0</cn>"
+          },
+          {
+            "target": "I",
+            "expression": "137002.0",
+            "expression_mathml": "<cn>137002.0</cn>"
+          },
+          {
+            "target": "H",
+            "expression": "52585.0",
+            "expression_mathml": "<cn>52585.0</cn>"
+          },
+          {
+            "target": "D",
+            "expression": "2001.0",
+            "expression_mathml": "<cn>2001.0</cn>"
+          },
+          {
+            "target": "R",
+            "expression": "0.0",
+            "expression_mathml": "<cn>0.0</cn>"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "N",
+            "name": "N",
+            "description": "Total population",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 150000000,
+                "maximum": 150000100
+              }
+            }
+          },
+          {
+            "id": "beta",
+            "name": "β",
+            "description": "Number of infections per infected person per day",
+            "value": 0.16,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.25,
+                "maximum": 0.251
+              }
+            }
+          },
+          {
+            "id": "d",
+            "name": "d",
+            "description": "rate from H to D",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.1,
+                "maximum": 0.99
+              }
+            }
+          },
+          {
+            "id": "h",
+            "name": "h",
+            "description": "prob of moving from H to D",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.129,
+                "maximum": 0.13
+              }
+            }
+          },
+          {
+            "id": "b",
+            "name": "b",
+            "description": "rate from I to H",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.07,
+                "maximum": 0.33
+              }
+            }
+          },
+          {
+            "id": "f",
+            "name": "f",
+            "description": "prob of moving from I to H",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.09,
+                "maximum": 0.1
+              }
+            }
+          },
+          {
+            "id": "a",
+            "name": "a",
+            "description": "rate from I to R",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.07,
+                "maximum": 0.1
+              }
+            }
+          },
+          {
+            "id": "e",
+            "name": "e",
+            "description": "prob of moving from I to R",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.9,
+                "maximum": 0.91
+              }
+            }
+          },
+          {
+            "id": "c",
+            "name": "c",
+            "description": "rate from H to R",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.07,
+                "maximum": 0.33
+              }
+            }
+          },
+          {
+            "id": "g",
+            "name": "g",
+            "description": "prob of moving from H to R",
+            "value": 1,
+            "distribution": {
+              "type": "StandardUniform1",
+              "parameters": {
+                "minimum": 0.87,
+                "maximum": 0.871
+              }
+            }
+          }
+        ],
+        "observables": [],
+        "time": {
+          "id": "t"
+        }
+      }
+    },
+    "metadata": {
+      "timeseries": {},
+      "initials": {},
+      "parameters": {}
+    }
+  },
+  "model_id": "348d0c7a-87af-4c5e-9182-75deda5551d9"
+}
