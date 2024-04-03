@@ -10,7 +10,7 @@ from pyciemss.integration_utils.intervention_builder import (
     param_value_objective,
     start_time_objective,
 )
-from pyciemss.ouu.qoi import obs_nday_average_qoi
+from pyciemss.ouu.qoi import obs_max_qoi, obs_nday_average_qoi
 
 T = TypeVar("T")
 
@@ -110,6 +110,19 @@ optimize_kwargs_SIRstockflow_time = {
     "bounds_interventions": [[0.0], [40.0]],
 }
 
+optimize_kwargs_SIRstockflow_param_maxQoI = {
+    "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
+    "risk_bound": 300.0,
+    "static_parameter_interventions": param_value_objective(
+        param_name=["p_cbeta"],
+        param_value=[lambda x: torch.tensor([x])],
+        start_time=[torch.tensor(1.0)],
+    ),
+    "objfun": lambda x: np.abs(0.35 - x),
+    "initial_guess_interventions": 0.15,
+    "bounds_interventions": [[0.1], [0.5]],
+}
+
 OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
@@ -120,6 +133,11 @@ OPT_MODELS = [
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         important_parameter="p_cbeta",
         optimize_kwargs=optimize_kwargs_SIRstockflow_time,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        important_parameter="p_cbeta",
+        optimize_kwargs=optimize_kwargs_SIRstockflow_param_maxQoI,
     ),
 ]
 
