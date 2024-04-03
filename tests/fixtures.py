@@ -10,7 +10,7 @@ from pyciemss.integration_utils.intervention_builder import (
     param_value_objective,
     start_time_objective,
 )
-from pyciemss.ouu.qoi import obs_nday_average_qoi, obs_max_qoi
+from pyciemss.ouu.qoi import obs_max_qoi, obs_nday_average_qoi
 
 T = TypeVar("T")
 
