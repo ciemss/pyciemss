@@ -18,9 +18,7 @@ def obs_nday_average_qoi(
     return np.mean(dataQoI[:, -ndays:], axis=1)
 
 
-def obs_max_qoi(
-    samples: Dict[str, torch.Tensor], contexts: List
-) -> np.ndarray:
+def obs_max_qoi(samples: Dict[str, torch.Tensor], contexts: List) -> np.ndarray:
     """
     Return maximum value over simulated time.
     samples is is the output from a Pyro Predictive object.
