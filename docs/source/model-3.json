@@ -1,7 +1,7 @@
 {
-  "id": "bde0f482-9de0-44a1-8bd9-abe2d43e99ba",
-  "name": "3a_conf2",
-  "createdOn": "2024-03-27T17:39:33.302+00:00",
+  "id": "252c674e-d5cc-4578-8060-fc1730c22e99",
+  "name": "3a_conf3_widerintervalHigh",
+  "createdOn": "2024-04-04T13:31:56.778+00:00",
   "temporary": false,
   "publicAsset": false,
   "description": "",
@@ -9,6 +9,7 @@
     "id": "348d0c7a-87af-4c5e-9182-75deda5551d9",
     "name": "s2_3",
     "createdOn": "2024-03-26T18:34:48.497+00:00",
+    "updatedOn": "2024-03-29T17:51:01.201+00:00",
     "temporary": false,
     "publicAsset": false,
     "header": {
@@ -205,8 +206,8 @@
             "distribution": {
               "type": "StandardUniform1",
               "parameters": {
-                "minimum": 0.25,
-                "maximum": 0.251
+                "minimum": 0.26,
+                "maximum": 0.5
               }
             }
           },
