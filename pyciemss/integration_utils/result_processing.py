@@ -1,5 +1,4 @@
-import re
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 import numpy as np
 import pandas as pd
