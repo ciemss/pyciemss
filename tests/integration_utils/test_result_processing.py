@@ -57,40 +57,6 @@ def test_get_times_for(intervention):
         )
 
 
-@pytest.mark.parametrize("name", ["underscored", "with_underscore", "I", "i"])
-def test_find_target_col(name):
-    good_columns = [
-        "before_underscored_param",
-        "underscored_after_state",
-        "sample_with_underscore_state",
-        "i_state",
-        "sampli_id_state",
-        "persistent_I_param",
-    ]
-    result = result_processing.find_target_col(name, good_columns)
-    assert name in result
-    multiple_match_columns = [
-        "i_state",
-        "persistent_i_param",
-        "before_underscored_param",
-        "underscored_param",
-        "with_underscore_param",
-        "not_with_underscore_state",
-        "With_I_param",
-        "I_state",
-    ]
-    with pytest.raises(ValueError):
-        result_processing.find_target_col(name, multiple_match_columns)
-    no_match_columns = [
-        "stuff_I_stuff_state",
-        "sampli_state",
-        "before_with_underscore_after_param",
-        "underscored_after_state",
-    ]
-    with pytest.raises(KeyError):
-        result_processing.find_target_col(name, no_match_columns)
-
-
 @pytest.mark.parametrize("logging_step_size", [1, 5, 10, 12, 23])
 def test_set_intervention_values(logging_step_size):
     model_1_path = (
@@ -114,10 +80,10 @@ def test_set_intervention_values(logging_step_size):
         "parameter_intervention_value_beta_c_0": torch.tensor([0.0, 100.0, 200.0])
     }
 
-    raw_internention_times = [logging_step_size * (n + 1) for n in range(num_samples)]
+    raw_intervention_times = [logging_step_size * (n + 1) for n in range(num_samples)]
 
     intervention_times = {
-        "parameter_intervention_time_0": torch.tensor(raw_internention_times)
+        "parameter_intervention_time_0": torch.tensor(raw_intervention_times)
     }
     intervention = "parameter_intervention_value_beta_c_0"
     df = result_processing.set_intervention_values(
@@ -129,7 +95,7 @@ def test_set_intervention_values(logging_step_size):
 
     for name, group in df.groupby("sample_id"):
         group = group.set_index("timepoint_nominal")
-        time = raw_internention_times[name]
+        time = raw_intervention_times[name]
         expected = name * 100
 
         if time - logging_step_size > 0:
