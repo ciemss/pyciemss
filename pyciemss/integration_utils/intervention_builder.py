@@ -57,3 +57,16 @@ def start_time_objective(
         return static_parameter_interventions
 
     return intervention_generator
+
+
+def combine_interventions(
+    interventions: List[Dict[torch.Tensor, Dict[str, Intervention]]]
+) -> Dict[torch.Tensor, Dict[str, Intervention]]:
+    static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
+    for intervention in interventions:
+        for key in intervention.keys():
+            if key in static_parameter_interventions:
+                static_parameter_interventions[key].update(intervention[key])
+            else:
+                static_parameter_interventions.update({key: intervention[key]})
+    return static_parameter_interventions

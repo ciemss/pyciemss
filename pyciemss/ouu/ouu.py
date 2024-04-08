@@ -10,6 +10,7 @@ from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
+from pyciemss.integration_utils.intervention_builder import combine_interventions
 from pyciemss.interruptions import (
     ParameterInterventionTracer,
     StaticParameterIntervention,
@@ -70,7 +71,9 @@ class computeRisk:
         risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples: int = 1000,
         guide=None,
-        fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+        fixed_static_parameter_interventions: Dict[
+            torch.Tensor, Dict[str, Intervention]
+        ] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
@@ -121,10 +124,13 @@ class computeRisk:
         with pyro.poutine.seed(rng_seed=0):
             with torch.no_grad():
                 x = np.atleast_1d(x)
-                # Existing interventions
-                static_parameter_interventions = self.fixed_static_parameter_interventions
-                # Intervention being optimized
-                static_parameter_interventions.update(self.interventions(torch.from_numpy(x)))
+                # Combine existing interventions with intervention being optimized
+                static_parameter_interventions = combine_interventions(
+                    [
+                        self.fixed_static_parameter_interventions,
+                        self.interventions(torch.from_numpy(x)),
+                    ]
+                )
                 static_parameter_intervention_handlers = [
                     StaticParameterIntervention(
                         time, dict(**static_intervention_assignment)

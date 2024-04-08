@@ -765,7 +765,9 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    fixed_static_parameter_interventions: Dict[
+        torch.Tensor, Dict[str, Intervention]
+    ] = {},
     n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
@@ -845,7 +847,6 @@ def optimize(
                     - Optimization results as scipy object.
     """
     check_solver(solver_method, solver_options)
-    print(fixed_static_parameter_interventions)
 
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
