@@ -1,5 +1,4 @@
-import re
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -136,26 +135,6 @@ def get_times_for(intervention: str, intervention_times: Mapping[str, Iterable[f
     return intervention_times[valid[0]]
 
 
-def find_target_col(var: str, options: List[str]):
-    """
-    Find the column that corresponds to the var
-    var -- The parsed variable name
-    options -- Column names to search for the variable name
-    """
-    # TODO: This "underscore-trailing-name matching" seems very fragile....
-    #       It is done this way since you can intervene on params & states
-    #       and that will match either.
-    pattern = re.compile(f"(?:^|_){var}_(state|param)")
-    options = [c for c in options if pattern.search(c)]
-    if len(options) == 0:
-        raise KeyError(f"No target column match found for '{var}'.")
-    if len(options) > 1:
-        raise ValueError(
-            f"Could not uniquely determine target column for '{var}'.  Found: {options}"
-        )
-    return options[0]
-
-
 def set_intervention_values(
     df: pd.DataFrame,
     intervention: str,
@@ -171,7 +150,11 @@ def set_intervention_values(
     """
     times = get_times_for(intervention, intervention_times)
     target_var = "_".join(intervention.split("_")[3:-1])
-    target_col = find_target_col(target_var, df.columns)
+    target_col = f"persistent_{target_var}_param"
+
+    if target_col not in df.columns:
+        raise KeyError(f"Could not find target column for '{target_var}'")
+
     time_col = [
         c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"
     ][0]
