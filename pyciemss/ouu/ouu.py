@@ -1,5 +1,6 @@
 import contextlib
 import warnings
+from copy import deepcopy
 from typing import Any, Callable, Dict, List, Tuple
 
 import numpy as np
@@ -127,7 +128,7 @@ class computeRisk:
                 # Combine existing interventions with intervention being optimized
                 static_parameter_interventions = combine_interventions(
                     [
-                        self.fixed_static_parameter_interventions,
+                        deepcopy(self.fixed_static_parameter_interventions),
                         self.interventions(torch.from_numpy(x)),
                     ]
                 )
