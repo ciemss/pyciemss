@@ -70,6 +70,7 @@ class computeRisk:
         risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples: int = 1000,
         guide=None,
+        fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
@@ -84,6 +85,7 @@ class computeRisk:
         self.start_time = start_time
         self.end_time = end_time
         self.guide = guide
+        self.fixed_static_parameter_interventions = fixed_static_parameter_interventions
         self.solver_method = solver_method
         self.solver_options = solver_options
         self.logging_times = torch.arange(
@@ -119,7 +121,10 @@ class computeRisk:
         with pyro.poutine.seed(rng_seed=0):
             with torch.no_grad():
                 x = np.atleast_1d(x)
-                static_parameter_interventions = self.interventions(torch.from_numpy(x))
+                # Existing interventions
+                static_parameter_interventions = self.fixed_static_parameter_interventions
+                # Intervention being optimized
+                static_parameter_interventions.update(self.interventions(torch.from_numpy(x)))
                 static_parameter_intervention_handlers = [
                     StaticParameterIntervention(
                         time, dict(**static_intervention_assignment)

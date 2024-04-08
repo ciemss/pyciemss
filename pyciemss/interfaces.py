@@ -765,6 +765,7 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
+    fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
     n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
@@ -818,6 +819,12 @@ def optimize(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
+        fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+            - A dictionary of fixed static interventions to apply to the model and not optimize for.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
         n_samples_ouu: int
             - The number of samples to draw from the model to estimate risk for each optimization iteration.
         maxiter: int
@@ -838,6 +845,7 @@ def optimize(
                     - Optimization results as scipy object.
     """
     check_solver(solver_method, solver_options)
+    print(fixed_static_parameter_interventions)
 
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
@@ -855,6 +863,7 @@ def optimize(
             risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
             num_samples=1,
             guide=inferred_parameters,
+            fixed_static_parameter_interventions=fixed_static_parameter_interventions,
             solver_method=solver_method,
             solver_options=solver_options,
             u_bounds=bounds_np,
@@ -872,21 +881,23 @@ def optimize(
             print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
         # Assign the required number of MC samples for each OUU iteration
-        RISK = computeRisk(
-            model=control_model,
-            interventions=static_parameter_interventions,
-            qoi=qoi,
-            end_time=end_time,
-            logging_step_size=logging_step_size,
-            start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
-            num_samples=n_samples_ouu,
-            guide=inferred_parameters,
-            solver_method=solver_method,
-            solver_options=solver_options,
-            u_bounds=bounds_np,
-            risk_bound=risk_bound,
-        )
+        # RISK = computeRisk(
+        #     model=control_model,
+        #     interventions=static_parameter_interventions,
+        #     qoi=qoi,
+        #     end_time=end_time,
+        #     logging_step_size=logging_step_size,
+        #     start_time=start_time,
+        #     risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
+        #     num_samples=n_samples_ouu,
+        #     guide=inferred_parameters,
+        #     fixed_static_parameter_interventions=fixed_static_parameter_interventions,
+        #     solver_method=solver_method,
+        #     solver_options=solver_options,
+        #     u_bounds=bounds_np,
+        #     risk_bound=risk_bound,
+        # )
+        RISK.num_samples = n_samples_ouu
         # Define constraints >= 0
         constraints = (
             # risk constraint
