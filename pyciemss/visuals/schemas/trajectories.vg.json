@@ -43,6 +43,18 @@
          ],
          "sort": {"order": "ascending"}
       }
+    },
+    {
+      "name": "transparency",
+      "type": "linear",
+      "range": [0.25, 1],
+      "domain": {
+        "fields": [
+          {"data": "distributions", "field": "qlow"},
+          {"data": "distributions", "field": "high"}
+         ],
+         "sort": {"order": "ascending"}
+      }
     }
   ],
 
@@ -257,7 +269,7 @@
       "facet": {
           "name": "trajectory_split",
           "data": "distributions",
-          "groupby": "trajectory"
+          "groupby": "trajectory_id"
       }
      },
      "marks": [
@@ -278,12 +290,12 @@
 
             "fillOpacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
-               "value": 0.5 },
+               "scale": "transparency", "field": "qlow"},
               {"value": 0.15}
             ],
             "strokeOpacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
-               "value": 0.75},
+              "field": "qlow"},
               {"value": 0.15}
             ]
           },
@@ -394,7 +406,7 @@
         {"timepoint": 4, "upper": 0, "lower": 10, "trajectory": "b"},
         {"timepoint": 6, "upper": 30, "lower": 40, "trajectory": "b"}
       ],
-      "transform": [{"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}]
+      "transform": [{"type": "collect", "sort": {"field": ["trajectory_id", "timepoint"]}}]
     },
     {
       "name": "traces",

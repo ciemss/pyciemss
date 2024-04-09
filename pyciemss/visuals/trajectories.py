@@ -131,8 +131,8 @@ def trajectories(
     base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict] = None,
-    qlow: float = 0.05,
-    qhigh: float = 0.95,
+    qlow: float = [0, 0.05, 0.75],
+    qhigh: float = [1, 0.95, 0.25],
     join_points: bool = True,
     logy: bool = False,
     limit: Optional[Integral] = None,
@@ -191,12 +191,18 @@ def trajectories(
     all_trajectories = distributions_traj + trace_trajectories + point_trajectories
 
     def _quantiles(g):
-        return pd.Series(
-            {
-                "lower": g.quantile(q=qlow).values[0],
-                "upper": g.quantile(q=qhigh).values[0],
-            }
-        )
+        all_points = []
+        for low, high in zip(qlow, qhigh):
+            all_points.append(
+                {
+                    "lower": g.quantile(q=low).values[0],
+                    "upper": g.quantile(q=high).values[0],
+                    "qlow": low,
+                    "qhigh": high,
+                    "trajectory_id": f"{g.name[0]}:{low}:{high}",
+                }
+            )
+        return pd.DataFrame(all_points)
 
     if distributions is not None:
         distributions = (
@@ -206,6 +212,7 @@ def trajectories(
             .apply(_quantiles)
             .reset_index()
             .iloc[:limit]
+            .sort_values(["trajectory_id", "timepoint"])
             .to_dict(orient="records")
         )
     else:
