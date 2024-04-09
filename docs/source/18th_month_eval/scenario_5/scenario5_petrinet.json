@@ -1,0 +1,813 @@
+{
+ "header": {
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "i",
+    "name": "i",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "r_I",
+    "name": "r_I",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Lactose",
+    "name": "Lactose",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I_Lactose",
+    "name": "I_Lactose",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Op",
+    "name": "Op",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "I_Op",
+    "name": "I_Op",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "RNAP",
+    "name": "RNAP",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "RNAP_Op",
+    "name": "RNAP_Op",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "r_lac",
+    "name": "r_lac",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "Z",
+    "name": "Z",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "i"
+    ],
+    "output": [
+     "i",
+     "r_I"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "r_I"
+    ],
+    "output": [
+     "r_I",
+     "I"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I",
+     "Lactose"
+    ],
+    "output": [
+     "I",
+     "Lactose",
+     "I_Lactose"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I",
+     "Lactose"
+    ],
+    "output": [
+     "I"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Lactose",
+     "I"
+    ],
+    "output": [
+     "Lactose"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "I_Lactose"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "I_Lactose"
+    ],
+    "output": [
+     "I_Lactose",
+     "I"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I_Lactose"
+    ],
+    "output": [
+     "I_Lactose",
+     "Lactose"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "I",
+     "Op"
+    ],
+    "output": [
+     "I",
+     "Op",
+     "I_Op"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "I",
+     "Op"
+    ],
+    "output": [
+     "I"
+    ],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "Op",
+     "I"
+    ],
+    "output": [
+     "Op"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "I_Op"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "I_Op"
+    ],
+    "output": [
+     "I_Op",
+     "I"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "I_Op"
+    ],
+    "output": [
+     "I_Op",
+     "Op"
+    ],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "RNAP",
+     "Op"
+    ],
+    "output": [
+     "RNAP",
+     "Op",
+     "RNAP_Op"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "RNAP",
+     "Op"
+    ],
+    "output": [
+     "RNAP"
+    ],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "Op",
+     "RNAP"
+    ],
+    "output": [
+     "Op"
+    ],
+    "properties": {
+     "name": "t17"
+    }
+   },
+   {
+    "id": "t18",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t18"
+    }
+   },
+   {
+    "id": "t19",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [
+     "RNAP_Op",
+     "RNAP"
+    ],
+    "properties": {
+     "name": "t19"
+    }
+   },
+   {
+    "id": "t20",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [
+     "RNAP_Op",
+     "Op"
+    ],
+    "properties": {
+     "name": "t20"
+    }
+   },
+   {
+    "id": "t21",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t21"
+    }
+   },
+   {
+    "id": "t22",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [
+     "RNAP_Op",
+     "RNAP"
+    ],
+    "properties": {
+     "name": "t22"
+    }
+   },
+   {
+    "id": "t23",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [
+     "RNAP_Op",
+     "Op"
+    ],
+    "properties": {
+     "name": "t23"
+    }
+   },
+   {
+    "id": "t24",
+    "input": [
+     "RNAP_Op"
+    ],
+    "output": [
+     "RNAP_Op",
+     "r_lac"
+    ],
+    "properties": {
+     "name": "t24"
+    }
+   },
+   {
+    "id": "t25",
+    "input": [
+     "r_lac"
+    ],
+    "output": [
+     "r_lac",
+     "Z"
+    ],
+    "properties": {
+     "name": "t25"
+    }
+   },
+   {
+    "id": "t26",
+    "input": [
+     "Z",
+     "Lactose"
+    ],
+    "output": [
+     "Z"
+    ],
+    "properties": {
+     "name": "t26"
+    }
+   },
+   {
+    "id": "t27",
+    "input": [
+     "Lactose",
+     "Z"
+    ],
+    "output": [
+     "Lactose"
+    ],
+    "properties": {
+     "name": "t27"
+    }
+   },
+   {
+    "id": "t28",
+    "input": [
+     "r_I"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t28"
+    }
+   },
+   {
+    "id": "t29",
+    "input": [
+     "I"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t29"
+    }
+   },
+   {
+    "id": "t30",
+    "input": [
+     "I_Lactose"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t30"
+    }
+   },
+   {
+    "id": "t31",
+    "input": [
+     "I_Lactose"
+    ],
+    "output": [
+     "I_Lactose",
+     "Lactose"
+    ],
+    "properties": {
+     "name": "t31"
+    }
+   },
+   {
+    "id": "t32",
+    "input": [
+     "r_lac"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t32"
+    }
+   },
+   {
+    "id": "t33",
+    "input": [
+     "Z"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t33"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "i*k_1",
+     "expression_mathml": "<apply><times/><ci>i</ci><ci>k_1</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "k_2*r_I",
+     "expression_mathml": "<apply><times/><ci>k_2</ci><ci>r_I</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*Lactose*k_3",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Lactose</ci><ci>k_3</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I*Lactose*k_3",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Lactose</ci><ci>k_3</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "I*Lactose*k_3",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Lactose</ci><ci>k_3</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "I_Lactose*k_4",
+     "expression_mathml": "<apply><times/><ci>I_Lactose</ci><ci>k_4</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "I_Lactose*k_4",
+     "expression_mathml": "<apply><times/><ci>I_Lactose</ci><ci>k_4</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I_Lactose*k_4",
+     "expression_mathml": "<apply><times/><ci>I_Lactose</ci><ci>k_4</ci></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "I*Op*k_5",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Op</ci><ci>k_5</ci></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "I*Op*k_5",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Op</ci><ci>k_5</ci></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "I*Op*k_5",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>Op</ci><ci>k_5</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "I_Op*k_6",
+     "expression_mathml": "<apply><times/><ci>I_Op</ci><ci>k_6</ci></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "I_Op*k_6",
+     "expression_mathml": "<apply><times/><ci>I_Op</ci><ci>k_6</ci></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "I_Op*k_6",
+     "expression_mathml": "<apply><times/><ci>I_Op</ci><ci>k_6</ci></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "Op*RNAP*k_7",
+     "expression_mathml": "<apply><times/><ci>Op</ci><ci>RNAP</ci><ci>k_7</ci></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "Op*RNAP*k_7",
+     "expression_mathml": "<apply><times/><ci>Op</ci><ci>RNAP</ci><ci>k_7</ci></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "Op*RNAP*k_7",
+     "expression_mathml": "<apply><times/><ci>Op</ci><ci>RNAP</ci><ci>k_7</ci></apply>"
+    },
+    {
+     "target": "t18",
+     "expression": "RNAP_Op*k_8",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_8</ci></apply>"
+    },
+    {
+     "target": "t19",
+     "expression": "RNAP_Op*k_8",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_8</ci></apply>"
+    },
+    {
+     "target": "t20",
+     "expression": "RNAP_Op*k_8",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_8</ci></apply>"
+    },
+    {
+     "target": "t21",
+     "expression": "RNAP_Op*k_9",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_9</ci></apply>"
+    },
+    {
+     "target": "t22",
+     "expression": "RNAP_Op*k_9",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_9</ci></apply>"
+    },
+    {
+     "target": "t23",
+     "expression": "RNAP_Op*k_9",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_9</ci></apply>"
+    },
+    {
+     "target": "t24",
+     "expression": "RNAP_Op*k_9",
+     "expression_mathml": "<apply><times/><ci>RNAP_Op</ci><ci>k_9</ci></apply>"
+    },
+    {
+     "target": "t25",
+     "expression": "k_10*r_lac",
+     "expression_mathml": "<apply><times/><ci>k_10</ci><ci>r_lac</ci></apply>"
+    },
+    {
+     "target": "t26",
+     "expression": "Lactose*Z*k_11",
+     "expression_mathml": "<apply><times/><ci>Lactose</ci><ci>Z</ci><ci>k_11</ci></apply>"
+    },
+    {
+     "target": "t27",
+     "expression": "Lactose*Z*k_11",
+     "expression_mathml": "<apply><times/><ci>Lactose</ci><ci>Z</ci><ci>k_11</ci></apply>"
+    },
+    {
+     "target": "t28",
+     "expression": "k_12*r_I",
+     "expression_mathml": "<apply><times/><ci>k_12</ci><ci>r_I</ci></apply>"
+    },
+    {
+     "target": "t29",
+     "expression": "I*k_13",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>k_13</ci></apply>"
+    },
+    {
+     "target": "t30",
+     "expression": "I_Lactose*k_14",
+     "expression_mathml": "<apply><times/><ci>I_Lactose</ci><ci>k_14</ci></apply>"
+    },
+    {
+     "target": "t31",
+     "expression": "I_Lactose*k_14",
+     "expression_mathml": "<apply><times/><ci>I_Lactose</ci><ci>k_14</ci></apply>"
+    },
+    {
+     "target": "t32",
+     "expression": "k_15*r_lac",
+     "expression_mathml": "<apply><times/><ci>k_15</ci><ci>r_lac</ci></apply>"
+    },
+    {
+     "target": "t33",
+     "expression": "Z*k_16",
+     "expression_mathml": "<apply><times/><ci>Z</ci><ci>k_16</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "i",
+     "expression": "1.0",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "r_I",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "50.0",
+     "expression_mathml": "<cn>50.0</cn>"
+    },
+    {
+     "target": "Lactose",
+     "expression": "500.0",
+     "expression_mathml": "<cn>500.0</cn>"
+    },
+    {
+     "target": "I_Lactose",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Op",
+     "expression": "1.0",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "I_Op",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "RNAP",
+     "expression": "100.0",
+     "expression_mathml": "<cn>100.0</cn>"
+    },
+    {
+     "target": "RNAP_Op",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "r_lac",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "Z",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "k_1",
+     "value": 0.02
+    },
+    {
+     "id": "k_2",
+     "value": 0.1
+    },
+    {
+     "id": "k_3",
+     "value": 0.005
+    },
+    {
+     "id": "k_4",
+     "value": 0.1
+    },
+    {
+     "id": "k_5",
+     "value": 1.0
+    },
+    {
+     "id": "k_6",
+     "value": 0.01
+    },
+    {
+     "id": "k_7",
+     "value": 0.1
+    },
+    {
+     "id": "k_8",
+     "value": 0.01
+    },
+    {
+     "id": "k_9",
+     "value": 0.03
+    },
+    {
+     "id": "k_10",
+     "value": 0.1
+    },
+    {
+     "id": "k_11",
+     "value": 1e-05
+    },
+    {
+     "id": "k_12",
+     "value": 0.01
+    },
+    {
+     "id": "k_13",
+     "value": 0.002
+    },
+    {
+     "id": "k_14",
+     "value": 0.002
+    },
+    {
+     "id": "k_15",
+     "value": 0.01
+    },
+    {
+     "id": "k_16",
+     "value": 0.01
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {}
+ }
+}
