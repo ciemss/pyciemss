@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 
 from pyciemss.visuals import plots
+from copy import deepcopy
 
 
 def prepare_interchange_dictionary(
@@ -232,8 +233,8 @@ def make_quantiles(
     return result_q
 
 
-def cdc_reformat(
-    q_ensemble_data: pd.DataFrame,
+def cdc_format(
+    q_ensemble_input: pd.DataFrame,
     solution_string_mapping: Dict = None,
     forecast_start_date: str = None,
     location: str = None,
@@ -244,6 +245,7 @@ def cdc_reformat(
     """
     Reformat the quantiles pandas dataframe file to CDC ensemble forecast format
     """
+    q_ensemble_data = deepcopy(q_ensemble_input)
     if train_end_point is None:
         q_ensemble_data["Forecast_Backcast"] = "Forecast"
     else:
