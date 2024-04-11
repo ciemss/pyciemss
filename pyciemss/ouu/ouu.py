@@ -11,7 +11,7 @@ from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
-from pyciemss.integration_utils.intervention_builder import combine_interventions
+from pyciemss.integration_utils.intervention_builder import combine_static_parameter_interventions
 from pyciemss.interruptions import (
     ParameterInterventionTracer,
     StaticParameterIntervention,
@@ -126,7 +126,7 @@ class computeRisk:
             with torch.no_grad():
                 x = np.atleast_1d(x)
                 # Combine existing interventions with intervention being optimized
-                static_parameter_interventions = combine_interventions(
+                static_parameter_interventions = combine_static_parameter_interventions(
                     [
                         deepcopy(self.fixed_static_parameter_interventions),
                         self.interventions(torch.from_numpy(x)),
