@@ -232,8 +232,8 @@ def make_quantiles(
     return result_q
 
 
-def cdc_reformatcsv(
-    filename: str,
+def cdc_reformat(
+    q_ensemble_data: pd.DataFrame,
     solution_string_mapping: Dict = None,
     forecast_start_date: str = None,
     location: str = None,
@@ -242,9 +242,8 @@ def cdc_reformatcsv(
     train_end_point: Optional[float] = None,
 ) -> pd.DataFrame:
     """
-    Reformat the quantiles csv file to CDC ensemble forecast format
+    Reformat the quantiles pandas dataframe file to CDC ensemble forecast format
     """
-    q_ensemble_data = pd.read_csv(filename)
     if train_end_point is None:
         q_ensemble_data["Forecast_Backcast"] = "Forecast"
     else:
