@@ -7,7 +7,7 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.integration_utils.intervention_builder import combine_interventions
+from pyciemss.integration_utils.intervention_builder import combine_static_parameter_interventions
 from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import (
     calibrate,
@@ -582,7 +582,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert opt_policy[i] <= bounds_interventions[1][i]
 
     if "fixed_static_parameter_interventions" in optimize_kwargs:
-        opt_intervention = combine_interventions(
+        opt_intervention = combine_static_parameter_interventions(
             [
                 deepcopy(optimize_kwargs["fixed_static_parameter_interventions"]),
                 optimize_kwargs["static_parameter_interventions"](opt_result["policy"]),
