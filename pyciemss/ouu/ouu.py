@@ -11,7 +11,9 @@ from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 from tqdm import tqdm
 
-from pyciemss.integration_utils.intervention_builder import combine_static_parameter_interventions
+from pyciemss.integration_utils.intervention_builder import (
+    combine_static_parameter_interventions,
+)
 from pyciemss.interruptions import (
     ParameterInterventionTracer,
     StaticParameterIntervention,
