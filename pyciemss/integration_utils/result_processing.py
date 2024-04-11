@@ -156,7 +156,11 @@ def convert_to_output_format(
 
     if ensemble_quantiles:
         result_q = make_quantiles(
-            pyciemss_results, alpha_qs, time_unit, timepoints, stacking_order
+            pyciemss_results,
+            alpha_qs=alpha_qs,
+            time_unit=time_unit,
+            timepoints=timepoints,
+            stacking_order=stacking_order,
         )
     else:
         result_q = None
@@ -237,10 +241,11 @@ def make_quantiles(
 
 def cdc_format(
     q_ensemble_input: pd.DataFrame,
-    solution_string_mapping: Dict = None,
+    *,
+    solution_string_mapping: Dict[str, str] = None,
     forecast_start_date: str = None,
     location: str = None,
-    drop_column_names: Iterable[str] = None,
+    drop_column_names: Iterable[str] = ["timepoint_id"],
     time_unit: Optional[str] = None,
     train_end_point: Optional[float] = None,
 ) -> pd.DataFrame:
