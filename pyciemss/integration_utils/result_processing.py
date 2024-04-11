@@ -191,6 +191,10 @@ def make_quantiles(
             q["value"].extend(
                 list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1))))
             )
+            if "cum" in k.lower():
+                q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
+            else:
+                q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
         elif stacking_order == "quantiles":
             # Keeping quantiles together
             q["timepoint_id"].extend(
@@ -202,14 +206,12 @@ def make_quantiles(
             q["value"].extend(
                 list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1))))
             )
+            if "cum" in k.lower():
+                q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
+            else:
+                q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
         else:
             raise Exception("Incorrect input for stacking_order.")
-    q["inc_cum"].extend(
-        ["inc"]
-        * num_timepoints
-        * num_quantiles
-        * len(pyciemss_results["states"].items())
-    )
 
     result_q = pd.DataFrame(q)
     if time_unit is not None:
