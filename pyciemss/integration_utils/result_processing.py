@@ -241,12 +241,12 @@ def make_quantiles(
 
 def cdc_format(
     q_ensemble_input: pd.DataFrame,
+    time_unit: str,
     *,
     solution_string_mapping: Dict[str, str] = None,
     forecast_start_date: str = None,
     location: str = None,
     drop_column_names: Iterable[str] = ["timepoint_id"],
-    time_unit: Optional[str] = None,
     train_end_point: Optional[float] = None,
 ) -> pd.DataFrame:
     """
@@ -264,11 +264,13 @@ def cdc_format(
     # Number of days for which data is available
     number_data_days = max(
         q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")][
-            "number_days"
+            f"number_{time_unit}"
         ]
     )
     # Subtracting number of backast days from number_days
-    q_ensemble_data["number_days"] = q_ensemble_data["number_days"] - number_data_days
+    q_ensemble_data[f"number_{time_unit}"] = (
+        q_ensemble_data[f"number_{time_unit}"] - number_data_days
+    )
     # Drop rows that are backcasting
     q_ensemble_data = q_ensemble_data[
         q_ensemble_data["Forecast_Backcast"].str.contains("Backcast") == False
@@ -280,7 +282,7 @@ def cdc_format(
 
     # Creating target column
     q_ensemble_data["target"] = (
-        q_ensemble_data["number_days"].astype("string")
+        q_ensemble_data[f"number_{time_unit}"].astype("string")
         + " days ahead "
         + q_ensemble_data["inc_cum"]
         + " "
@@ -293,7 +295,8 @@ def cdc_format(
             forecast_start_date, format="%Y-%m-%d", errors="ignore"
         )
         q_ensemble_data["target_end_date"] = q_ensemble_data["forecast_date"].combine(
-            q_ensemble_data["number_days"], lambda x, y: x + pd.DateOffset(days=int(y))
+            q_ensemble_data[f"number_{time_unit}"],
+            lambda x, y: x + pd.DateOffset(days=int(y)),
         )
     # Add location column
     if location:
