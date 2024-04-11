@@ -246,7 +246,11 @@ def cdc_format(
     solution_string_mapping: Dict[str, str] = None,
     forecast_start_date: str = None,
     location: str = None,
-    drop_column_names: Iterable[str] = ["timepoint_id"],
+    drop_column_names: Iterable[str] = [
+        "timepoint_id",
+        "inc_cum",
+        "output",
+    ],
     train_end_point: Optional[float] = None,
 ) -> pd.DataFrame:
     """
@@ -261,6 +265,7 @@ def cdc_format(
             "Forecast",
             "Backcast",
         )
+    drop_column_names.extend(["Forecast_Backcast"])
     # Number of days for which data is available
     number_data_days = max(
         q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")][
