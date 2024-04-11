@@ -7,7 +7,9 @@ import pytest
 import torch
 
 from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.integration_utils.intervention_builder import combine_static_parameter_interventions
+from pyciemss.integration_utils.intervention_builder import (
+    combine_static_parameter_interventions,
+)
 from pyciemss.integration_utils.observation import load_data
 from pyciemss.interfaces import (
     calibrate,
