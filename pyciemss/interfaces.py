@@ -882,22 +882,6 @@ def optimize(
             print(f"Time taken: ({forward_time/1.:.2e} seconds per model evaluation).")
 
         # Assign the required number of MC samples for each OUU iteration
-        # RISK = computeRisk(
-        #     model=control_model,
-        #     interventions=static_parameter_interventions,
-        #     qoi=qoi,
-        #     end_time=end_time,
-        #     logging_step_size=logging_step_size,
-        #     start_time=start_time,
-        #     risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
-        #     num_samples=n_samples_ouu,
-        #     guide=inferred_parameters,
-        #     fixed_static_parameter_interventions=fixed_static_parameter_interventions,
-        #     solver_method=solver_method,
-        #     solver_options=solver_options,
-        #     u_bounds=bounds_np,
-        #     risk_bound=risk_bound,
-        # )
         RISK.num_samples = n_samples_ouu
         # Define constraints >= 0
         constraints = (
