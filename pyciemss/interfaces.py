@@ -2,7 +2,7 @@ import contextlib
 import time
 import warnings
 from math import ceil
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import numpy as np
 import pyro
@@ -52,6 +52,32 @@ def ensemble_sample(
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     time_unit: Optional[str] = None,
+    alpha_qs: Optional[Iterable[float]] = [
+        0.01,
+        0.025,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        0.975,
+        0.99,
+    ],
+    stacking_order: Optional[str] = "timepoints",
 ):
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -97,6 +123,11 @@ def ensemble_sample(
         - A Pyro module that contains the inferred parameters of the model.
           This is typically the result of `calibrate`.
         - If not provided, we will use the default values from the AMR model.
+    alpha_qs: Optional[Iterable[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+    stacking_order: Optional[str]
+        - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+        - Options: "timepoints" or "quantiles"
 
     Returns:
         result: Dict[str, torch.Tensor]
@@ -151,7 +182,12 @@ def ensemble_sample(
         )()
 
         return prepare_interchange_dictionary(
-            samples, timepoints=logging_times, time_unit=time_unit
+            samples,
+            timepoints=logging_times,
+            time_unit=time_unit,
+            ensemble_quantiles=True,
+            alpha_qs=alpha_qs,
+            stacking_order=stacking_order,
         )
 
 
