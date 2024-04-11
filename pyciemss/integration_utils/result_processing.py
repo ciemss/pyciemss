@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Any, Dict, Iterable, Mapping, Optional, Tuple, Union
 
 import numpy as np
@@ -5,7 +6,6 @@ import pandas as pd
 import torch
 
 from pyciemss.visuals import plots
-from copy import deepcopy
 
 
 def prepare_interchange_dictionary(
@@ -217,7 +217,9 @@ def make_quantiles(
     result_q = pd.DataFrame(q)
     if time_unit is not None:
         if timepoints is not None:
-            all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v].item())
+            all_timepoints = result_q["timepoint_id"].map(
+                lambda v: timepoints[v].item()
+            )
             result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
             result_q = result_q[
                 [
@@ -285,7 +287,6 @@ def cdc_format(
         q_ensemble_data["forecast_date"] = pd.to_datetime(
             forecast_start_date, format="%Y-%m-%d", errors="ignore"
         )
-        # q_ensemble_data["target_end_date"] = q_ensemble_data["forecast_date"] + pd.DateOffset(days=q_ensemble_data["number_days"].astype(int))
         q_ensemble_data["target_end_date"] = q_ensemble_data["forecast_date"].combine(
             q_ensemble_data["number_days"], lambda x, y: x + pd.DateOffset(days=int(y))
         )
