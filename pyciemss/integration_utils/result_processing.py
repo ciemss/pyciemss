@@ -1,6 +1,6 @@
 import warnings
 from copy import deepcopy
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sized, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -17,7 +17,7 @@ def prepare_interchange_dictionary(
     timepoints: Optional[torch.Tensor] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
     ensemble_quantiles: bool = False,
-    alpha_qs: Optional[Iterable[float]] = [
+    alpha_qs: Optional[List[float]] = [
         0.01,
         0.025,
         0.05,
@@ -73,7 +73,7 @@ def convert_to_output_format(
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     ensemble_quantiles: bool = False,
-    alpha_qs: Optional[Iterable[float]] = None,
+    alpha_qs: Optional[List[float]] = None,
     stacking_order: str = "timepoints",
 ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
     """
@@ -176,7 +176,7 @@ def convert_to_output_format(
 def make_quantiles(
     pyciemss_results: Dict[str, Dict[str, np.ndarray]],
     *,
-    alpha_qs: Optional[Sized[float]] = None,
+    alpha_qs: Optional[List[float]] = None,
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     stacking_order: str = "timepoints",

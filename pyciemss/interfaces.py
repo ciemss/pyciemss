@@ -2,7 +2,7 @@ import contextlib
 import time
 import warnings
 from math import ceil
-from typing import Any, Callable, Dict, Iterable, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
 import pyro
@@ -52,7 +52,7 @@ def ensemble_sample(
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     time_unit: Optional[str] = None,
-    alpha_qs: Optional[Iterable[float]] = [
+    alpha_qs: Optional[List[float]] = [
         0.01,
         0.025,
         0.05,
@@ -123,7 +123,7 @@ def ensemble_sample(
         - A Pyro module that contains the inferred parameters of the model.
           This is typically the result of `calibrate`.
         - If not provided, we will use the default values from the AMR model.
-    alpha_qs: Optional[Iterable[float]]
+    alpha_qs: Optional[List[float]]
             - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
     stacking_order: Optional[str]
         - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
