@@ -271,7 +271,7 @@ def cdc_format(
     Reformat the quantiles pandas dataframe file to CDC ensemble forecast format
     """
     q_ensemble_data = deepcopy(q_ensemble_input)
-    if time_unit != "days":
+    if time_unit != "days" or time_unit is None:
         warnings.warn(
             "cdc_format only works for time_unit=days"
             "time_unit will default to days and overwrite previous time_unit."
