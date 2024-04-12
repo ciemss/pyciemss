@@ -172,7 +172,7 @@ def convert_to_output_format(
 
 
 def make_quantiles(
-    pyciemss_results: Dict[str, Dict[str, torch.tensor]],
+    pyciemss_results: Dict[str, Dict[str, torch.Tensor]],
     *,
     alpha_qs: Optional[Iterable[float]] = None,
     time_unit: Optional[str] = None,
