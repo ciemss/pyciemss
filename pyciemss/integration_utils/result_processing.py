@@ -73,7 +73,7 @@ def convert_to_output_format(
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     ensemble_quantiles: bool = False,
-    alpha_qs: Optional[Iterable[float]]=None,
+    alpha_qs: Optional[Iterable[float]] = None,
     stacking_order: str = "timepoints",
 ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
     """
