@@ -127,10 +127,10 @@ def convert_to_output_format(
     }
 
     if timepoints is not None:
-        timepoints = [*timepoints]
+        # timepoints = [*timepoints]
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
         output[label] = np.array(
-            float(timepoints[v]) for v in output["timepoint_id"]
+            float(timepoints[v].item()) for v in output["timepoint_id"]
         )
 
     # Parameters
