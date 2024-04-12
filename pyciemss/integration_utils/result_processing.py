@@ -173,10 +173,10 @@ def convert_to_output_format(
 
 def make_quantiles(
     pyciemss_results: Dict[str, Dict[str, torch.tensor]],
-    alpha_qs: Iterable[float],
-    timepoints: torch.Tensor,
-    stacking_order: str,
+    alpha_qs: Optional[Iterable[float]] = None,
     time_unit: Optional[str] = None,
+    timepoints: Optional[torch.Tensor] = None,
+    stacking_order: str = "timepoints",
 ) -> pd.DataFrame:
     """Make quantiles for each timepoint"""
     _, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
