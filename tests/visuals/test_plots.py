@@ -54,7 +54,7 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
             start_time + logging_step_size, end_time, logging_step_size
         ),
         time_unit=time_unit,
-    )
+    )[0]
 
 
 class TestTrajectory:
