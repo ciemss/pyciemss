@@ -302,7 +302,7 @@ def cdc_format(
     )
     # Drop rows that are backcasting
     q_ensemble_data = q_ensemble_data[
-        q_ensemble_data["Forecast_Backcast"].str.contains("Backcast") == False
+        ~q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")
     ]
     # Changing name of state according to user provided strings
     if solution_string_mapping:
