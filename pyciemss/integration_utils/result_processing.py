@@ -1,6 +1,6 @@
 import warnings
 from copy import deepcopy
-from typing import Any, Dict, Iterable, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -246,7 +246,7 @@ def cdc_format(
     solution_string_mapping: Optional[Dict[str, str]] = None,
     forecast_start_date: Optional[str] = None,
     location: Optional[str] = None,
-    drop_column_names: Iterable[str] = [
+    drop_column_names: List[str] = [
         "timepoint_id",
         "inc_cum",
         "output",
