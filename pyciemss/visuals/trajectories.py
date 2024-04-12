@@ -8,6 +8,138 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 from . import vega
 
+def get_examplary_lines(traces_df, kmean = False):
+
+    if kmean:
+        all_means = []
+        # get average line
+        for i in range(3):
+            means_trajectory = (
+                traces_df.melt(ignore_index=False, var_name="trajectory")
+                .set_index("trajectory", append=True)
+                .groupby(level=["trajectory", "timepoint"])
+                .mean()
+                .reset_index()
+            )
+        all_means.append(means_trajectory)
+
+    else:
+        # get average line
+        means_trajectory = (
+            traces_df.melt(ignore_index=False, var_name="trajectory")
+            .set_index("trajectory", append=True)
+            .groupby(level=["trajectory", "timepoint"])
+            .mean()
+            .reset_index()
+        )
+        all_means = [means_trajectory]
+    return all_means
+
+def grouped_mean(traces_df, means_trajectory):
+
+
+    # all data, melted
+    melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
+    # add value of average line to original df as column
+    merged_all_mean = pd.merge(
+        melt_all, means_trajectory, on=["trajectory", "timepoint"]
+    ).rename(columns={"value_x": "value", "value_y": "mean_value"})
+    # get distance from average line for each sample/timepoint/trajectory
+    merged_all_mean["distance_mean"] = abs(
+        merged_all_mean["mean_value"] - merged_all_mean["value"]
+    )
+    
+    # get sum of distance from mean for all timepoints in sample/trajectory
+    group_examplary = merged_all_mean.set_index(
+        ["trajectory", "timepoint", "sample_id"], append=True
+    ).groupby(level=["trajectory", "sample_id"])
+    return melt_all, group_examplary
+
+
+def grouped_mean(traces_df, means_trajectory):
+
+
+    # all data, melted
+    melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
+    # add value of average line to original df as column
+    merged_all_mean = pd.merge(
+        melt_all, means_trajectory, on=["trajectory", "timepoint"]
+    ).rename(columns={"value_x": "value", "value_y": "mean_value"})
+    # get distance from average line for each sample/timepoint/trajectory
+    merged_all_mean["distance_mean"] = abs(
+        merged_all_mean["mean_value"] - merged_all_mean["value"]
+    )
+    
+    # get sum of distance from mean for all timepoints in sample/trajectory
+    group_examplary = merged_all_mean.set_index(
+        ["trajectory", "timepoint", "sample_id"], append=True
+    ).groupby(level=["trajectory", "sample_id"])
+    return melt_all, group_examplary
+
+def get_best_example(group_examplary, select_by):
+    """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
+
+    Args:
+        select_by -- Method for selecting a trajectory
+          - "mean" -- Trajectory closest to the mean-line of the envelope of all trajectories
+          - "var" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
+          - "granger" -- Trajectory that "best predicts" the mean-line of the envelope
+                        (by the grangercausalitytest, maxlag=10)
+    """
+    def granger_fun(x):
+        # first column is the column to compare to
+        # not sure what maxlag value to use
+        # return ssr-based-F test p value
+        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
+            10
+        ][0]["ssr_ftest"][1]
+        return granger_value
+
+    # get sum and variable of each trajectory (rabbit or wolf) and sample id group
+    if select_by == "mean":
+        sum_examplary = (
+            group_examplary.mean().reset_index()
+        )  # get only min distance from each trajectory type (rabbit or worlf) back
+        best_sample_id = sum_examplary.loc[
+            sum_examplary.groupby("trajectory").distance_mean.idxmin()
+        ][["sample_id", "trajectory"]]
+
+    elif select_by == "var":
+        # will return distance_mean which will have the variance
+        sum_examplary = (
+            group_examplary.var().reset_index()
+        )  # get only min distance from each trajectory type (rabbit or worlf) back
+        best_sample_id = sum_examplary.loc[
+            sum_examplary.groupby("trajectory").distance_mean.idxmin()
+        ][["sample_id", "trajectory"]]
+
+    elif select_by == "granger":
+        granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
+        sum_examplary = pd.DataFrame({"granger": granger_examplary})
+        sum_examplary = sum_examplary.reset_index()
+        best_sample_id = sum_examplary.loc[
+            sum_examplary.groupby("trajectory").granger.idxmin()
+        ][["sample_id", "trajectory"]]
+    return best_sample_id
+
+
+def convert_examplary_line(melt_all, best_sample_id):
+    """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
+    """
+    # only keep sample id's from 'best' lines
+    only_examplary_line = pd.merge(
+        melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right"
+    )
+
+    # get into dataframe in correct foramt for trajectories traces argument
+    only_examplary_line = only_examplary_line.drop(
+        columns=["sample_id"], errors="ignore"
+    )
+    examplary_line = only_examplary_line.pivot_table(
+        values="value", index="timepoint", columns="trajectory"
+    )
+    examplary_line["timepoint_id"] = examplary_line.index
+    return examplary_line
 
 def select_traces(
     traces,
@@ -16,7 +148,8 @@ def select_traces(
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
-):
+    kmean
+):    
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
 
     Args:
@@ -42,81 +175,26 @@ def select_traces(
             after keep & drop.
 
     """
-    traces_df = _nice_df(traces)
+    
+
+    traces_df = _nice_df(traces, )
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
-
-    # get average line
-    examplary_line_df = (
-        traces_df.melt(ignore_index=False, var_name="trajectory")
-        .set_index("trajectory", append=True)
-        .groupby(level=["trajectory", "timepoint"])
-        .mean()
-        .reset_index()
-    )
-
-    def granger_fun(x):
-        # first column is the column to compare to
-        # not sure what maxlag value to use
-        # return ssr-based-F test p value
-        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
-            10
-        ][0]["ssr_ftest"][1]
-        return granger_value
-
-    # all data, melted
-    melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
-    # add value of average line to original df as column
-    merged_all_mean = pd.merge(
-        melt_all, examplary_line_df, on=["trajectory", "timepoint"]
-    ).rename(columns={"value_x": "value", "value_y": "mean_value"})
-    # get distance from average line for each sample/timepoint/trajectory
-    merged_all_mean["distance_mean"] = abs(
-        merged_all_mean["mean_value"] - merged_all_mean["value"]
-    )
-    # get sum of distance from mean for all timepoints in sample/trajectory
-    group_examplary = merged_all_mean.set_index(
-        ["trajectory", "timepoint", "sample_id"], append=True
-    ).groupby(level=["trajectory", "sample_id"])
-
-    # get sum and variable of each trajectory (rabbit or wolf) and sample id group
-    if select_by == "mean":
-        sum_examplary = (
-            group_examplary.mean().reset_index()
-        )  # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
-        ][["sample_id", "trajectory"]]
-
-    elif select_by == "var":
-        sum_examplary = (
-            group_examplary.var().reset_index()
-        )  # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
-        ][["sample_id", "trajectory"]]
-
-    elif select_by == "granger":
-        granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
-        sum_examplary = pd.DataFrame({"granger": granger_examplary})
-        sum_examplary = sum_examplary.reset_index()
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").granger.idxmin()
-        ][["sample_id", "trajectory"]]
-
-    # only keep sample id's from 'best' lines
-    only_examplary_line = pd.merge(
-        melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right"
-    )
-
-    # get into dataframe in correct foramt for trajectories traces argument
-    only_examplary_line = only_examplary_line.drop(
-        columns=["sample_id"], errors="ignore"
-    )
-    examplary_line = only_examplary_line.pivot_table(
-        values="value", index="timepoint", columns="trajectory"
-    )
-    examplary_line["timepoint_id"] = examplary_line.index
+    # get mean (or kmeans) lines
+    means_trajectory = get_examplary_lines(traces_df, kmean)
+    examplary_line_df = pd.DataFrame()
+    for trajectory in means_trajectory:
+        i +=1
+        # get grouped difference from the mean
+        melt_all, group_examplary = grouped_mean(traces_df, trajectory)
+        # get id of the sample with the lowest variance, differnce of granger socre
+        best_sample_id = get_best_example(group_examplary, select_by)
+        # get examplar line
+        examplary_line = convert_examplary_line(melt_all, best_sample_id)
+        examplary_line_df[select_by + "_" + str(i)] = examplary_line
+    
+    examplary_line_df["timepoint_id"] = examplary_line_df.index 
     return examplary_line
+
 
 
 def trajectories(
