@@ -1,6 +1,6 @@
 import warnings
 from copy import deepcopy
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sized, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -127,9 +127,11 @@ def convert_to_output_format(
     }
 
     if timepoints is not None:
-        timepoints = [*timepoints]
+        # timepoints = [*timepoints]
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
-        output[label] = np.array(float(timepoints[v]) for v in output["timepoint_id"])
+        output[label] = np.array(
+            float(timepoints[v].item()) for v in output["timepoint_id"]
+        )
 
     # Parameters
     output = {
@@ -174,7 +176,7 @@ def convert_to_output_format(
 def make_quantiles(
     pyciemss_results: Dict[str, Dict[str, np.ndarray]],
     *,
-    alpha_qs: Optional[Iterable[float]] = None,
+    alpha_qs: Optional[Sized[float]] = None,
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     stacking_order: str = "timepoints",
@@ -199,7 +201,11 @@ def make_quantiles(
                 q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
                 q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
                 q["value"].extend(
-                    list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1))))
+                    list(
+                        np.squeeze(
+                            q_vals.T.reshape((num_timepoints * num_quantiles, 1))
+                        )
+                    )
                 )
                 if "cum" in k.lower():
                     q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
@@ -214,7 +220,9 @@ def make_quantiles(
                 q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
                 q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
                 q["value"].extend(
-                    list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1))))
+                    list(
+                        np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1)))
+                    )
                 )
                 if "cum" in k.lower():
                     q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
@@ -225,7 +233,9 @@ def make_quantiles(
 
         result_q = pd.DataFrame(q)
         if timepoints is not None:
-            all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v].item())
+            all_timepoints = result_q["timepoint_id"].map(
+                lambda v: timepoints[v].item()
+            )
             result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
             result_q = result_q[
                 [
@@ -260,15 +270,16 @@ def cdc_format(
     """
     Reformat the quantiles pandas dataframe file to CDC ensemble forecast format
     """
+    q_ensemble_data = deepcopy(q_ensemble_input)
     if time_unit != "days":
         warnings.warn(
             "cdc_format only works for time_unit=days"
             "time_unit will default to days and overwrite previous time_unit."
         )
-    q_ensemble_data = deepcopy(q_ensemble_input)
-    q_ensemble_data.rename(columns={"number_None": "number_days"}, inplace=True)
-    if "number_days" not in q_ensemble_data:
-        raise ValueError("time_unit can only support days")
+        q_ensemble_data.rename(columns={"number_None": "number_days"}, inplace=True)
+        if "number_days" not in q_ensemble_data:
+            raise ValueError("time_unit can only support days")
+        time_unit = "days"
 
     if train_end_point is None:
         q_ensemble_data["Forecast_Backcast"] = "Forecast"
