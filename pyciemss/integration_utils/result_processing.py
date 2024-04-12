@@ -171,9 +171,9 @@ def convert_to_output_format(
 def make_quantiles(
     pyciemss_results: Dict[str, Dict[str, torch.tensor]],
     alpha_qs: Iterable[float],
-    time_unit: str,
     timepoints: torch.Tensor,
     stacking_order: str,
+    time_unit: Optional[str] = None,
 ) -> pd.DataFrame:
     """Make quantiles for each timepoint"""
     _, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
@@ -219,30 +219,27 @@ def make_quantiles(
             raise Exception("Incorrect input for stacking_order.")
 
     result_q = pd.DataFrame(q)
-    if time_unit is not None:
-        if timepoints is not None:
-            all_timepoints = result_q["timepoint_id"].map(
-                lambda v: timepoints[v].item()
-            )
-            result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
-            result_q = result_q[
-                [
-                    "timepoint_id",
-                    f"number_{time_unit}",
-                    "inc_cum",
-                    "output",
-                    "type",
-                    "quantile",
-                    "value",
-                ]
+    if timepoints is not None:
+        all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v].item())
+        result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
+        result_q = result_q[
+            [
+                "timepoint_id",
+                f"number_{time_unit}",
+                "inc_cum",
+                "output",
+                "type",
+                "quantile",
+                "value",
             ]
+        ]
     return result_q
 
 
 def cdc_format(
     q_ensemble_input: pd.DataFrame,
-    time_unit: str,
     *,
+    time_unit: Optional[str] = None,
     solution_string_mapping: Optional[Dict[str, str]] = None,
     forecast_start_date: Optional[str] = None,
     location: Optional[str] = None,
