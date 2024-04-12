@@ -42,7 +42,7 @@ def prepare_interchange_dictionary(
         0.975,
         0.99,
     ],
-    stacking_order: Optional[str] = "timepoints",
+    stacking_order: str = "timepoints",
 ) -> Dict[str, Any]:
     samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
 
@@ -73,8 +73,8 @@ def convert_to_output_format(
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     ensemble_quantiles: bool = False,
-    alpha_qs: Optional[Iterable[float]] = None,
-    stacking_order: Optional[str] = "timepoints",
+    alpha_qs: Optional[Iterable[float]]=None,
+    stacking_order: str = "timepoints",
 ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
     """
     Convert the samples from the Pyro model to a DataFrame in the TA4 requested format.
