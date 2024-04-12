@@ -178,65 +178,68 @@ def make_quantiles(
     time_unit: Optional[str] = None,
     timepoints: Optional[torch.Tensor] = None,
     stacking_order: str = "timepoints",
-) -> pd.DataFrame:
+) -> Union[pd.DataFrame, None]:
     """Make quantiles for each timepoint"""
     _, num_timepoints = next(iter(pyciemss_results["states"].values())).shape
     key_list = ["timepoint_id", "inc_cum", "output", "type", "quantile", "value"]
-    q = {k: [] for k in key_list}
-    num_quantiles = len(alpha_qs)
+    q: Dict[str, List] = {k: [] for k in key_list}
+    if alpha_qs is not None:
+        num_quantiles = len(alpha_qs)
 
-    # Solution (state variables)
-    for k, v in pyciemss_results["states"].items():
-        q_vals = np.quantile(v, alpha_qs, axis=0)
-        k = k.replace("_sol", "")
-        if stacking_order == "timepoints":
-            # Keeping timepoints together
-            q["timepoint_id"].extend(
-                list(np.repeat(np.array(range(num_timepoints)), num_quantiles))
-            )
-            q["output"].extend([k] * num_timepoints * num_quantiles)
-            q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
-            q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
-            q["value"].extend(
-                list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1))))
-            )
-            if "cum" in k.lower():
-                q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
+        # Solution (state variables)
+        for k, v in pyciemss_results["states"].items():
+            q_vals = np.quantile(v, alpha_qs, axis=0)
+            k = k.replace("_sol", "")
+            if stacking_order == "timepoints":
+                # Keeping timepoints together
+                q["timepoint_id"].extend(
+                    list(np.repeat(np.array(range(num_timepoints)), num_quantiles))
+                )
+                q["output"].extend([k] * num_timepoints * num_quantiles)
+                q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
+                q["quantile"].extend(list(np.tile(alpha_qs, num_timepoints)))
+                q["value"].extend(
+                    list(np.squeeze(q_vals.T.reshape((num_timepoints * num_quantiles, 1))))
+                )
+                if "cum" in k.lower():
+                    q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
+                else:
+                    q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
+            elif stacking_order == "quantiles":
+                # Keeping quantiles together
+                q["timepoint_id"].extend(
+                    list(np.tile(np.array(range(num_timepoints)), num_quantiles))
+                )
+                q["output"].extend([k] * num_timepoints * num_quantiles)
+                q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
+                q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
+                q["value"].extend(
+                    list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1))))
+                )
+                if "cum" in k.lower():
+                    q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
+                else:
+                    q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
             else:
-                q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
-        elif stacking_order == "quantiles":
-            # Keeping quantiles together
-            q["timepoint_id"].extend(
-                list(np.tile(np.array(range(num_timepoints)), num_quantiles))
-            )
-            q["output"].extend([k] * num_timepoints * num_quantiles)
-            q["type"].extend(["quantile"] * num_timepoints * num_quantiles)
-            q["quantile"].extend(list(np.repeat(alpha_qs, num_timepoints)))
-            q["value"].extend(
-                list(np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1))))
-            )
-            if "cum" in k.lower():
-                q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
-            else:
-                q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
-        else:
-            raise Exception("Incorrect input for stacking_order.")
+                raise Exception("Incorrect input for stacking_order.")
 
-    result_q = pd.DataFrame(q)
-    if timepoints is not None:
-        all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v].item())
-        result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
-        result_q = result_q[
-            [
-                "timepoint_id",
-                f"number_{time_unit}",
-                "inc_cum",
-                "output",
-                "type",
-                "quantile",
-                "value",
+        result_q = pd.DataFrame(q)
+        if timepoints is not None:
+            all_timepoints = result_q["timepoint_id"].map(lambda v: timepoints[v].item())
+            result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
+            result_q = result_q[
+                [
+                    "timepoint_id",
+                    f"number_{time_unit}",
+                    "inc_cum",
+                    "output",
+                    "type",
+                    "quantile",
+                    "value",
+                ]
             ]
-        ]
+        else:
+            result_q = None
     return result_q
 
 
