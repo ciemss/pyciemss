@@ -77,7 +77,7 @@ def ensemble_sample(
         0.975,
         0.99,
     ],
-    stacking_order: Optional[str] = "timepoints",
+    stacking_order: str = "timepoints",
 ):
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
