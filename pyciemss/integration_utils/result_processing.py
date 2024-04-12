@@ -96,7 +96,7 @@ def convert_to_output_format(
     if time_unit is not None and timepoints is None:
         raise ValueError("`timepoints` must be supplied when a `time_unit` is supplied")
 
-    pyciemss_results: Dict[str, Dict[str, torch.Tensor]] = {
+    pyciemss_results: Dict[str, Dict[str, np.ndarray]] = {
         "parameters": {},
         "states": {},
     }
@@ -172,7 +172,7 @@ def convert_to_output_format(
 
 
 def make_quantiles(
-    pyciemss_results: Dict[str, Dict[str, torch.Tensor]],
+    pyciemss_results: Dict[str, Dict[str, np.ndarray]],
     *,
     alpha_qs: Optional[Iterable[float]] = None,
     time_unit: Optional[str] = None,
