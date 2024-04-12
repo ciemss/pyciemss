@@ -1,3 +1,4 @@
+import warnings
 from copy import deepcopy
 from typing import Any, Dict, Iterable, Mapping, Optional, Tuple, Union
 
@@ -6,6 +7,8 @@ import pandas as pd
 import torch
 
 from pyciemss.visuals import plots
+
+warnings.simplefilter("always", UserWarning)
 
 
 def prepare_interchange_dictionary(
@@ -239,7 +242,7 @@ def make_quantiles(
 def cdc_format(
     q_ensemble_input: pd.DataFrame,
     *,
-    time_unit: Optional[str] = None,
+    time_unit: Optional[str] = "days",
     solution_string_mapping: Optional[Dict[str, str]] = None,
     forecast_start_date: Optional[str] = None,
     location: Optional[str] = None,
@@ -253,7 +256,16 @@ def cdc_format(
     """
     Reformat the quantiles pandas dataframe file to CDC ensemble forecast format
     """
+    if time_unit != "days":
+        warnings.warn(
+            "cdc_format only works for time_unit=days"
+            "time_unit will default to days and overwrite previous time_unit."
+        )
     q_ensemble_data = deepcopy(q_ensemble_input)
+    q_ensemble_data.rename(columns={"number_None": "number_days"}, inplace=True)
+    if "number_days" not in q_ensemble_data:
+        raise ValueError("time_unit can only support days")
+
     if train_end_point is None:
         q_ensemble_data["Forecast_Backcast"] = "Forecast"
     else:
