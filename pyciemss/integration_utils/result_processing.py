@@ -11,7 +11,7 @@ from pyciemss.visuals import plots
 def prepare_interchange_dictionary(
     samples: Dict[str, torch.Tensor],
     time_unit: Optional[str] = None,
-    timepoints: Optional[Iterable[float]] = None,
+    timepoints: Optional[torch.Tensor] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
     ensemble_quantiles: bool = False,
     alpha_qs: Optional[Iterable[float]] = [
@@ -68,7 +68,7 @@ def convert_to_output_format(
     samples: Dict[str, torch.Tensor],
     *,
     time_unit: Optional[str] = None,
-    timepoints: Optional[Iterable[float]] = None,
+    timepoints: Optional[torch.Tensor] = None,
     ensemble_quantiles: bool = False,
     alpha_qs: Optional[Iterable[float]] = None,
     stacking_order: Optional[str] = "timepoints",
@@ -172,7 +172,7 @@ def make_quantiles(
     pyciemss_results: Dict[str, Dict[str, torch.tensor]],
     alpha_qs: Iterable[float],
     time_unit: str,
-    timepoints: Iterable[float],
+    timepoints: torch.Tensor,
     stacking_order: str,
 ) -> pd.DataFrame:
     """Make quantiles for each timepoint"""
@@ -243,9 +243,9 @@ def cdc_format(
     q_ensemble_input: pd.DataFrame,
     time_unit: str,
     *,
-    solution_string_mapping: Dict[str, str] = None,
-    forecast_start_date: str = None,
-    location: str = None,
+    solution_string_mapping: Optional[Dict[str, str]] = None,
+    forecast_start_date: Optional[str] = None,
+    location: Optional[str] = None,
     drop_column_names: Iterable[str] = [
         "timepoint_id",
         "inc_cum",
