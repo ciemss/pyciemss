@@ -110,34 +110,31 @@ optimize_kwargs_SIRstockflow_time = {
     "bounds_interventions": [[0.0], [40.0]],
 }
 
-optimize_kwargs_SIRstockflow_param_maxQoI = {
+optimize_kwargs_SEIRHD_param_maxQoI = {
     "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
     "risk_bound": 300.0,
     "static_parameter_interventions": param_value_objective(
-        param_name=["p_cbeta"],
-        param_value=[lambda x: torch.tensor([x])],
-        start_time=[torch.tensor(1.0)],
+        param_name=["beta_c", "gamma"],
+        start_time=[torch.tensor(10.0), torch.tensor(15.0)],
     ),
-    "objfun": lambda x: np.abs(0.35 - x),
-    "initial_guess_interventions": 0.15,
-    "bounds_interventions": [[0.1], [0.5]],
+    "objfun": lambda x: np.abs(0.35 - x[0]) + np.abs(0.2 - x[1]),
+    "initial_guess_interventions": [0.2, 0.4],
+    "bounds_interventions": [[0.1, 0.1], [0.5, 0.5]],
+    "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
 }
 
 OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        important_parameter="p_cbeta",
         optimize_kwargs=optimize_kwargs_SIRstockflow_param,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        important_parameter="p_cbeta",
         optimize_kwargs=optimize_kwargs_SIRstockflow_time,
     ),
     ModelFixture(
-        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        important_parameter="p_cbeta",
-        optimize_kwargs=optimize_kwargs_SIRstockflow_param_maxQoI,
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
+        optimize_kwargs=optimize_kwargs_SEIRHD_param_maxQoI,
     ),
 ]
 
