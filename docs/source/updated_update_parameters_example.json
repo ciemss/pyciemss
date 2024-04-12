@@ -187,12 +187,12 @@
    "parameters": [
     {
      "id": "beta",
-     "value": 0.3,
+     "value": 0.25,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 0.25,
-       "maximum": 0.35
+       "minimum": 0.23,
+       "maximum": 0.27
       }
      },
      "units": {
