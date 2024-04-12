@@ -242,7 +242,7 @@ def make_quantiles(
 def cdc_format(
     q_ensemble_input: pd.DataFrame,
     *,
-    time_unit: Optional[str] = "days",
+    time_unit: Optional[str] = None,
     solution_string_mapping: Optional[Dict[str, str]] = None,
     forecast_start_date: Optional[str] = None,
     location: Optional[str] = None,
