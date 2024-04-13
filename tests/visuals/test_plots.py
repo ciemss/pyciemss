@@ -12,7 +12,6 @@ import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
 from pyciemss.visuals import plots, vega
 
-
 def by_key_value(targets, key, value):
     for entry in targets:
         if entry[key] == value:
@@ -88,6 +87,8 @@ class TestTrajectory:
         nice_labels = make_nice_labels(distributions.columns)
 
         schema = plots.trajectories(distributions, relabel=nice_labels)
+        traces = pyciemss.visuals.trajectories.select_traces(distributions, select_by = "granger")
+        schema = plots.trajectories(distributions, traces = traces,  keep=".*_state")
 
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
 

@@ -5,23 +5,39 @@ from typing import Any, Dict, List, Literal, Optional, Union
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.stattools import grangercausalitytests
-
+from tslearn.clustering import TimeSeriesKMeans
+from tslearn.datasets import CachedDatasets
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance, \
+    TimeSeriesResampler
 from . import vega
 
 def get_examplary_lines(traces_df, kmean = False):
 
     if kmean:
         all_means = []
-        # get average line
-        for i in range(3):
+        dba_km = TimeSeriesKMeans(n_clusters=3,
+                          n_init=2,
+                          metric="dtw",
+                          verbose=True,
+                          max_iter_barycenter=10)
+
+        # each row is a time series, each column is a new time point
+        # in my sin, each column is time series, and each row is time point so .T and 
+        traces_df_T = traces_df.T
+        y_pred = dba_km.fit_predict(traces_df_T)
+
+        for yi in range(3):
+            traces_df_T_cluster = traces_df_T[y_pred == yi]
+            traces_df_T = traces_df_T_cluster.T
+
             means_trajectory = (
-                traces_df.melt(ignore_index=False, var_name="trajectory")
+                traces_df_T.melt(ignore_index=False, var_name="trajectory")
                 .set_index("trajectory", append=True)
                 .groupby(level=["trajectory", "timepoint"])
                 .mean()
                 .reset_index()
             )
-        all_means.append(means_trajectory)
+            all_means.append(means_trajectory)
 
     else:
         # get average line
@@ -148,7 +164,7 @@ def select_traces(
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
-    kmean
+    kmean: bool = False
 ):    
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
 
