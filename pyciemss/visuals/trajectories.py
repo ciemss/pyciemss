@@ -22,7 +22,6 @@ def get_examplary_lines(traces_df, kmean = False):
 
         # each row is a time series, each column is a new time point
         # in my sin function, each column is time series, and each row is time point so .T and 
-        traces_df = traces_df.reset_index()
         traces_df_pivot = traces_df[['sample_id', "value", "timepoint"]].pivot_table(
         values="value", index = "sample_id", columns="timepoint"
     )
@@ -40,19 +39,25 @@ def get_examplary_lines(traces_df, kmean = False):
                 .mean()
                 .reset_index()
             )
-            all_clusters.append(means_trajectory[['timepoint', 'value']])
-        return means_trajectory
+            means_trajectory["cluster"] = "cluster_" + str(yi)
+            all_clusters.append(means_trajectory[['timepoint', 'value', "cluster"]])
+        all_clusters_df = pd.concat(all_clusters)
+        return all_clusters_df
 
     if kmean:
+        all_trajectories = []
+        traces_df_melt = traces_df.melt(ignore_index=False, var_name="trajectory").set_index("trajectory", append=True).reset_index()
+        for trajectory in np.unique(traces_df_melt['trajectory']):
+            current_trajectory = traces_df_melt[traces_df_melt['trajectory'] == trajectory]
+            all_clusters = return_kmeans(current_trajectory)
+            all_clusters['trajectory'] = trajectory
+            all_trajectories.append(all_clusters)
+        # organize by cluster
+        all_trajectories_df = pd.concat(all_trajectories)
         all_means = []
-        traces_df_group =( traces_df.melt(ignore_index=False, var_name="trajectory")
-            .set_index("trajectory", append=True)
-            .groupby(level=["trajectory"]))
-        
-        kmeans_examplary = traces_df_group.apply(lambda x: return_kmeans(x))
-        all_means.append(kmeans_examplary)
-
-
+        for cluster in np.unique(all_trajectories_df['cluster']):
+            traces_df_cluster = all_trajectories_df[all_trajectories_df['cluster'] == cluster]
+            all_means.append(traces_df_cluster)
 
     else:
         # get average line, 3 columns (trajectory: "D_state", timepoint, value)
@@ -132,7 +137,7 @@ def get_best_example(group_examplary, select_by):
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if select_by == "mean":
         sum_examplary = (
-            group_examplary.mean().reset_index()
+            group_examplary['distance_mean'].mean().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
         best_sample_id = sum_examplary.loc[
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
@@ -141,14 +146,14 @@ def get_best_example(group_examplary, select_by):
     elif select_by == "var":
         # get the variance per trajectory/sample id of difference from the mean (saved as distance_mean)
         sum_examplary = (
-            group_examplary.var().reset_index()
+            group_examplary['distance_mean'].var().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
         best_sample_id = sum_examplary.loc[
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
 
     elif select_by == "granger":
-        granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
+        granger_examplary = group_examplary['distance_mean'].apply(lambda x: granger_fun(x))
         sum_examplary = pd.DataFrame({"granger": granger_examplary})
         sum_examplary = sum_examplary.reset_index()
         best_sample_id = sum_examplary.loc[
@@ -157,15 +162,8 @@ def get_best_example(group_examplary, select_by):
     return best_sample_id
 
 
-def convert_examplary_line(melt_all, best_sample_id):
-    """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
-    """
-    # only keep sample id's from 'best' lines
-    only_examplary_line = pd.merge(
-        melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right"
-    )
-
-    # get into dataframe in correct foramt for trajectories traces argument
+def convert_back_trace_format(only_examplary_line):
+        # get into dataframe in correct foramt for trajectories traces argument
     # remove sample_id because only have one line per trajectory
     only_examplary_line = only_examplary_line.drop(
         columns=["sample_id"], errors="ignore"
@@ -175,6 +173,18 @@ def convert_examplary_line(melt_all, best_sample_id):
         values="value", index="timepoint", columns="trajectory"
     )
     examplary_line["timepoint_id"] = examplary_line.index
+    return examplary_line
+
+def convert_examplary_line(melt_all, best_sample_id):
+    """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
+    """
+    # only keep sample id's from 'best' lines
+    only_examplary_line = pd.merge(
+        melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right"
+    )
+    # get into dataframe in correct foramt for trajectories traces argument
+    # remove sample_id because only have one line per trajectory
+    examplary_line = convert_back_trace_format(only_examplary_line)
     return examplary_line
 
 def select_traces(
@@ -218,14 +228,18 @@ def select_traces(
     # get mean (or kmeans) lines
     means_trajectory = get_examplary_lines(traces_df, kmean)
     i = 0
-    for trajectory in means_trajectory:
+    for mean_trajectory in means_trajectory:
         i +=1
         # get grouped difference from the mean
-        melt_all, group_examplary = grouped_mean(traces_df, trajectory)
+        melt_all, group_examplary = grouped_mean(traces_df, mean_trajectory)
         # get id of the sample with the lowest variance, differnce of granger socre
         best_sample_id = get_best_example(group_examplary, select_by)
         # get examplar line
         examplary_line = convert_examplary_line(melt_all, best_sample_id)
+        mean_trajectory = convert_back_trace_format(mean_trajectory)
+        # if kmeans want to keep all 
+        mean_df = mean_trajectory.rename(columns={c: c + "_mean" for c in mean_trajectory.columns if c not in ["timepoint_id"]})
+
         # if kmeans want to keep all 
         new_df = examplary_line.rename(columns={c: c + "_" + select_by + "_" + str(i) for c in examplary_line.columns if c not in ["timepoint_id"]})
         if i == 1:
@@ -235,6 +249,7 @@ def select_traces(
 
 
     examplary_line_df["timepoint_id"] = examplary_line_df.index 
+    # return mean line per trajectory/cluster (np.unique(mean_trajecotry['cluster])), examplary_line, and other metrics, trajectory, best_examplar selected by
     return examplary_line
 
 
