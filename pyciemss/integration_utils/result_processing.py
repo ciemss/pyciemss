@@ -294,11 +294,11 @@ def cdc_format(
         )
         # Number of days for which data is available
         number_data_days = max(
-            q_ensemble_data[q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")][
-                f"number_{time_unit}"
-            ]
+            q_ensemble_data[
+                q_ensemble_data["Forecast_Backcast"].str.contains("Backcast")
+            ][f"number_{time_unit}"]
         )
-    drop_column_names.extend(["Forecast_Backcast"])    
+    drop_column_names.extend(["Forecast_Backcast"])
     # Subtracting number of backast days from number_days
     q_ensemble_data[f"number_{time_unit}"] = (
         q_ensemble_data[f"number_{time_unit}"] - number_data_days
@@ -311,7 +311,9 @@ def cdc_format(
     if solution_string_mapping:
         # Drop rows that are not present in the solution_string_mapping keys
         q_ensemble_data = q_ensemble_data[
-            q_ensemble_data["output"].str.contains("|".join(solution_string_mapping.keys()))
+            q_ensemble_data["output"].str.contains(
+                "|".join(solution_string_mapping.keys())
+            )
         ]
         for k, v in solution_string_mapping.items():
             q_ensemble_data["output"] = q_ensemble_data["output"].replace(k, v)
