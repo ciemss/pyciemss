@@ -13,8 +13,7 @@ from . import vega
 
 def get_examplary_lines(traces_df, kmean = False):
 
-    if kmean:
-        all_means = []
+    def return_kmeans(traces_df):
         dba_km = TimeSeriesKMeans(n_clusters=3,
                           n_init=2,
                           metric="dtw",
@@ -22,25 +21,41 @@ def get_examplary_lines(traces_df, kmean = False):
                           max_iter_barycenter=10)
 
         # each row is a time series, each column is a new time point
-        # in my sin, each column is time series, and each row is time point so .T and 
-        traces_df_T = traces_df.T
-        y_pred = dba_km.fit_predict(traces_df_T)
+        # in my sin function, each column is time series, and each row is time point so .T and 
+        traces_df = traces_df.reset_index()
+        traces_df_pivot = traces_df[['sample_id', "value", "timepoint"]].pivot_table(
+        values="value", index = "sample_id", columns="timepoint"
+    )
+        y_pred = dba_km.fit_predict(traces_df_pivot)
 
+        all_clusters = []
         for yi in range(3):
-            traces_df_T_cluster = traces_df_T[y_pred == yi]
-            traces_df_T = traces_df_T_cluster.T
+            traces_df_T_cluster = traces_df_pivot[y_pred == yi]
 
             means_trajectory = (
-                traces_df_T.melt(ignore_index=False, var_name="trajectory")
-                .set_index("trajectory", append=True)
-                .groupby(level=["trajectory", "timepoint"])
+                traces_df_T_cluster.melt(ignore_index=False, var_name="timepoint")
+                .reset_index()
+                .set_index('timepoint')
+                .groupby(level=["timepoint"])
                 .mean()
                 .reset_index()
             )
-            all_means.append(means_trajectory)
+            all_clusters.append(means_trajectory[['timepoint', 'value']])
+        return means_trajectory
+
+    if kmean:
+        all_means = []
+        traces_df_group =( traces_df.melt(ignore_index=False, var_name="trajectory")
+            .set_index("trajectory", append=True)
+            .groupby(level=["trajectory"]))
+        
+        kmeans_examplary = traces_df_group.apply(lambda x: return_kmeans(x))
+        all_means.append(kmeans_examplary)
+
+
 
     else:
-        # get average line
+        # get average line, 3 columns (trajectory: "D_state", timepoint, value)
         means_trajectory = (
             traces_df.melt(ignore_index=False, var_name="trajectory")
             .set_index("trajectory", append=True)
@@ -75,7 +90,7 @@ def grouped_mean(traces_df, means_trajectory):
 def grouped_mean(traces_df, means_trajectory):
 
 
-    # all data, melted
+    # all data, melted so each parameter column becomes a column called trajectory
     melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
     # add value of average line to original df as column
     merged_all_mean = pd.merge(
@@ -106,10 +121,13 @@ def get_best_example(group_examplary, select_by):
         # first column is the column to compare to
         # not sure what maxlag value to use
         # return ssr-based-F test p value
-        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
-            10
-        ][0]["ssr_ftest"][1]
-        return granger_value
+        try:
+            granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
+                10
+            ][0]["ssr_ftest"][1]
+            return granger_value
+        except:
+            return np.nan
 
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if select_by == "mean":
@@ -121,7 +139,7 @@ def get_best_example(group_examplary, select_by):
         ][["sample_id", "trajectory"]]
 
     elif select_by == "var":
-        # will return distance_mean which will have the variance
+        # get the variance per trajectory/sample id of difference from the mean (saved as distance_mean)
         sum_examplary = (
             group_examplary.var().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
@@ -148,9 +166,11 @@ def convert_examplary_line(melt_all, best_sample_id):
     )
 
     # get into dataframe in correct foramt for trajectories traces argument
+    # remove sample_id because only have one line per trajectory
     only_examplary_line = only_examplary_line.drop(
         columns=["sample_id"], errors="ignore"
     )
+    # back so each column is a trajectory type (liek *_state)
     examplary_line = only_examplary_line.pivot_table(
         values="value", index="timepoint", columns="trajectory"
     )
@@ -197,7 +217,7 @@ def select_traces(
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
     # get mean (or kmeans) lines
     means_trajectory = get_examplary_lines(traces_df, kmean)
-    examplary_line_df = pd.DataFrame()
+    i = 0
     for trajectory in means_trajectory:
         i +=1
         # get grouped difference from the mean
@@ -206,8 +226,14 @@ def select_traces(
         best_sample_id = get_best_example(group_examplary, select_by)
         # get examplar line
         examplary_line = convert_examplary_line(melt_all, best_sample_id)
-        examplary_line_df[select_by + "_" + str(i)] = examplary_line
-    
+        # if kmeans want to keep all 
+        new_df = examplary_line.rename(columns={c: c + "_" + select_by + "_" + str(i) for c in examplary_line.columns if c not in ["timepoint_id"]})
+        if i == 1:
+            examplary_line_df = new_df 
+        else:
+            examplary_line_df = pd.merge(examplary_line_df, new_df,  how='left', on=["timepoint_id"])
+
+
     examplary_line_df["timepoint_id"] = examplary_line_df.index 
     return examplary_line
 
