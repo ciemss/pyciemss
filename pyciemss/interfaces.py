@@ -146,9 +146,10 @@ def ensemble_sample(
             model_paths_or_jsons, dirichlet_alpha, solution_mappings
         )
 
-        logging_times = torch.arange(
-            start_time + logging_step_size, end_time, logging_step_size
-        )
+        # logging_times = torch.arange(
+        #     start_time + logging_step_size, end_time, logging_step_size
+        # )
+        logging_times = torch.arange(start_time, end_time + logging_step_size, logging_step_size)
 
         # Check that num_samples is a positive integer
         if not (isinstance(num_samples, int) and num_samples > 0):
