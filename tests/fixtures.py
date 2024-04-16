@@ -247,7 +247,7 @@ def check_result_sizes(
         assert isinstance(v, torch.Tensor)
 
         num_timesteps = len(
-            torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+            torch.arange(start_time, end_time + logging_step_size, logging_step_size)
         )
         if v.ndim == 2 and k == "model_weights":
             assert v.shape[0] == num_samples
