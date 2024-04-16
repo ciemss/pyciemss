@@ -34,7 +34,7 @@ def get_examplary_lines(traces_df, kmean = False):
             means_trajectory = (
                 traces_df_T_cluster.melt(ignore_index=False, var_name="timepoint")
                 .reset_index()
-                .set_index('timepoint')
+                .set_index('timepoint')['value']
                 .groupby(level=["timepoint"])
                 .mean()
                 .reset_index()
@@ -153,7 +153,7 @@ def get_best_example(group_examplary, select_by):
         ][["sample_id", "trajectory"]]
 
     elif select_by == "granger":
-        granger_examplary = group_examplary['distance_mean'].apply(lambda x: granger_fun(x))
+        granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
         sum_examplary = pd.DataFrame({"granger": granger_examplary})
         sum_examplary = sum_examplary.reset_index()
         best_sample_id = sum_examplary.loc[
@@ -172,7 +172,6 @@ def convert_back_trace_format(only_examplary_line):
     examplary_line = only_examplary_line.pivot_table(
         values="value", index="timepoint", columns="trajectory"
     )
-    examplary_line["timepoint_id"] = examplary_line.index
     return examplary_line
 
 def convert_examplary_line(melt_all, best_sample_id):
@@ -223,12 +222,18 @@ def select_traces(
     """
     
 
-    traces_df = _nice_df(traces, )
+    traces_df = _nice_df(traces)
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
     # get mean (or kmeans) lines
     means_trajectory = get_examplary_lines(traces_df, kmean)
     i = 0
+    examplary_line_list = []
+    mean_line_list = []
     for mean_trajectory in means_trajectory:
+        if 'cluster' in mean_trajectory.columns:
+            current_cluster = np.unique(mean_trajectory['cluster'])[0]
+        else:
+            current_cluster = "no_cluster"
         i +=1
         # get grouped difference from the mean
         melt_all, group_examplary = grouped_mean(traces_df, mean_trajectory)
@@ -238,19 +243,19 @@ def select_traces(
         examplary_line = convert_examplary_line(melt_all, best_sample_id)
         mean_trajectory = convert_back_trace_format(mean_trajectory)
         # if kmeans want to keep all 
-        mean_df = mean_trajectory.rename(columns={c: c + "_mean" for c in mean_trajectory.columns if c not in ["timepoint_id"]})
+        mean_df = mean_trajectory.rename(columns={c: c + "_compare_line_" + current_cluster for c in mean_trajectory.columns if c not in ["timepoint_id"]})
 
         # if kmeans want to keep all 
-        new_df = examplary_line.rename(columns={c: c + "_" + select_by + "_" + str(i) for c in examplary_line.columns if c not in ["timepoint_id"]})
-        if i == 1:
-            examplary_line_df = new_df 
-        else:
-            examplary_line_df = pd.merge(examplary_line_df, new_df,  how='left', on=["timepoint_id"])
+        examplary_line = examplary_line.rename(columns={c: c + "_" + select_by + "_" + current_cluster for c in examplary_line.columns if c not in ["timepoint_id"]})
+        examplary_line_list.append(examplary_line)
+        mean_line_list.append(mean_df)
 
-
-    examplary_line_df["timepoint_id"] = examplary_line_df.index 
+    examplary_line_df = pd.concat(examplary_line_list, axis = 1)
+    mean_line_df = pd.concat(mean_line_list, axis = 1)
+    # examplary_line_df["timepoint_id"] = examplary_line_df.index 
+    # mean_line_df["timepoint_id"] = mean_line_df.index 
     # return mean line per trajectory/cluster (np.unique(mean_trajecotry['cluster])), examplary_line, and other metrics, trajectory, best_examplar selected by
-    return examplary_line
+    return examplary_line_df, mean_line_df
 
 
 
@@ -344,11 +349,12 @@ def trajectories(
         distributions = []
 
     if traces is not None:
-        traces = (
+        traces_melt = (
             traces.melt(ignore_index=False, var_name="trajectory")
             .reset_index()
-            .to_dict(orient="records")
         )
+        traces_melt['color_by'] = traces_melt['trajectory'].apply(lambda x: " ".join(x.split('_')[-2:]))
+        traces = traces_melt.to_dict(orient="records")
     else:
         traces = []
 

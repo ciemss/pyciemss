@@ -86,7 +86,7 @@ class TestTrajectory:
     def test_rename(self, distributions):
         nice_labels = make_nice_labels(distributions.columns)
 
-        traces = pyciemss.visuals.trajectories.select_traces(distributions, select_by = "mean",  keep=".*_state", kmean = True)
+        traces = pyciemss.visuals.trajectories.select_traces(distributions, select_by = "granger",  keep=".*_state", kmean = True)
         schema = plots.trajectories(distributions, traces = traces,  keep=".*_state")
 
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
