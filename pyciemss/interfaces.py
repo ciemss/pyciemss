@@ -474,7 +474,7 @@ def sample(
         model = CompiledDynamics.load(model_path_or_json)
 
         logging_times = torch.arange(
-            start_time + logging_step_size, end_time, logging_step_size
+            start_time, end_time + logging_step_size, logging_step_size
         )
 
         # Check that num_samples is a positive integer
