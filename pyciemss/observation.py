@@ -4,6 +4,8 @@ import pyro
 import torch
 
 
+EPS = 1e-7
+
 class NoiseModel(pyro.nn.PyroModule):
     """
     An NoiseModel is a function that takes a state and returns a state sampled from some pyro distribution.
@@ -60,4 +62,5 @@ class NormalNoiseModel(StateIndependentNoiseModel):
     def markov_kernel(
         self, name: str, val: torch.Tensor
     ) -> pyro.distributions.Distribution:
-        return pyro.distributions.Normal(val, self.scale * torch.abs(val)).to_event(1)
+        var = torch.minimum(self.scale * torch.abs(val), EPS)
+        return pyro.distributions.Normal(val, var).to_event(1)
