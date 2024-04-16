@@ -3,8 +3,8 @@ from typing import Callable, Dict, Optional, Set
 import pyro
 import torch
 
-
 EPS = 1e-7
+
 
 class NoiseModel(pyro.nn.PyroModule):
     """
