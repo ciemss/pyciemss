@@ -62,5 +62,5 @@ class NormalNoiseModel(StateIndependentNoiseModel):
     def markov_kernel(
         self, name: str, val: torch.Tensor
     ) -> pyro.distributions.Distribution:
-        var = torch.minimum(self.scale * torch.abs(val), EPS)
+        var = torch.maximum(self.scale * torch.abs(val), EPS)
         return pyro.distributions.Normal(val, var).to_event(1)
