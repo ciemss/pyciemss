@@ -539,7 +539,7 @@ def test_output_format(
     )["data"]
     assert isinstance(processed_result, pd.DataFrame)
     assert processed_result.shape[0] == num_samples * len(
-        torch.arange(start_time + logging_step_size, end_time, logging_step_size)
+        torch.arange(start_time, end_time + logging_step_size, logging_step_size)
     )
     assert processed_result.shape[1] >= 2
     assert list(processed_result.columns)[:3] == [
