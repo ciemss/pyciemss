@@ -3,6 +3,8 @@ from typing import Callable, Dict, Optional, Set
 import pyro
 import torch
 
+EPS = torch.tensor(1e-7)
+
 
 class NoiseModel(pyro.nn.PyroModule):
     """
@@ -60,4 +62,5 @@ class NormalNoiseModel(StateIndependentNoiseModel):
     def markov_kernel(
         self, name: str, val: torch.Tensor
     ) -> pyro.distributions.Distribution:
-        return pyro.distributions.Normal(val, self.scale * torch.abs(val)).to_event(1)
+        var = torch.maximum(self.scale * torch.abs(val), EPS)
+        return pyro.distributions.Normal(val, var).to_event(1)
