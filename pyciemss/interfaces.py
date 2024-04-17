@@ -145,7 +145,7 @@ def ensemble_sample(
         model = EnsembleCompiledDynamics.load(
             model_paths_or_jsons, dirichlet_alpha, solution_mappings
         )
-        
+
         logging_times = torch.arange(
             start_time, end_time + logging_step_size, logging_step_size
         )
