@@ -8,7 +8,31 @@ import torch
 
 from pyciemss.visuals import plots
 
-warnings.simplefilter("always", UserWarning)
+DEFAULT_ALPHA_QS = [
+    0.01,
+    0.025,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    0.975,
+    0.99,
+]
 
 
 def prepare_interchange_dictionary(
@@ -17,31 +41,7 @@ def prepare_interchange_dictionary(
     timepoints: Optional[torch.Tensor] = None,
     visual_options: Union[None, bool, Dict[str, Any]] = None,
     ensemble_quantiles: bool = False,
-    alpha_qs: Optional[List[float]] = [
-        0.01,
-        0.025,
-        0.05,
-        0.1,
-        0.15,
-        0.2,
-        0.25,
-        0.3,
-        0.35,
-        0.4,
-        0.45,
-        0.5,
-        0.55,
-        0.6,
-        0.65,
-        0.7,
-        0.75,
-        0.8,
-        0.85,
-        0.9,
-        0.95,
-        0.975,
-        0.99,
-    ],
+    alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
     stacking_order: str = "timepoints",
 ) -> Dict[str, Any]:
     samples = {k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()}
@@ -127,7 +127,6 @@ def convert_to_output_format(
     }
 
     if timepoints is not None:
-        # timepoints = [*timepoints]
         label = "timepoint_unknown" if time_unit is None else f"timepoint_{time_unit}"
         output[label] = np.array(
             float(timepoints[v].item()) for v in output["timepoint_id"]
@@ -160,7 +159,7 @@ def convert_to_output_format(
         result = set_intervention_values(result, name, values, intervention_times)
 
     if ensemble_quantiles:
-        result_q = make_quantiles(
+        result_quantiles = make_quantiles(
             pyciemss_results,
             alpha_qs=alpha_qs,
             time_unit=time_unit,
@@ -168,9 +167,9 @@ def convert_to_output_format(
             stacking_order=stacking_order,
         )
     else:
-        result_q = None
+        result_quantiles = None
 
-    return result, result_q
+    return result, result_quantiles
 
 
 def make_quantiles(
@@ -207,10 +206,6 @@ def make_quantiles(
                         )
                     )
                 )
-                # if "cum" in k.lower():
-                #     q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
-                # else:
-                #     q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
             elif stacking_order == "quantiles":
                 # Keeping quantiles together
                 q["timepoint_id"].extend(
@@ -224,24 +219,21 @@ def make_quantiles(
                         np.squeeze(q_vals.reshape((num_timepoints * num_quantiles, 1)))
                     )
                 )
-                # if "cum" in k.lower():
-                #     q["inc_cum"].extend(["cum"] * num_timepoints * num_quantiles)
-                # else:
-                #     q["inc_cum"].extend(["inc"] * num_timepoints * num_quantiles)
             else:
                 raise Exception("Incorrect input for stacking_order.")
 
-        result_q = pd.DataFrame(q)
+        result_quantiles = pd.DataFrame(q)
         if timepoints is not None:
-            all_timepoints = result_q["timepoint_id"].map(
+            all_timepoints = result_quantiles["timepoint_id"].map(
                 lambda v: timepoints[v].item()
             )
-            result_q = result_q.assign(**{f"number_{time_unit}": all_timepoints})
-            result_q = result_q[
+            result_quantiles = result_quantiles.assign(
+                **{f"number_{time_unit}": all_timepoints}
+            )
+            result_quantiles = result_quantiles[
                 [
                     "timepoint_id",
                     f"number_{time_unit}",
-                    # "inc_cum",
                     "output",
                     "type",
                     "quantile",
@@ -249,8 +241,8 @@ def make_quantiles(
                 ]
             ]
         else:
-            result_q = None
-    return result_q
+            result_quantiles = None
+    return result_quantiles
 
 
 def cdc_format(
