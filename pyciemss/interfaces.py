@@ -187,6 +187,59 @@ def ensemble_sample(
             parallel=True,
         )()
 
+   #################################
+        new_keys = ["Incident_deaths_state", "Incident_cases_state", "Incident_hosp_state"]
+        process_keys = ["Incident_deaths_state", "Incident_cases_state"]
+        if len(model_paths_or_jsons) == 1:
+            obs_keys = ["deceased_state", "cumulative_cases_state", "cumulative_hosp_state"]
+        else:
+            obs_keys = ["Deceased_state", "Cumulative_cases_state", "Cumulative_hosp_state"]
+        key_dict = dict(zip(obs_keys, new_keys))
+        # print(key_dict)
+        
+        # Function to calculate the differences and create new tensor
+        def calculate_differences(tensor):
+            diff_tensor = tensor[:, 1:] - tensor[:, :-1]
+            last_column = torch.zeros_like(tensor[:, :1])
+            diff_tensor = torch.cat((diff_tensor, last_column), dim=1)
+            return diff_tensor
+
+        def process_lists(tensor):
+            for i in range(tensor.size(0)):
+                sublist = tensor[i, -29:]  # Select the last 29 entries of the current list
+                
+                # Calculate sums for each chunk of 7 entries
+                sums = [sum(sublist[j:j+7]) for j in range(0, 28, 7)]
+                
+                # Update the corresponding entries with the calculated sums
+                sublist[-29:-22] = sums[0]
+                sublist[-22:-15] = sums[1]
+                sublist[-15:-8] = sums[2]
+                sublist[-8:-1] = sums[3]
+                
+                # No change for the last entry
+                
+                # Replace the original sublist with the modified one
+                tensor[i, -29:] = sublist
+                
+            return tensor
+        
+        # Process tensors for keys obs_keys
+        for key in obs_keys:
+            old_tensor = samples[key]
+            new_tensor = calculate_differences(old_tensor)
+            samples[key_dict[key]] = new_tensor
+            # print(key_dict[key])
+
+        # Process tensors for keys process_keys
+        for key in process_keys:
+            old_tensor = samples[key]
+            new_tensor = process_lists(old_tensor)
+            samples[key] = new_tensor
+            # print(key_dict[key])
+
+        # print(samples)
+    #################################
         return prepare_interchange_dictionary(
             samples,
             timepoints=logging_times,
