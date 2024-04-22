@@ -9,19 +9,9 @@ from random import randrange
 import os
 import json
 
-def create_function_offset(ar, br, cr):
-        # create new target function for each line
-        def sine_function(x, D):
-            return np.power(x, .25) + ar*np.sin(br*x + cr) + D
-        return sine_function
+# update lacation of results
 
-def sqrt_function(x, b):
-     return np.power(x, .25) + b
 
-def sine_function(x, ar, br, cr, dr):
-        return np.power(x, .25) + ar*np.sin(br*x + cr) + dr
-
-directory = "paper_sin_05"
 def get_values(df):
     """Calculates the summary statistics for the given set of points
 
@@ -209,13 +199,40 @@ def fit_sine_to_dataframe(df_old, directory,  max_jitter=.1, num_iterations=3000
 
 
 #df_old = pd.DataFrame(pd.DataFrame(np.tile(np.random.randn(100), (100,1)), index=np.arange(100)))
+# use the same default starting point of lines
+directory = "paper_sin_05"
+
+def initial_function(x, b):
+     return np.power(x, .25) + b
+
+def sine_function(x, ar, br, cr, dr):
+        return np.power(x, .25) + ar*np.sin(br*x + cr) + dr
+
+
+def create_function_offset(ar, br, cr):
+        # create new target function for each line, where only D (the horizontal setting) will change as result of location of line
+        # the other parameters are set randomly
+        def sine_function(x, D):
+            return np.power(x, .25) + ar*np.sin(br*x + cr) + D
+        return sine_function
+
 df_old = pd.read_csv(os.path.join("paper_sin", "paper_sin_old_df.csv"))
 df_sqrt = df_old.copy()
 for column in df_old.columns:
-                df_sqrt_column = sqrt_function(np.arange(len(df_old)), *[np.random.randn()])
-                df_sqrt[column] = df_sqrt_column
+        df_sqrt_column = initial_function(np.arange(len(df_old)), *[np.random.randn()])
+        df_sqrt[column] = df_sqrt_column
+
 
 # Fit sine wave model to each series
 df_new, final_parameters = fit_sine_to_dataframe(df_sqrt, directory)
+
+
+#  current_articles = [(el[0], el[whatever_for_themes]) for el in session.query(Article).with_entities(Article.gkg_record_id).all()]
+
+# for current_gkg, current_themes in current_articles 
+#   q = session.query(Article)
+#   q = q.filter(Article.gkg_record_id==current_gkg)
+#   record = q.one()
+#   record.themes= current_themes
 
 
