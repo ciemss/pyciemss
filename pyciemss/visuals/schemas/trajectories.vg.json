@@ -119,9 +119,6 @@
     {
       "name": "color_legend",
       "stroke": "color",
-      "offset": 300,
-      "labelLimit": 300,
-      "orient": "left",
       "encode": {
         "symbols": {
           "name": "legendSymbol",

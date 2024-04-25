@@ -83,6 +83,7 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =4):
             cluster_trajectory[trajectory] = all_means
 
     else:
+        cluster_trajectory ={}
         # get average line, 3 columns (trajectory: "D_state", timepoint, value)
         means_trajectory = (
             traces_df.melt(ignore_index=False, var_name="trajectory")
@@ -92,9 +93,9 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =4):
             .reset_index()
         )
         for trajectory in np.unique(means_trajectory['trajectory']):
-            all_means = []
-            traces_df_traj= all_trajectories_df[(all_trajectories_df['trajectory'] == trajectory)]
-            cluster_trajectory[trajectory] = {'no_cluster': {'cluster_mean': traces_df_traj, 'cluster_sample_id': list(np.numpy(traces_df_traj['sample_id']))}}
+            traces_df_traj= means_trajectory[(means_trajectory['trajectory'] == trajectory)]
+            traces_df = traces_df.reset_index()
+            cluster_trajectory[trajectory] = {'no_cluster': {'cluster_mean': traces_df_traj, 'cluster_sample_id': list(np.unique(traces_df['sample_id']))}}
     return cluster_trajectory
 
 def grouped_mean(traces_df, means_trajectory):
@@ -312,9 +313,9 @@ def select_traces(
                 mean_trajectory = convert_back_trace_format(mean_trajectory)
                 # if kmeans want to keep all 
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
-                examplary_df['cluster'] = cluster_key
-                examplary_df['trajectory'] = trajectory_key
-                examplary_df['select_by'] = select_by
+                examplary_df['cluster'] = cluster_key.title()
+                examplary_df['trajectory'] = trajectory_key.title()
+                examplary_df['select_by'] = select_by.title()
 
                 examplary_line_list.append(examplary_df)
 
