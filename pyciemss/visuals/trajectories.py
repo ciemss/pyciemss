@@ -162,15 +162,18 @@ def trajectory_chaos(trajectories: pd.DataFrame):
             i += 1
 
     current_max = -1
+    all_differences = []
     for sample_trajectory_key, sample_trajectory_value in order_dict.items():
         # get difference in ranking
         sum_difference = np.sum([abs(j-i) for i, j in zip(sample_trajectory_value[:-1], sample_trajectory_value[1:])])
+        all_differences.append(sum_difference)
         if sum_difference > current_max:
             max_chaos_sample_id = int(float(sample_trajectory_key.split('_')[-1]))
             current_max = sum_difference
+    all_min = [x for x in all_differences if x==current_max]
     trajectories = trajectories.reset_index()
     best_sample_id = trajectories[trajectories['sample_id'] == max_chaos_sample_id][["sample_id", "trajectory"]]
-    return best_sample_id
+    return best_sample_id, all_min
 
 def get_best_example(group_examplary, select_by):
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
@@ -204,7 +207,7 @@ def get_best_example(group_examplary, select_by):
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
         mean_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
-        all_min = mean_series.where(np.round(mean_series, 3) == np.round(mean_series.min(), 3)).dropna().iloc[:,0].tolist()
+        all_min = mean_series.where(np.round(mean_series, 5) == np.round(mean_series.min(), 5)).dropna().iloc[:,0].tolist()
         multiple = len(all_min) > 1
 
     elif select_by == "variance":
@@ -216,7 +219,7 @@ def get_best_example(group_examplary, select_by):
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
         var_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
-        all_min = var_series.where(np.round(var_series, 3) == np.round(var_series.min(), 3)).dropna().iloc[:,0].tolist()
+        all_min = var_series.where(np.round(var_series, 5) == np.round(var_series.min(), 5)).dropna().iloc[:,0].tolist()
         multiple = len(all_min) > 1
 
     elif select_by == "granger":
@@ -228,7 +231,7 @@ def get_best_example(group_examplary, select_by):
             sum_examplary.groupby("trajectory").granger.idxmin()
         ][["sample_id", "trajectory"]]
         granger_series = sum_examplary.groupby("trajectory").granger.apply(pd.DataFrame)
-        all_min = granger_series.where(np.round(granger_series,3) ==np.round(granger_series.min(), 3)).dropna().iloc[:,0].tolist()
+        all_min = granger_series.where(np.round(granger_series,5) ==np.round(granger_series.min(), 5)).dropna().iloc[:,0].tolist()
       
     return best_sample_id, all_min
 
@@ -313,7 +316,7 @@ def select_traces(
                 # get grouped difference from the mean
                 melt_all, group_examplary = grouped_mean(traces_df_sample_id, mean_trajectory)
                 if select_by == "chaos":
-                    best_sample_id = trajectory_chaos(traces_df_sample_id)
+                    best_sample_id, multiple = trajectory_chaos(traces_df_sample_id)
                 else:
                     # get id of the sample with the lowest variance, differnce of granger socre
                     best_sample_id, multiple = get_best_example(group_examplary, select_by)
@@ -322,7 +325,7 @@ def select_traces(
                 mean_trajectory = convert_back_trace_format(mean_trajectory)
                 # if kmeans want to keep all 
                 if len(multiple) > 1:
-                    select_by_label = select_by.title() + "_" + str(len(multiple))
+                    select_by_label = select_by.title() + "_" + str(len(multiple)) + "/" + str(len(group_examplary.mean()))
                 else:
                     select_by_label = select_by.title()
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
