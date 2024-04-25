@@ -313,6 +313,7 @@ def select_traces(
                 mean_trajectory = convert_back_trace_format(mean_trajectory)
                 # if kmeans want to keep all 
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
+                examplary_df['sample_id'] = best_sample_id['sample_id'].values[0]
                 examplary_df['cluster'] = cluster_key.title()
                 examplary_df['trajectory'] = trajectory_key.title()
                 examplary_df['select_by'] = select_by.title()
