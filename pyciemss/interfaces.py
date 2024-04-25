@@ -22,7 +22,10 @@ from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.interface_checks import check_solver
 from pyciemss.integration_utils.observation import compile_noise_model, load_data
-from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
+from pyciemss.integration_utils.result_processing import (
+    DEFAULT_ALPHA_QS,
+    prepare_interchange_dictionary,
+)
 from pyciemss.interruptions import (
     DynamicParameterIntervention,
     ParameterInterventionTracer,
@@ -52,7 +55,9 @@ def ensemble_sample(
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
     time_unit: Optional[str] = None,
-):
+    alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
+    stacking_order: str = "timepoints",
+) -> Dict[str, Any]:
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
     and sample from the ensemble.
@@ -97,13 +102,22 @@ def ensemble_sample(
         - A Pyro module that contains the inferred parameters of the model.
           This is typically the result of `calibrate`.
         - If not provided, we will use the default values from the AMR model.
+    alpha_qs: Optional[List[float]]
+            - The quantiles required for estimating weighted interval score to test ensemble forecasting accuracy.
+    stacking_order: Optional[str]
+        - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
+        - Options: "timepoints" or "quantiles"
 
     Returns:
-        result: Dict[str, torch.Tensor]
-            - Dictionary of outputs from the model.
-                - Each key is the name of a parameter or state variable in the model.
-                - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
+        result: Dict[str, Any]
+            - Dictionary of outputs with following attributes:
+                - data: The samples from the model as a pandas DataFrame.
+                - unprocessed_result: Dictionary of outputs from the model.
+                    - Each key is the name of a parameter or state variable in the model.
+                    - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
+                - ensemble_quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
+                - schema: Visualization. (If visual_options is truthy)
     """
     check_solver(solver_method, solver_options)
 
@@ -116,7 +130,7 @@ def ensemble_sample(
         )
 
         logging_times = torch.arange(
-            start_time + logging_step_size, end_time, logging_step_size
+            start_time, end_time + logging_step_size, logging_step_size
         )
 
         # Check that num_samples is a positive integer
@@ -151,7 +165,12 @@ def ensemble_sample(
         )()
 
         return prepare_interchange_dictionary(
-            samples, timepoints=logging_times, time_unit=time_unit
+            samples,
+            timepoints=logging_times,
+            time_unit=time_unit,
+            ensemble_quantiles=True,
+            alpha_qs=alpha_qs,
+            stacking_order=stacking_order,
         )
 
 
@@ -410,14 +429,13 @@ def sample(
             - Risk level for alpha-superquantile outputs in the results dictionary.
 
     Returns:
-        result: Dict[str, torch.Tensor]
+        result: Dict[str, Any]
             - Dictionary of outputs with following attributes:
                 - data: The samples from the model as a pandas DataFrame.
                 - unprocessed_result: Dictionary of outputs from the model.
                     - Each key is the name of a parameter or state variable in the model.
                     - Each value is a tensor of shape (num_samples, num_timepoints) for state variables
                     and (num_samples,) for parameters.
-                - quantiles: The quantiles for ensemble score calculation as a pandas DataFrames.
                 - risk: Dictionary with each key as the name of a state with
                 a dictionary of risk estimates for each state at the final timepoint.
                     - risk: alpha-superquantile risk estimate
@@ -435,7 +453,7 @@ def sample(
         model = CompiledDynamics.load(model_path_or_json)
 
         logging_times = torch.arange(
-            start_time + logging_step_size, end_time, logging_step_size
+            start_time, end_time + logging_step_size, logging_step_size
         )
 
         # Check that num_samples is a positive integer

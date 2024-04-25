@@ -36,7 +36,7 @@ def distributions():
         sample,
         timepoints=np.linspace(start_time, end_time, num_timepoints),
         time_unit="notional",
-    )
+    )[0]
 
 
 def test_resize(distributions):

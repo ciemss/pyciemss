@@ -12,6 +12,8 @@ import pyciemss
 from pyciemss.integration_utils.result_processing import convert_to_output_format
 from pyciemss.visuals import plots, vega
 
+START_TIME = 0.0
+
 
 def by_key_value(targets, key, value):
     for entry in targets:
@@ -33,7 +35,6 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
         "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration"
         "/main/data/models/SEIRHD_NPI_Type1_petrinet.json"
     )
-    start_time = 0.0
     end_time = 100.0
     num_samples = 30
     sample = pyciemss.sample(
@@ -42,7 +43,7 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
         logging_step_size,
         num_samples,
         time_unit=time_unit,
-        start_time=start_time,
+        start_time=START_TIME,
         solver_method="euler",
         solver_options={"step_size": 1e-2},
     )["unprocessed_result"]
@@ -51,10 +52,10 @@ def create_distributions(logging_step_size=20, time_unit="twenty"):
         sample,
         # using same time point formula as in 'logging_times' from  pyciemms interfaces formula 'sample'
         timepoints=np.arange(
-            start_time + logging_step_size, end_time, logging_step_size
+            START_TIME, end_time + logging_step_size, logging_step_size
         ),
         time_unit=time_unit,
-    )
+    )[0]
 
 
 class TestTrajectory:
@@ -103,7 +104,10 @@ class TestTrajectory:
         schema = plots.trajectories(new_distribution)
         df = pd.DataFrame(vega.find_named(schema["data"], "distributions")["values"])
         new_timepoints = [
-            float(x) for x in np.arange(logging_step_size, end_time, logging_step_size)
+            float(x)
+            for x in np.arange(
+                START_TIME, end_time + logging_step_size, logging_step_size
+            )
         ]
         # check timepoint created match the input logging_step_size and start and end time
         assert df.timepoint[: len(new_timepoints)].tolist() == new_timepoints
@@ -269,7 +273,6 @@ class TestHistograms:
             "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/"
             "main/data/models/SEIRHD_NPI_Type1_petrinet.json"
         )
-        start_time = 0.0
         end_time = 100.0
         logging_step_size = 10.0
         num_samples = 3
@@ -279,7 +282,7 @@ class TestHistograms:
             end_time,
             logging_step_size,
             num_samples,
-            start_time=start_time,
+            start_time=START_TIME,
             solver_method="euler",
             solver_options={"step_size": 0.1},
         )["unprocessed_result"]
