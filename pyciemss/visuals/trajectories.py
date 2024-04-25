@@ -178,7 +178,7 @@ def get_best_example(group_examplary, select_by):
     Args:
         select_by -- Method for selecting a trajectory
           - "mean" -- Trajectory closest to the mean-line of the envelope of all trajectories
-          - "var" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
+          - "variance -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
           - "granger" -- Trajectory that "best predicts" the mean-line of the envelope
                         (by the grangercausalitytest, maxlag=10)
     """
@@ -203,8 +203,11 @@ def get_best_example(group_examplary, select_by):
         best_sample_id = sum_examplary.loc[
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
+        mean_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        all_min = mean_series.where(np.round(mean_series, 3) == np.round(mean_series.min(), 3)).dropna().iloc[:,0].tolist()
+        multiple = len(all_min) > 1
 
-    elif select_by == "var":
+    elif select_by == "variance":
         # get the variance per trajectory/sample id of difference from the mean (saved as distance_mean)
         sum_examplary = (
             group_examplary['distance_mean'].var().reset_index()
@@ -212,6 +215,9 @@ def get_best_example(group_examplary, select_by):
         best_sample_id = sum_examplary.loc[
             sum_examplary.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
+        var_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        all_min = var_series.where(np.round(var_series, 3) == np.round(var_series.min(), 3)).dropna().iloc[:,0].tolist()
+        multiple = len(all_min) > 1
 
     elif select_by == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
@@ -221,7 +227,10 @@ def get_best_example(group_examplary, select_by):
         best_sample_id = sum_examplary.loc[
             sum_examplary.groupby("trajectory").granger.idxmin()
         ][["sample_id", "trajectory"]]
-    return best_sample_id
+        granger_series = sum_examplary.groupby("trajectory").granger.apply(pd.DataFrame)
+        all_min = granger_series.where(np.round(granger_series,3) ==np.round(granger_series.min(), 3)).dropna().iloc[:,0].tolist()
+      
+    return best_sample_id, all_min
 
 
 def convert_back_trace_format(only_examplary_line):
@@ -251,7 +260,7 @@ def convert_examplary_line(melt_all, best_sample_id):
 def select_traces(
     traces,
     *,
-    select_by_list: list = ['mean', 'var', 'granger', 'chaos'],
+    select_by_list: list = ['mean', "variance", 'granger', 'chaos'],
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
@@ -264,7 +273,7 @@ def select_traces(
         subset: only keep subset columns
         select_by -- Method for selecting a trajectory
           - "mean" -- Trajectory closest to the mean-line of the envelope of all trajectories
-          - "var" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
+          - "variance" -- Trajectory that has the most-similar dynamics to the mean-line of the envelope of all trajectories
           - "granger" -- Trajectory that "best predicts" the mean-line of the envelope
                         (by the grangercausalitytest, maxlag=10)
 
@@ -307,16 +316,20 @@ def select_traces(
                     best_sample_id = trajectory_chaos(traces_df_sample_id)
                 else:
                     # get id of the sample with the lowest variance, differnce of granger socre
-                    best_sample_id = get_best_example(group_examplary, select_by)
+                    best_sample_id, multiple = get_best_example(group_examplary, select_by)
                 # get examplar line
                 examplary_line = convert_examplary_line(melt_all, best_sample_id)
                 mean_trajectory = convert_back_trace_format(mean_trajectory)
                 # if kmeans want to keep all 
+                if len(multiple) > 1:
+                    select_by_label = select_by.title() + "_" + str(len(multiple))
+                else:
+                    select_by_label = select_by.title()
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
                 examplary_df['sample_id'] = best_sample_id['sample_id'].values[0]
                 examplary_df['cluster'] = cluster_key.title()
                 examplary_df['trajectory'] = trajectory_key.title()
-                examplary_df['select_by'] = select_by.title()
+                examplary_df['select_by'] = select_by_label
 
                 examplary_line_list.append(examplary_df)
 

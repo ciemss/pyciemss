@@ -2,6 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 500,
   "height": 300,
+  "background": "white",
   "scales": [
     {
       "name": "xscale",
@@ -119,8 +120,6 @@
     {
       "name": "color_legend",
       "stroke": "color",
-      "offset": 300,
-      "labelLimit": 300,
       "orient": "left",
       "encode": {
         "symbols": {
@@ -244,8 +243,8 @@
 
                 "strokeDash": [
                   {"test": "indexof(datum.trajectory, 'aseline') == -1", 
-                    "value": [8, 4]},
-                  {"value": [1, 0]}],
+                    "value": [1, 0]},
+                  {"value": [8, 4]}],
                 "interpolate": {"value": "linear"},
                 "strokeOpacity": [
                   {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
