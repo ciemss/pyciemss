@@ -22,7 +22,10 @@ from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
 from pyciemss.integration_utils.custom_decorators import pyciemss_logging_wrapper
 from pyciemss.integration_utils.interface_checks import check_solver
 from pyciemss.integration_utils.observation import compile_noise_model, load_data
-from pyciemss.integration_utils.result_processing import prepare_interchange_dictionary
+from pyciemss.integration_utils.result_processing import (
+    DEFAULT_ALPHA_QS,
+    prepare_interchange_dictionary,
+)
 from pyciemss.interruptions import (
     DynamicParameterIntervention,
     ParameterInterventionTracer,
@@ -32,8 +35,6 @@ from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
 warnings.simplefilter("always", UserWarning)
-
-from pyciemss.integration_utils.result_processing import DEFAULT_ALPHA_QS
 
 
 @pyciemss_logging_wrapper
