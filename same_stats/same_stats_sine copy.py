@@ -227,12 +227,5 @@ for column in df_old.columns:
 df_new, final_parameters = fit_sine_to_dataframe(df_sqrt, directory)
 
 
-#  current_articles = [(el[0], el[whatever_for_themes]) for el in session.query(Article).with_entities(Article.gkg_record_id).all()]
-
-# for current_gkg, current_themes in current_articles 
-#   q = session.query(Article)
-#   q = q.filter(Article.gkg_record_id==current_gkg)
-#   record = q.one()
-#   record.themes= current_themes
-
+#  current_articles = [(el[0], el['finished_ner_chunk']) for el in session.query(Article).with_entities(Article.gkg_record_id).all()]
 
