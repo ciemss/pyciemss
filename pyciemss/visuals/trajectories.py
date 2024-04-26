@@ -11,7 +11,7 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance, \
     TimeSeriesResampler
 from . import vega
 
-def get_examplary_lines(traces_df, kmean = False, n_clusters =4):
+def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
 
     def return_kmeans(traces_df, n_clusters =4):
         # get the trajectory for current trajectory
@@ -43,6 +43,10 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =4):
         for yi in range(n_clusters):
             traces_df_T_cluster = traces_df_pivot[y_pred == yi]
             # get mean per timepoint of the values
+
+            # def _quantiles(g):
+            #     return g.quantile(q=.5)
+
             means_trajectory = (
                 traces_df_T_cluster.melt(ignore_index=False, var_name="timepoint")
                 .reset_index()
@@ -66,7 +70,7 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =4):
         cluster_sample_ids = {}
         for trajectory in np.unique(traces_df_melt['trajectory']):
             current_trajectory = traces_df_melt[traces_df_melt['trajectory'] == trajectory]
-            all_clusters, cluster_sample_id = return_kmeans(current_trajectory, n_clusters=n_clusters)
+            all_clusters, cluster_sample_id = return_kmeans(current_trajectory, n_clusters = n_clusters)
             all_clusters['trajectory'] = trajectory
             all_trajectories.append(all_clusters)
             cluster_sample_ids[trajectory] = cluster_sample_id
@@ -266,7 +270,8 @@ def select_traces(
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
-    kmean: bool = False
+    kmean: bool = False,
+    n_clusters: int = 1, 
 ):    
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
 
@@ -298,7 +303,7 @@ def select_traces(
     traces_df = _nice_df(traces)
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
     # get mean (or kmeans) lines
-    means_trajectory = get_examplary_lines(traces_df, kmean)
+    means_trajectory = get_examplary_lines(traces_df, kmean, n_clusters = n_clusters)
     i = 0
     examplary_line_list = []
     mean_line_list = []
