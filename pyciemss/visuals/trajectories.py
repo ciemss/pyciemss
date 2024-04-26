@@ -325,7 +325,7 @@ def select_traces(
                 mean_trajectory = convert_back_trace_format(mean_trajectory)
                 # if kmeans want to keep all 
                 if len(multiple) > 1:
-                    select_by_label = select_by.title() + "_" + str(len(multiple)) + "/" + str(len(group_examplary.mean()))
+                    select_by_label = select_by.title() + "_" + str(len(multiple)) + "/" + str(len(group_examplary['distance_mean'].mean()))
                 else:
                     select_by_label = select_by.title()
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
