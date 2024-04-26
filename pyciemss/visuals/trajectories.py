@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import grangercausalitytests
 from tslearn.clustering import TimeSeriesKMeans
 from tslearn.datasets import CachedDatasets
@@ -193,6 +194,11 @@ def get_best_example(group_examplary, select_by):
             # remove trend line
             diff_mean = np.diff(x["mean_value"])
             diff_value = np.diff(x["value"])
+            fig, ax = plt.subplots( nrows=1, ncols=1 )  # create figure & 1 axis
+            ax.plot(diff_value)
+            fig.savefig('path/to/save/image/to.png')   # save the figure to file
+            plt.close(fig)  
+            plt.savefig("test" + select_by + ".png")
             granger_input = pd.DataFrame({'diff_mean': diff_mean, 'diff_value': diff_value})
             max_lag = 10
             # return max lag, ssr_ftest p score
@@ -228,7 +234,7 @@ def get_best_example(group_examplary, select_by):
 
     elif select_by == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
-        
+
         sum_examplary = pd.DataFrame({"granger": granger_examplary})
         sum_examplary = sum_examplary.reset_index()
         # return the sample id with the lowest granger significance score
