@@ -190,9 +190,13 @@ def get_best_example(group_examplary, select_by):
         # not sure what maxlag value to use
         # return ssr-based-F test p value
         try:
-            granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
-                10
-            ][0]["ssr_ftest"][1]
+            # remove trend line
+            diff_mean = np.diff(x["mean_value"])
+            diff_value = np.diff(x["value"])
+            granger_input = pd.DataFrame({'diff_mean': diff_mean, 'diff_value': diff_value})
+            max_lag = 10
+            # return max lag, ssr_ftest p score
+            granger_value = grangercausalitytests(granger_input, maxlag=[max_lag])[max_lag][0]["ssr_ftest"][1]
             return granger_value
         except:
             return np.nan
@@ -224,6 +228,7 @@ def get_best_example(group_examplary, select_by):
 
     elif select_by == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
+        
         sum_examplary = pd.DataFrame({"granger": granger_examplary})
         sum_examplary = sum_examplary.reset_index()
         # return the sample id with the lowest granger significance score
@@ -340,7 +345,7 @@ def select_traces(
     # examplary_line_df["timepoint_id"] = examplary_line_df.index 
     # mean_line_df["timepoint_id"] = mean_line_df.index 
     # return mean line per trajectory/cluster (np.unique(mean_trajecotry['cluster])), examplary_line, and other metrics, trajectory, best_examplar selected by
-    return examplary_line_df
+    return examplary_line_df, trajectory_dict
 
 
 
