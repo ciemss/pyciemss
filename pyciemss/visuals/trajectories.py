@@ -1,7 +1,7 @@
 import re
 from numbers import Integral, Number
 from typing import Any, Dict, List, Literal, Optional, Union
-
+import random
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.stattools import grangercausalitytests
@@ -12,6 +12,8 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance, \
 from . import vega
 
 def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
+    def _quantiles(g):
+        return np.mean([g.quantile(q=0.05).value, g.quantile(q=0.95).value])
 
     def return_kmeans(traces_df, n_clusters =4):
         # get the trajectory for current trajectory
@@ -44,17 +46,16 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
             traces_df_T_cluster = traces_df_pivot[y_pred == yi]
             # get mean per timepoint of the values
 
-            # def _quantiles(g):
-            #     return g.quantile(q=.5)
-
             means_trajectory = (
                 traces_df_T_cluster.melt(ignore_index=False, var_name="timepoint")
                 .reset_index()
                 .set_index('timepoint')['value']
                 .groupby(level=["timepoint"])
-                .mean()
+                .apply(_quantiles)
                 .reset_index()
             )
+            means_trajectory['value'] = means_trajectory[['lower', 'upper']].mean(axis=1)
+
             means_trajectory["cluster"] = "cluster_" + str(yi)
             cluster_sample_id["cluster_" + str(yi)] = list(np.unique(traces_df_T_cluster.index))
             all_clusters.append(means_trajectory[['timepoint', 'value', "cluster"]])
@@ -89,13 +90,16 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
     else:
         cluster_trajectory ={}
         # get average line, 3 columns (trajectory: "D_state", timepoint, value)
+
+
         means_trajectory = (
             traces_df.melt(ignore_index=False, var_name="trajectory")
             .set_index("trajectory", append=True)
             .groupby(level=["trajectory", "timepoint"])
-            .mean()
-            .reset_index()
+            .apply(_quantiles)
+            .reset_index(name='value')
         )
+
         for trajectory in np.unique(means_trajectory['trajectory']):
             traces_df_traj= means_trajectory[(means_trajectory['trajectory'] == trajectory)]
             traces_df = traces_df.reset_index()
@@ -203,39 +207,54 @@ def get_best_example(group_examplary, select_by):
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if select_by == "mean":
         # get average distance from the mean per trajectory and sample id
-        sum_examplary = (
+        grouped_by_sample_id_traj_reindex = (
             group_examplary['distance_mean'].mean().reset_index()
         )  # get only min distance from each trajectory type (rabbit or wolf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
+        best_sample_id = grouped_by_sample_id_traj_reindex.loc[
+            grouped_by_sample_id_traj_reindex.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
-        mean_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        mean_series = grouped_by_sample_id_traj_reindex.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        # keep track of scores that are a within 5 decimals of the examplar score
         all_min = mean_series.where(np.round(mean_series, 5) == np.round(mean_series.min(), 5)).dropna().iloc[:,0].tolist()
-        multiple = len(all_min) > 1
+        
 
     elif select_by == "variance":
         # get the variance per trajectory/sample id of difference from the mean (saved as distance_mean)
-        sum_examplary = (
+        grouped_by_sample_id_traj_reindex = (
             group_examplary['distance_mean'].var().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
+        best_sample_id = grouped_by_sample_id_traj_reindex.loc[
+            grouped_by_sample_id_traj_reindex.groupby("trajectory").distance_mean.idxmin()
         ][["sample_id", "trajectory"]]
-        var_series = sum_examplary.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        var_series = grouped_by_sample_id_traj_reindex.groupby("trajectory").distance_mean.apply(pd.DataFrame)
+        # keep track of scores that are a within 5 decimals of the examplar score
         all_min = var_series.where(np.round(var_series, 5) == np.round(var_series.min(), 5)).dropna().iloc[:,0].tolist()
-        multiple = len(all_min) > 1
+        
 
     elif select_by == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
-        sum_examplary = pd.DataFrame({"granger": granger_examplary})
-        sum_examplary = sum_examplary.reset_index()
+        grouped_by_sample_id_traj_reindex = pd.DataFrame({"granger": granger_examplary})
+        grouped_by_sample_id_traj_reindex = grouped_by_sample_id_traj_reindex.reset_index()
         # return the sample id with the lowest granger significance score
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").granger.idxmin()
+        best_sample_id = grouped_by_sample_id_traj_reindex.loc[
+            grouped_by_sample_id_traj_reindex.groupby("trajectory").granger.idxmin()
         ][["sample_id", "trajectory"]]
-        granger_series = sum_examplary.groupby("trajectory").granger.apply(pd.DataFrame)
+        granger_series = grouped_by_sample_id_traj_reindex.groupby("trajectory").granger.apply(pd.DataFrame)
+        # keep track of scores that are a within 5 decimals of the examplar score
         all_min = granger_series.where(np.round(granger_series,5) ==np.round(granger_series.min(), 5)).dropna().iloc[:,0].tolist()
-      
+    elif select_by == "random":  
+        # dataframe with values aggregrated by sample_id and trajectory 
+        grouped_by_sample_id_traj_reindex = (
+            group_examplary['distance_mean'].var().reset_index()
+        ) 
+        # get random idx per traejectory
+        best_sample_id = grouped_by_sample_id_traj_reindex.loc[
+            grouped_by_sample_id_traj_reindex.groupby("trajectory").sample_id.apply(lambda x: x.sample(1))
+        ][["sample_id", "trajectory"]]
+        # keep track of scores that are a within 5 decimals of the examplar score (placeholder for random selector)
+        all_min = [best_sample_id]
+        
+ 
     return best_sample_id, all_min
 
 
@@ -266,7 +285,7 @@ def convert_examplary_line(melt_all, best_sample_id):
 def select_traces(
     traces,
     *,
-    select_by_list: list = ['mean', "variance", 'granger', 'chaos'],
+    select_by_list: list = ['mean', "variance", 'granger', 'chaos', 'random'],
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
     relabel: Optional[Dict[str, str]] = None,
@@ -310,7 +329,7 @@ def select_traces(
     for select_by in select_by_list: 
         for (trajectory_key, trajectory_dict) in means_trajectory.items():
             for cluster_key in trajectory_dict.keys():
-                mean_trajectory= trajectory_dict[cluster_key]['cluster_mean']
+                envelope_mean= trajectory_dict[cluster_key]['cluster_mean']
                 cluster_sample_id = trajectory_dict[cluster_key]['cluster_sample_id']
                 i +=1
                 # keep only row with the right sample ids and colums from that trajectory keys
@@ -318,7 +337,7 @@ def select_traces(
 
 
                 # get grouped difference from the mean
-                melt_all, group_examplary = grouped_mean(traces_df_sample_id, mean_trajectory)
+                melt_all, group_examplary = grouped_mean(traces_df_sample_id, envelope_mean)
                 if select_by == "chaos":
                     best_sample_id, multiple = trajectory_chaos(traces_df_sample_id)
                 else:
@@ -326,13 +345,13 @@ def select_traces(
                     best_sample_id, multiple = get_best_example(group_examplary, select_by)
                 # get examplar line
                 examplary_line = convert_examplary_line(melt_all, best_sample_id)
-                mean_trajectory = convert_back_trace_format(mean_trajectory)
+                envelope_mean = convert_back_trace_format(envelope_mean)
                 # if kmeans want to keep all 
                 if len(multiple) > 1:
                     select_by_label = select_by.title() + "_" + str(len(multiple)) + "/" + str(len(group_examplary['distance_mean'].mean()))
                 else:
                     select_by_label = select_by.title()
-                examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "mean_trajectory": mean_trajectory.iloc[:,0]})
+                examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "envelope_mean": envelope_mean.iloc[:,0]})
                 examplary_df['sample_id'] = best_sample_id['sample_id'].values[0]
                 examplary_df['cluster'] = cluster_key.title()
                 examplary_df['trajectory'] = trajectory_key.title()
