@@ -45,6 +45,33 @@
          ],
          "sort": {"order": "ascending"}
       }
+    },
+    {
+      "name": "shape1",
+      "type": "ordinal",
+      "range": ["circle", "square", "cross", "diamond", "triangle-up", "triangle-down", "triangle-right", "triangle-left",  "arrow", "wedge", "triangle"],
+      "domain": {
+        "fields": [
+          {"data": "distributions", "field": "trajectory"},
+          {"data": "traces", "field": "trajectory"},
+          {"data": "points", "field": "trajectory"}
+         ],
+         "sort": {"order": "descending"}
+      }
+    },
+
+    {
+      "name": "symbol_placement",
+      "type": "ordinal",
+      "range": [ 50, 60, 70, 80, 90],
+      "domain": {
+        "fields": [
+          {"data": "distributions", "field": "trajectory"},
+          {"data": "traces", "field": "trajectory"},
+          {"data": "points", "field": "trajectory"}
+         ],
+         "sort": {"order": "descending"}
+      }
     }
   ],
 
@@ -120,7 +147,9 @@
     {
       "name": "color_legend",
       "stroke": "color",
+      "shape": "shape1",
       "orient": "left",
+      "labelFontSize": 10,
       "encode": {
         "symbols": {
           "name": "legendSymbol",
@@ -131,13 +160,12 @@
             "opacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)", "value": 0.7},
               {"value": 0.15}
-            ],
-            "size": {"value": 64}
+            ]
           }
         },
         "labels": {
           "name": "legendLabel",
-          "size": {"value": 25},
+  
           "interactive": true,
           "update": {
             "opacity": [
@@ -257,6 +285,35 @@
                 "fillOpacity": {"value": 0.9}
               }  
           }
+        },
+        {
+          "type": "symbol",
+          "name": "_traces_symbol",
+          "from": {"data": "traces_split"},
+          "encode": {
+              "update": {
+                "x": {"scale": "xscale", "field": "timepoint"},
+                "y": {"scale": "yscale", "field": "value"},
+                "strokeWidth": {"value": 1},
+                "stroke": {"scale": "color", "field": "trajectory"},
+                "fill": {"scale": "color", "field": "trajectory"},
+                "shape": {"scale": "shape1", "field": "trajectory"},
+                "fillOpacity": [
+                  {"test": "datum.timepoint == scale('symbol_placement', datum.trajectory)", 
+                    "value": 0.5},
+                  {"value": 0}
+                ],
+                "strokeOpacity": [
+                  {"test": "datum.timepoint == scale('symbol_placement', datum.trajectory)", 
+                    "value": 0.5},
+                  {"value": 0}
+                ]
+                
+              },
+              "hover": {
+                "fillOpacity": {"value": 0.9}
+              }  
+          }
         }
       ]
     },    
@@ -370,9 +427,9 @@
       "values": [{"timepoint": 6, "value": 30, "trajectory": "c"},
                  {"timepoint": 9, "value": 20, "trajectory": "c"},
                  {"timepoint": 3, "value": 20, "trajectory": "c"},
-                 {"timepoint": 7, "value": 30, "trajectory": "d"},
+                 {"timepoint": 12, "value": 30, "trajectory": "d"},
                  {"timepoint": 6, "value": 40, "trajectory": "d"},
-                 {"timepoint": 8, "value": 40, "trajectory": "d"}
+                 {"timepoint": 10, "value": 40, "trajectory": "d"}
                  ],
       "transform": [{"type": "filter", "expr": "isValid(datum.value)"},
                     {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}
