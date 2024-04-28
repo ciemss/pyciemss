@@ -12,8 +12,9 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance, \
 from . import vega
 
 def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
+    
     def _quantiles(g):
-        return np.mean([g.quantile(q=0.05).value, g.quantile(q=0.95).value])
+            return np.mean([g.quantile(q=0.05), g.quantile(q=0.95)])
 
     def return_kmeans(traces_df, n_clusters =4):
         # get the trajectory for current trajectory
@@ -42,6 +43,8 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
         y_pred = dba_km.fit_predict(traces_df_pivot_norm)
         cluster_sample_id = {}
         all_clusters = []
+
+
         for yi in range(n_clusters):
             traces_df_T_cluster = traces_df_pivot[y_pred == yi]
             # get mean per timepoint of the values
@@ -49,13 +52,11 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
             means_trajectory = (
                 traces_df_T_cluster.melt(ignore_index=False, var_name="timepoint")
                 .reset_index()
-                .set_index('timepoint')['value']
+                .set_index('timepoint', append=True)['value']
                 .groupby(level=["timepoint"])
                 .apply(_quantiles)
-                .reset_index()
+                .reset_index(name='value')
             )
-            means_trajectory['value'] = means_trajectory[['lower', 'upper']].mean(axis=1)
-
             means_trajectory["cluster"] = "cluster_" + str(yi)
             cluster_sample_id["cluster_" + str(yi)] = list(np.unique(traces_df_T_cluster.index))
             all_clusters.append(means_trajectory[['timepoint', 'value', "cluster"]])
@@ -95,7 +96,7 @@ def get_examplary_lines(traces_df, kmean = False, n_clusters =2):
         means_trajectory = (
             traces_df.melt(ignore_index=False, var_name="trajectory")
             .set_index("trajectory", append=True)
-            .groupby(level=["trajectory", "timepoint"])
+            .groupby(level=["trajectory", "timepoint"])['value']
             .apply(_quantiles)
             .reset_index(name='value')
         )
@@ -248,11 +249,9 @@ def get_best_example(group_examplary, select_by):
             group_examplary['distance_mean'].var().reset_index()
         ) 
         # get random idx per traejectory
-        best_sample_id = grouped_by_sample_id_traj_reindex.loc[
-            grouped_by_sample_id_traj_reindex.groupby("trajectory").sample_id.apply(lambda x: x.sample(1))
-        ][["sample_id", "trajectory"]]
+        best_sample_id = grouped_by_sample_id_traj_reindex.groupby("trajectory").sample(1)[["sample_id", "trajectory"]]
         # keep track of scores that are a within 5 decimals of the examplar score (placeholder for random selector)
-        all_min = [best_sample_id]
+        all_min = [0]
         
  
     return best_sample_id, all_min

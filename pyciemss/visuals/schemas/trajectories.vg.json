@@ -243,9 +243,9 @@
                 "stroke": {"scale": "color", "field": "trajectory"},
 
                 "strokeDash": [
-                  {"test": "indexof(datum.trajectory, 'Baseline') == -1 | indexof(datum.trajectory, 'Envelope') == -1", 
-                    "value": [1, 0]},
-                  {"value": [8, 4]}],
+                  {"test": "indexof(datum.trajectory, 'Baseline') != -1 || indexof(datum.trajectory, 'Envelope') != -1", 
+                    "value": [8, 4]},
+                  {"value": [1, 0]}],
                 "interpolate": {"value": "linear"},
                 "strokeOpacity": [
                   {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
