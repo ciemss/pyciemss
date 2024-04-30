@@ -184,7 +184,7 @@ def trajectory_chaos(trajectories: pd.DataFrame):
     best_sample_id = trajectories[trajectories['sample_id'] == max_chaos_sample_id][["sample_id", "trajectory"]]
     return best_sample_id, all_min
 
-def get_best_example(group_examplary, select_by):
+def get_best_example(group_examplary, select_by, seed = None):
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
 
     Args:
@@ -194,6 +194,9 @@ def get_best_example(group_examplary, select_by):
           - "granger" -- Trajectory that "best predicts" the mean-line of the envelope
                         (by the grangercausalitytest, maxlag=10)
     """
+    if seed is not None:
+        random.seed(seed)
+
     def granger_fun(x):
         # first column is the column to compare to
         # not sure what maxlag value to use
@@ -249,7 +252,7 @@ def get_best_example(group_examplary, select_by):
             group_examplary['distance_mean'].var().reset_index()
         ) 
         # get random idx per traejectory
-        best_sample_id = grouped_by_sample_id_traj_reindex.groupby("trajectory").sample(1)[["sample_id", "trajectory"]]
+        best_sample_id = grouped_by_sample_id_traj_reindex.groupby("trajectory").sample(1, random_state = seed)[["sample_id", "trajectory"]]
         # keep track of scores that are a within 5 decimals of the examplar score (placeholder for random selector)
         all_min = [0]
         
@@ -290,6 +293,7 @@ def select_traces(
     relabel: Optional[Dict[str, str]] = None,
     kmean: bool = False,
     n_clusters: int = 1, 
+    seed: Union[int, None] = None
 ):    
     """Picks an actual trajectory based on the envelope of trajectories and a selection criteria
 
@@ -317,7 +321,8 @@ def select_traces(
 
     """
     
-
+    if seed is not None:
+        random.seed(seed)
     traces_df = _nice_df(traces)
     traces_df = _keep_drop_rename(traces_df, keep, drop, relabel)
     # get mean (or kmeans) lines
@@ -341,15 +346,15 @@ def select_traces(
                     best_sample_id, multiple = trajectory_chaos(traces_df_sample_id)
                 else:
                     # get id of the sample with the lowest variance, differnce of granger socre
-                    best_sample_id, multiple = get_best_example(group_examplary, select_by)
+                    best_sample_id, multiple = get_best_example(group_examplary, select_by, seed = seed)
                 # get examplar line
                 examplary_line = convert_examplary_line(melt_all, best_sample_id)
                 envelope_mean = convert_back_trace_format(envelope_mean)
                 # if kmeans want to keep all 
-                if len(multiple) > 1:
-                    select_by_label = select_by.title() + "_" + str(len(multiple)) + "/" + str(len(group_examplary['distance_mean'].mean()))
-                else:
-                    select_by_label = select_by.title()
+                # if len(multiple) > 1:
+                select_by_label = select_by.title() #+ "_" + str(len(multiple)) + "/" + str(len(group_examplary['distance_mean'].mean()))
+                # else:
+                #     select_by_label = select_by.title()
                 examplary_df = pd.DataFrame({"examplary_line": examplary_line.iloc[:,0], "envelope_mean": envelope_mean.iloc[:,0]})
                 examplary_df['sample_id'] = best_sample_id['sample_id'].values[0]
                 examplary_df['cluster'] = cluster_key.title()

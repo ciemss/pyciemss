@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 500,
-  "height": 300,
+  "height": 200,
   "background": "white",
   "scales": [
     {
@@ -33,45 +33,36 @@
          ]
       }
     },
+
     {
-      "name": "color",
+      "name": "color_envelope",
       "type": "ordinal",
-      "range": "category",
+      "range": ["#ADD8E6"],
+      
       "domain": {
         "fields": [
-          {"data": "distributions", "field": "trajectory"},
-          {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
-         ],
-         "sort": {"order": "ascending"}
+          {"data": "distributions", "field": "trajectory"}
+         ]
       }
     },
     {
-      "name": "shape1",
+      "name": "color",
+      "type": "ordinal",
+      "range": ["#1f77b4","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"],
+      "domain":  ["Envelope_Mean",  "Mean", "Variance",  "Chaos", "Random", "Granger"]
+    },
+    {
+      "name": "symbol_scale",
       "type": "ordinal",
       "range": ["circle", "square", "cross", "diamond", "triangle-up", "triangle-down", "triangle-right", "triangle-left",  "arrow", "wedge", "triangle"],
-      "domain": {
-        "fields": [
-          {"data": "distributions", "field": "trajectory"},
-          {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
-         ],
-         "sort": {"order": "descending"}
-      }
+      "domain": ["Envelope_Mean",  "Mean", "Variance",  "Chaos", "Random", "Granger"]
     },
 
     {
       "name": "symbol_placement",
       "type": "ordinal",
       "range": [ 50, 60, 70, 80, 90],
-      "domain": {
-        "fields": [
-          {"data": "distributions", "field": "trajectory"},
-          {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
-         ],
-         "sort": {"order": "descending"}
-      }
+      "domain": ["Envelope_Mean","Mean", "Variance",  "Chaos", "Random", "Granger"]
     }
   ],
 
@@ -80,12 +71,26 @@
       "name": "x_axis",
       "orient": "bottom",
       "scale": "xscale", 
+      "encode": {
+        "labels": {
+          "update": {
+            "fontSize": {"value": 10}
+          }
+        }
+      },
       "zindex": 100
     },
     {
       "name": "y_axis",
       "orient": "left", 
       "scale": "yscale", 
+      "encode": {
+        "labels": {
+          "update": {
+            "fontSize": {"value": 10}
+          }
+        }
+      },
       "zindex": 100
     }
   ],
@@ -147,9 +152,40 @@
     {
       "name": "color_legend",
       "stroke": "color",
-      "shape": "shape1",
-      "orient": "left",
-      "labelFontSize": 10,
+      "shape": "symbol_scale",
+      "orient": "right",
+      "labelFontSize": 14,
+      "encode": {
+        "symbols": {
+          "name": "legendSymbol",
+          "interactive": true,
+          "update": {
+            "fill": {"value": "transparent"},
+            "strokeWidth": {"value": 2},
+            "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)", "value": 0.7},
+              {"value": 0.15}
+            ]
+          }
+        },
+        "labels": {
+          "name": "legendLabel",
+  
+          "interactive": true,
+          "update": {
+            "opacity": [
+              {"test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.value)", "value": 1},
+              {"value": 0.25}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color_legend2",
+      "stroke": "color_envelope",
+      "orient": "right",
+      "labelFontSize": 14,
       "encode": {
         "symbols": {
           "name": "legendSymbol",
@@ -199,7 +235,7 @@
           "update": {
               "x": {"scale": "xscale", "field": "timepoint"},
               "y": {"scale": "yscale", "field": "value"},
-              "size": {"value": 35},
+              "size": {"value": 50},
               "strokeWidth": {"value": 2},
               "fill": {"scale": "color", "field": "trajectory"},
               "stroke": {"scale": "color", "field": "trajectory"},
@@ -294,10 +330,11 @@
               "update": {
                 "x": {"scale": "xscale", "field": "timepoint"},
                 "y": {"scale": "yscale", "field": "value"},
-                "strokeWidth": {"value": 1},
+                "strokeWidth": {"value": 2},
+                "size": {"value": 70},
                 "stroke": {"scale": "color", "field": "trajectory"},
                 "fill": {"scale": "color", "field": "trajectory"},
-                "shape": {"scale": "shape1", "field": "trajectory"},
+                "shape": {"scale": "symbol_scale", "field": "trajectory"},
                 "fillOpacity": [
                   {"test": "datum.timepoint == scale('symbol_placement', datum.trajectory)", 
                     "value": 0.5},
@@ -340,17 +377,17 @@
             "y2": {"scale": "yscale", "field": "lower"},
             "interpolate": {"value": "linear"},
             "strokeWidth": {"value": 2},
-            "fill": {"scale": "color", "field": "trajectory"},
-            "stroke": {"scale": "color", "field": "trajectory"},
+            "fill": {"scale": "color_envelope", "field": "trajectory"},
+            "stroke": {"scale": "color_envelope", "field": "trajectory"},
 
             "fillOpacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
-               "value": 0.10 },
+               "value": 0.2 },
               {"value": 0.05}
             ],
             "strokeOpacity": [
               {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", 
-               "value": 0.10},
+               "value": 0.2},
               {"value": 0.05}
             ]
           },
@@ -387,7 +424,7 @@
             "enter": {
               "text": {"field": "datum.label"},
               "y": {"value": 0},
-              "fontSize": {"value": 8}
+              "fontSize": {"value": 10}
             }
           },
           "transform": [
