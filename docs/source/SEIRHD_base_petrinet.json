@@ -1,0 +1,491 @@
+{
+ "header": {
+  "name": "SEIRHD base model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "SEIRHD base model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "E",
+    "name": "E",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H",
+    "name": "H",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {
+      "property": "ncit:C25179"
+     }
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Cumulative_cases",
+    "name": "Cumulative_cases",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Cumulative_hosp",
+    "name": "Cumulative_hosp",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "E"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "E"
+    ],
+    "output": [
+     "I"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "H"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "E"
+    ],
+    "output": [
+     "E",
+     "Cumulative_cases"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "I",
+     "Cumulative_hosp"
+    ],
+    "properties": {
+     "name": "t8"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*beta/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "E*r_EI",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>r_EI</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*r_IR*(1 - p_IH)",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>r_IR</ci><apply><minus/><cn>1</cn><ci>p_IH</ci></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "I*p_IH*r_IR",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>p_IH</ci><ci>r_IR</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "H*r_HR*(1 - p_HD)",
+     "expression_mathml": "<apply><times/><ci>H</ci><ci>r_HR</ci><apply><minus/><cn>1</cn><ci>p_HD</ci></apply></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "H*p_HD*r_HR",
+     "expression_mathml": "<apply><times/><ci>H</ci><ci>p_HD</ci><ci>r_HR</ci></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "E*r_EI",
+     "expression_mathml": "<apply><times/><ci>E</ci><ci>r_EI</ci></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "I*p_IH*r_IR",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>p_IH</ci><ci>r_IR</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "7668983.0 - I0",
+     "expression_mathml": "<apply><minus/><cn>7668983.0</cn><ci>I0</ci></apply>"
+    },
+    {
+     "target": "I",
+     "expression": "I0",
+     "expression_mathml": "<ci>I0</ci>"
+    },
+    {
+     "target": "E",
+     "expression": "4000.0",
+     "expression_mathml": "<cn>4000.0</cn>"
+    },
+    {
+     "target": "R",
+     "expression": "110000.0",
+     "expression_mathml": "<cn>110000.0</cn>"
+    },
+    {
+     "target": "H",
+     "expression": "450.0",
+     "expression_mathml": "<cn>450.0</cn>"
+    },
+    {
+     "target": "D",
+     "expression": "2353.0",
+     "expression_mathml": "<cn>2353.0</cn>"
+    },
+    {
+     "target": "Cumulative_cases",
+     "expression": "111848.0",
+     "expression_mathml": "<cn>111848.0</cn>"
+    },
+    {
+     "target": "Cumulative_hosp",
+     "expression": "3168.0",
+     "expression_mathml": "<cn>3168.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 7785786.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.42,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.37,
+       "maximum": 0.45
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_EI",
+     "value": 0.2424,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.2,
+       "maximum": 0.3
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_IH",
+     "value": 0.095,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.09,
+       "maximum": 0.12
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_IR",
+     "value": 0.256,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.2,
+       "maximum": 0.3
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p_HD",
+     "value": 0.084,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.06,
+       "maximum": 0.095
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "r_HR",
+     "value": 0.148,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.1,
+       "maximum": 0.2
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "I0",
+     "value": 7000.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 6300.0,
+       "maximum": 7700.000000000001
+      }
+     }
+    }
+   ],
+   "observables": [
+    {
+     "id": "exposed",
+     "name": "exposed",
+     "expression": "E",
+     "expression_mathml": "<ci>E</ci>"
+    },
+    {
+     "id": "infected",
+     "name": "infected",
+     "expression": "I",
+     "expression_mathml": "<ci>I</ci>"
+    },
+    {
+     "id": "recovered",
+     "name": "recovered",
+     "expression": "R",
+     "expression_mathml": "<ci>R</ci>"
+    },
+    {
+     "id": "hospitalized",
+     "name": "hospitalized",
+     "expression": "H",
+     "expression_mathml": "<ci>H</ci>"
+    },
+    {
+     "id": "deceased",
+     "name": "deceased",
+     "expression": "D",
+     "expression_mathml": "<ci>D</ci>"
+    },
+    {
+     "id": "cumulative_cases",
+     "name": "cumulative_cases",
+     "expression": "Cumulative_cases",
+     "expression_mathml": "<ci>Cumulative_cases</ci>"
+    },
+    {
+     "id": "cumulative_hosp",
+     "name": "cumulative_hosp",
+     "expression": "Cumulative_hosp",
+     "expression_mathml": "<ci>Cumulative_hosp</ci>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
