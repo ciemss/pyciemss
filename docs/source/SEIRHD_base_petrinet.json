@@ -280,7 +280,7 @@
     },
     {
      "target": "E",
-     "expression": "4000.0",
+     "expression": "13000.0",
      "expression_mathml": "<cn>4000.0</cn>"
     },
     {
@@ -290,12 +290,12 @@
     },
     {
      "target": "H",
-     "expression": "450.0",
+     "expression": "600.0",
      "expression_mathml": "<cn>450.0</cn>"
     },
     {
      "target": "D",
-     "expression": "2353.0",
+     "expression": "450.0",
      "expression_mathml": "<cn>2353.0</cn>"
     },
     {
@@ -320,12 +320,12 @@
     },
     {
      "id": "beta",
-     "value": 0.42,
+     "value": 0.3,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 0.37,
-       "maximum": 0.45
+       "minimum": 0.29,
+       "maximum": 0.31
       }
      },
      "units": {
@@ -410,12 +410,12 @@
     },
     {
      "id": "I0",
-     "value": 7000.0,
+     "value": 9000.0,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 6300.0,
-       "maximum": 7700.000000000001
+       "minimum": 8000.0,
+       "maximum": 10000.0
       }
      }
     }
