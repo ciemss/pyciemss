@@ -1,0 +1,817 @@
+{
+ "header": {
+  "name": "Malaria base model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Malaria base model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "Sh",
+    "name": "Sh",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Im",
+    "name": "Im",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   },
+   {
+    "id": "Eh",
+    "name": "Eh",
+    "grounding": {
+     "identifiers": {
+      "apollosv": "0000154"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Ih",
+    "name": "Ih",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Rh",
+    "name": "Rh",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Dh",
+    "name": "Dh",
+    "grounding": {
+     "identifiers": {
+      "ncit": "C28554"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "Sm",
+    "name": "Sm",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   },
+   {
+    "id": "Em",
+    "name": "Em",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   },
+   {
+    "id": "G",
+    "name": "G",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   },
+   {
+    "id": "L",
+    "name": "L",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   },
+   {
+    "id": "P",
+    "name": "P",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "mosquito",
+     "expression_mathml": "<ci>mosquito</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "Im",
+     "Sh"
+    ],
+    "output": [
+     "Im",
+     "Eh"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "Eh"
+    ],
+    "output": [
+     "Ih"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "Ih"
+    ],
+    "output": [
+     "Rh"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "Ih"
+    ],
+    "output": [
+     "Dh"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "Rh"
+    ],
+    "output": [
+     "Sh"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   },
+   {
+    "id": "t6",
+    "input": [
+     "Sm",
+     "Em",
+     "Im"
+    ],
+    "output": [
+     "Sm",
+     "Em",
+     "Im",
+     "G"
+    ],
+    "properties": {
+     "name": "t6"
+    }
+   },
+   {
+    "id": "t7",
+    "input": [
+     "L",
+     "G"
+    ],
+    "output": [
+     "L",
+     "L"
+    ],
+    "properties": {
+     "name": "t7"
+    }
+   },
+   {
+    "id": "t8",
+    "input": [
+     "G"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t8"
+    }
+   },
+   {
+    "id": "t9",
+    "input": [
+     "P",
+     "L"
+    ],
+    "output": [
+     "P",
+     "P"
+    ],
+    "properties": {
+     "name": "t9"
+    }
+   },
+   {
+    "id": "t10",
+    "input": [
+     "L"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t10"
+    }
+   },
+   {
+    "id": "t11",
+    "input": [
+     "P"
+    ],
+    "output": [
+     "Sm"
+    ],
+    "properties": {
+     "name": "t11"
+    }
+   },
+   {
+    "id": "t12",
+    "input": [
+     "P"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t12"
+    }
+   },
+   {
+    "id": "t13",
+    "input": [
+     "Ih",
+     "Rh",
+     "Sm"
+    ],
+    "output": [
+     "Ih",
+     "Rh",
+     "Em"
+    ],
+    "properties": {
+     "name": "t13"
+    }
+   },
+   {
+    "id": "t14",
+    "input": [
+     "Sm"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t14"
+    }
+   },
+   {
+    "id": "t15",
+    "input": [
+     "Em"
+    ],
+    "output": [
+     "Im"
+    ],
+    "properties": {
+     "name": "t15"
+    }
+   },
+   {
+    "id": "t16",
+    "input": [
+     "Em"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t16"
+    }
+   },
+   {
+    "id": "t17",
+    "input": [
+     "Im"
+    ],
+    "output": [],
+    "properties": {
+     "name": "t17"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "Im*Sh*beta",
+     "expression_mathml": "<apply><times/><ci>Im</ci><ci>Sh</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "Eh*rho",
+     "expression_mathml": "<apply><times/><ci>Eh</ci><ci>rho</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Ih*gamma",
+     "expression_mathml": "<apply><times/><ci>Ih</ci><ci>gamma</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Ih*mu",
+     "expression_mathml": "<apply><times/><ci>Ih</ci><ci>mu</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "Rh*phi",
+     "expression_mathml": "<apply><times/><ci>Rh</ci><ci>phi</ci></apply>"
+    },
+    {
+     "target": "t6",
+     "expression": "bm*(-G/KG + 1)*(Em + Im + Sm)",
+     "expression_mathml": "<apply><times/><ci>bm</ci><apply><plus/><apply><minus/><apply><divide/><ci>G</ci><ci>KG</ci></apply></apply><cn>1</cn></apply><apply><plus/><ci>Em</ci><ci>Im</ci><ci>Sm</ci></apply></apply>"
+    },
+    {
+     "target": "t7",
+     "expression": "G*tau*(1 - L/KL)",
+     "expression_mathml": "<apply><times/><ci>G</ci><ci>tau</ci><apply><minus/><cn>1</cn><apply><divide/><ci>L</ci><ci>KL</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t8",
+     "expression": "G*(dG + zeta)",
+     "expression_mathml": "<apply><times/><ci>G</ci><apply><plus/><ci>dG</ci><ci>zeta</ci></apply></apply>"
+    },
+    {
+     "target": "t9",
+     "expression": "L*nu*(1 - P/KP)",
+     "expression_mathml": "<apply><times/><ci>L</ci><ci>nu</ci><apply><minus/><cn>1</cn><apply><divide/><ci>P</ci><ci>KP</ci></apply></apply></apply>"
+    },
+    {
+     "target": "t10",
+     "expression": "L*(dL + zeta)",
+     "expression_mathml": "<apply><times/><ci>L</ci><apply><plus/><ci>dL</ci><ci>zeta</ci></apply></apply>"
+    },
+    {
+     "target": "t11",
+     "expression": "P*eps",
+     "expression_mathml": "<apply><times/><ci>P</ci><ci>eps</ci></apply>"
+    },
+    {
+     "target": "t12",
+     "expression": "P*(dP + zeta)",
+     "expression_mathml": "<apply><times/><ci>P</ci><apply><plus/><ci>dP</ci><ci>zeta</ci></apply></apply>"
+    },
+    {
+     "target": "t13",
+     "expression": "Ih*Sm*kappai + Rh*Sm*kappar",
+     "expression_mathml": "<apply><plus/><apply><times/><ci>Ih</ci><ci>Sm</ci><ci>kappai</ci></apply><apply><times/><ci>Rh</ci><ci>Sm</ci><ci>kappar</ci></apply></apply>"
+    },
+    {
+     "target": "t14",
+     "expression": "Sm*(eta + zeta)",
+     "expression_mathml": "<apply><times/><ci>Sm</ci><apply><plus/><ci>eta</ci><ci>zeta</ci></apply></apply>"
+    },
+    {
+     "target": "t15",
+     "expression": "Em*chi",
+     "expression_mathml": "<apply><times/><ci>Em</ci><ci>chi</ci></apply>"
+    },
+    {
+     "target": "t16",
+     "expression": "Em*(eta + zeta)",
+     "expression_mathml": "<apply><times/><ci>Em</ci><apply><plus/><ci>eta</ci><ci>zeta</ci></apply></apply>"
+    },
+    {
+     "target": "t17",
+     "expression": "Im*(eta + zeta)",
+     "expression_mathml": "<apply><times/><ci>Im</ci><apply><plus/><ci>eta</ci><ci>zeta</ci></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "Sh",
+     "expression": "15000",
+     "expression_mathml": "<cn>15000</cn>"
+    },
+    {
+     "target": "Im",
+     "expression": "50",
+     "expression_mathml": "<cn>50</cn>"
+    },
+    {
+     "target": "Eh",
+     "expression": "1250",
+     "expression_mathml": "<cn>1250</cn>"
+    },
+    {
+     "target": "Ih",
+     "expression": "I0",
+     "expression_mathml": "<ci>I0</ci>"
+    },
+    {
+     "target": "Rh",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "Dh",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    },
+    {
+     "target": "Sm",
+     "expression": "300",
+     "expression_mathml": "<cn>300</cn>"
+    },
+    {
+     "target": "Em",
+     "expression": "30",
+     "expression_mathml": "<cn>30</cn>"
+    },
+    {
+     "target": "G",
+     "expression": "2400",
+     "expression_mathml": "<cn>2400</cn>"
+    },
+    {
+     "target": "L",
+     "expression": "800",
+     "expression_mathml": "<cn>800</cn>"
+    },
+    {
+     "target": "P",
+     "expression": "400",
+     "expression_mathml": "<cn>400</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "beta",
+     "value": 0.0044,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.004,
+       "maximum": 0.005
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "rho",
+     "value": 0.1,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.033,
+       "maximum": 0.14
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "mu",
+     "value": 0.0028,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.0025,
+       "maximum": 0.003
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "phi",
+     "value": 0.005,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.004,
+       "maximum": 0.006
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "KG",
+     "value": 15000.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 14900.0,
+       "maximum": 15500.0
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "bm",
+     "value": 1.0,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "KL",
+     "value": 10000.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 9500.0,
+       "maximum": 10500.0
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "tau",
+     "value": 0.03,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "dG",
+     "value": 0.028,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "zeta",
+     "value": 0.02,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.01,
+       "maximum": 0.03
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "KP",
+     "value": 7000.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 6500.0,
+       "maximum": 7500.0
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "nu",
+     "value": 0.005,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "dL",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eps",
+     "value": 0.002,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "dP",
+     "value": 0.03,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "kappai",
+     "value": 0.0011,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.001,
+       "maximum": 0.0015
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "kappar",
+     "value": 0.02,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.015,
+       "maximum": 0.03
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta",
+     "value": 0.011,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "chi",
+     "value": 0.06,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.035,
+       "maximum": 0.1
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "I0",
+     "value": 220.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 209.0,
+       "maximum": 231.0
+      }
+     }
+    }
+   ],
+   "observables": [
+    {
+     "id": "infected_humans",
+     "name": "infected_humans",
+     "expression": "Ih",
+     "expression_mathml": "<ci>Ih</ci>"
+    },
+    {
+     "id": "deceased_humans",
+     "name": "deceased_humans",
+     "expression": "Dh",
+     "expression_mathml": "<ci>Dh</ci>"
+    },
+    {
+     "id": "infected_mosquitoes",
+     "name": "infected_mosquitoes",
+     "expression": "Im",
+     "expression_mathml": "<ci>Im</ci>"
+    },
+    {
+     "id": "aquatic_mosquitoes",
+     "name": "aquatic_mosquitoes",
+     "expression": "G + L + P",
+     "expression_mathml": "<apply><plus/><ci>G</ci><ci>L</ci><ci>P</ci></apply>"
+    },
+    {
+     "id": "adult_mosquitoes",
+     "name": "adult_mosquitoes",
+     "expression": "Em + Im + Sm",
+     "expression_mathml": "<apply><plus/><ci>Em</ci><ci>Im</ci><ci>Sm</ci></apply>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
