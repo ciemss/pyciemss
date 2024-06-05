@@ -158,8 +158,14 @@ def _eval_observables_mira(
 ) -> State[torch.Tensor]:
     if len(src.observables) == 0:
         return dict()
+    
+    parameters = {
+        get_name(param_info): getattr(param_module, get_name(param_info))
+        for param_info in src.parameters.values()
+        if not param_info.placeholder
+    }
 
-    numeric_observables = param_module.numeric_observables_func(**X)
+    numeric_observables = param_module.numeric_observables_func(**X, **parameters)
 
     observables: State[torch.Tensor] = dict()
     for i, obs in enumerate(src.observables.values()):
