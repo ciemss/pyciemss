@@ -67,11 +67,11 @@ PETRI_MODELS = [
         ),
         "u",
     ),
-    ModelFixture( 
+    ModelFixture(
         os.path.join(MODELS_PATH, "SIR_param_in_observables.json"),
         "beta",
         os.path.join(DATA_PATH, "SIR_data_case_hosp.csv"),
-        {"case": "incident_cases", "hosp": "I"}, 
+        {"case": "incident_cases", "hosp": "I"},
         True,
     ),
 ]
