@@ -1,0 +1,178 @@
+{
+ "header": {
+  "name": "SIR model with observables1",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "SIR model with observables1",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "I"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*beta",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I*gamma",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>gamma</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "999.0",
+     "expression_mathml": "<cn>999.0</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "1.0",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "R",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "beta",
+     "value": 0.0025,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.002,
+       "maximum": 0.003
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [
+    {
+     "id": "incident_cases",
+     "name": "incident_cases",
+     "expression": "0.0025*I*S",
+     "expression_mathml": "<apply><times/><cn>0.0025000000000000001</cn><ci>I</ci><ci>S</ci></apply>"
+    },
+    {
+     "id": "beta_param",
+     "name": "beta_param",
+     "expression": "0.0025",
+     "expression_mathml": "<cn>0.0025000000000000001</cn>"
+    }
+   ],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
