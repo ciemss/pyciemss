@@ -158,7 +158,7 @@ def _eval_observables_mira(
 ) -> State[torch.Tensor]:
     if len(src.observables) == 0:
         return dict()
-    
+
     parameters = {
         get_name(param_info): getattr(param_module, get_name(param_info))
         for param_info in src.parameters.values()
