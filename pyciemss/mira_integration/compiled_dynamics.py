@@ -159,7 +159,22 @@ def _eval_observables_mira(
     if len(src.observables) == 0:
         return dict()
 
-    numeric_observables = param_module.numeric_observables_func(**X)
+    parameters = {
+        get_name(param_info): getattr(param_module, get_name(param_info))
+        for param_info in src.parameters.values()
+        if not param_info.placeholder
+    }
+
+    # TODO: support event_dim > 0 upstream in ChiRho
+    # Default to time being the rightmost dimension
+    parameters_expanded = {
+        k: torch.unsqueeze(v, -1) if len(v.size()) > 0 else v
+        for k, v in parameters.items()
+    }
+
+    numeric_observables = param_module.numeric_observables_func(
+        **X, **parameters_expanded
+    )
 
     observables: State[torch.Tensor] = dict()
     for i, obs in enumerate(src.observables.values()):
