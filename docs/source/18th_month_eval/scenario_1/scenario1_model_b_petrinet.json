@@ -1,0 +1,174 @@
+{
+ "header": {
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "s",
+    "name": "s",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "i",
+    "name": "i",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    }
+   },
+   {
+    "id": "b",
+    "name": "b",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "status": "broad"
+     }
+    }
+   },
+   {
+    "id": "r",
+    "name": "r",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {
+      "status": "full"
+     }
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "i",
+     "s"
+    ],
+    "output": [
+     "i",
+     "i"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "i"
+    ],
+    "output": [
+     "b"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "b"
+    ],
+    "output": [
+     "r"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "beta*i*s",
+     "expression_mathml": "<apply><times/><ci>beta</ci><ci>i</ci><ci>s</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "gamma*i",
+     "expression_mathml": "<apply><times/><ci>gamma</ci><ci>i</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "b*eta",
+     "expression_mathml": "<apply><times/><ci>b</ci><ci>eta</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "s",
+     "expression": "0.999",
+     "expression_mathml": "<cn>0.999</cn>"
+    },
+    {
+     "target": "i",
+     "expression": "0.001",
+     "expression_mathml": "<cn>0.001</cn>"
+    },
+    {
+     "target": "b",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "r",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "beta",
+     "value": 0.357,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "gamma",
+     "value": 0.143,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "eta",
+     "value": 0.429,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {}
+ }
+}

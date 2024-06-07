@@ -1,0 +1,329 @@
+{
+ "header": {
+  "name": "Model",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "Model",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "H",
+    "name": "H",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "D",
+    "name": "D",
+    "grounding": {
+     "identifiers": {},
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "I"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "H"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "D"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   },
+   {
+    "id": "t5",
+    "input": [
+     "H"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t5"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*beta/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I*pir*rir",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>pir</ci><ci>rir</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "I*pih*rih",
+     "expression_mathml": "<apply><times/><ci>I</ci><ci>pih</ci><ci>rih</ci></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "H*phd*rhd",
+     "expression_mathml": "<apply><times/><ci>H</ci><ci>phd</ci><ci>rhd</ci></apply>"
+    },
+    {
+     "target": "t5",
+     "expression": "H*phr*rhr",
+     "expression_mathml": "<apply><times/><ci>H</ci><ci>phr</ci><ci>rhr</ci></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "-D0 - H0 - I0 + N - R0",
+     "expression_mathml": "<apply><plus/><apply><minus/><apply><minus/><apply><minus/><ci>D0</ci></apply><ci>H0</ci></apply><ci>I0</ci></apply><apply><minus/><ci>N</ci><ci>R0</ci></apply></apply>"
+    },
+    {
+     "target": "I",
+     "expression": "I0",
+     "expression_mathml": "<ci>I0</ci>"
+    },
+    {
+     "target": "R",
+     "expression": "R0",
+     "expression_mathml": "<ci>R0</ci>"
+    },
+    {
+     "target": "H",
+     "expression": "H0",
+     "expression_mathml": "<ci>H0</ci>"
+    },
+    {
+     "target": "D",
+     "expression": "D0",
+     "expression_mathml": "<ci>D0</ci>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 150000000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.3,
+     "units": {
+      "expression": "person/day",
+      "expression_mathml": "<apply><divide/><ci>person</ci><ci>day</ci></apply>"
+     }
+    },
+    {
+     "id": "pir",
+     "value": 0.9,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "rir",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "pih",
+     "value": 0.1,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "rih",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "phd",
+     "value": 0.13,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "rhd",
+     "value": 0.3,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "phr",
+     "value": 0.87,
+     "units": {
+      "expression": "1",
+      "expression_mathml": "<cn>1</cn>"
+     }
+    },
+    {
+     "id": "rhr",
+     "value": 0.07,
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "I0",
+     "value": 1000.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "R0",
+     "value": 0.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "H0",
+     "value": 0.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "D0",
+     "value": 781454.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t"
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
