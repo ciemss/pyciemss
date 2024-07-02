@@ -1,0 +1,214 @@
+{"$schema": "https://vega.github.io/schema/vega/v5.json",
+ "width": 530, 
+ "height": 175, 
+ "padding": 5, 
+ "autosize": {"type": "fit", "resize": true, "contains": "padding"},
+ "scales": [
+    {
+      "name": "scale_x", 
+      "type": "linear",
+      "domain": {"data": "measured", "fields": ["right_x", "left_x"]}, 
+      "range": [0, {"signal": "width"}]
+    }, 
+    {
+      "name": "scale_y", 
+      "domain": {"data": "measured", "fields": ["bottom_y", "top_y"]}, 
+      "range": [0, {"signal": "height"}]
+    }, 
+    {
+      "name": "font_color",
+      "type": "linear",
+      "domain": {"data": "base", "field": "count"},
+      "range": {"scheme": "goldgreen"}
+    },
+    {
+      "name": "font_size", 
+      "type": "linear",
+      "domain": {"data": "base", "field": "count"}, 
+      "range": [12, 25]
+    }
+  ],
+  "legends": [
+    {
+      "type": "gradient",
+      "fill": "font_color",
+      "direction": "horizontal",
+      "orient": "bottom",
+      "title": "Pattern Occurances", 
+      "tickCount": 5
+    }
+  ],
+  "marks": [
+    {
+      "name": "links_lines",
+      "type": "rule", 
+      "from": {"data": "link_paths"}, 
+      "encode": {
+        "enter": {
+          "x": {"field": "sourceX"}, 
+          "y": {"field": "sourceY"}, 
+          "x2": {"field": "targetX"}, 
+          "y2": {"field": "targetY"}, 
+          "stroke": {"value": "#ccc"}
+        }
+      }
+    },
+    {
+      "name": "labels", 
+      "zindex": 1, 
+      "type": "text", 
+      "from": {"data": "graph"}, 
+      "encode": {
+       "enter": {
+          "text": {"field": "label"}, 
+          "font": {"value": "Arial"}, 
+          "fontSize": {"field": "count", "scale": "font_size"},
+          "baseline": {"value": "middle"}, 
+          "align": {"value": "center"}, 
+          "fill": {"field": "count", "scale": "font_color"},
+          "x1": {"field": "x1"},
+          "y1": {"field": "y1"},
+          "x2": {"field": "x2"},
+          "y2": {"field": "y2"}
+        }
+      }
+    }, 
+    {
+      "name": "label_mask", 
+      "zindex": 0, 
+      "type": "rect", 
+      "from": {"data": "labels"}, 
+      "encode": {
+        "enter": {
+          "x": {"field": "bounds.x1", "round": true, "offset": -3},
+          "x2": {"field": "bounds.x2", "round": true, "offset": 3},
+          "y": {"field": "bounds.y1", "round": true, "offset": -3},
+          "y2": {"field": "bounds.y2", "round": true, "offset": 3},
+          "opacity": {"value": 1}, "fill": {"value": "white"}
+        }
+      }
+    }
+  ], 
+    
+    
+"data": [
+    {
+      "name": "base",
+      "values": [
+        {
+          "x": 102.5,
+          "y": 39.0,
+          "width": 2.8472,
+          "height": 0.5,
+          "value": "trace distributedhdbscanmstnnt",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "trace_1 distributedhdbscanmstnnt_1"
+        },
+        {
+          "x": 279.5,
+          "y": 61.0,
+          "width": 1.0694,
+          "height": 0.5,
+          "value": "generated",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "generated_1"
+        },
+        {
+          "x": 279.5,
+          "y": 18.0,
+          "width": 0.79167,
+          "height": 0.5,
+          "value": "search",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "search_1"
+        },
+        {
+          "x": 381.0,
+          "y": 39.0,
+          "width": 0.75,
+          "height": 0.5,
+          "value": "chunk",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "chunk_1"
+        },
+        {
+          "x": 481.5,
+          "y": 61.0,
+          "width": 1.0417,
+          "height": 0.5,
+          "value": "in ranks 8",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "in_1 ranks_1 8_1"
+        },
+        {
+          "x": 481.5,
+          "y": 18.0,
+          "width": 0.75,
+          "height": 0.5,
+          "value": "0 for",
+          "fontcolor": "#3182bd",
+          "fontsize": 18,
+          "id": "0_1 for_1"
+        }
+      ]
+    },
+     {
+      "name": "links",
+      "values": [
+        {
+          "source": "trace_1 distributedhdbscanmstnnt_1",
+          "target": "generated_1"
+        },
+        {
+          "source": "trace_1 distributedhdbscanmstnnt_1",
+          "target": "search_1"
+        },
+        {
+          "source": "generated_1",
+          "target": "chunk_1"
+        },
+        {
+          "source": "search_1",
+          "target": "chunk_1"
+        },
+        {
+          "source": "chunk_1",
+          "target": "in_1 ranks_1 8_1"
+        },
+        {
+          "source": "chunk_1",
+          "target": "0_1 for_1"
+        }
+      ]
+    },
+  {"name": "measured",
+   "source": "base",
+   "transform": [
+     {"type": "formula", "as": "top_y", "expr": "datum.y+datum.height/2"},
+     {"type": "formula", "as": "bottom_y", "expr": "datum.y-datum.height/2"},
+     {"type": "formula", "as": "right_x", "expr": "datum.x+datum.width/2"},
+     {"type": "formula", "as": "left_x", "expr": "datum.x-datum.width/2"}
+   ]},
+  {"name": "graph", 
+  "source": "measured", 
+  "transform": [
+    {"type": "formula", "as": "x1", "expr": "scale('scale_x', datum.left_x)"}, 
+    {"type": "formula", "as": "y1", "expr": "scale('scale_y', datum.top_y)"}, 
+    {"type": "formula", "as": "x2", "expr": "scale('scale_x', datum.right_x)"}, 
+    {"type": "formula", "as": "y2", "expr": "scale('scale_y', datum.bottom_y)"}
+  ]}, 
+
+  {"name": "link_paths", 
+  "source": "links", 
+  "transform": [
+    {"type": "lookup", "from": "graph", "key": "id", "values": ["x2", "y2"], "as": ["sourceX", "sourceY"], "fields": ["source"]}, 
+    {"type": "lookup", "from": "graph", "key": "id", "values": ["x2", "y2"], "as": ["targetX", "targetY"], "fields": ["target"]}, 
+    {"type": "linkpath", "sourceX": "sourceX", "sourceY": "sourceY", "targetX": "targetY", "targetY": "targetY", "orient": "horizontal", "shape": "line"}]
+  }
+  ]  
+  }
