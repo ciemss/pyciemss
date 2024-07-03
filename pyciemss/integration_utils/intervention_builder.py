@@ -78,7 +78,7 @@ def start_time_param_value_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        assert x.size()[0] == param_size * 2
+        assert x.size()[0] == param_size * 2, "Size mismatch: check size for initial_guess_interventions and/or bounds_interventions"
         static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(param_size):
             if x[count * 2].item() in static_parameter_interventions:

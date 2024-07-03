@@ -124,9 +124,9 @@ optimize_kwargs_SIRstockflow_time_param = {
     "static_parameter_interventions": start_time_param_value_objective(
         param_name=["p_cbeta"],
     ),
-    "objfun": lambda x: -x,
-    "initial_guess_interventions": 1.0,
-    "bounds_interventions": [[0.0], [40.0]],
+    "objfun": lambda x: -x[0] * 0.25 / (0.0 - 40.0) + np.abs(0.35 - x[1]) * 1.0,
+    "initial_guess_interventions": [1.0, 0.15],
+    "bounds_interventions": [[0.0, 0.1], [40.0, 0.5]],
 }
 
 optimize_kwargs_SEIRHD_param_maxQoI = {
