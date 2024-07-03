@@ -122,7 +122,8 @@ optimize_kwargs_SIRstockflow_time_param = {
     "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
     "risk_bound": 300.0,
     "static_parameter_interventions": start_time_param_value_objective(
-    param_name=["p_cbeta"],),
+        param_name=["p_cbeta"],
+    ),
     "objfun": lambda x: -x,
     "initial_guess_interventions": 1.0,
     "bounds_interventions": [[0.0], [40.0]],
