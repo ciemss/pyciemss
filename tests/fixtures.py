@@ -9,6 +9,7 @@ import torch
 from pyciemss.integration_utils.intervention_builder import (
     param_value_objective,
     start_time_objective,
+    start_time_param_value_objective,
 )
 from pyciemss.ouu.qoi import obs_max_qoi, obs_nday_average_qoi
 
@@ -117,6 +118,16 @@ optimize_kwargs_SIRstockflow_time = {
     "bounds_interventions": [[0.0], [40.0]],
 }
 
+optimize_kwargs_SIRstockflow_time_param = {
+    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
+    "risk_bound": 300.0,
+    "static_parameter_interventions": start_time_param_value_objective(
+    param_name=["p_cbeta"],),
+    "objfun": lambda x: -x,
+    "initial_guess_interventions": 1.0,
+    "bounds_interventions": [[0.0], [40.0]],
+}
+
 optimize_kwargs_SEIRHD_param_maxQoI = {
     "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
     "risk_bound": 300.0,
@@ -138,6 +149,10 @@ OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
         optimize_kwargs=optimize_kwargs_SIRstockflow_time,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SIR_stockflow.json"),
+        optimize_kwargs=optimize_kwargs_SIRstockflow_time_param,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
