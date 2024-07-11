@@ -1,0 +1,254 @@
+{
+ "header": {
+  "name": "SIR",
+  "schema": "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/petrinet_v0.6/petrinet/petrinet_schema.json",
+  "schema_name": "petrinet",
+  "description": "SIR",
+  "model_version": "0.1"
+ },
+ "properties": {},
+ "model": {
+  "states": [
+   {
+    "id": "S",
+    "name": "S",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000514"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I",
+    "name": "I",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000511"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "R",
+    "name": "R",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000592"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   },
+   {
+    "id": "I_deriv",
+    "name": "I_deriv",
+    "grounding": {
+     "identifiers": {
+      "ido": "0000502"
+     },
+     "modifiers": {}
+    },
+    "units": {
+     "expression": "person",
+     "expression_mathml": "<ci>person</ci>"
+    }
+   }
+  ],
+  "transitions": [
+   {
+    "id": "t1",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "I"
+    ],
+    "properties": {
+     "name": "t1"
+    }
+   },
+   {
+    "id": "t2",
+    "input": [
+     "I"
+    ],
+    "output": [
+     "R"
+    ],
+    "properties": {
+     "name": "t2"
+    }
+   },
+   {
+    "id": "t3",
+    "input": [
+     "I",
+     "S"
+    ],
+    "output": [
+     "I",
+     "S",
+     "I_deriv"
+    ],
+    "properties": {
+     "name": "t3"
+    }
+   },
+   {
+    "id": "t4",
+    "input": [
+     "I",
+     "S",
+     "I_deriv"
+    ],
+    "output": [
+     "I",
+     "S"
+    ],
+    "properties": {
+     "name": "t4"
+    }
+   }
+  ]
+ },
+ "semantics": {
+  "ode": {
+   "rates": [
+    {
+     "target": "t1",
+     "expression": "I*S*beta*p1/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci><ci>p1</ci></apply><ci>N</ci></apply>"
+    },
+    {
+     "target": "t2",
+     "expression": "I/tr",
+     "expression_mathml": "<apply><divide/><ci>I</ci><ci>tr</ci></apply>"
+    },
+    {
+     "target": "t3",
+     "expression": "Max(0, -I**2*S*beta*p1/N**2 - 2*I*S*beta*p1*tr/N + I*S**2*beta**2*p1**2/N**2 + tr**(-2))",
+     "expression_mathml": "<apply><max/><cn>0</cn><apply><plus/><apply><minus/><apply><minus/><apply><divide/><apply><times/><apply><power/><ci>I</ci><cn>2</cn></apply><ci>S</ci><ci>beta</ci><ci>p1</ci></apply><apply><power/><ci>N</ci><cn>2</cn></apply></apply></apply><apply><divide/><apply><times/><cn>2</cn><ci>I</ci><ci>S</ci><ci>beta</ci><ci>p1</ci><ci>tr</ci></apply><ci>N</ci></apply></apply><apply><divide/><apply><times/><ci>I</ci><apply><power/><ci>S</ci><cn>2</cn></apply><apply><power/><ci>beta</ci><cn>2</cn></apply><apply><power/><ci>p1</ci><cn>2</cn></apply></apply><apply><power/><ci>N</ci><cn>2</cn></apply></apply><apply><power/><ci>tr</ci><cn>-2</cn></apply></apply></apply>"
+    },
+    {
+     "target": "t4",
+     "expression": "Min(0, -I**2*S*beta*p1/N**2 - 2*I*S*beta*p1*tr/N + I*S**2*beta**2*p1**2/N**2 + tr**(-2))",
+     "expression_mathml": "<apply><min/><cn>0</cn><apply><plus/><apply><minus/><apply><minus/><apply><divide/><apply><times/><apply><power/><ci>I</ci><cn>2</cn></apply><ci>S</ci><ci>beta</ci><ci>p1</ci></apply><apply><power/><ci>N</ci><cn>2</cn></apply></apply></apply><apply><divide/><apply><times/><cn>2</cn><ci>I</ci><ci>S</ci><ci>beta</ci><ci>p1</ci><ci>tr</ci></apply><ci>N</ci></apply></apply><apply><divide/><apply><times/><ci>I</ci><apply><power/><ci>S</ci><cn>2</cn></apply><apply><power/><ci>beta</ci><cn>2</cn></apply><apply><power/><ci>p1</ci><cn>2</cn></apply></apply><apply><power/><ci>N</ci><cn>2</cn></apply></apply><apply><power/><ci>tr</ci><cn>-2</cn></apply></apply></apply>"
+    }
+   ],
+   "initials": [
+    {
+     "target": "S",
+     "expression": "1000.0",
+     "expression_mathml": "<cn>1000.0</cn>"
+    },
+    {
+     "target": "I",
+     "expression": "1.0",
+     "expression_mathml": "<cn>1.0</cn>"
+    },
+    {
+     "target": "R",
+     "expression": "0.0",
+     "expression_mathml": "<cn>0.0</cn>"
+    },
+    {
+     "target": "I_deriv",
+     "expression": "0",
+     "expression_mathml": "<cn>0</cn>"
+    }
+   ],
+   "parameters": [
+    {
+     "id": "N",
+     "value": 1001.0,
+     "units": {
+      "expression": "person",
+      "expression_mathml": "<ci>person</ci>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.35,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.25,
+       "maximum": 0.45
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "p1",
+     "value": 1.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.9999,
+       "maximum": 1.0001
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "tr",
+     "value": 14.0,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 8.0,
+       "maximum": 20.0
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    }
+   ],
+   "observables": [],
+   "time": {
+    "id": "t",
+    "units": {
+     "expression": "day",
+     "expression_mathml": "<ci>day</ci>"
+    }
+   }
+  }
+ },
+ "metadata": {
+  "annotations": {
+   "license": null,
+   "authors": [],
+   "references": [],
+   "time_scale": null,
+   "time_start": null,
+   "time_end": null,
+   "locations": [],
+   "pathogens": [],
+   "diseases": [],
+   "hosts": [],
+   "model_types": []
+  }
+ }
+}
