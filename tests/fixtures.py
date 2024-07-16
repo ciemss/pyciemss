@@ -129,7 +129,7 @@ optkwargs_SIRstockflow_time_param = {
     "bounds_interventions": [[0.0, 0.1], [40.0, 0.5]],
 }
 
-# Creating a combined intervention
+# Creating a combined interventions by combining into list of Callables
 intervened_params = ["beta_c", "gamma"]
 static_parameter_interventions1 = param_value_objective(
     param_name=[intervened_params[0]],
@@ -139,15 +139,13 @@ static_parameter_interventions2 = start_time_objective(
     param_name=[intervened_params[1]],
     param_value=torch.tensor([0.45]),
 )
-# Combine different intervention templates into a list of Callables
-static_parameter_interventions = lambda x: [
-    static_parameter_interventions1(torch.atleast_1d(x[0])),
-    static_parameter_interventions2(torch.atleast_1d(x[1])),
-]
 optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
     "risk_bound": 3e5,
-    "static_parameter_interventions": static_parameter_interventions,
+    "static_parameter_interventions": lambda x: [
+        static_parameter_interventions1(torch.atleast_1d(x[0])),
+        static_parameter_interventions2(torch.atleast_1d(x[1])),
+    ],
     "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
     "initial_guess_interventions": [0.35, 5.0],
     "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
