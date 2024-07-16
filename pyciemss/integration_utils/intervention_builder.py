@@ -20,6 +20,11 @@ def param_value_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
+        x = torch.atleast_1d(x)
+        assert x.size()[0] == param_size, (
+            f"Size mismatch between input size ('{x.size()[0]}') and param_name size ('{param_size}'): "
+            "check size for initial_guess_interventions and/or bounds_interventions."
+        )
         static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(param_size):
             if start_time[count].item() in static_parameter_interventions:
@@ -48,6 +53,11 @@ def start_time_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
+        x = torch.atleast_1d(x)
+        assert x.size()[0] == param_size, (
+            f"Size mismatch between input size ('{x.size()[0]}') and param_name size ('{param_size}'): "
+            "check size for initial_guess_interventions and/or bounds_interventions."
+        )
         static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(param_size):
             if x[count].item() in static_parameter_interventions:
@@ -78,9 +88,11 @@ def start_time_param_value_objective(
     def intervention_generator(
         x: torch.Tensor,
     ) -> Dict[float, Dict[str, Intervention]]:
-        assert (
-            x.size()[0] == param_size * 2
-        ), "Size mismatch: check size for initial_guess_interventions and/or bounds_interventions"
+        x = torch.atleast_1d(x)
+        assert x.size()[0] == param_size * 2, (
+            f"Size mismatch between input size ('{x.size()[0]}') and param_name size ('{param_size * 2}'): "
+            "check size for initial_guess_interventions and/or bounds_interventions."
+        )
         static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
         for count in range(param_size):
             if x[count * 2].item() in static_parameter_interventions:
@@ -100,6 +112,35 @@ def start_time_param_value_objective(
         return static_parameter_interventions
 
     return intervention_generator
+
+
+# def combine_intervention_templates(
+#     intervention_templates: Dict[float, Callable],
+# ) -> Callable[[torch.Tensor],List[Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]]]:
+
+#     def intervention_generator(
+#         x: torch.Tensor,
+#     ) -> List[Dict[float, Dict[str, Intervention]]]:
+#         static_parameter_interventions: List[Dict[float, Dict[str, Intervention]]] = []
+
+#         for count in range(param_size):
+#             if x[count * 2].item() in static_parameter_interventions:
+#                 static_parameter_interventions[x[count * 2].item()].update(
+#                     {param_name[count]: param_value[count](x[count * 2 + 1].item())}
+#                 )
+#             else:
+#                 static_parameter_interventions.update(
+#                     {
+#                         x[count * 2].item(): {
+#                             param_name[count]: param_value[count](
+#                                 x[count * 2 + 1].item()
+#                             )
+#                         }
+#                     }
+#                 )
+#         return static_parameter_interventions
+
+#     return intervention_generator
 
 
 def combine_static_parameter_interventions(

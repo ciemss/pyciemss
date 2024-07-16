@@ -1,7 +1,7 @@
 import contextlib
 import warnings
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 import numpy as np
 import pyro
@@ -65,7 +65,13 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
+        interventions: Union[
+            Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
+            Callable[
+                [torch.Tensor],
+                List[Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]],
+            ],
+        ],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
@@ -83,7 +89,9 @@ class computeRisk:
         risk_bound: float = 0.0,
     ):
         self.model = model
-        self.interventions = interventions
+        self.interventions = (
+            [interventions] if not isinstance(interventions, list) else interventions
+        )
         self.qoi = qoi
         self.risk_measure = risk_measure
         self.num_samples = num_samples
@@ -128,11 +136,12 @@ class computeRisk:
             with torch.no_grad():
                 x = np.atleast_1d(x)
                 # Combine existing interventions with intervention being optimized
+                intervention_list = [
+                    deepcopy(self.fixed_static_parameter_interventions)
+                ]
+                intervention_list.extend(self.interventions(torch.from_numpy(x)))
                 static_parameter_interventions = combine_static_parameter_interventions(
-                    [
-                        deepcopy(self.fixed_static_parameter_interventions),
-                        self.interventions(torch.from_numpy(x)),
-                    ]
+                    intervention_list
                 )
                 static_parameter_intervention_handlers = [
                     StaticParameterIntervention(
