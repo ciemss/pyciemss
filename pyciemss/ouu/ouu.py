@@ -89,9 +89,7 @@ class computeRisk:
         risk_bound: float = 0.0,
     ):
         self.model = model
-        self.interventions = (
-            [interventions] if not isinstance(interventions, list) else interventions
-        )
+        self.interventions = interventions
         self.qoi = qoi
         self.risk_measure = risk_measure
         self.num_samples = num_samples
@@ -139,7 +137,11 @@ class computeRisk:
                 intervention_list = [
                     deepcopy(self.fixed_static_parameter_interventions)
                 ]
-                intervention_list.extend(self.interventions(torch.from_numpy(x)))
+                intervention_list.extend(
+                    [self.interventions(torch.from_numpy(x))]
+                    if not isinstance(self.interventions(torch.from_numpy(x)), list)
+                    else self.interventions(torch.from_numpy(x))
+                )
                 static_parameter_interventions = combine_static_parameter_interventions(
                     intervention_list
                 )
