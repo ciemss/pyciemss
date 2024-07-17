@@ -75,8 +75,11 @@ def vega_sententree(G, *, w=800, h=300):
 
     # Update edge and node data in spec
     vega_spec["data"][0]["values"] = [*complete_node_data(G, layout).values()]
-    vega_spec["data"][1]["values"] = [{"source": s, "target": t}
-                                      for s, t in G.edges()]
-
+    # vega_spec["data"][1]["values"] = [{"source": s, "target": t}
+    #                                   for s, t in G.edges()]
+    vega_spec["data"][1]["values"] = [{"source": s, "target": t, "weight": G.edges[s, t]["weight"]}
+                                    for s, t in G.edges()]
     vega_spec = vega.size(vega_spec, w=w, h=h)
     return vega_spec
+
+

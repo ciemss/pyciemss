@@ -271,16 +271,23 @@ def make_graph_from_leaves(tree, G, encoder, patterns, min_support=1):
     for child in tree["children"]:
         make_graph_from_leaves(child, G, encoder, patterns, min_support=min_support)
 
-    if tree["children"] == []:
+    if not tree["children"]:
+        # Decode the pattern
         decoded = [encoder.decode(value=word) for word in tree["pattern"]]
+
+        # Add nodes
         for word in decoded:
-            if G.has_node(word):
-                G.nodes[word]["count"] += tree["size"]
-            else:
+            if not G.has_node(word):
                 G.add_node(word, count=tree["size"])
 
+        # Add edges with weights
         for source, target in zip(decoded, decoded[1:]):
-            G.add_edge(source, target)
+            # G.add_edge(source, target)
+            if G.has_edge(source, target):
+                G.edges[source, target]["weight"] += 1
+            else:
+                G.add_edge(source, target, weight=1)
+    return G
 
 
 def simplify_graph(G):
@@ -302,7 +309,8 @@ def simplify_graph(G):
             mapping = {child: combined_name}
             G = nx.relabel_nodes(G, mapping)
             for parent in G.predecessors(node):
-                G.add_edge(parent, combined_name)
+                initial_weight = G.get_edge_data(parent, node)['weight']
+                G.add_edge(parent, combined_name, weight = initial_weight)
             G.remove_node(node)
 
             G = simplify_graph(G)
