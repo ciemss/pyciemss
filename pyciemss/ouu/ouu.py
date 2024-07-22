@@ -202,10 +202,10 @@ class solveOUU:
         # self.kwargs = kwargs
 
     def solve(self):
-        pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
+    #     pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
 
-        def update_progress(xk):
-            pbar.update(1)
+    #     def update_progress(xk):
+    #         pbar.update(1)
 
         # wrapper around SciPy optimizer(s)
         # rhobeg is set to 10% of longest euclidean distance

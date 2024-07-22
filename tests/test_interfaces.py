@@ -581,8 +581,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
-        "maxiter": 1,
-        "maxfeval": 2,
+        "maxiter": 5,
+        "maxfeval": 3,
         "progress_hook": progress_hook,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
