@@ -186,6 +186,7 @@ class solveOUU:
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
+        progress_hook: Callable = lambda i: None,
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -197,6 +198,7 @@ class solveOUU:
         self.maxiter = maxiter
         self.maxfeval = maxfeval
         self.u_bounds = u_bounds
+        self.progress_hook = progress_hook
         # self.kwargs = kwargs
 
     def solve(self):
@@ -211,7 +213,7 @@ class solveOUU:
             constraints=self.constraints,
             method="COBYLA",
             tol=1e-5,
-            callback=update_progress,
+            callback=self.progress_hook,
             options={
                 "rhobeg": 0.1
                 * np.linalg.norm(self.u_bounds[1, :] - self.u_bounds[0, :]),

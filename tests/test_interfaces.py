@@ -562,6 +562,19 @@ def test_output_format(
 def test_optimize(model_fixture, start_time, end_time, num_samples):
     logging_step_size = 1.0
     model_url = model_fixture.url
+
+    class TestProgressHook:
+        def __init__(self):
+            self.iterations = []
+            # self.function_evals = []
+
+        def __call__(self, iteration):
+            # Log the iteration number
+            self.iterations.append(iteration)
+            # self.function_evals.append(feval)
+
+    progress_hook = TestProgressHook()
+    
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
@@ -570,6 +583,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         "n_samples_ouu": int(2),
         "maxiter": 1,
         "maxfeval": 2,
+        "progress_hook": progress_hook,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
     opt_result = optimize(
@@ -616,6 +630,9 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     check_result_sizes(
         intervened_result_subset, start_time, end_time, logging_step_size, num_samples
     )
+
+    assert len(progress_hook.iterations) == (optimize_kwargs["maxfeval"] + 1) * (optimize_kwargs["maxiter"] + 1)
+    # assert len(progress_hook.function_evals) == optimize_kwargs["maxfeval"]
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)

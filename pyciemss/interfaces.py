@@ -791,6 +791,7 @@ def optimize(
     maxfeval: int = 25,
     verbose: bool = False,
     roundup_decimal: int = 4,
+    progress_hook: Callable = lambda i, feval: None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -932,6 +933,7 @@ def optimize(
             maxiter=maxiter,
             maxfeval=maxfeval,
             u_bounds=bounds_np,
+            progress_hook=progress_hook,
         ).solve()
 
         # Rounding up to given number of decimal places
