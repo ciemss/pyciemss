@@ -98,7 +98,10 @@ def tag_words_with_occurrence(sents):
         d = {}
         for i in range(len(sent)):
             word = sent[i]
-            d[word] = d.get(word, 1)
+            if word in d:
+                d[word] += 1
+            else:
+                d[word] = 1
             sent[i] = f"{word}_{d[word]}"
     return sents
 
