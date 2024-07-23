@@ -634,9 +634,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         intervened_result_subset, start_time, end_time, logging_step_size, num_samples
     )
 
-    assert len(progress_hook.coordinates) == (
-        optimize_kwargs["maxiter"] + 1
-    )
+    assert len(progress_hook.coordinates) == (optimize_kwargs["maxiter"] + 1)
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
