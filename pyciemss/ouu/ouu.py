@@ -186,7 +186,7 @@ class solveOUU:
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
         progress_hook: Callable[
-            [np.array, float, bool], bool
+            [arr: Any, float, bool], bool
         ] = lambda x, f, accept: False,
     ):
         self.x0 = np.squeeze(np.array([x0]))
