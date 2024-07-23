@@ -9,7 +9,6 @@ import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
-from tqdm import tqdm
 
 from pyciemss.integration_utils.intervention_builder import (
     combine_static_parameter_interventions,
@@ -19,6 +18,8 @@ from pyciemss.interruptions import (
     StaticParameterIntervention,
 )
 from pyciemss.ouu.risk_measures import alpha_superquantile
+
+# from tqdm import tqdm
 
 
 class RandomDisplacementBounds:
@@ -202,10 +203,10 @@ class solveOUU:
         # self.kwargs = kwargs
 
     def solve(self):
-    #     pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
+        #     pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
 
-    #     def update_progress(xk):
-    #         pbar.update(1)
+        #     def update_progress(xk):
+        #         pbar.update(1)
 
         # wrapper around SciPy optimizer(s)
         # rhobeg is set to 10% of longest euclidean distance
