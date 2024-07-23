@@ -19,8 +19,6 @@ from pyciemss.interruptions import (
 )
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
-# from tqdm import tqdm
-
 
 class RandomDisplacementBounds:
     """
@@ -187,7 +185,7 @@ class solveOUU:
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
-        progress_hook: Callable = lambda i: None,
+        progress_hook: Callable[[np.array, float, bool], bool] = lambda x, f, accept: False,
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -203,18 +201,12 @@ class solveOUU:
         # self.kwargs = kwargs
 
     def solve(self):
-        #     pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
-
-        #     def update_progress(xk):
-        #         pbar.update(1)
-
         # wrapper around SciPy optimizer(s)
         # rhobeg is set to 10% of longest euclidean distance
         minimizer_kwargs = dict(
             constraints=self.constraints,
             method="COBYLA",
             tol=1e-5,
-            callback=self.progress_hook,
             options={
                 "rhobeg": 0.1
                 * np.linalg.norm(self.u_bounds[1, :] - self.u_bounds[0, :]),
@@ -234,6 +226,7 @@ class solveOUU:
             niter=self.maxiter,
             minimizer_kwargs=minimizer_kwargs,
             take_step=take_step,
+            callback=self.progress_hook,
             interval=2,
             disp=False,
         )

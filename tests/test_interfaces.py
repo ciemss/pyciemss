@@ -565,13 +565,16 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
 
     class TestProgressHook:
         def __init__(self):
-            self.iterations = []
-            # self.function_evals = []
+            self.coordinates = []
+            self.function_min = []
+            self.accept = []
 
-        def __call__(self, iteration):
+        def __call__(self, x, f, accept):
             # Log the iteration number
-            self.iterations.append(iteration)
-            # self.function_evals.append(feval)
+            self.coordinates.append(x)
+            self.function_min.append(f)
+            self.accept.append(accept)
+            print(f"Coordinate(s): {x}, function min: {f}, accept: {accept}")
 
     progress_hook = TestProgressHook()
 
@@ -631,10 +634,9 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         intervened_result_subset, start_time, end_time, logging_step_size, num_samples
     )
 
-    assert len(progress_hook.iterations) == (optimize_kwargs["maxfeval"] + 1) * (
+    assert len(progress_hook.coordinates) == (
         optimize_kwargs["maxiter"] + 1
     )
-    # assert len(progress_hook.function_evals) == optimize_kwargs["maxfeval"]
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
