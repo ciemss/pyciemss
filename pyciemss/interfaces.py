@@ -858,8 +858,8 @@ def optimize(
         roundup_decimal: int
             - Number of significant digits for the optimal policy.
         progress_hook: Callable[[NDArray, float, bool], bool],
-            - A callback function that takes in the current coordinate(s) as an np.array, 
-                the minimal function evaluation at the coordinate(s), and whether or not that minimal 
+            - A callback function that takes in the current coordinate(s) as an np.array,
+                the minimal function evaluation at the coordinate(s), and whether or not that minimal
                 value was accepted. When the function returns True, the basinhopping routine will stop.
             - This can be used to implement custom progress bars and/or early stopping criteria.
 
