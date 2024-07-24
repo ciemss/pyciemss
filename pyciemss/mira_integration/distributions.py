@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Callable, Dict, Union
 
 import mira.metamodel
 import pyro
@@ -7,7 +7,9 @@ import pyro
 def mira_uniform_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Uniform(parameters["minimum"], parameters["maximum"])
+    low = parameters["minimum"]
+    high = parameters["maximum"]
+    return pyro.distributions.Uniform(low=low, high=high)
 
 
 def mira_normal_to_pyro(
@@ -22,7 +24,7 @@ def mira_normal_to_pyro(
     elif "precision" in parameters.keys():
         scale = parameters["precision"] ** -0.5
 
-    return pyro.distributions.Normal(loc, scale)
+    return pyro.distributions.Normal(loc=loc, scale=scale)
 
 
 def mira_lognormal_to_pyro(
@@ -35,7 +37,7 @@ def mira_lognormal_to_pyro(
     elif "varLog" in parameters.keys():
         scale = parameters["varLog"] ** 0.5
 
-    return pyro.distributions.LogNormal(loc, scale)
+    return pyro.distributions.LogNormal(loc=loc, scale=scale)
 
 
 # Provide either probs or logits, not both
@@ -49,16 +51,23 @@ def mira_bernoulli_to_pyro(
         probs = None
         logits = parameters["logitProbability"]
 
-    return pyro.distributions.Bernoulli(probs, logits)
+    return pyro.distributions.Bernoulli(probs=probs, logits=logits)
 
 
 def mira_beta_to_pyro(parameters: Dict[str, float]) -> pyro.distributions.Distribution:
-    return pyro.distributions.Beta(parameters["alpha"], parameters["beta"])
+    return pyro.distributions.Beta(alpha=parameters["alpha"], beta=parameters["beta"])
 
 
 def mira_betabinomial_to_pyro(
     parameters: Dict[str, Union[float, list]]
 ) -> pyro.distributions.Distribution:
+    raise NotImplementedError(
+        "Conversion from MIRA BetaBinomial distribution to Pyro distribution is not implemented."
+    )
+
+    # TODO: confirm that alpha and beta correspond to concentration1 and concentration0.
+    # TODO: confirm that numberOfTrials corresponds to total_count
+    # TODO: add explicit named arguments to the function signature
     return pyro.distributions.BetaBinomial(
         parameters["alpha"], parameters["beta"], parameters["numberOfTrials"]
     )
@@ -75,25 +84,31 @@ def mira_binomial_to_pyro(
         probs = None
         logits = parameters["logitProbability"]
 
-    return pyro.distributions.Binomial(total_count, probs, logits)
+    return pyro.distributions.Binomial(
+        total_count=total_count, probs=probs, logits=logits
+    )
 
 
 def mira_cauchy_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Cauchy(parameters["location"], parameters["scale"])
+    loc = parameters["location"]
+    scale = parameters["scale"]
+    return pyro.distributions.Cauchy(loc=loc, scale=scale)
 
 
 def mira_chisquared_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Chi2(parameters["degreesOfFreedom"])
+    df = parameters["degreesOfFreedom"]
+    return pyro.distributions.Chi2(df=df)
 
 
 def mira_dirichlet_to_pyro(
     parameters: Dict[str, list]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Dirichlet(parameters["concentration"])
+    concentration = parameters["concentration"]
+    return pyro.distributions.Dirichlet(concentration=concentration)
 
 
 def mira_exponential_to_pyro(
@@ -103,7 +118,7 @@ def mira_exponential_to_pyro(
         rate = parameters["rate"]
     elif "mean" in parameters.keys():
         rate = 1.0 / parameters["mean"]
-    return pyro.distributions.Exponential(rate)
+    return pyro.distributions.Exponential(rate=rate)
 
 
 def mira_gamma_to_pyro(parameters: Dict[str, float]) -> pyro.distributions.Distribution:
@@ -113,19 +128,24 @@ def mira_gamma_to_pyro(parameters: Dict[str, float]) -> pyro.distributions.Distr
         rate = 1.0 / parameters["scale"]
     elif "rate" in parameters.keys():
         rate = parameters["rate"]
-    return pyro.distributions.Gamma(concentration, rate)
+    return pyro.distributions.Gamma(concentration=concentration, rate=rate)
 
 
 def mira_inversegamma_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Gamma(parameters["shape"], parameters["scale"])
+    raise NotImplementedError(
+        "Conversion from MIRA InverseGamma distribution to Pyro distribution is not implemented."
+    )
+    # TODO: Map parameters to Pyro distribution parameters
 
 
 def mira_gumbel_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Gumbel(parameters["location"], parameters["scale"])
+    loc = parameters["location"]
+    scale = parameters["scale"]
+    return pyro.distributions.Gumbel(loc=loc, scale=scale)
 
 
 def mira_laplace_to_pyro(
@@ -142,19 +162,26 @@ def mira_laplace_to_pyro(
     elif "tau" in parameters.keys():
         scale = 1.0 / parameters["tau"]
 
-    return pyro.distributions.Laplace(loc, scale)
+    return pyro.distributions.Laplace(loc=loc, scale=scale)
 
 
 def mira_paretotypeI_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Pareto(parameters["scale"], parameters["shape"])
+    raise NotImplementedError(
+        "Conversion from MIRA ParetoTypeI distribution to Pyro distribution is not implemented."
+    )
+    # TODO: Confirm that parameters are mapped correctly
+    scale = parameters["scale"]
+    alpha = parameters["shape"]
+    return pyro.distributions.Pareto(scale=scale, alpha=alpha)
 
 
 def mira_poisson_to_pyro(
     parameters: Dict[str, float]
 ) -> pyro.distributions.Distribution:
-    return pyro.distributions.Poisson(parameters["rate"])
+    rate = parameters["rate"]
+    return pyro.distributions.Poisson(rate=rate)
 
 
 def mira_studentt_to_pyro(
@@ -172,7 +199,9 @@ def mira_studentt_to_pyro(
     else:
         scale = 1.0
 
-    return pyro.distributions.StudentT(parameters["degreesOfFreedom"], loc, scale)
+    df = parameters["degreesOfFreedom"]
+
+    return pyro.distributions.StudentT(df=df, loc=loc, scale=scale)
 
 
 def mira_weibull_to_pyro(
@@ -186,7 +215,7 @@ def mira_weibull_to_pyro(
 
     concentration = parameters["shape"]
 
-    return pyro.distributions.Weibull(scale, concentration)
+    return pyro.distributions.Weibull(scale=scale, concentration=concentration)
 
 
 # Key - MIRA distribution type : str
