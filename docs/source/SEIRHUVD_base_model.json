@@ -288,13 +288,13 @@
    "rates": [
     {
      "target": "t1",
-     "expression": "I*S*beta/N",
-     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>S</ci><ci>beta</ci></apply><ci>N</ci></apply>"
+     "expression": "I*NPI_mult*S*beta/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>NPI_mult</ci><ci>S</ci><ci>beta</ci></apply><ci>N</ci></apply>"
     },
     {
      "target": "t2",
-     "expression": "I*V*beta*vacc_mult/N",
-     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>V</ci><ci>beta</ci><ci>vacc_mult</ci></apply><ci>N</ci></apply>"
+     "expression": "I*NPI_mult*V*beta*vacc_mult/N",
+     "expression_mathml": "<apply><divide/><apply><times/><ci>I</ci><ci>NPI_mult</ci><ci>V</ci><ci>beta</ci><ci>vacc_mult</ci></apply><ci>N</ci></apply>"
     },
     {
      "target": "t3",
@@ -355,13 +355,13 @@
    "initials": [
     {
      "target": "S",
-     "expression": "6654045.0",
-     "expression_mathml": "<cn>6654045.0</cn>"
+     "expression": "4039715.0",
+     "expression_mathml": "<cn>4039715.0</cn>"
     },
     {
      "target": "I",
-     "expression": "2340.0",
-     "expression_mathml": "<cn>2340.0</cn>"
+     "expression": "1170.0",
+     "expression_mathml": "<cn>1170.0</cn>"
     },
     {
      "target": "E",
@@ -370,8 +370,8 @@
     },
     {
      "target": "V",
-     "expression": "675796",
-     "expression_mathml": "<cn>675796</cn>"
+     "expression": "3291296.0",
+     "expression_mathml": "<cn>3291296.0</cn>"
     },
     {
      "target": "R",
@@ -404,13 +404,28 @@
      }
     },
     {
-     "id": "beta",
-     "value": 0.085,
+     "id": "NPI_mult",
+     "value": 1.0,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 0.075,
-       "maximum": 0.09
+       "minimum": 0.999,
+       "maximum": 1.001
+      }
+     },
+     "units": {
+      "expression": "1/day",
+      "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
+     }
+    },
+    {
+     "id": "beta",
+     "value": 0.17,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.1675,
+       "maximum": 0.18
       }
      },
      "units": {
@@ -474,12 +489,12 @@
     },
     {
      "id": "p_HD",
-     "value": 0.09,
+     "value": 0.085,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
        "minimum": 0.08,
-       "maximum": 0.1
+       "maximum": 0.09
       }
      },
      "units": {
@@ -502,7 +517,7 @@
       "type": "StandardUniform1",
       "parameters": {
        "minimum": 0.14,
-       "maximum": 0.17
+       "maximum": 0.16
       }
      },
      "units": {
@@ -528,12 +543,12 @@
     },
     {
      "id": "r_V",
-     "value": 8267.0,
+     "value": 5000.0,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 8000.0,
-       "maximum": 8500.0
+       "minimum": 4950.0,
+       "maximum": 5050.0
       }
      },
      "units": {
