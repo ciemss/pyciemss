@@ -182,6 +182,7 @@ END_TIMES = [40.0]
 LOGGING_STEP_SIZES = [5.0]
 
 NUM_SAMPLES = [2]
+SEIRHD_NPI_STATIC_PARAM_INTERV = [{torch.tensor(10.0): {"delta": torch.tensor(0.2)}}]
 NON_POS_INTS = [
     3.5,
     -3,
