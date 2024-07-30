@@ -61,15 +61,15 @@ def mira_beta_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribut
 def mira_betabinomial_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
-    raise NotImplementedError(
-        "Conversion from MIRA BetaBinomial distribution to Pyro distribution is not implemented."
-    )
 
-    # TODO: confirm that alpha and beta correspond to concentration1 and concentration0.
-    # TODO: confirm that numberOfTrials corresponds to total_count
-    # TODO: add explicit named arguments to the function signature
+    concentration1 = parameters["alpha"]
+    concentration0 = parameters["beta"]
+    total_count = parameters["numberOfTrials"]
+
     return pyro.distributions.BetaBinomial(
-        parameters["alpha"], parameters["beta"], parameters["numberOfTrials"]
+        concentration1=concentration1,
+        concentration0=concentration0,
+        total_count=total_count,
     )
 
 
