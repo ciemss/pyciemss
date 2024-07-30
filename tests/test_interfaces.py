@@ -739,6 +739,7 @@ def test_errors_for_bad_amrs(
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("seirhd_npi_intervention", SEIRHD_NPI_STATIC_PARAM_INTERV)
 def test_intervention_on_constant_param(
     sample_method,
@@ -746,21 +747,19 @@ def test_intervention_on_constant_param(
     end_time,
     logging_step_size,
     num_samples,
+    start_time,
     seirhd_npi_intervention,
 ):
     # Assert that sample returns expected result with intervention on constant parameter
     if "SEIRHD_NPI" not in model_fixture.url:
-        print("skipped")
-        print(model_fixture.url)
         pytest.skip("Only test 'SEIRHD_NPI' models with constant parameter delta")
     else:
-        print("unskipped")
-        print(model_fixture.url)
         processed_result = sample_method(
             model_fixture.url,
             end_time,
             logging_step_size,
             num_samples,
+            start_time=start_time,
             static_parameter_interventions=seirhd_npi_intervention,
         )["data"]
         assert isinstance(processed_result, pd.DataFrame)
