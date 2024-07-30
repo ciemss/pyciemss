@@ -260,7 +260,7 @@ def mira_distribution_to_pyro(
         warnings.warn(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution has not been tested."
         )
-        
+
     parameters = {k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
 
     return _MIRA_TO_PYRO[mira_dist.type](parameters)
