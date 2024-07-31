@@ -772,7 +772,7 @@ def optimize(
     qoi: Callable,
     risk_bound: float,
     static_parameter_interventions: Callable[
-        [torch.Tensor], Dict[float, Dict[str, Intervention]]
+        [torch.Tensor], Dict[torch.Tensor, Dict[str, Intervention]]
     ],
     objfun: Callable,
     initial_guess_interventions: List[float],
