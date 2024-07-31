@@ -73,32 +73,6 @@ def start_time_objective(
     return intervention_generator
 
 
-def intervention_func_combinator(
-    intervention_funcs: List[
-        Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
-    ],
-    intervention_func_lengths: List[int],
-) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
-    assert len(intervention_funcs) == len(intervention_func_lengths)
-
-    total_length = sum(intervention_func_lengths)
-
-    # Note: This only works for combining static parameter interventions.
-    def intervention_generator(
-        x: torch.Tensor,
-    ) -> Dict[float, Dict[str, Intervention]]:
-        x = torch.atleast_1d(x)
-        assert x.size()[0] == total_length
-        interventions = [None] * len(intervention_funcs)
-        i = 0
-        for j, (input_length, intervention_func) in enumerate(zip(intervention_func_lengths, intervention_funcs)):
-            interventions[j] = intervention_func(x[i:i + input_length])
-            i += input_length
-        return combine_static_parameter_interventions(interventions)
-
-    return intervention_generator
-
-
 def start_time_param_value_objective(
     param_name: List[str],
     param_value: List[Intervention] = [None],
@@ -140,33 +114,30 @@ def start_time_param_value_objective(
     return intervention_generator
 
 
-# def combine_intervention_templates(
-#     intervention_templates: Dict[float, Callable],
-# ) -> Callable[[torch.Tensor],List[Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]]]:
+def intervention_func_combinator(
+    intervention_funcs: List[
+        Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
+    ],
+    intervention_func_lengths: List[int],
+) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
+    assert len(intervention_funcs) == len(intervention_func_lengths)
 
-#     def intervention_generator(
-#         x: torch.Tensor,
-#     ) -> List[Dict[float, Dict[str, Intervention]]]:
-#         static_parameter_interventions: List[Dict[float, Dict[str, Intervention]]] = []
+    total_length = sum(intervention_func_lengths)
 
-#         for count in range(param_size):
-#             if x[count * 2].item() in static_parameter_interventions:
-#                 static_parameter_interventions[x[count * 2].item()].update(
-#                     {param_name[count]: param_value[count](x[count * 2 + 1].item())}
-#                 )
-#             else:
-#                 static_parameter_interventions.update(
-#                     {
-#                         x[count * 2].item(): {
-#                             param_name[count]: param_value[count](
-#                                 x[count * 2 + 1].item()
-#                             )
-#                         }
-#                     }
-#                 )
-#         return static_parameter_interventions
+    # Note: This only works for combining static parameter interventions.
+    def intervention_generator(
+        x: torch.Tensor,
+    ) -> Dict[float, Dict[str, Intervention]]:
+        x = torch.atleast_1d(x)
+        assert x.size()[0] == total_length
+        interventions = [None] * len(intervention_funcs)
+        i = 0
+        for j, (input_length, intervention_func) in enumerate(zip(intervention_func_lengths, intervention_funcs)):
+            interventions[j] = intervention_func(x[i:i + input_length])
+            i += input_length
+        return combine_static_parameter_interventions(interventions)
 
-#     return intervention_generator
+    return intervention_generator
 
 
 def combine_static_parameter_interventions(
