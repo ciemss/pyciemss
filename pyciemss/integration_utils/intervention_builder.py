@@ -132,8 +132,10 @@ def intervention_func_combinator(
         assert x.size()[0] == total_length
         interventions = [None] * len(intervention_funcs)
         i = 0
-        for j, (input_length, intervention_func) in enumerate(zip(intervention_func_lengths, intervention_funcs)):
-            interventions[j] = intervention_func(x[i:i + input_length])
+        for j, (input_length, intervention_func) in enumerate(
+            zip(intervention_func_lengths, intervention_funcs)
+        ):
+            interventions[j] = intervention_func(x[i : i + input_length])
             i += input_length
         return combine_static_parameter_interventions(interventions)
 
