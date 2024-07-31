@@ -778,7 +778,7 @@ def optimize(
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
-    alpha: float = 0.95,
+    alpha: List[float] = [0.95],
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -863,6 +863,14 @@ def optimize(
                     - Optimization results as scipy object.
     """
     check_solver(solver_method, solver_options)
+    assert len(risk_bound) == len(alpha), (
+        f"Size mismatch between risk_bound ('{len(risk_bound)}') "
+        "and alpha ('{len(alpha)}')"
+    )
+    assert len(risk_bound) == len(qoi), (
+        f"Size mismatch between risk_bound ('{len(risk_bound)}') "
+        "and qoi ('{len(qoi)}')"
+    )
 
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
