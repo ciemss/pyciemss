@@ -769,8 +769,8 @@ def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,
     logging_step_size: float,
-    qoi: Callable,
-    risk_bound: float,
+    qoi: List[Callable],
+    risk_bound: List[float],
     static_parameter_interventions: Callable[
         [torch.Tensor], Dict[float, Dict[str, Intervention]]
     ],
@@ -902,7 +902,7 @@ def optimize(
         # Define constraints >= 0
         constraints = (
             # risk constraint
-            {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+            {"type": "ineq", "fun": lambda x: np.array(risk_bound) - RISK(x)},
             # bounds on control
             {"type": "ineq", "fun": lambda x: x - u_min},
             {"type": "ineq", "fun": lambda x: u_max - x},
