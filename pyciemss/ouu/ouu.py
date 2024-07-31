@@ -71,7 +71,7 @@ class computeRisk:
         logging_step_size: float,
         *,
         start_time: float = 0.0,
-        risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
+        risk_measure: List[Callable] = [lambda z: alpha_superquantile(z, alpha=0.95)],
         num_samples: int = 1000,
         guide=None,
         fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
@@ -117,7 +117,7 @@ class computeRisk:
             # Estimate risk
             risk_estimate = np.zeros(len(self.qoi))
             for i in range(len(self.qoi)):
-                risk_estimate[i] = self.risk_measure(sample_qoi[i])
+                risk_estimate[i] = self.risk_measure[i](sample_qoi[i])
         return risk_estimate
 
     def propagate_uncertainty(self, x):

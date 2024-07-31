@@ -878,6 +878,7 @@ def optimize(
         u_min = bounds_np[0, :]
         u_max = bounds_np[1, :]
         # Set up risk estimation
+        risk_measure = [lambda z: alpha_superquantile(z, alpha=a) for a in alpha]
         RISK = computeRisk(
             model=control_model,
             interventions=static_parameter_interventions,
@@ -885,7 +886,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
+            risk_measure=risk_measure,
             num_samples=1,
             guide=inferred_parameters,
             fixed_static_parameter_interventions=fixed_static_parameter_interventions,
