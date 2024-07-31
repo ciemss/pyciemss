@@ -16,6 +16,7 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from chirho.observational.ops import observe
+from numpy.typing import NDArray
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
@@ -789,6 +790,7 @@ def optimize(
     maxfeval: int = 25,
     verbose: bool = False,
     roundup_decimal: int = 4,
+    progress_hook: Callable[[NDArray], None] = lambda x: None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -853,6 +855,10 @@ def optimize(
             - Whether to print out the optimization under uncertainty progress.
         roundup_decimal: int
             - Number of significant digits for the optimal policy.
+        progress_hook: progress_hook: Callable[[NDArray], None],
+            - A callback function that takes in the current parameter vector as an np.array.
+                If the function returns StopIteration, the minimization will terminate.
+            - This can be used to implement custom progress bars and/or early stopping criteria.
 
     Returns:
         result: Dict[str, Any]
@@ -930,6 +936,7 @@ def optimize(
             maxiter=maxiter,
             maxfeval=maxfeval,
             u_bounds=bounds_np,
+            progress_hook=progress_hook,
         ).solve()
 
         # Rounding up to given number of decimal places

@@ -8,8 +8,8 @@ import pyro
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
+from numpy.typing import NDArray
 from scipy.optimize import basinhopping
-from tqdm import tqdm
 
 from pyciemss.integration_utils.intervention_builder import (
     combine_static_parameter_interventions,
@@ -185,6 +185,7 @@ class solveOUU:
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
+        progress_hook: Callable[[NDArray], None] = lambda x: None,  # update_progress
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -196,21 +197,16 @@ class solveOUU:
         self.maxiter = maxiter
         self.maxfeval = maxfeval
         self.u_bounds = u_bounds
+        self.progress_hook = progress_hook
         # self.kwargs = kwargs
 
     def solve(self):
-        pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
-
-        def update_progress(xk):
-            pbar.update(1)
-
         # wrapper around SciPy optimizer(s)
         # rhobeg is set to 10% of longest euclidean distance
         minimizer_kwargs = dict(
             constraints=self.constraints,
             method="COBYLA",
             tol=1e-5,
-            callback=update_progress,
             options={
                 "rhobeg": 0.1
                 * np.linalg.norm(self.u_bounds[1, :] - self.u_bounds[0, :]),
@@ -218,6 +214,7 @@ class solveOUU:
                 "maxiter": self.maxfeval,
                 "catol": 1e-5,
             },
+            callback=self.progress_hook,
         )
         take_step = RandomDisplacementBounds(self.u_bounds[0, :], self.u_bounds[1, :])
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
@@ -230,6 +227,7 @@ class solveOUU:
             niter=self.maxiter,
             minimizer_kwargs=minimizer_kwargs,
             take_step=take_step,
+            # callback=self.progress_hook,
             interval=2,
             disp=False,
         )
