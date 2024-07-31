@@ -144,7 +144,7 @@ def intervention_func_combinator(
 
 def combine_static_parameter_interventions(
     interventions: List[Dict[torch.Tensor, Dict[str, Intervention]]]
-) -> Dict[torch.Tensor, Dict[str, Intervention]]:
+) -> Dict[float, Dict[str, Intervention]]:
     static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {}
     for intervention in interventions:
         for key, value in intervention.items():
