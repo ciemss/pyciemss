@@ -186,9 +186,7 @@ class solveOUU:
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
-        progress_hook: Callable[
-            [NDArray, float, bool], bool
-        ] = lambda x, f, accept: False,
+        progress_hook: Callable[[NDArray], None] = lambda x: None,  # update_progress
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -217,6 +215,7 @@ class solveOUU:
                 "maxiter": self.maxfeval,
                 "catol": 1e-5,
             },
+            callback=self.progress_hook,
         )
         take_step = RandomDisplacementBounds(self.u_bounds[0, :], self.u_bounds[1, :])
         # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
@@ -229,7 +228,7 @@ class solveOUU:
             niter=self.maxiter,
             minimizer_kwargs=minimizer_kwargs,
             take_step=take_step,
-            callback=self.progress_hook,
+            # callback=self.progress_hook,
             interval=2,
             disp=False,
         )

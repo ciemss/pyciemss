@@ -565,16 +565,12 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
 
     class TestProgressHook:
         def __init__(self):
-            self.coordinates = []
-            self.function_min = []
-            self.accept = []
+            self.result_x = []
 
-        def __call__(self, x, f, accept):
+        def __call__(self, x):
             # Log the iteration number
-            self.coordinates.append(x)
-            self.function_min.append(f)
-            self.accept.append(accept)
-            print(f"Coordinate(s): {x}, function min: {f}, accept: {accept}")
+            self.result_x.append(x)
+            print(f"Result: {self.result_x}")
 
     progress_hook = TestProgressHook()
 
@@ -584,8 +580,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
-        "maxiter": 5,
-        "maxfeval": 3,
+        "maxiter": 3,
+        "maxfeval": 5,
         "progress_hook": progress_hook,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
@@ -634,7 +630,9 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         intervened_result_subset, start_time, end_time, logging_step_size, num_samples
     )
 
-    assert len(progress_hook.coordinates) == (optimize_kwargs["maxiter"] + 1)
+    assert len(progress_hook.result_x) <= (
+        (optimize_kwargs["maxfeval"] + 1) * (optimize_kwargs["maxiter"] + 1)
+    )
 
 
 @pytest.mark.parametrize("model_fixture", MODELS)
