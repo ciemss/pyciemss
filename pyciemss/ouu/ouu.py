@@ -1,7 +1,7 @@
 import contextlib
 import warnings
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple
 
 import numpy as np
 import pyro

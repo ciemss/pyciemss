@@ -7,6 +7,7 @@ import pandas as pd
 import torch
 
 from pyciemss.integration_utils.intervention_builder import (
+    intervention_func_combinator,
     param_value_objective,
     start_time_objective,
     start_time_param_value_objective,
@@ -142,10 +143,10 @@ static_parameter_interventions2 = start_time_objective(
 optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
     "risk_bound": 3e5,
-    "static_parameter_interventions": lambda x: [
-        static_parameter_interventions1(torch.atleast_1d(x[0])),
-        static_parameter_interventions2(torch.atleast_1d(x[1])),
-    ],
+    "static_parameter_interventions": intervention_func_combinator(
+        [static_parameter_interventions1, static_parameter_interventions2],
+        [1, 1],
+    ),
     "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
     "initial_guess_interventions": [0.35, 5.0],
     "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
