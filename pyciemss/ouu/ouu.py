@@ -66,7 +66,7 @@ class computeRisk:
         self,
         model: Callable,
         interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
-        qoi: List[Callable],
+        qoi: List[Callable[[Any], np.ndarray]],
         end_time: float,
         logging_step_size: float,
         *,
