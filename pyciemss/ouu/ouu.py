@@ -65,13 +65,7 @@ class computeRisk:
     def __init__(
         self,
         model: Callable,
-        interventions: Union[
-            Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
-            Callable[
-                [torch.Tensor],
-                List[Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]],
-            ],
-        ],
+        interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
         qoi: Callable,
         end_time: float,
         logging_step_size: float,
