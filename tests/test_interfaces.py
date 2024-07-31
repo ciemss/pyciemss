@@ -584,12 +584,18 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert opt_policy[i] <= bounds_interventions[1][i]
 
     if "fixed_static_parameter_interventions" in optimize_kwargs:
-        opt_intervention = combine_static_parameter_interventions(
-            [
-                deepcopy(optimize_kwargs["fixed_static_parameter_interventions"]),
+        intervention_list = [
+            deepcopy(optimize_kwargs["fixed_static_parameter_interventions"])
+        ]
+        intervention_list.extend(
+            [optimize_kwargs["static_parameter_interventions"](opt_result["policy"])]
+            if not isinstance(
                 optimize_kwargs["static_parameter_interventions"](opt_result["policy"]),
-            ]
+                list,
+            )
+            else optimize_kwargs["static_parameter_interventions"](opt_result["policy"])
         )
+        opt_intervention = combine_static_parameter_interventions(intervention_list)
     else:
         opt_intervention = optimize_kwargs["static_parameter_interventions"](
             opt_result["policy"]
