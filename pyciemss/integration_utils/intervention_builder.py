@@ -130,7 +130,7 @@ def intervention_func_combinator(
     ) -> Dict[float, Dict[str, Intervention]]:
         x = torch.atleast_1d(x)
         assert x.size()[0] == total_length
-        interventions = [None] * len(intervention_funcs)
+        interventions: List[Dict[float, Dict[str, Intervention]]] = [None] * len(intervention_funcs)
         i = 0
         for j, (input_length, intervention_func) in enumerate(
             zip(intervention_func_lengths, intervention_funcs)
