@@ -772,7 +772,7 @@ def optimize(
     qoi: Callable,
     risk_bound: float,
     static_parameter_interventions: Callable[
-        [torch.Tensor], Dict[torch.Tensor, Dict[str, Intervention]]
+        [torch.Tensor], Dict[float, Dict[str, Intervention]]
     ],
     objfun: Callable,
     initial_guess_interventions: List[float],
@@ -783,9 +783,7 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    fixed_static_parameter_interventions: Dict[
-        torch.Tensor, Dict[str, Intervention]
-    ] = {},
+    fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
     n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
