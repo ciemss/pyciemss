@@ -95,8 +95,8 @@ STOCKFLOW_MODELS = [
 ]
 
 optkwargs_SIRstockflow_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": param_value_objective(
         param_name=["p_cbeta"],
         param_value=[lambda x: torch.tensor([x])],
@@ -108,8 +108,8 @@ optkwargs_SIRstockflow_param = {
 }
 
 optkwargs_SIRstockflow_time = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_objective(
         param_name=["p_cbeta"],
         param_value=[torch.tensor([0.15])],
@@ -120,8 +120,8 @@ optkwargs_SIRstockflow_time = {
 }
 
 optkwargs_SIRstockflow_time_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_param_value_objective(
         param_name=["p_cbeta"],
     ),
@@ -141,8 +141,8 @@ static_parameter_interventions2 = start_time_objective(
     param_value=torch.tensor([0.45]),
 )
 optkwargs_SEIRHD_paramtimeComb_maxQoI = {
-    "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
-    "risk_bound": 3e5,
+    "qoi": [lambda x: obs_max_qoi(x, ["I_state"])],
+    "risk_bound": [3e5],
     "static_parameter_interventions": intervention_func_combinator(
         [static_parameter_interventions1, static_parameter_interventions2],
         [1, 1],
