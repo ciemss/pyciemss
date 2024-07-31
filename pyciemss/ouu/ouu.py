@@ -129,11 +129,7 @@ class computeRisk:
                 intervention_list = [
                     deepcopy(self.fixed_static_parameter_interventions)
                 ]
-                intervention_list.extend(
-                    [self.interventions(torch.from_numpy(x))]
-                    # if not isinstance(self.interventions(torch.from_numpy(x)), list)
-                    # else self.interventions(torch.from_numpy(x))
-                )
+                intervention_list.extend([self.interventions(torch.from_numpy(x))])
                 static_parameter_interventions = combine_static_parameter_interventions(
                     intervention_list
                 )
