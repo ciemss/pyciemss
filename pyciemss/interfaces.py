@@ -899,7 +899,7 @@ def optimize(
         # Run one sample to estimate model evaluation time
         start_t = time.time()
         init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
-        RISK.qoi(init_prediction)
+        RISK.qoi[0](init_prediction)
         end_t = time.time()
         forward_time = end_t - start_t
         time_per_eval = forward_time / 1.0
