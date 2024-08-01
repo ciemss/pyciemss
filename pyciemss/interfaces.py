@@ -803,9 +803,9 @@ def optimize(
             - The end time of the sampled simulation.
         logging_step_size: float
             - The step size to use for logging the trajectory.
-        qoi: Callable
+        qoi: List[Callable[[Any], np.ndarray]]
             - A callable function defining the quantity of interest to optimize over.
-        risk_bounds: float
+        risk_bounds: List[float]
             - The threshold on the risk constraint.
         static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
             - A callable function of static parameter interventions to optimize over.
@@ -823,6 +823,8 @@ def optimize(
         bounds_interventions: List[List[float]]
             - The lower and upper bounds for intervention parameter.
             - Bounds are a list of the form [[lower bounds], [upper bounds]]
+        alpha: List[float]
+            - Risk preference parameter for alpha-superquantile
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
@@ -864,14 +866,14 @@ def optimize(
     """
     check_solver(solver_method, solver_options)
     if not isinstance(risk_bound, list):
-        warnings.warn("risk_bound is not a List. Forcing it to be a list.")
         risk_bound = [risk_bound]
+        warnings.warn("risk_bound is not a List. Forcing it to be a list.")
     if not isinstance(qoi, list):
-        warnings.warn("qoi is not a List. Forcing it to be a list.")
         qoi = [qoi]
+        warnings.warn("qoi is not a List. Forcing it to be a list.")
     if not isinstance(alpha, list):
-        warnings.warn("alpha is not a List. Forcing it to be a list.")
         alpha = [alpha]
+        warnings.warn("alpha is not a List. Forcing it to be a list.")
     assert len(risk_bound) == len(alpha), (
         f"Size mismatch between risk_bound ('{len(risk_bound)}') "
         "and alpha ('{len(alpha)}')"
@@ -887,7 +889,7 @@ def optimize(
         u_min = bounds_np[0, :]
         u_max = bounds_np[1, :]
         # Set up risk estimation
-        risk_measure = [lambda z: alpha_superquantile(z, alpha=a) for a in alpha]
+        risk_measures = [lambda z: alpha_superquantile(z, alpha=a) for a in alpha]
         RISK = computeRisk(
             model=control_model,
             interventions=static_parameter_interventions,
@@ -895,7 +897,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=risk_measure,
+            risk_measure=risk_measures,
             num_samples=1,
             guide=inferred_parameters,
             fixed_static_parameter_interventions=fixed_static_parameter_interventions,

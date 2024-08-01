@@ -115,7 +115,7 @@ class computeRisk:
             # Compute quanity of interest
             sample_qoi = [q(samples) for q in self.qoi]
             # Estimate risk
-            risk_estimate = np.zeros(len(self.qoi))
+            risk_estimate = np.full(len(self.qoi), np.nan)
             for i in range(len(self.qoi)):
                 risk_estimate[i] = self.risk_measure[i](sample_qoi[i])
         return risk_estimate
