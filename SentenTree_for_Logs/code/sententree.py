@@ -334,6 +334,6 @@ def build_sententree(sentences, *, min_support=2, num_exemplars=3, tag_with=tag_
     G = nx.DiGraph()
     make_graph_from_leaves(pattern_tree, G, encoder, patterns, min_support)
     pruned_G = prune_graph(G, min_support=min_support, num_exemplars=num_exemplars)
-    G = simplify_graph(pruned_G)
+    #G = simplify_graph(pruned_G)
     G.graph["num_encoded_sentences"] = len(encoded_sents)
-    return G
+    return pruned_G
