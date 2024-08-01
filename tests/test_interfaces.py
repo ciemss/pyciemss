@@ -567,7 +567,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         "solver_method": "euler",
         "solver_options": {"step_size": 0.1},
         "start_time": start_time,
-        "n_samples_ouu": int(2),
+        "n_samples_ouu": int(5),
         "maxiter": 1,
         "maxfeval": 2,
     }
@@ -583,23 +583,21 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
 
+    opt_intervention_temp = optimize_kwargs["static_parameter_interventions"](
+        opt_result["policy"]
+    )
     if "fixed_static_parameter_interventions" in optimize_kwargs:
         intervention_list = [
             deepcopy(optimize_kwargs["fixed_static_parameter_interventions"])
         ]
         intervention_list.extend(
-            [optimize_kwargs["static_parameter_interventions"](opt_result["policy"])]
-            if not isinstance(
-                optimize_kwargs["static_parameter_interventions"](opt_result["policy"]),
-                list,
-            )
-            else optimize_kwargs["static_parameter_interventions"](opt_result["policy"])
+            [opt_intervention_temp]
+            if not isinstance(opt_intervention_temp, list)
+            else opt_intervention_temp
         )
         opt_intervention = combine_static_parameter_interventions(intervention_list)
     else:
-        opt_intervention = optimize_kwargs["static_parameter_interventions"](
-            opt_result["policy"]
-        )
+        opt_intervention = opt_intervention_temp
 
     result_opt = sample(
         model_url,
