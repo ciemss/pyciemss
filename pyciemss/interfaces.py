@@ -863,13 +863,13 @@ def optimize(
                     - Optimization results as scipy object.
     """
     check_solver(solver_method, solver_options)
-    if isinstance(risk_bound, list):
+    if not isinstance(risk_bound, list):
         warnings.warn("risk_bound is not a List. Forcing it to be a list.")
         risk_bound = [risk_bound]
-    if isinstance(qoi, list):
+    if not isinstance(qoi, list):
         warnings.warn("qoi is not a List. Forcing it to be a list.")
         qoi = [qoi]
-    if isinstance(alpha, list):
+    if not isinstance(alpha, list):
         warnings.warn("alpha is not a List. Forcing it to be a list.")
         alpha = [alpha]
     assert len(risk_bound) == len(alpha), (
