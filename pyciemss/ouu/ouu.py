@@ -114,11 +114,11 @@ class computeRisk:
             samples = self.propagate_uncertainty(x)
             # Compute quanity of interest
             sample_qoi = [q(samples) for q in self.qoi]
-            # print(len(sample_qoi))
+            print(len(sample_qoi))
             # Estimate risk
             risk_estimate = np.full(len(self.qoi), np.nan)
             for i in range(len(self.qoi)):
-                # print(sample_qoi[i].shape)
+                print(sample_qoi[i].shape, self.risk_measure[i](sample_qoi[i]))
                 risk_estimate[i] = self.risk_measure[i](sample_qoi[i])
         return risk_estimate
 
