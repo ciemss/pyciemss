@@ -16,6 +16,7 @@ def param_value_objective(
         if param_value[count] is None:
             if not callable(param_value[count]):
                 param_value[count] = lambda y: torch.tensor(y)
+    # Note that param_value needs to be Callable
 
     def intervention_generator(
         x: torch.Tensor,
