@@ -74,9 +74,7 @@ class computeRisk:
         risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
         num_samples: int = 1000,
         guide=None,
-        fixed_static_parameter_interventions: Dict[
-            torch.Tensor, Dict[str, Intervention]
-        ] = {},
+        fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
@@ -128,11 +126,12 @@ class computeRisk:
             with torch.no_grad():
                 x = np.atleast_1d(x)
                 # Combine existing interventions with intervention being optimized
+                intervention_list = [
+                    deepcopy(self.fixed_static_parameter_interventions)
+                ]
+                intervention_list.extend([self.interventions(torch.from_numpy(x))])
                 static_parameter_interventions = combine_static_parameter_interventions(
-                    [
-                        deepcopy(self.fixed_static_parameter_interventions),
-                        self.interventions(torch.from_numpy(x)),
-                    ]
+                    intervention_list
                 )
                 static_parameter_intervention_handlers = [
                     StaticParameterIntervention(
