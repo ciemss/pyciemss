@@ -134,7 +134,7 @@ optkwargs_SIRstockflow_time_param = {
 intervened_params = ["beta_c", "gamma"]
 static_parameter_interventions1 = param_value_objective(
     param_name=[intervened_params[0]],
-    start_time=torch.tensor([10.0]),
+    start_time=torch.tensor(10.0),
 )
 static_parameter_interventions2 = start_time_objective(
     param_name=[intervened_params[1]],
