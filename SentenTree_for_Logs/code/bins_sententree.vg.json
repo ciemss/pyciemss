@@ -1,0 +1,255 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 1200,
+  "height": 800,
+  "padding": 5,
+
+  "signals": [
+    {"name": "numGraphs", "value": 3},
+    {"name": "graphWidth", "update": "width / numGraphs"},
+    {"name": "graphHeight", "value": 400},
+    {"name": "hoveredNodeID", "value": null, "on": [
+      {"events": "symbol:mouseover", "update": "datum.id"},
+      {"events": "symbol:mouseout", "update": "null"}
+    ]}
+  ],
+
+  "scales": [
+    {
+      "name": "x",
+      "domain": [0, 10], 
+      "range": [0, {"signal": "graphWidth"}]
+    },
+    {
+      "name": "y",
+      "domain": [0, 10], 
+      "range": [0, {"signal": "graphHeight"}]
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": [true, false],
+      "range": ["red", "blue"]
+    }
+  ],
+
+  "data": [
+    {
+      "name": "nodes",
+      "values": [
+        {"id": "S_5_I_5_4", "x": 4, "y": 5, "count": 1, "exemplar": true, "graph": 1},
+        {"id": "S_6_I_4_1", "x": 1, "y": 6, "count": 1, "exemplar": true, "graph": 2},
+        {"id": "S_5_I_5_3", "x": 3, "y": 5, "count": 2, "exemplar": false, "graph": 1},
+        {"id": "S_3_I_5_5", "x": 5, "y": 3, "count": 1, "exemplar": true, "graph": 2},
+        {"id": "S_4_I_5_4", "x": 4, "y": 5, "count": 2, "exemplar": false, "graph": 1},
+        {"id": "S_3_I_6_5", "x": 5, "y": 3, "count": 2, "exemplar": false, "graph": 2},
+        {"id": "S_5_I_5_2", "x": 2, "y": 5, "count": 2, "exemplar": false, "graph": 1},
+        {"id": "S_4_I_5_5", "x": 5, "y": 4, "count": 1, "exemplar": true, "graph": 2},
+        {"id": "S_6_I_3_0", "x": 0, "y": 3, "count": 2, "exemplar": false, "graph": 1},
+        {"id": "S_3_I_6_3", "x": 3, "y": 3, "count": 1, "exemplar": true, "graph": 2},
+        {"id": "S_5_I_4_1", "x": 1, "y": 4, "count": 2, "exemplar": false, "graph": 1}
+      ],
+      "transform": [
+        {
+          "type": "formula",
+          "as": "label",
+          "expr": "replace(replace(replace(datum.id, /[^_]*$/, ''), /_$/, ''), /_$/, '')"
+        }
+      ]
+    },
+    {
+      "name": "edges",
+      "values": [
+        {"source": "S_5_I_5_4", "target": "S_4_I_5_5", "weight": 1, "graph": 1},
+        {"source": "S_5_I_5_3", "target": "S_4_I_5_4", "weight": 2, "graph": 1},
+        {"source": "S_5_I_5_3", "target": "S_5_I_5_4", "weight": 2, "graph": 1},
+        {"source": "S_4_I_5_4", "target": "S_3_I_6_5", "weight": 1, "graph": 1},
+        {"source": "S_4_I_5_4", "target": "S_4_I_5_5", "weight": 1, "graph": 1},
+        {"source": "S_4_I_5_4", "target": "S_3_I_5_5", "weight": 1, "graph": 1},
+        {"source": "S_5_I_5_2", "target": "S_5_I_5_3", "weight": 1, "graph": 1},
+        {"source": "S_5_I_5_2", "target": "S_3_I_6_3", "weight": 1, "graph": 1},
+        {"source": "S_6_I_3_0", "target": "S_5_I_4_1", "weight": 1, "graph": 1},
+        {"source": "S_6_I_3_0", "target": "S_6_I_4_1", "weight": 2, "graph": 1},
+        {"source": "S_5_I_4_1", "target": "S_5_I_5_2", "weight": 2, "graph": 1}
+      ],
+      "transform": []
+    },
+    {
+      "name": "facet_data",
+      "source": "nodes",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["graph"]
+        }
+      ]
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "group",
+      "from": {"data": "facet_data"},
+      "encode": {
+        "enter": {
+          "x": {"signal": "(datum.graph - 1) * graphWidth"},
+          "y": {"value": 0},
+          "width": {"signal": "graphWidth"},
+          "height": {"signal": "graphHeight"}
+        }
+      },
+      "data": [
+        {
+          "name": "graph_nodes",
+          "source": "nodes",
+          "transform": [
+            {
+              "type": "filter",
+              "expr": "datum.graph === parent.graph"
+            }
+          ]
+        },
+        {
+          "name": "graph_edges",
+          "source": "edges",
+          "transform": [
+            {
+              "type": "lookup",
+              "from": "graph_nodes",
+              "key": "id",
+              "fields": ["source"],
+              "as": ["sourceNode"]
+            },
+            {
+              "type": "lookup",
+              "from": "graph_nodes",
+              "key": "id",
+              "fields": ["target"],
+              "as": ["targetNode"]
+            },
+            {
+              "type": "formula",
+              "as": "sourceX",
+              "expr": "datum.sourceNode && datum.sourceNode.x ? datum.sourceNode.x : 0"
+            },
+            {
+              "type": "formula",
+              "as": "sourceY",
+              "expr": "datum.sourceNode && datum.sourceNode.y ? datum.sourceNode.y : 0"
+            },
+            {
+              "type": "formula",
+              "as": "targetX",
+              "expr": "datum.targetNode && datum.targetNode.x ? datum.targetNode.x : 0"
+            },
+            {
+              "type": "formula",
+              "as": "targetY",
+              "expr": "datum.targetNode && datum.targetNode.y ? datum.targetNode.y : 0"
+            }
+          ]
+        }
+      ],
+      "marks": [
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "x": {"signal": "graphWidth / 2"},
+              "y": {"value": 20},
+              "text": {"signal": "'Graph ' + parent.graph + ' Title'"},
+              "fontSize": {"value": 20},
+              "align": {"value": "center"},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "type": "rule",
+          "from": {"data": "graph_edges"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "x", "field": "sourceX"},
+              "y": {"scale": "y", "field": "sourceY"},
+              "x2": {"scale": "x", "field": "targetX"},
+              "y2": {"scale": "y", "field": "targetY"},
+              "strokeWidth": {"field": "weight"},
+              "stroke": {"value": "black"}
+            },
+            "update": {
+              "stroke": [
+                {"test": "datum.source === hoveredNodeID", "value": "blue"},
+                {"value": "black"}
+              ],
+              "strokeWidth": [
+                {"test": "datum.source === hoveredNodeID", "value": 3},
+                {"field": "weight"}
+              ]
+            }
+          }
+        },
+        {
+          "type": "symbol",
+          "from": {"data": "graph_nodes"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "x", "field": "x"},
+              "y": {"scale": "y", "field": "y"},
+              "size": {"field": "count", "mult": 100},
+              "stroke": {"value": "steelblue"},
+              "strokeWidth": {"value": 2},
+              "fill": {"scale": "color", "field": "exemplar"}
+            },
+            "update": {
+              "fill": [
+                {"test": "datum.id === hoveredNodeID", "value": "blue"},
+                {"value": "steelblue"}
+              ],
+              "stroke": [
+                {"test": "datum.id === hoveredNodeID", "value": "blue"},
+                {"value": "steelblue"}
+              ]
+            }
+          }
+        },
+        {
+          "type": "text",
+          "from": {"data": "graph_nodes"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "x", "field": "x", "offset": 10},
+              "y": {"scale": "y", "field": "y", "offset": -10},
+              "text": {"field": "label_id"},
+              "fontSize": {"field": "count", "mult": 10},
+              "align": {"value": "center"},
+              "baseline": {"value": "middle"},
+              "fill": {"value": "black"}
+            },
+            "update": {
+              "fill": [
+                {"test": "datum.id === hoveredNodeID", "value": "blue"},
+                {"value": "black"}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "legends": [
+    {
+      "fill": "color",
+      "title": "Exemplar",
+      "orient": "right",
+      "encode": {
+        "symbols": {
+          "enter": {
+            "shape": {"value": "circle"},
+            "size": {"value": 100}
+          }
+        }
+      }
+    }
+  ]
+}
