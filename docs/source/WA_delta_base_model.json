@@ -352,48 +352,48 @@
    "initials": [
     {
      "target": "S",
-     "expression": "4039726.0",
-     "expression_mathml": "<cn>4039726.0</cn>"
+     "expression": "5661565.0",
+     "expression_mathml": "<cn>5661565.0</cn>"
     },
     {
      "target": "I",
-     "expression": "1170.0",
-     "expression_mathml": "<cn>1170.0</cn>"
+     "expression": "4000.0",
+     "expression_mathml": "<cn>4000.0</cn>"
     },
     {
      "target": "E",
-     "expression": "4680.0",
-     "expression_mathml": "<cn>4680.0</cn>"
+     "expression": "16000.0",
+     "expression_mathml": "<cn>16000.0</cn>"
     },
     {
      "target": "V",
-     "expression": "3291296.0",
-     "expression_mathml": "<cn>3291296.0</cn>"
+     "expression": "1645648.0",
+     "expression_mathml": "<cn>1645648.0</cn>"
     },
     {
      "target": "R",
-     "expression": "442815.0",
-     "expression_mathml": "<cn>442815.0</cn>"
+     "expression": "452072.0",
+     "expression_mathml": "<cn>452072.0</cn>"
     },
     {
      "target": "H",
-     "expression": "310.0",
-     "expression_mathml": "<cn>310.0</cn>"
+     "expression": "504.0",
+     "expression_mathml": "<cn>504.0</cn>"
     },
     {
      "target": "D",
-     "expression": "5789.0",
-     "expression_mathml": "<cn>5789.0</cn>"
+     "expression": "5997.0",
+     "expression_mathml": "<cn>5997.0</cn>"
     },
     {
      "target": "C_c",
-     "expression": "436984.0",
-     "expression_mathml": "<cn>436984.0</cn>"
+     "expression": "455103.0",
+     "expression_mathml": "<cn>455103.0</cn>"
     },
     {
      "target": "C_h",
-     "expression": "18208.0",
-     "expression_mathml": "<cn>18208.0</cn>"
+     "expression": "19802.0",
+     "expression_mathml": "<cn>19802.0</cn>"
     }
    ],
    "parameters": [
@@ -422,12 +422,12 @@
     },
     {
      "id": "beta",
-     "value": 0.17,
+     "value": 0.12,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 0.1675,
-       "maximum": 0.18
+       "minimum": 0.11,
+       "maximum": 0.13
       }
      },
      "units": {
@@ -453,12 +453,12 @@
     },
     {
      "id": "p_IH",
-     "value": 0.14,
+     "value": 0.095,
      "distribution": {
       "type": "StandardUniform1",
       "parameters": {
-       "minimum": 0.13,
-       "maximum": 0.15
+       "minimum": 0.09,
+       "maximum": 0.1
       }
      },
      "units": {
@@ -492,6 +492,13 @@
     {
      "id": "r_HR",
      "value": 0.222,
+     "distribution": {
+      "type": "StandardUniform1",
+      "parameters": {
+       "minimum": 0.2,
+       "maximum": 0.25
+      }
+     },
      "units": {
       "expression": "1/day",
       "expression_mathml": "<apply><power/><ci>day</ci><cn>-1</cn></apply>"
