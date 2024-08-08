@@ -134,11 +134,11 @@ optkwargs_SIRstockflow_time_param = {
 intervened_params = ["beta_c", "gamma"]
 static_parameter_interventions1 = param_value_objective(
     param_name=[intervened_params[0]],
-    start_time=torch.tensor(10.0),
+    start_time=[torch.tensor(10.0)],
 )
 static_parameter_interventions2 = start_time_objective(
     param_name=[intervened_params[1]],
-    param_value=torch.tensor([0.45]),
+    param_value=[torch.tensor([0.45])],
 )
 optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "qoi": [lambda x: obs_max_qoi(x, ["I_state"])],

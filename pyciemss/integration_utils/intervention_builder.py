@@ -30,15 +30,13 @@ def param_value_objective(
         for count in range(param_size):
             if start_time[count].item() in static_parameter_interventions:
                 static_parameter_interventions[start_time[count].item()].update(
-                    {param_name[count]: param_value[count](x[count].item()).item()}
+                    {param_name[count]: param_value[count](x[count].item())}
                 )
             else:
                 static_parameter_interventions.update(
                     {
                         start_time[count].item(): {
-                            param_name[count]: param_value[count](
-                                x[count].item()
-                            ).item()
+                            param_name[count]: param_value[count](x[count].item())
                         }
                     }
                 )
@@ -52,7 +50,7 @@ def start_time_objective(
     param_value: List[Intervention],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
     param_size = len(param_name)
-    # Note that code below will only work for tensors and not callable functions
+    # Note: code below will only work for tensors and not callable functions
     param_value = [torch.atleast_1d(y) for y in param_value]
 
     def intervention_generator(
@@ -67,11 +65,11 @@ def start_time_objective(
         for count in range(param_size):
             if x[count].item() in static_parameter_interventions:
                 static_parameter_interventions[x[count].item()].update(
-                    {param_name[count]: param_value[count].item()}
+                    {param_name[count]: param_value[count]}
                 )
             else:
                 static_parameter_interventions.update(
-                    {x[count].item(): {param_name[count]: param_value[count].item()}}
+                    {x[count].item(): {param_name[count]: param_value[count]}}
                 )
         return static_parameter_interventions
 
@@ -102,11 +100,7 @@ def start_time_param_value_objective(
         for count in range(param_size):
             if x[count * 2].item() in static_parameter_interventions:
                 static_parameter_interventions[x[count * 2].item()].update(
-                    {
-                        param_name[count]: param_value[count](
-                            x[count * 2 + 1].item()
-                        ).item()
-                    }
+                    {param_name[count]: param_value[count](x[count * 2 + 1].item())}
                 )
             else:
                 static_parameter_interventions.update(
@@ -114,7 +108,7 @@ def start_time_param_value_objective(
                         x[count * 2].item(): {
                             param_name[count]: param_value[count](
                                 x[count * 2 + 1].item()
-                            ).item()
+                            )
                         }
                     }
                 )
@@ -129,7 +123,10 @@ def intervention_func_combinator(
     ],
     intervention_func_lengths: List[int],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
-    assert len(intervention_funcs) == len(intervention_func_lengths)
+    assert len(intervention_funcs) == len(intervention_func_lengths), (
+        f"Size mismatch between number of intervention functions ('{len(intervention_funcs)}')"
+        f"and number of intervention function lengths ('{len(intervention_func_lengths)}') "
+    )
 
     total_length = sum(intervention_func_lengths)
 
