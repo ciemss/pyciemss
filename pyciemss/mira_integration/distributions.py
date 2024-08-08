@@ -61,7 +61,6 @@ def mira_beta_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribut
 def mira_betabinomial_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
-
     concentration1 = parameters["alpha"]
     concentration0 = parameters["beta"]
     total_count = parameters["numberOfTrials"]
@@ -143,7 +142,6 @@ def mira_gumbel_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distrib
 
 
 def mira_laplace_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
-
     if "location" in parameters.keys():
         loc = parameters["location"]
     elif "mu" in parameters.keys():
@@ -189,7 +187,6 @@ def mira_studentt_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distr
 
 
 def mira_weibull_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
-
     if "scale" in parameters.keys():
         scale = parameters["scale"]
     elif "lambda" in parameters.keys():

@@ -15,7 +15,8 @@ def param_value_objective(
     for count in range(param_size):
         if param_value[count] is None:
             if not callable(param_value[count]):
-                param_value[count] = lambda y: torch.tensor(y)
+                param_value[count] = lambda y: torch.tensor([y])
+    # Note that param_value needs to be Callable
 
     def intervention_generator(
         x: torch.Tensor,
@@ -49,6 +50,8 @@ def start_time_objective(
     param_value: List[Intervention],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
     param_size = len(param_name)
+    # Note: code below will only work for tensors and not callable functions
+    param_value = [torch.atleast_1d(y) for y in param_value]
 
     def intervention_generator(
         x: torch.Tensor,
@@ -83,7 +86,7 @@ def start_time_param_value_objective(
     for count in range(param_size):
         if param_value[count] is None:
             if not callable(param_value[count]):
-                param_value[count] = lambda y: torch.tensor(y)
+                param_value[count] = lambda y: torch.tensor([y])
 
     def intervention_generator(
         x: torch.Tensor,
@@ -120,7 +123,10 @@ def intervention_func_combinator(
     ],
     intervention_func_lengths: List[int],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
-    assert len(intervention_funcs) == len(intervention_func_lengths)
+    assert len(intervention_funcs) == len(intervention_func_lengths), (
+        f"Size mismatch between number of intervention functions ('{len(intervention_funcs)}')"
+        f"and number of intervention function lengths ('{len(intervention_func_lengths)}') "
+    )
 
     total_length = sum(intervention_func_lengths)
 

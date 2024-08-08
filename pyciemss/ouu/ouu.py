@@ -66,19 +66,19 @@ class computeRisk:
         self,
         model: Callable,
         interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
-        qoi: Callable,
+        qoi: List[Callable[[Any], np.ndarray]],
         end_time: float,
         logging_step_size: float,
         *,
         start_time: float = 0.0,
-        risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
+        risk_measure: List[Callable] = [lambda z: alpha_superquantile(z, alpha=0.95)],
         num_samples: int = 1000,
         guide=None,
         fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
-        risk_bound: float = 0.0,
+        risk_bound: List[float] = [0.0],
     ):
         self.model = model
         self.interventions = interventions
@@ -107,15 +107,17 @@ class computeRisk:
                 "Selected interventions are out of bounds. Will use a penalty instead of estimating risk."
             )
             risk_estimate = max(
-                2 * self.risk_bound, 10.0
+                2 * np.array(self.risk_bound), 10.0
             )  # used as a penalty and the model is not run
         else:
             # Apply intervention and perform forward uncertainty propagation
             samples = self.propagate_uncertainty(x)
             # Compute quanity of interest
-            sample_qoi = self.qoi(samples)
+            sample_qoi = [q(samples) for q in self.qoi]
             # Estimate risk
-            risk_estimate = self.risk_measure(sample_qoi)
+            risk_estimate = np.full(len(self.qoi), np.nan)
+            for i in range(len(self.qoi)):
+                risk_estimate[i] = self.risk_measure[i](sample_qoi[i])
         return risk_estimate
 
     def propagate_uncertainty(self, x):
