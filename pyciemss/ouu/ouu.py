@@ -107,7 +107,7 @@ class computeRisk:
                 "Selected interventions are out of bounds. Will use a penalty instead of estimating risk."
             )
             risk_estimate = max(
-                2 * np.array(self.risk_bound), 10.0
+                np.max(2 * np.array(self.risk_bound)), 10.0
             )  # used as a penalty and the model is not run
         else:
             # Apply intervention and perform forward uncertainty propagation
@@ -164,6 +164,9 @@ class computeRisk:
                     num_samples=self.num_samples,
                     parallel=True,
                 )()
+        samples = {
+            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
+        }
         return samples
 
 

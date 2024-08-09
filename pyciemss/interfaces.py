@@ -874,13 +874,9 @@ def optimize(
     if not isinstance(alpha, list):
         alpha = [alpha]
         warnings.warn("alpha is not a List. Forcing it to be a list.")
-    assert len(risk_bound) == len(alpha), (
-        f"Size mismatch between risk_bound ('{len(risk_bound)}') "
-        "and alpha ('{len(alpha)}')"
-    )
-    assert len(risk_bound) == len(qoi), (
-        f"Size mismatch between risk_bound ('{len(risk_bound)}') "
-        "and qoi ('{len(qoi)}')"
+    assert len(risk_bound) == len(alpha) and len(risk_bound) == len(qoi), (
+        f"Size mismatch between qoi ('{len(qoi)}'), risk_bound ('{len(risk_bound)}') "
+        f"and alpha ('{len(alpha)}')"
     )
 
     with torch.no_grad():
