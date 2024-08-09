@@ -153,7 +153,10 @@ optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
 }
 optkwargs_SEIRHD_multipleConstraints = {
-    "qoi": [lambda x: obs_max_qoi(x, ["I_state"]), lambda x: obs_max_qoi(x, ["H_state"])],
+    "qoi": [
+        lambda x: obs_max_qoi(x, ["I_state"]),
+        lambda x: obs_max_qoi(x, ["H_state"]),
+    ],
     "risk_bound": [3e5, 1e5],
     "static_parameter_interventions": intervention_func_combinator(
         [static_parameter_interventions1, static_parameter_interventions2],
