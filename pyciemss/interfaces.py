@@ -529,12 +529,15 @@ def sample(
             num_samples=num_samples,
             parallel=parallel,
         )()
+        samples = {
+            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
+        }
 
         risk_results = {}
         for k, vals in samples.items():
             if "_state" in k:
-                # qoi is assumed to be the last day of simulation
-                qoi_sample = vals.detach().numpy()[:, -1]
+                # Note: qoi is assumed to be the last day of simulation
+                qoi_sample = np.atleast_2d(np.squeeze(vals.detach().numpy()))[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
