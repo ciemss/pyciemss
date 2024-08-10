@@ -14,7 +14,7 @@ def obs_nday_average_qoi(
     Note: last ndays timepoints is assumed to represent last n-days of simulation.
     """
     dataQoI = samples[contexts[0]].detach().numpy()
-
+    dataQoI = np.atleast_2d(np.squeeze(dataQoI))
     return np.mean(dataQoI[:, -ndays:], axis=1)
 
 
@@ -25,5 +25,5 @@ def obs_max_qoi(samples: Dict[str, torch.Tensor], contexts: List) -> np.ndarray:
     samples[VARIABLE] is expected to have dimension (nreplicates, ntimepoints)
     """
     dataQoI = samples[contexts[0]].detach().numpy()
-
+    dataQoI = np.atleast_2d(np.squeeze(dataQoI))
     return np.max(dataQoI, axis=1)
