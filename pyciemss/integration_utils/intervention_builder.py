@@ -47,7 +47,7 @@ def param_value_objective(
 
 def start_time_objective(
     param_name: List[str],
-    param_value: List[Intervention],
+    param_value: List[torch.Tensor],
 ) -> Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]:
     param_size = len(param_name)
     # Note: code below will only work for tensors and not callable functions

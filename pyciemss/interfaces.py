@@ -772,8 +772,8 @@ def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,
     logging_step_size: float,
-    qoi: List[Callable[[Any], np.ndarray]],
-    risk_bound: List[float],
+    qoi: Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]],
+    risk_bound: Union[List[float], float],
     static_parameter_interventions: Callable[
         [torch.Tensor], Dict[float, Dict[str, Intervention]]
     ],
@@ -781,7 +781,7 @@ def optimize(
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
-    alpha: List[float] = [0.95],
+    alpha: Union[List[float], float] = [0.95],
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -806,10 +806,10 @@ def optimize(
             - The end time of the sampled simulation.
         logging_step_size: float
             - The step size to use for logging the trajectory.
-        qoi: List[Callable[[Any], np.ndarray]]
-            - A callable function defining the quantity of interest to optimize over.
-        risk_bounds: List[float]
-            - The threshold on the risk constraint.
+        qoi: Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]]
+            - A (list of) callable function(s) defining the quantity of interest to optimize over.
+        risk_bounds: Union[List[float], float]
+            - The (list of) threshold(s) on the risk constraint.
         static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
             - A callable function of static parameter interventions to optimize over.
             - The callable functions are created using the provided templates:
@@ -826,8 +826,8 @@ def optimize(
         bounds_interventions: List[List[float]]
             - The lower and upper bounds for intervention parameter.
             - Bounds are a list of the form [[lower bounds], [upper bounds]]
-        alpha: List[float]
-            - Risk preference parameter for alpha-superquantile
+        alpha: Union[List[float], float]
+            - A (list of) risk preference parameter(s) for alpha-superquantile
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
@@ -870,13 +870,10 @@ def optimize(
     check_solver(solver_method, solver_options)
     if not isinstance(risk_bound, list):
         risk_bound = [risk_bound]
-        warnings.warn("risk_bound is not a List. Forcing it to be a list.")
     if not isinstance(qoi, list):
         qoi = [qoi]
-        warnings.warn("qoi is not a List. Forcing it to be a list.")
     if not isinstance(alpha, list):
         alpha = [alpha]
-        warnings.warn("alpha is not a List. Forcing it to be a list.")
     assert len(risk_bound) == len(alpha) and len(risk_bound) == len(qoi), (
         f"Size mismatch between qoi ('{len(qoi)}'), risk_bound ('{len(risk_bound)}') "
         f"and alpha ('{len(alpha)}')"
