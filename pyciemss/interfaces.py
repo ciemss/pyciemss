@@ -772,7 +772,7 @@ def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,
     logging_step_size: float,
-    qoi: Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]],
+    qoi: Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]],
     risk_bound: Union[List[float], float],
     static_parameter_interventions: Callable[
         [torch.Tensor], Dict[float, Dict[str, Intervention]]
