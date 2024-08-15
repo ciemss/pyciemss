@@ -126,19 +126,6 @@
       ],
       "marks": [
         {
-          "type": "text",
-          "encode": {
-            "enter": {
-              "x": {"signal": "graphWidth / 2"},
-              "y": {"value": 20},
-              "text": {"signal": "'Graph ' + graph_name + ' Title'"},
-              "fontSize": {"value": 20},
-              "align": {"value": "center"},
-              "baseline": {"value": "middle"}
-            }
-          }
-        },
-        {
           "type": "rule",
           "from": {"data": "graph_edges"},
           "encode": {
@@ -155,7 +142,7 @@
                 {"test": "datum.source === hoveredNodeID || datum.target === hoveredNodeID", "value": "blue"},
                 {"value": "black"}
               ],
-              "strokeWidth": {"value": 2}
+              "strokeWidth": {"field": "weight"}
             }
           }
         },
