@@ -164,9 +164,9 @@ class computeRisk:
                     num_samples=self.num_samples,
                     parallel=True,
                 )()
-        samples = {
-            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
-        }
+        # samples = {
+        #     k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
+        # }
         return samples
 
 
