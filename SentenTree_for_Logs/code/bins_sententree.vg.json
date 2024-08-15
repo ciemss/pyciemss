@@ -1,12 +1,12 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "width": 1200,
+  "width": 1600,
   "height": 800,
   "padding": 5,
 
   "signals": [
     {"name": "numGraphs", "value": 3},
-    {"name": "graphWidth", "update": "width / numGraphs"},
+    {"name": "graphWidth", "update": "(width - 50 - (numGraphs - 1) * 50) / numGraphs"},
     {"name": "graphHeight", "value": 400},
     {"name": "hoveredNodeID", "value": null, "on": [
       {"events": "symbol:mouseover", "update": "datum.id"},
@@ -17,12 +17,12 @@
   "scales": [
     {
       "name": "x",
-      "domain": [0, 10], 
+      "domain": [0, 10],
       "range": [0, {"signal": "graphWidth"}]
     },
     {
       "name": "y",
-      "domain": [0, 10], 
+      "domain": [0, 10],
       "range": [0, {"signal": "graphHeight"}]
     },
     {
@@ -36,43 +36,11 @@
   "data": [
     {
       "name": "nodes",
-      "values": [
-        {"id": "S_5_I_5_4", "x": 4, "y": 5, "count": 1, "exemplar": true, "graph": 1},
-        {"id": "S_6_I_4_1", "x": 1, "y": 6, "count": 1, "exemplar": true, "graph": 2},
-        {"id": "S_5_I_5_3", "x": 3, "y": 5, "count": 2, "exemplar": false, "graph": 1},
-        {"id": "S_3_I_5_5", "x": 5, "y": 3, "count": 1, "exemplar": true, "graph": 2},
-        {"id": "S_4_I_5_4", "x": 4, "y": 5, "count": 2, "exemplar": false, "graph": 1},
-        {"id": "S_3_I_6_5", "x": 5, "y": 3, "count": 2, "exemplar": false, "graph": 2},
-        {"id": "S_5_I_5_2", "x": 2, "y": 5, "count": 2, "exemplar": false, "graph": 1},
-        {"id": "S_4_I_5_5", "x": 5, "y": 4, "count": 1, "exemplar": true, "graph": 2},
-        {"id": "S_6_I_3_0", "x": 0, "y": 3, "count": 2, "exemplar": false, "graph": 1},
-        {"id": "S_3_I_6_3", "x": 3, "y": 3, "count": 1, "exemplar": true, "graph": 2},
-        {"id": "S_5_I_4_1", "x": 1, "y": 4, "count": 2, "exemplar": false, "graph": 1}
-      ],
-      "transform": [
-        {
-          "type": "formula",
-          "as": "label",
-          "expr": "replace(replace(replace(datum.id, /[^_]*$/, ''), /_$/, ''), /_$/, '')"
-        }
-      ]
+      "values": []
     },
     {
       "name": "edges",
-      "values": [
-        {"source": "S_5_I_5_4", "target": "S_4_I_5_5", "weight": 1, "graph": 1},
-        {"source": "S_5_I_5_3", "target": "S_4_I_5_4", "weight": 2, "graph": 1},
-        {"source": "S_5_I_5_3", "target": "S_5_I_5_4", "weight": 2, "graph": 1},
-        {"source": "S_4_I_5_4", "target": "S_3_I_6_5", "weight": 1, "graph": 1},
-        {"source": "S_4_I_5_4", "target": "S_4_I_5_5", "weight": 1, "graph": 1},
-        {"source": "S_4_I_5_4", "target": "S_3_I_5_5", "weight": 1, "graph": 1},
-        {"source": "S_5_I_5_2", "target": "S_5_I_5_3", "weight": 1, "graph": 1},
-        {"source": "S_5_I_5_2", "target": "S_3_I_6_3", "weight": 1, "graph": 1},
-        {"source": "S_6_I_3_0", "target": "S_5_I_4_1", "weight": 1, "graph": 1},
-        {"source": "S_6_I_3_0", "target": "S_6_I_4_1", "weight": 2, "graph": 1},
-        {"source": "S_5_I_4_1", "target": "S_5_I_5_2", "weight": 2, "graph": 1}
-      ],
-      "transform": []
+      "values": []
     },
     {
       "name": "facet_data",
@@ -92,12 +60,18 @@
       "from": {"data": "facet_data"},
       "encode": {
         "enter": {
-          "x": {"signal": "(datum.graph - 1) * graphWidth"},
+          "x": {"signal": "(datum.graph - 1) * (graphWidth + 50)"},
           "y": {"value": 0},
           "width": {"signal": "graphWidth"},
           "height": {"signal": "graphHeight"}
         }
       },
+      "signals": [
+        {
+          "name": "graph_name",
+          "update": "parent.graph_name"
+        }
+      ],
       "data": [
         {
           "name": "graph_nodes",
@@ -157,7 +131,7 @@
             "enter": {
               "x": {"signal": "graphWidth / 2"},
               "y": {"value": 20},
-              "text": {"signal": "'Graph ' + parent.graph + ' Title'"},
+              "text": {"signal": "'Graph ' + graph_name + ' Title'"},
               "fontSize": {"value": 20},
               "align": {"value": "center"},
               "baseline": {"value": "middle"}
@@ -178,13 +152,10 @@
             },
             "update": {
               "stroke": [
-                {"test": "datum.source === hoveredNodeID", "value": "blue"},
+                {"test": "datum.source === hoveredNodeID || datum.target === hoveredNodeID", "value": "blue"},
                 {"value": "black"}
               ],
-              "strokeWidth": [
-                {"test": "datum.source === hoveredNodeID", "value": 3},
-                {"field": "weight"}
-              ]
+              "strokeWidth": {"value": 2}
             }
           }
         },
