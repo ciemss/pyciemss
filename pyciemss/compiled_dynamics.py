@@ -101,13 +101,15 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def instantiate_parameters(self):
         # Initialize random parameters once before simulating.
         # This is necessary because the parameters are PyroSample objects.
-        for k in _compile_param_values(self.src).keys():
+        for k, param in _compile_param_values(self.src).items():
             param_name = get_name(k)
             # Separating the persistent parameters from the non-persistent ones
             # is necessary because the persistent parameters are PyroSample objects representing the distribution,
             # and should not be modified during intervention.
             param_val = getattr(self, f"persistent_{param_name}")
-            self.register_buffer(get_name(k), param_val)
+            if isinstance(param, torch.Tensor):
+                pyro.deterministic(f"persistent_{param_name}", param_val)
+            self.register_buffer(param_name, param_val)
 
     def forward(
         self,
