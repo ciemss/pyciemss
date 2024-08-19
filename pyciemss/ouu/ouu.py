@@ -181,12 +181,6 @@ class solveOUU:
         x0: List[float],
         objfun: Callable,
         constraints: Tuple[Dict[str, object], Dict[str, object], Dict[str, object]],
-        minimizer_kwargs: Dict = dict(
-            method="COBYLA",
-            tol=1e-5,
-            options={"disp": False, "maxiter": 10},
-        ),
-        optimizer_algorithm: str = "basinhopping",
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
@@ -194,14 +188,9 @@ class solveOUU:
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
         self.constraints = constraints
-        self.minimizer_kwargs = minimizer_kwargs.update(
-            {"constraints": self.constraints}
-        )
-        self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
         self.maxfeval = maxfeval
         self.u_bounds = u_bounds
-        # self.kwargs = kwargs
 
     def solve(self):
         pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
@@ -225,8 +214,6 @@ class solveOUU:
             },
         )
         take_step = RandomDisplacementBounds(self.u_bounds[0, :], self.u_bounds[1, :])
-        # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
-        #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
 
         result = basinhopping(
             self.objfun,
