@@ -15,7 +15,7 @@ def param_value_objective(
     for count in range(param_size):
         if param_value[count] is None:
             if not callable(param_value[count]):
-                param_value[count] = lambda y: torch.tensor([y])
+                param_value[count] = lambda y: torch.tensor(y)
     # Note that param_value needs to be Callable
 
     def intervention_generator(
@@ -30,13 +30,19 @@ def param_value_objective(
         for count in range(param_size):
             if start_time[count].item() in static_parameter_interventions:
                 static_parameter_interventions[start_time[count].item()].update(
-                    {param_name[count]: param_value[count](x[count].item())}
+                    {
+                        param_name[count]: torch.atleast_1d(
+                            param_value[count](x[count].item())
+                        )
+                    }
                 )
             else:
                 static_parameter_interventions.update(
                     {
                         start_time[count].item(): {
-                            param_name[count]: param_value[count](x[count].item())
+                            param_name[count]: torch.atleast_1d(
+                                param_value[count](x[count].item())
+                            )
                         }
                     }
                 )
@@ -65,11 +71,15 @@ def start_time_objective(
         for count in range(param_size):
             if x[count].item() in static_parameter_interventions:
                 static_parameter_interventions[x[count].item()].update(
-                    {param_name[count]: param_value[count]}
+                    {param_name[count]: torch.atleast_1d(param_value[count])}
                 )
             else:
                 static_parameter_interventions.update(
-                    {x[count].item(): {param_name[count]: param_value[count]}}
+                    {
+                        x[count].item(): {
+                            param_name[count]: torch.atleast_1d(param_value[count])
+                        }
+                    }
                 )
         return static_parameter_interventions
 
@@ -86,7 +96,7 @@ def start_time_param_value_objective(
     for count in range(param_size):
         if param_value[count] is None:
             if not callable(param_value[count]):
-                param_value[count] = lambda y: torch.tensor([y])
+                param_value[count] = lambda y: torch.tensor(y)
 
     def intervention_generator(
         x: torch.Tensor,
@@ -100,14 +110,18 @@ def start_time_param_value_objective(
         for count in range(param_size):
             if x[count * 2].item() in static_parameter_interventions:
                 static_parameter_interventions[x[count * 2].item()].update(
-                    {param_name[count]: param_value[count](x[count * 2 + 1].item())}
+                    {
+                        param_name[count]: torch.atleast_1d(
+                            param_value[count](x[count * 2 + 1].item())
+                        )
+                    }
                 )
             else:
                 static_parameter_interventions.update(
                     {
                         x[count * 2].item(): {
-                            param_name[count]: param_value[count](
-                                x[count * 2 + 1].item()
+                            param_name[count]: torch.atleast_1d(
+                                param_value[count](x[count * 2 + 1].item())
                             )
                         }
                     }
