@@ -85,12 +85,7 @@ REGNET_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
     ),
-    ModelFixture(
-        # os.path.join(MODELS_PATH, "LacOperon.json"), "k_1"
-        # Will edit this to the main branch once the upstream PR is merged (https://github.com/DARPA-ASKEM/simulation-integration/pull/82)
-        "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/c8dbb5c3aeceffc11b66692c11c2068bf26fc039/data/models/LacOperon.json",
-        "k_1",
-    ),
+    ModelFixture(os.path.join(MODELS_PATH, "LacOperon.json"), "k_1"),
 ]
 
 STOCKFLOW_MODELS = [
