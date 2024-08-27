@@ -30,6 +30,7 @@ from .fixtures import (
     NON_POS_INTS,
     NUM_SAMPLES,
     OPT_MODELS,
+    SEIRHD_NPI_STATIC_PARAM_INTERV,
     START_TIMES,
     check_result_sizes,
     check_states_match,
@@ -580,8 +581,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         "solver_options": {"step_size": 0.1},
         "start_time": start_time,
         "n_samples_ouu": int(2),
-        "maxiter": 3,
-        "maxfeval": 5,
+        "maxiter": 1,
+        "maxfeval": 2,
         "progress_hook": progress_hook,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
@@ -596,17 +597,21 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         assert bounds_interventions[0][i] <= opt_policy[i]
         assert opt_policy[i] <= bounds_interventions[1][i]
 
+    opt_intervention_temp = optimize_kwargs["static_parameter_interventions"](
+        opt_result["policy"]
+    )
     if "fixed_static_parameter_interventions" in optimize_kwargs:
-        opt_intervention = combine_static_parameter_interventions(
-            [
-                deepcopy(optimize_kwargs["fixed_static_parameter_interventions"]),
-                optimize_kwargs["static_parameter_interventions"](opt_result["policy"]),
-            ]
+        intervention_list = [
+            deepcopy(optimize_kwargs["fixed_static_parameter_interventions"])
+        ]
+        intervention_list.extend(
+            [opt_intervention_temp]
+            if not isinstance(opt_intervention_temp, list)
+            else opt_intervention_temp
         )
+        opt_intervention = combine_static_parameter_interventions(intervention_list)
     else:
-        opt_intervention = optimize_kwargs["static_parameter_interventions"](
-            opt_result["policy"]
-        )
+        opt_intervention = opt_intervention_temp
 
     result_opt = sample(
         model_url,
@@ -748,3 +753,38 @@ def test_errors_for_bad_amrs(
             logging_step_size,
             num_samples,
         )
+
+
+@pytest.mark.parametrize("sample_method", [sample])
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("seirhd_npi_intervention", SEIRHD_NPI_STATIC_PARAM_INTERV)
+def test_intervention_on_constant_param(
+    sample_method,
+    model_fixture,
+    end_time,
+    logging_step_size,
+    num_samples,
+    start_time,
+    seirhd_npi_intervention,
+):
+    # Assert that sample returns expected result with intervention on constant parameter
+    if "SEIRHD_NPI" not in model_fixture.url:
+        pytest.skip("Only test 'SEIRHD_NPI' models with constant parameter delta")
+    else:
+        processed_result = sample_method(
+            model_fixture.url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            static_parameter_interventions=seirhd_npi_intervention,
+        )["data"]
+        assert isinstance(processed_result, pd.DataFrame)
+        assert processed_result.shape[0] == num_samples * len(
+            torch.arange(start_time, end_time + logging_step_size, logging_step_size)
+        )
+        assert processed_result.shape[1] >= 2

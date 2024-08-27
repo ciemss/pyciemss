@@ -7,6 +7,7 @@ import pandas as pd
 import torch
 
 from pyciemss.integration_utils.intervention_builder import (
+    intervention_func_combinator,
     param_value_objective,
     start_time_objective,
     start_time_param_value_objective,
@@ -93,9 +94,9 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
-optimize_kwargs_SIRstockflow_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+optkwargs_SIRstockflow_param = {
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": param_value_objective(
         param_name=["p_cbeta"],
         param_value=[lambda x: torch.tensor([x])],
@@ -106,9 +107,9 @@ optimize_kwargs_SIRstockflow_param = {
     "bounds_interventions": [[0.1], [0.5]],
 }
 
-optimize_kwargs_SIRstockflow_time = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+optkwargs_SIRstockflow_time = {
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_objective(
         param_name=["p_cbeta"],
         param_value=[torch.tensor([0.15])],
@@ -118,9 +119,9 @@ optimize_kwargs_SIRstockflow_time = {
     "bounds_interventions": [[0.0], [40.0]],
 }
 
-optimize_kwargs_SIRstockflow_time_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+optkwargs_SIRstockflow_time_param = {
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_param_value_objective(
         param_name=["p_cbeta"],
     ),
@@ -129,35 +130,65 @@ optimize_kwargs_SIRstockflow_time_param = {
     "bounds_interventions": [[0.0, 0.1], [40.0, 0.5]],
 }
 
-optimize_kwargs_SEIRHD_param_maxQoI = {
-    "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
-    "risk_bound": 300.0,
-    "static_parameter_interventions": param_value_objective(
-        param_name=["beta_c", "gamma"],
-        start_time=[torch.tensor(10.0), torch.tensor(15.0)],
+# Creating a combined interventions by combining into list of Callables
+intervened_params = ["beta_c", "gamma"]
+static_parameter_interventions1 = param_value_objective(
+    param_name=[intervened_params[0]],
+    start_time=[torch.tensor(10.0)],
+)
+static_parameter_interventions2 = start_time_objective(
+    param_name=[intervened_params[1]],
+    param_value=[torch.tensor([0.45])],
+)
+optkwargs_SEIRHD_paramtimeComb_maxQoI = {
+    "qoi": [lambda x: obs_max_qoi(x, ["I_state"])],
+    "risk_bound": [3e5],
+    "static_parameter_interventions": intervention_func_combinator(
+        [static_parameter_interventions1, static_parameter_interventions2],
+        [1, 1],
     ),
-    "objfun": lambda x: np.abs(0.35 - x[0]) + np.abs(0.2 - x[1]),
-    "initial_guess_interventions": [0.2, 0.4],
-    "bounds_interventions": [[0.1, 0.1], [0.5, 0.5]],
+    "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
+    "initial_guess_interventions": [0.35, 5.0],
+    "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
     "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+}
+optkwargs_SEIRHD_multipleConstraints = {
+    "qoi": [
+        lambda x: obs_max_qoi(x, ["I_state"]),
+        lambda x: obs_max_qoi(x, ["H_state"]),
+    ],
+    "risk_bound": [3e5, 1e5],
+    "static_parameter_interventions": intervention_func_combinator(
+        [static_parameter_interventions1, static_parameter_interventions2],
+        [1, 1],
+    ),
+    "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
+    "initial_guess_interventions": [0.35, 5.0],
+    "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
+    "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+    "alpha": [0.95, 0.90],
 }
 
 OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        optimize_kwargs=optimize_kwargs_SIRstockflow_param,
+        optimize_kwargs=optkwargs_SIRstockflow_param,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        optimize_kwargs=optimize_kwargs_SIRstockflow_time,
+        optimize_kwargs=optkwargs_SIRstockflow_time,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SIR_stockflow.json"),
-        optimize_kwargs=optimize_kwargs_SIRstockflow_time_param,
+        optimize_kwargs=optkwargs_SIRstockflow_time_param,
     ),
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
-        optimize_kwargs=optimize_kwargs_SEIRHD_param_maxQoI,
+        optimize_kwargs=optkwargs_SEIRHD_paramtimeComb_maxQoI,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
+        optimize_kwargs=optkwargs_SEIRHD_multipleConstraints,
     ),
 ]
 
@@ -182,6 +213,7 @@ END_TIMES = [40.0]
 LOGGING_STEP_SIZES = [5.0]
 
 NUM_SAMPLES = [2]
+SEIRHD_NPI_STATIC_PARAM_INTERV = [{torch.tensor(10.0): {"delta": torch.tensor(0.2)}}]
 NON_POS_INTS = [
     3.5,
     -3,
