@@ -8,7 +8,6 @@ import pyro
 import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
-
 from scipy.optimize import basinhopping
 
 from pyciemss.integration_utils.intervention_builder import (
