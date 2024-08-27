@@ -535,7 +535,7 @@ def sample(
 
         risk_results = {}
         for k, vals in samples.items():
-            if "_state" in k:
+            if "_state" in k or "_observable" in k:
                 # Note: qoi is assumed to be the last day of simulation
                 qoi_sample = vals.detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
