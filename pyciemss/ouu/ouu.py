@@ -186,7 +186,9 @@ class solveOUU:
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
-        progress_hook: Callable[[NDArray], None] = lambda x: None,  # update_progress
+        progress_hook: Callable[
+            [torch.Tensor], None
+        ] = lambda x: None,  # update_progress
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
@@ -228,7 +230,6 @@ class solveOUU:
             niter=self.maxiter,
             minimizer_kwargs=minimizer_kwargs,
             take_step=take_step,
-            # callback=self.progress_hook,
             interval=2,
             disp=False,
         )
