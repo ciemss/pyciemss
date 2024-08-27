@@ -563,14 +563,27 @@ def test_output_format(
 def test_optimize(model_fixture, start_time, end_time, num_samples):
     logging_step_size = 1.0
     model_url = model_fixture.url
+
+    class TestProgressHook:
+        def __init__(self):
+            self.result_x = []
+
+        def __call__(self, x):
+            # Log the iteration number
+            self.result_x.append(x)
+            print(f"Result: {self.result_x}")
+
+    progress_hook = TestProgressHook()
+
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
         "solver_options": {"step_size": 0.1},
         "start_time": start_time,
-        "n_samples_ouu": int(5),
+        "n_samples_ouu": int(2),
         "maxiter": 1,
         "maxfeval": 2,
+        "progress_hook": progress_hook,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
     opt_result = optimize(
@@ -620,6 +633,10 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     assert isinstance(intervened_result_subset, dict)
     check_result_sizes(
         intervened_result_subset, start_time, end_time, logging_step_size, num_samples
+    )
+
+    assert len(progress_hook.result_x) <= (
+        (optimize_kwargs["maxfeval"] + 1) * (optimize_kwargs["maxiter"] + 1)
     )
 
 
