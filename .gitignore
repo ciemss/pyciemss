@@ -338,5 +338,7 @@ venv/
 .DS_Store
 *~
 *_schema.json
+*_schema.vg.json
+heatmap/
 *data_with_missing_entries.csv
 *.nix
