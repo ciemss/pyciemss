@@ -87,7 +87,11 @@ REGNET_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
     ),
-    ModelFixture(os.path.join(MODELS_PATH, "LacOperon.json"), "k_1", has_distributional_parameters=False),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "LacOperon.json"),
+        "k_1",
+        has_distributional_parameters=False,
+    ),
 ]
 
 STOCKFLOW_MODELS = [
