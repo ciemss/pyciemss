@@ -89,14 +89,16 @@ CALIBRATE_KWARGS = {
 
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
-@pytest.mark.parametrize("model_url", MODEL_URLS)
+@pytest.mark.parametrize("model", MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
 def test_sample_no_interventions(
-    sample_method, model_url, start_time, end_time, logging_step_size, num_samples
+    sample_method, model, start_time, end_time, logging_step_size, num_samples
 ):
+    model_url = model.url
+
     with pyro.poutine.seed(rng_seed=0):
         result1 = sample_method(
             model_url, end_time, logging_step_size, num_samples, start_time=start_time
@@ -115,7 +117,8 @@ def test_sample_no_interventions(
         check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
 
     check_states_match(result1, result2)
-    check_states_match_in_all_but_values(result1, result3)
+    if model.has_distributional_parameters:
+        check_states_match_in_all_but_values(result1, result3)
 
     if sample_method.__name__ == "dummy_ensemble_sample":
         assert "total_state" in result1.keys()
