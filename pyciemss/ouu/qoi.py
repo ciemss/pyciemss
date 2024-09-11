@@ -5,7 +5,9 @@ import torch
 
 
 def obs_nday_average_qoi(
-    samples: Dict[str, torch.Tensor], contexts: List, ndays: int = 7
+    samples: Dict[str, torch.Tensor],
+    contexts: List,
+    ndays: int = 7,
 ) -> np.ndarray:
     """
     Return estimate of last n-day average of each sample.
