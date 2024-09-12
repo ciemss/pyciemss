@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 import torch
@@ -8,6 +8,8 @@ def obs_nday_average_qoi(
     samples: Dict[str, torch.Tensor],
     contexts: List,
     ndays: int = 7,
+    start_time: Optional[int] = None,
+    end_time: Optional[int] = None,
 ) -> np.ndarray:
     """
     Return estimate of last n-day average of each sample.
@@ -20,7 +22,12 @@ def obs_nday_average_qoi(
     return np.mean(dataQoI[:, -ndays:], axis=1)
 
 
-def obs_max_qoi(samples: Dict[str, torch.Tensor], contexts: List) -> np.ndarray:
+def obs_max_qoi(
+    samples: Dict[str, torch.Tensor],
+    contexts: List,
+    start_time: Optional[int] = None,
+    end_time: Optional[int] = None,
+) -> np.ndarray:
     """
     Return maximum value over simulated time.
     samples is is the output from a Pyro Predictive object.
