@@ -87,6 +87,8 @@ CALIBRATE_KWARGS = {
     "num_iterations": 2,
 }
 
+RTOL = [1e-6, 1e-5, 1e-4]
+ATOL = [1e-8, 1e-7, 1e-6]
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model", MODELS)
@@ -110,6 +112,44 @@ def test_sample_no_interventions(
 
     result3 = sample_method(
         model_url, end_time, logging_step_size, num_samples, start_time=start_time
+    )["unprocessed_result"]
+
+    for result in [result1, result2, result3]:
+        assert isinstance(result, dict)
+        check_result_sizes(result, start_time, end_time, logging_step_size, num_samples)
+
+    check_states_match(result1, result2)
+    if model.has_distributional_parameters:
+        check_states_match_in_all_but_values(result1, result3)
+
+    if sample_method.__name__ == "dummy_ensemble_sample":
+        assert "total_state" in result1.keys()
+
+
+@pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
+@pytest.mark.parametrize("model", MODELS)
+@pytest.mark.parametrize("start_time", START_TIMES)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("rtol", RTOL)
+@pytest.mark.parametrize("atol", ATOL)
+def test_sample_with_tolerance(
+    sample_method, model, start_time, end_time, logging_step_size, num_samples, rtol, atol
+):
+    model_url = model.url
+
+    with pyro.poutine.seed(rng_seed=0):
+        result1 = sample_method(
+            model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
+        )["unprocessed_result"]
+    with pyro.poutine.seed(rng_seed=0):
+        result2 = sample_method(
+            model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
+        )["unprocessed_result"]
+
+    result3 = sample_method(
+        model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
     )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
