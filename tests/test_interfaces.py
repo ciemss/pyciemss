@@ -100,21 +100,46 @@ ATOL = [1e-8, 1e-6]
 @pytest.mark.parametrize("rtol", RTOL)
 @pytest.mark.parametrize("atol", ATOL)
 def test_sample_no_interventions(
-    sample_method, model, start_time, end_time, logging_step_size, num_samples, rtol, atol
+    sample_method,
+    model,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+    rtol,
+    atol,
 ):
     model_url = model.url
 
     with pyro.poutine.seed(rng_seed=0):
         result1 = sample_method(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            rtol=rtol,
+            atol=atol,
         )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result2 = sample_method(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            rtol=rtol,
+            atol=atol,
         )["unprocessed_result"]
 
     result3 = sample_method(
-        model_url, end_time, logging_step_size, num_samples, start_time=start_time, rtol=rtol, atol=atol
+        model_url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        rtol=rtol,
+        atol=atol,
     )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
@@ -388,7 +413,7 @@ def test_calibrate_deterministic(
         "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
-        "rtol": rtol, 
+        "rtol": rtol,
         "atol": atol,
         **CALIBRATE_KWARGS,
     }
@@ -409,7 +434,11 @@ def test_calibrate_deterministic(
         assert torch.allclose(param_value, param_sample_2[param_name])
 
     result = sample(
-        *sample_args, **sample_kwargs, inferred_parameters=inferred_parameters, rtol=rtol, atol=atol
+        *sample_args,
+        **sample_kwargs,
+        inferred_parameters=inferred_parameters,
+        rtol=rtol,
+        atol=atol,
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
@@ -598,8 +627,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         "maxiter": 1,
         "maxfeval": 2,
         "progress_hook": progress_hook,
-        "rtol": rtol, 
-        "atol": atol
+        "rtol": rtol,
+        "atol": atol,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
     opt_result = optimize(
@@ -638,8 +667,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         static_parameter_interventions=opt_intervention,
         solver_method=optimize_kwargs["solver_method"],
         solver_options=optimize_kwargs["solver_options"],
-        rtol=rtol, 
-        atol=atol
+        rtol=rtol,
+        atol=atol,
     )["unprocessed_result"]
 
     intervened_result_subset = {

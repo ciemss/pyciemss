@@ -78,7 +78,7 @@ class computeRisk:
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
         risk_bound: List[float] = [0.0],
-        rtol: float = 1e-7, 
+        rtol: float = 1e-7,
         atol: float = 1e-9
     ):
         self.model = model
@@ -148,7 +148,10 @@ class computeRisk:
                 def wrapped_model():
                     with ParameterInterventionTracer():
                         with TorchDiffEq(
-                            rtol=self.rtol, atol=self.atol, method=self.solver_method, options=self.solver_options
+                            rtol=self.rtol,
+                            atol=self.atol,
+                            method=self.solver_method,
+                            options=self.solver_options,
                         ):
                             with contextlib.ExitStack() as stack:
                                 for handler in static_parameter_intervention_handlers:

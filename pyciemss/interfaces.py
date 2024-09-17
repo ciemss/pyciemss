@@ -58,7 +58,7 @@ def ensemble_sample(
     alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
     stacking_order: str = "timepoints",
     rtol: float = 1e-7,
-    atol: float = 1e-9, 
+    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -144,7 +144,9 @@ def ensemble_sample(
             raise ValueError("num_samples must be a positive integer")
 
         def wrapped_model():
-            with TorchDiffEq(rtol=rtol, atol=atol, method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 solution = model(
                     torch.as_tensor(start_time),
                     torch.as_tensor(end_time),
@@ -202,7 +204,7 @@ def ensemble_calibrate(
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
     rtol: float = 1e-7,
-    atol: float = 1e-9
+    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Infer parameters for an ensemble of DynamicalSystem models conditional on data.
@@ -263,9 +265,9 @@ def ensemble_calibrate(
         - By default, this is a no-op.
         - This can be used to implement custom progress bars.
     rtol: float
-        - The relative tolerance for the solver. 
+        - The relative tolerance for the solver.
     atol: float
-        - The absolute tolerance for the solver. 
+        - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -326,7 +328,9 @@ def ensemble_calibrate(
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(rtol=rtol, atol=atol, method=solver_method, options=solver_options):
+        with TorchDiffEq(
+            rtol=rtol, atol=atol, method=solver_method, options=solver_options
+        ):
             solution = model(
                 torch.as_tensor(start_time),
                 torch.as_tensor(data_timepoints[-1]),
@@ -379,8 +383,7 @@ def sample(
     ] = {},
     alpha: float = 0.95,
     rtol: float = 1e-7,
-    atol: float = 1e-9, 
-    
+    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -511,7 +514,9 @@ def sample(
 
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(rtol=rtol, atol=atol, method=solver_method, options=solver_options):
+                with TorchDiffEq(
+                    rtol=rtol, atol=atol, method=solver_method, options=solver_options
+                ):
                     with contextlib.ExitStack() as stack:
                         for handler in intervention_handlers:
                             stack.enter_context(handler)
@@ -596,7 +601,7 @@ def calibrate(
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
     rtol: float = 1e-7,
-    atol: float = 1e-9
+    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -677,7 +682,7 @@ def calibrate(
             - By default, this is a no-op.
             - This can be used to implement custom progress bars.
         - rtol: float
-            - The relative tolerance for the solver. 
+            - The relative tolerance for the solver.
         - atol: float
             - The absolute tolerance for the solver.
 
@@ -765,7 +770,9 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(rtol=rtol, atol=atol, method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 with contextlib.ExitStack() as stack:
                     for handler in intervention_handlers:
                         stack.enter_context(handler)
@@ -818,8 +825,8 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
     progress_hook: Callable[[torch.Tensor], None] = lambda x: None,
-    rtol: float = 1e-7, 
-    atol: float = 1e-9
+    rtol: float = 1e-7,
+    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -891,9 +898,9 @@ def optimize(
                 If the function returns StopIteration, the minimization will terminate.
             - This can be used to implement custom progress bars and/or early stopping criteria.
         rtol: float
-            - The relative tolerance for the solver. 
+            - The relative tolerance for the solver.
         atol: float
-            - The absolute tolerance for the solver. 
+            - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -937,8 +944,8 @@ def optimize(
             solver_options=solver_options,
             u_bounds=bounds_np,
             risk_bound=risk_bound,
-            rtol=rtol, 
-            atol=atol
+            rtol=rtol,
+            atol=atol,
         )
 
         # Run one sample to estimate model evaluation time
