@@ -57,8 +57,6 @@ def ensemble_sample(
     time_unit: Optional[str] = None,
     alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
     stacking_order: str = "timepoints",
-    rtol: float = 1e-7,
-    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -95,7 +93,7 @@ def ensemble_sample(
         - If performance is incredibly slow, we suggest using `euler` to debug.
           If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
           AMR model with the simulation timepoints.
@@ -109,10 +107,6 @@ def ensemble_sample(
     stacking_order: Optional[str]
         - The stacking order requested for the ensemble quantiles to keep the selected quantity together for each state.
         - Options: "timepoints" or "quantiles"
-    rtol: float
-        - The relative tolerance for the solver.
-    atol: float
-        - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -127,6 +121,10 @@ def ensemble_sample(
     """
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
+    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
+    
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -203,8 +201,6 @@ def ensemble_calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
-    rtol: float = 1e-7,
-    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Infer parameters for an ensemble of DynamicalSystem models conditional on data.
@@ -243,7 +239,7 @@ def ensemble_calibrate(
         - If performance is incredibly slow, we suggest using `euler` to debug.
             If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
             AMR model with the simulation timepoints.
@@ -264,10 +260,6 @@ def ensemble_calibrate(
         - This is called at the beginning of each iteration.
         - By default, this is a no-op.
         - This can be used to implement custom progress bars.
-    rtol: float
-        - The relative tolerance for the solver.
-    atol: float
-        - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -293,6 +285,10 @@ def ensemble_calibrate(
     # Check that num_iterations is a positive integer
     if not (isinstance(num_iterations, int) and num_iterations > 0):
         raise ValueError("num_iterations must be a positive integer")
+    
+    # Get tolerances for solver
+    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
+    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
 
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
@@ -382,8 +378,6 @@ def sample(
         Dict[str, Intervention],
     ] = {},
     alpha: float = 0.95,
-    rtol: float = 1e-7,
-    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -402,7 +396,7 @@ def sample(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -445,10 +439,6 @@ def sample(
               :func:`~chirho.interventional.ops.intervene`, including functions.
         alpha: float
             - Risk level for alpha-superquantile outputs in the results dictionary.
-        rtol: float
-            - The relative tolerance for the solver.
-        atol: float
-            - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -470,6 +460,10 @@ def sample(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
+    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
 
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
@@ -600,8 +594,6 @@ def calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
-    rtol: float = 1e-7,
-    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -628,7 +620,7 @@ def calibrate(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         - solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
         - start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -681,10 +673,6 @@ def calibrate(
             - This is called at the beginning of each iteration.
             - By default, this is a no-op.
             - This can be used to implement custom progress bars.
-        - rtol: float
-            - The relative tolerance for the solver.
-        - atol: float
-            - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -697,6 +685,10 @@ def calibrate(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
+    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
 
     pyro.clear_param_store()
 
@@ -825,8 +817,6 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
     progress_hook: Callable[[torch.Tensor], None] = lambda x: None,
-    rtol: float = 1e-7,
-    atol: float = 1e-9,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -868,7 +858,7 @@ def optimize(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -897,10 +887,6 @@ def optimize(
             - A callback function that takes in the current parameter vector as a tensor.
                 If the function returns StopIteration, the minimization will terminate.
             - This can be used to implement custom progress bars and/or early stopping criteria.
-        rtol: float
-            - The relative tolerance for the solver.
-        atol: float
-            - The absolute tolerance for the solver.
 
     Returns:
         result: Dict[str, Any]
@@ -944,8 +930,6 @@ def optimize(
             solver_options=solver_options,
             u_bounds=bounds_np,
             risk_bound=risk_bound,
-            rtol=rtol,
-            atol=atol,
         )
 
         # Run one sample to estimate model evaluation time

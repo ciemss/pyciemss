@@ -118,8 +118,7 @@ def test_sample_no_interventions(
             logging_step_size,
             num_samples,
             start_time=start_time,
-            rtol=rtol,
-            atol=atol,
+            solver_options = {'rtol':rtol, 'atol':atol}
         )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result2 = sample_method(
@@ -128,8 +127,7 @@ def test_sample_no_interventions(
             logging_step_size,
             num_samples,
             start_time=start_time,
-            rtol=rtol,
-            atol=atol,
+            solver_options = {'rtol':rtol, 'atol':atol}
         )["unprocessed_result"]
 
     result3 = sample_method(
@@ -138,8 +136,7 @@ def test_sample_no_interventions(
         logging_step_size,
         num_samples,
         start_time=start_time,
-        rtol=rtol,
-        atol=atol,
+        solver_options = {'rtol':rtol, 'atol':atol}
     )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
@@ -413,8 +410,7 @@ def test_calibrate_deterministic(
         "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
-        "rtol": rtol,
-        "atol": atol,
+        "solver_options": {'rtol':rtol, 'atol':atol},
         **CALIBRATE_KWARGS,
     }
 
@@ -437,8 +433,7 @@ def test_calibrate_deterministic(
         *sample_args,
         **sample_kwargs,
         inferred_parameters=inferred_parameters,
-        rtol=rtol,
-        atol=atol,
+        solver_options={'rtol':rtol, 'atol':atol}
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
@@ -621,14 +616,12 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
-        "solver_options": {"step_size": 0.1},
+        "solver_options": {"step_size": 0.1, "rtol": rtol, "atol": atol},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
         "maxfeval": 2,
         "progress_hook": progress_hook,
-        "rtol": rtol,
-        "atol": atol,
     }
     bounds_interventions = optimize_kwargs["bounds_interventions"]
     opt_result = optimize(
@@ -667,8 +660,6 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         static_parameter_interventions=opt_intervention,
         solver_method=optimize_kwargs["solver_method"],
         solver_options=optimize_kwargs["solver_options"],
-        rtol=rtol,
-        atol=atol,
     )["unprocessed_result"]
 
     intervened_result_subset = {

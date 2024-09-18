@@ -78,8 +78,6 @@ class computeRisk:
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
         risk_bound: List[float] = [0.0],
-        rtol: float = 1e-7,
-        atol: float = 1e-9
     ):
         self.model = model
         self.interventions = interventions
@@ -99,8 +97,8 @@ class computeRisk:
         self.u_bounds = u_bounds
         self.risk_bound = risk_bound  # used for defining penalty
         warnings.simplefilter("always", UserWarning)
-        self.rtol = rtol
-        self.atol = atol
+        self.rtol = self.solver_options.pop('rtol', 1e-7)  # default = 1e-7
+        self.atol = self.solver_options.pop('atol', 1e-9)  # default = 1e-9
 
     def __call__(self, x):
         if np.any(x - self.u_bounds[0, :] < 0.0) or np.any(
