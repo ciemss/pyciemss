@@ -93,7 +93,7 @@ def ensemble_sample(
         - If performance is incredibly slow, we suggest using `euler` to debug.
           If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
           AMR model with the simulation timepoints.
@@ -121,6 +121,10 @@ def ensemble_sample(
     """
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -138,7 +142,9 @@ def ensemble_sample(
             raise ValueError("num_samples must be a positive integer")
 
         def wrapped_model():
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 solution = model(
                     torch.as_tensor(start_time),
                     torch.as_tensor(end_time),
@@ -233,7 +239,7 @@ def ensemble_calibrate(
         - If performance is incredibly slow, we suggest using `euler` to debug.
             If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
             AMR model with the simulation timepoints.
@@ -280,6 +286,10 @@ def ensemble_calibrate(
     if not (isinstance(num_iterations, int) and num_iterations > 0):
         raise ValueError("num_iterations must be a positive integer")
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -314,7 +324,9 @@ def ensemble_calibrate(
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(method=solver_method, options=solver_options):
+        with TorchDiffEq(
+            rtol=rtol, atol=atol, method=solver_method, options=solver_options
+        ):
             solution = model(
                 torch.as_tensor(start_time),
                 torch.as_tensor(data_timepoints[-1]),
@@ -384,7 +396,8 @@ def sample(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -449,6 +462,10 @@ def sample(
 
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
 
@@ -492,7 +509,9 @@ def sample(
 
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(method=solver_method, options=solver_options):
+                with TorchDiffEq(
+                    rtol=rtol, atol=atol, method=solver_method, options=solver_options
+                ):
                     with contextlib.ExitStack() as stack:
                         for handler in intervention_handlers:
                             stack.enter_context(handler)
@@ -602,7 +621,8 @@ def calibrate(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         - solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         - start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -667,6 +687,10 @@ def calibrate(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     pyro.clear_param_store()
 
@@ -740,7 +764,9 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 with contextlib.ExitStack() as stack:
                     for handler in intervention_handlers:
                         stack.enter_context(handler)
@@ -834,7 +860,8 @@ def optimize(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
