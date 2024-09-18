@@ -97,8 +97,8 @@ class computeRisk:
         self.u_bounds = u_bounds
         self.risk_bound = risk_bound  # used for defining penalty
         warnings.simplefilter("always", UserWarning)
-        self.rtol = self.solver_options.pop('rtol', 1e-7)  # default = 1e-7
-        self.atol = self.solver_options.pop('atol', 1e-9)  # default = 1e-9
+        self.rtol = self.solver_options.pop("rtol", 1e-7)  # default = 1e-7
+        self.atol = self.solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     def __call__(self, x):
         if np.any(x - self.u_bounds[0, :] < 0.0) or np.any(

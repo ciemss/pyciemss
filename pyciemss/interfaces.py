@@ -122,9 +122,9 @@ def ensemble_sample(
     check_solver(solver_method, solver_options)
 
     # Get tolerances for solver
-    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
-    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
-    
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -285,10 +285,10 @@ def ensemble_calibrate(
     # Check that num_iterations is a positive integer
     if not (isinstance(num_iterations, int) and num_iterations > 0):
         raise ValueError("num_iterations must be a positive integer")
-    
+
     # Get tolerances for solver
-    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
-    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
@@ -396,7 +396,8 @@ def sample(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -462,8 +463,8 @@ def sample(
     check_solver(solver_method, solver_options)
 
     # Get tolerances for solver
-    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
-    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
@@ -620,7 +621,8 @@ def calibrate(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         - solver_options: Dict[str, Any]
-            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         - start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -687,8 +689,8 @@ def calibrate(
     check_solver(solver_method, solver_options)
 
     # Get tolerances for solver
-    rtol = solver_options.pop('rtol', 1e-7)  # default = 1e-7
-    atol = solver_options.pop('atol', 1e-9)  # default = 1e-9
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     pyro.clear_param_store()
 
@@ -858,7 +860,8 @@ def optimize(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.

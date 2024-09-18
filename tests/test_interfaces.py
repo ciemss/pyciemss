@@ -118,7 +118,7 @@ def test_sample_no_interventions(
             logging_step_size,
             num_samples,
             start_time=start_time,
-            solver_options = {'rtol':rtol, 'atol':atol}
+            solver_options={"rtol": rtol, "atol": atol},
         )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result2 = sample_method(
@@ -127,7 +127,7 @@ def test_sample_no_interventions(
             logging_step_size,
             num_samples,
             start_time=start_time,
-            solver_options = {'rtol':rtol, 'atol':atol}
+            solver_options={"rtol": rtol, "atol": atol},
         )["unprocessed_result"]
 
     result3 = sample_method(
@@ -136,7 +136,7 @@ def test_sample_no_interventions(
         logging_step_size,
         num_samples,
         start_time=start_time,
-        solver_options = {'rtol':rtol, 'atol':atol}
+        solver_options={"rtol": rtol, "atol": atol},
     )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
@@ -410,7 +410,7 @@ def test_calibrate_deterministic(
         "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
-        "solver_options": {'rtol':rtol, 'atol':atol},
+        "solver_options": {"rtol": rtol, "atol": atol},
         **CALIBRATE_KWARGS,
     }
 
@@ -433,7 +433,7 @@ def test_calibrate_deterministic(
         *sample_args,
         **sample_kwargs,
         inferred_parameters=inferred_parameters,
-        solver_options={'rtol':rtol, 'atol':atol}
+        solver_options={"rtol": rtol, "atol": atol},
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
