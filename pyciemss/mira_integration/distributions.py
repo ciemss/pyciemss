@@ -154,7 +154,10 @@ def mira_laplace_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distri
 
     return pyro.distributions.Laplace(loc=loc, scale=scale)
 
-def mira_logistic_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+
+def mira_logistic_normal_to_pyro(
+    parameters: ParameterDict,
+) -> pyro.distributions.Distribution:
     if "location" in parameters.keys():
         loc = parameters["location"]
     elif "mu" in parameters.keys():
@@ -167,6 +170,7 @@ def mira_logistic_normal_to_pyro(parameters: ParameterDict) -> pyro.distribution
     elif "tau" in parameters.keys():
         scale = 1.0 / parameters["tau"]
     return pyro.distributions.LogisticNormal(loc=loc, scale=scale)
+
 
 def mira_paretotypeI_to_pyro(
     parameters: ParameterDict,
