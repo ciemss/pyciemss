@@ -78,6 +78,10 @@ PETRI_MODELS = [
         {"case": "incident_cases", "hosp": "I"},
         True,
     ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "hierarchical_sir_model.json"),
+        "beta_mean"
+    )
 ]
 
 REGNET_MODELS = [
