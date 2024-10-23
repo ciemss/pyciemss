@@ -28,9 +28,10 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
     for param_info in src.parameters.values():
         param_name = param_info.name
         param_dist = getattr(param_info, "distribution", None)
-        # Check to see if the distribution parameters are sympy expressions
         if param_dist is not None:
             for k, v in param_dist.parameters.items():
+                # Check to see if the distribution parameters are sympy expressions
+                # and add their free symbols to the dependency graph
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
                     for free_symbol in v.free_symbols:
                         dependencies.add_edge(str(free_symbol), str(param_name))
