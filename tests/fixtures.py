@@ -42,7 +42,21 @@ class ModelFixture:
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
-
+ACYCLIC_MODELS = [
+    ModelFixture(os.path.join(MODELS_PATH, "hierarchical_sir_model.json"), "beta_mean")
+]
+CYCLIC_MODELS = [
+    ModelFixture(
+        os.path.join(MODELS_PATH, "beta_mean_cycle_sir_model.json"), "beta_mean"
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "beta_mean_gamma_cycle_sir_model.json"), "beta_mean"
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "gamma_mean_beta_mean_cycle_sir_model.json"),
+        "beta_mean",
+    ),
+]
 PETRI_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),

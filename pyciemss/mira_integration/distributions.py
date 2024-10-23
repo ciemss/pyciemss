@@ -1,20 +1,80 @@
 import warnings
 from typing import Dict
 
+import mira
 import mira.metamodel
+import networkx as nx
 import pyro
 import torch
 
 ParameterDict = Dict[str, torch.Tensor]
 
 
+def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
+    """
+    Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
+
+    Parameters
+    ----------
+    src : mira.metamodel.TemplateModel
+        The MIRA TemplateModel to sort.
+
+    Returns
+    -------
+    list
+        A list of parameter names in the order in which they must be evaluated.
+    """
+    dependencies = nx.DiGraph()
+    for param_info in src.parameters.values():
+        param_name = param_info.name
+        param_dist = getattr(param_info, "distribution", None)
+        if param_dist is not None:
+            for k, v in param_dist.parameters.items():
+                # Check to see if the distribution parameters are sympy expressions
+                # and add their free symbols to the dependency graph
+                if isinstance(v, mira.metamodel.utils.SympyExprStr):
+                    for free_symbol in v.free_symbols:
+                        dependencies.add_edge(str(free_symbol), str(param_name))
+    return list(nx.topological_sort(dependencies))
+
+
 def mira_uniform_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA uniform distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA uniform distribution.
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro uniform distribution with specified lower and upper bounds.
+    """
     low = parameters["minimum"]
     high = parameters["maximum"]
     return pyro.distributions.Uniform(low=low, high=high)
 
 
 def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA normal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA normal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'mean' and 'stdev'
+            - 'mean' and 'variance'
+            - 'mean' and 'precision'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro normal distribution with specified mean and standard deviation.
+    """
     if "mean" in parameters.keys():
         loc = parameters["mean"]
     if "stdev" in parameters.keys():
@@ -30,6 +90,22 @@ def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distrib
 def mira_lognormal_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA lognormal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA lognormal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'meanLog' and 'stdevLog'
+            - 'meanLog' and 'varLog'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro lognormal distribution with specified mean of the logarithm and standard deviation of the logarithm.
+    """
     if "meanLog" in parameters.keys():
         loc = parameters["meanLog"]
     if "stdevLog" in parameters.keys():
