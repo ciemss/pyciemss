@@ -81,7 +81,9 @@ def test_compiled_dynamics_load_json(url, start_time, end_time):
 @pytest.mark.parametrize("cyclic_model", CYCLIC_MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
-def test_hierarchical_compiled_dynamics(acyclic_model, cyclic_model, start_time, end_time):
+def test_hierarchical_compiled_dynamics(
+    acyclic_model, cyclic_model, start_time, end_time
+):
     """
     Test the loading and dependency analysis of hierarchical compiled dynamics models.
 

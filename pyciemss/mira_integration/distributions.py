@@ -7,7 +7,6 @@ import networkx as nx
 import pyro
 import torch
 
-
 ParameterDict = Dict[str, torch.Tensor]
 
 
@@ -29,8 +28,8 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
     for param_info in src.parameters.values():
         param_name = param_info.name
         param_dist = getattr(param_info, "distribution", None)
-        # Check to see if the distribution parameters are sympy expressions 
-        if param_dist is not None:     
+        # Check to see if the distribution parameters are sympy expressions
+        if param_dist is not None:
             for k, v in param_dist.parameters.items():
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
                     for free_symbol in v.free_symbols:
@@ -334,6 +333,6 @@ def mira_distribution_to_pyro(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution has not been tested."
         )
 
-    parameters ={k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
+    parameters = {k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
 
     return _MIRA_TO_PYRO[mira_dist.type](parameters)
