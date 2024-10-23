@@ -1,10 +1,12 @@
 import warnings
 from typing import Dict
 
+import mira
 import mira.metamodel
 import networkx as nx
 import pyro
 import torch
+
 
 ParameterDict = Dict[str, torch.Tensor]
 
@@ -34,30 +36,56 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
             dependencies[param_name] = set()
             for k, v in param_dist.parameters.items():
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
-                    print(
-                        f"Model parameter {param_name} has a distribution parameter {k}  value {v}"
-                    )
+                    print(f"Model parameter {param_name} has a distribution parameter {k}  value {v}")
                     for free_symbol in v.free_symbols:
                         dependencies[param_name].add(free_symbol)
                         print(f"    and free symbol {free_symbol}")
                 else:
-                    print(
-                        f"Model parameter {param_name} has a value for distribution parameter {k} has value {v}"
-                    )
+                    print(f"Model parameter {param_name} has a value for distribution parameter {k} has value {v}")
     G = nx.DiGraph()
     for target, parents in dependencies.items():
         for parent in parents:
-            G.add_edge(parent, target)
+            G.add_edge(str(parent), str(target))
     return list(nx.topological_sort(G))
 
 
 def mira_uniform_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA uniform distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA uniform distribution.
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro uniform distribution with specified lower and upper bounds.
+    """
     low = parameters["minimum"]
     high = parameters["maximum"]
     return pyro.distributions.Uniform(low=low, high=high)
 
 
 def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA normal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA normal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'mean' and 'stdev'
+            - 'mean' and 'variance'
+            - 'mean' and 'precision'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro normal distribution with specified mean and standard deviation.
+    """
     if "mean" in parameters.keys():
         loc = parameters["mean"]
     if "stdev" in parameters.keys():
@@ -73,6 +101,22 @@ def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distrib
 def mira_lognormal_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA lognormal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA lognormal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'meanLog' and 'stdevLog'
+            - 'meanLog' and 'varLog'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro lognormal distribution with specified mean of the logarithm and standard deviation of the logarithm.
+    """
     if "meanLog" in parameters.keys():
         loc = parameters["meanLog"]
     if "stdevLog" in parameters.keys():
@@ -301,6 +345,6 @@ def mira_distribution_to_pyro(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution has not been tested."
         )
 
-    parameters = {k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
+    parameters ={k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
 
     return _MIRA_TO_PYRO[mira_dist.type](parameters)

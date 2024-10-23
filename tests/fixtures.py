@@ -47,7 +47,13 @@ ACYCLIC_MODELS = [
 ]
 CYCLIC_MODELS = [
     ModelFixture(
-        os.path.join(MODELS_PATH, "cyclic_hierarchical_sir_model.json"), "beta_mean"
+        os.path.join(MODELS_PATH, "beta_mean_cycle_sir_model.json"), "beta_mean"
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "beta_mean_gamma_cycle_sir_model.json"), "beta_mean"
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "gamma_mean_beta_mean_cycle_sir_model.json"), "beta_mean"
     )
 ]
 PETRI_MODELS = [

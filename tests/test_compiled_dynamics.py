@@ -27,6 +27,14 @@ from .fixtures import (
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 def test_compiled_dynamics_load_url(url, start_time, end_time):
+    """
+    Test that CompiledDynamics can be loaded from a URL and that it can be simulated.
+
+    This test verifies the following:
+    - An CompiledDynamics model can be loaded from a URL and is of the correct type.
+    - The model can be simulated using the simulate function.
+    - The simulation result is of the correct type (torch.Tensor).
+    """
     model = CompiledDynamics.load(url)
     assert isinstance(model, CompiledDynamics)
 
@@ -69,11 +77,11 @@ def test_compiled_dynamics_load_json(url, start_time, end_time):
     check_is_state(simulation, torch.Tensor)
 
 
-@pytest.mark.parametrize("acyclic_url", ACYCLIC_MODELS)
-@pytest.mark.parametrize("cyclic_url", CYCLIC_MODELS)
+@pytest.mark.parametrize("acyclic_model", ACYCLIC_MODELS)
+@pytest.mark.parametrize("cyclic_model", CYCLIC_MODELS)
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
-def test_hierarchical_compiled_dynamics(acyclic_url, cyclic_url, start_time, end_time):
+def test_hierarchical_compiled_dynamics(acyclic_model, cyclic_model, start_time, end_time):
     """
     Test the loading and dependency analysis of hierarchical compiled dynamics models.
 
@@ -85,18 +93,19 @@ def test_hierarchical_compiled_dynamics(acyclic_url, cyclic_url, start_time, end
     - The prior and posterior dependencies of the CompiledDynamics model match the expected structure
       when given the specified start and end times.
     """
-    acyclic_mira_model = model_from_url(acyclic_url)
+    acyclic_mira_model = model_from_url(acyclic_model.url)
     assert isinstance(acyclic_mira_model, mira.metamodel.TemplateModel)
     assert sort_mira_dependencies(acyclic_mira_model) == [
-        "gamma_mean",
-        "gamma",
         "beta_mean",
+        "gamma_mean",
         "beta",
+        "gamma",
     ]
     with pytest.raises(nx.NetworkXUnfeasible):
-        cyclic_mira_model = model_from_url(cyclic_url)
+        cyclic_mira_model = model_from_url(cyclic_model.url)
+        print(cyclic_model.url)
         sort_mira_dependencies(cyclic_mira_model)
-    model = CompiledDynamics.load(acyclic_url)
+    model = CompiledDynamics.load(acyclic_model.url)
     assert isinstance(model, CompiledDynamics)
     assert get_dependencies(model, model_args=(start_time, end_time)) == {
         "prior_dependencies": {
