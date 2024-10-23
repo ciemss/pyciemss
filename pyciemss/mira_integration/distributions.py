@@ -11,7 +11,7 @@ import torch
 ParameterDict = Dict[str, torch.Tensor]
 
 
-def sort_mira_dependencies(src: mira.metamodel.TemplateModel, verbose=False) -> list:
+def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
     """
     Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
 
@@ -29,20 +29,12 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel, verbose=False) -> 
     for param_info in src.parameters.values():
         param_name = param_info.name
         param_dist = getattr(param_info, "distribution", None)
-        if param_dist is None:
-            param_value = param_info.value
-        else:
-            # Check to see if the distribution parameters are sympy expressions 
+        # Check to see if the distribution parameters are sympy expressions 
+        if param_dist is not None:     
             for k, v in param_dist.parameters.items():
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
-                    if verbose:
-                        print(f"Model parameter {param_name} has a sympy expression for distribution parameter {k} which has value {v}")
                     for free_symbol in v.free_symbols:
                         dependencies.add_edge(str(free_symbol), str(param_name))
-                        if verbose:
-                            print(f"    and free symbol {free_symbol}")
-                elif verbose:
-                    print(f"Model parameter {param_name} has a value for distribution parameter {k} which has value {v}")
     return list(nx.topological_sort(dependencies))
 
 
