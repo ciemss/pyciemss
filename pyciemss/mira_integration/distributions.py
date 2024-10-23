@@ -11,7 +11,7 @@ import torch
 ParameterDict = Dict[str, torch.Tensor]
 
 
-def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
+def sort_mira_dependencies(src: mira.metamodel.TemplateModel, verbose=False) -> list:
     """
     Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
 
@@ -25,28 +25,25 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
     list
         A list of parameter names in the order in which they must be evaluated.
     """
-    dependencies: dict[str, set] = {}
+    dependencies = nx.DiGraph()
     for param_info in src.parameters.values():
         param_name = param_info.name
         param_dist = getattr(param_info, "distribution", None)
         if param_dist is None:
-            continue
+            param_value = param_info.value
         else:
-            # Check to see if the distribution parameters are sympy expressions.
-            dependencies[param_name] = set()
+            # Check to see if the distribution parameters are sympy expressions 
             for k, v in param_dist.parameters.items():
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
-                    print(f"Model parameter {param_name} has a distribution parameter {k}  value {v}")
+                    if verbose:
+                        print(f"Model parameter {param_name} has a sympy expression for distribution parameter {k} which has value {v}")
                     for free_symbol in v.free_symbols:
-                        dependencies[param_name].add(free_symbol)
-                        print(f"    and free symbol {free_symbol}")
-                else:
-                    print(f"Model parameter {param_name} has a value for distribution parameter {k} has value {v}")
-    G = nx.DiGraph()
-    for target, parents in dependencies.items():
-        for parent in parents:
-            G.add_edge(str(parent), str(target))
-    return list(nx.topological_sort(G))
+                        dependencies.add_edge(str(free_symbol), str(param_name))
+                        if verbose:
+                            print(f"    and free symbol {free_symbol}")
+                elif verbose:
+                    print(f"Model parameter {param_name} has a value for distribution parameter {k} which has value {v}")
+    return list(nx.topological_sort(dependencies))
 
 
 def mira_uniform_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
