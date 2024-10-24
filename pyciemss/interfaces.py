@@ -93,7 +93,7 @@ def ensemble_sample(
         - If performance is incredibly slow, we suggest using `euler` to debug.
           If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
           AMR model with the simulation timepoints.
@@ -121,6 +121,10 @@ def ensemble_sample(
     """
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -138,7 +142,9 @@ def ensemble_sample(
             raise ValueError("num_samples must be a positive integer")
 
         def wrapped_model():
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 solution = model(
                     torch.as_tensor(start_time),
                     torch.as_tensor(end_time),
@@ -233,7 +239,7 @@ def ensemble_calibrate(
         - If performance is incredibly slow, we suggest using `euler` to debug.
             If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
             AMR model with the simulation timepoints.
@@ -280,6 +286,10 @@ def ensemble_calibrate(
     if not (isinstance(num_iterations, int) and num_iterations > 0):
         raise ValueError("num_iterations must be a positive integer")
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -314,7 +324,9 @@ def ensemble_calibrate(
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(method=solver_method, options=solver_options):
+        with TorchDiffEq(
+            rtol=rtol, atol=atol, method=solver_method, options=solver_options
+        ):
             solution = model(
                 torch.as_tensor(start_time),
                 torch.as_tensor(data_timepoints[-1]),
@@ -384,7 +396,8 @@ def sample(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -449,6 +462,10 @@ def sample(
 
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
 
@@ -492,7 +509,9 @@ def sample(
 
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(method=solver_method, options=solver_options):
+                with TorchDiffEq(
+                    rtol=rtol, atol=atol, method=solver_method, options=solver_options
+                ):
                     with contextlib.ExitStack() as stack:
                         for handler in intervention_handlers:
                             stack.enter_context(handler)
@@ -529,11 +548,14 @@ def sample(
             num_samples=num_samples,
             parallel=parallel,
         )()
+        samples = {
+            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
+        }
 
         risk_results = {}
         for k, vals in samples.items():
-            if "_state" in k:
-                # qoi is assumed to be the last day of simulation
+            if "_state" in k or "_observable" in k:
+                # Note: qoi is assumed to be the last day of simulation
                 qoi_sample = vals.detach().numpy()[:, -1]
                 sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
                 risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
@@ -599,7 +621,8 @@ def calibrate(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         - solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         - start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -664,6 +687,10 @@ def calibrate(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     pyro.clear_param_store()
 
@@ -737,7 +764,9 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 with contextlib.ExitStack() as stack:
                     for handler in intervention_handlers:
                         stack.enter_context(handler)
@@ -769,8 +798,8 @@ def optimize(
     model_path_or_json: Union[str, Dict],
     end_time: float,
     logging_step_size: float,
-    qoi: Callable,
-    risk_bound: float,
+    qoi: Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]],
+    risk_bound: Union[List[float], float],
     static_parameter_interventions: Callable[
         [torch.Tensor], Dict[float, Dict[str, Intervention]]
     ],
@@ -778,7 +807,7 @@ def optimize(
     initial_guess_interventions: List[float],
     bounds_interventions: List[List[float]],
     *,
-    alpha: float = 0.95,
+    alpha: Union[List[float], float] = [0.95],
     solver_method: str = "dopri5",
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
@@ -789,6 +818,7 @@ def optimize(
     maxfeval: int = 25,
     verbose: bool = False,
     roundup_decimal: int = 4,
+    progress_hook: Callable[[torch.Tensor], None] = lambda x: None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -803,10 +833,10 @@ def optimize(
             - The end time of the sampled simulation.
         logging_step_size: float
             - The step size to use for logging the trajectory.
-        qoi: Callable
-            - A callable function defining the quantity of interest to optimize over.
-        risk_bounds: float
-            - The threshold on the risk constraint.
+        qoi: Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]]
+            - A (list of) callable function(s) defining the quantity of interest to optimize over.
+        risk_bounds: Union[List[float], float]
+            - The (list of) threshold(s) on the risk constraint.
         static_parameter_interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]
             - A callable function of static parameter interventions to optimize over.
             - The callable functions are created using the provided templates:
@@ -823,12 +853,15 @@ def optimize(
         bounds_interventions: List[List[float]]
             - The lower and upper bounds for intervention parameter.
             - Bounds are a list of the form [[lower bounds], [upper bounds]]
+        alpha: Union[List[float], float]
+            - A (list of) risk preference parameter(s) for alpha-superquantile
         solver_method: str
             - The method to use for solving the ODE. See torchdiffeq's `odeint` method for more details.
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -853,6 +886,10 @@ def optimize(
             - Whether to print out the optimization under uncertainty progress.
         roundup_decimal: int
             - Number of significant digits for the optimal policy.
+        progress_hook: progress_hook: Callable[[torch.Tensor], None],
+            - A callback function that takes in the current parameter vector as a tensor.
+                If the function returns StopIteration, the minimization will terminate.
+            - This can be used to implement custom progress bars and/or early stopping criteria.
 
     Returns:
         result: Dict[str, Any]
@@ -863,6 +900,16 @@ def optimize(
                     - Optimization results as scipy object.
     """
     check_solver(solver_method, solver_options)
+    if not isinstance(risk_bound, list):
+        risk_bound = [risk_bound]
+    if not isinstance(qoi, list):
+        qoi = [qoi]
+    if not isinstance(alpha, list):
+        alpha = [alpha]
+    assert len(risk_bound) == len(alpha) and len(risk_bound) == len(qoi), (
+        f"Size mismatch between qoi ('{len(qoi)}'), risk_bound ('{len(risk_bound)}') "
+        f"and alpha ('{len(alpha)}')"
+    )
 
     with torch.no_grad():
         control_model = CompiledDynamics.load(model_path_or_json)
@@ -870,6 +917,7 @@ def optimize(
         u_min = bounds_np[0, :]
         u_max = bounds_np[1, :]
         # Set up risk estimation
+        risk_measures = [lambda z: alpha_superquantile(z, alpha=a) for a in alpha]
         RISK = computeRisk(
             model=control_model,
             interventions=static_parameter_interventions,
@@ -877,7 +925,7 @@ def optimize(
             end_time=end_time,
             logging_step_size=logging_step_size,
             start_time=start_time,
-            risk_measure=lambda z: alpha_superquantile(z, alpha=alpha),
+            risk_measure=risk_measures,
             num_samples=1,
             guide=inferred_parameters,
             fixed_static_parameter_interventions=fixed_static_parameter_interventions,
@@ -890,7 +938,7 @@ def optimize(
         # Run one sample to estimate model evaluation time
         start_t = time.time()
         init_prediction = RISK.propagate_uncertainty(initial_guess_interventions)
-        RISK.qoi(init_prediction)
+        RISK.qoi[0](init_prediction)
         end_t = time.time()
         forward_time = end_t - start_t
         time_per_eval = forward_time / 1.0
@@ -902,7 +950,7 @@ def optimize(
         # Define constraints >= 0
         constraints = (
             # risk constraint
-            {"type": "ineq", "fun": lambda x: risk_bound - RISK(x)},
+            {"type": "ineq", "fun": lambda x: np.array(risk_bound) - RISK(x)},
             # bounds on control
             {"type": "ineq", "fun": lambda x: x - u_min},
             {"type": "ineq", "fun": lambda x: u_max - x},
@@ -930,6 +978,7 @@ def optimize(
             maxiter=maxiter,
             maxfeval=maxfeval,
             u_bounds=bounds_np,
+            progress_hook=progress_hook,
         ).solve()
 
         # Rounding up to given number of decimal places

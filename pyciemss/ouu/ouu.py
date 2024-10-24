@@ -9,7 +9,6 @@ import torch
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
-from tqdm import tqdm
 
 from pyciemss.integration_utils.intervention_builder import (
     combine_static_parameter_interventions,
@@ -66,19 +65,19 @@ class computeRisk:
         self,
         model: Callable,
         interventions: Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]],
-        qoi: Callable,
+        qoi: List[Callable[[Any], np.ndarray]],
         end_time: float,
         logging_step_size: float,
         *,
         start_time: float = 0.0,
-        risk_measure: Callable = lambda z: alpha_superquantile(z, alpha=0.95),
+        risk_measure: List[Callable] = [lambda z: alpha_superquantile(z, alpha=0.95)],
         num_samples: int = 1000,
         guide=None,
         fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
-        risk_bound: float = 0.0,
+        risk_bound: List[float] = [0.0],
     ):
         self.model = model
         self.interventions = interventions
@@ -98,6 +97,8 @@ class computeRisk:
         self.u_bounds = u_bounds
         self.risk_bound = risk_bound  # used for defining penalty
         warnings.simplefilter("always", UserWarning)
+        self.rtol = self.solver_options.pop("rtol", 1e-7)  # default = 1e-7
+        self.atol = self.solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     def __call__(self, x):
         if np.any(x - self.u_bounds[0, :] < 0.0) or np.any(
@@ -107,15 +108,17 @@ class computeRisk:
                 "Selected interventions are out of bounds. Will use a penalty instead of estimating risk."
             )
             risk_estimate = max(
-                2 * self.risk_bound, 10.0
+                np.max(2 * np.array(self.risk_bound)), 10.0
             )  # used as a penalty and the model is not run
         else:
             # Apply intervention and perform forward uncertainty propagation
             samples = self.propagate_uncertainty(x)
             # Compute quanity of interest
-            sample_qoi = self.qoi(samples)
+            sample_qoi = [q(samples) for q in self.qoi]
             # Estimate risk
-            risk_estimate = self.risk_measure(sample_qoi)
+            risk_estimate = np.full(len(self.qoi), np.nan)
+            for i in range(len(self.qoi)):
+                risk_estimate[i] = self.risk_measure[i](sample_qoi[i])
         return risk_estimate
 
     def propagate_uncertainty(self, x):
@@ -143,7 +146,10 @@ class computeRisk:
                 def wrapped_model():
                     with ParameterInterventionTracer():
                         with TorchDiffEq(
-                            method=self.solver_method, options=self.solver_options
+                            rtol=self.rtol,
+                            atol=self.atol,
+                            method=self.solver_method,
+                            options=self.solver_options,
                         ):
                             with contextlib.ExitStack() as stack:
                                 for handler in static_parameter_intervention_handlers:
@@ -176,41 +182,29 @@ class solveOUU:
         x0: List[float],
         objfun: Callable,
         constraints: Tuple[Dict[str, object], Dict[str, object], Dict[str, object]],
-        minimizer_kwargs: Dict = dict(
-            method="COBYLA",
-            tol=1e-5,
-            options={"disp": False, "maxiter": 10},
-        ),
-        optimizer_algorithm: str = "basinhopping",
         maxfeval: int = 100,
         maxiter: int = 100,
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
+        progress_hook: Callable[
+            [torch.Tensor], None
+        ] = lambda x: None,  # update_progress
     ):
         self.x0 = np.squeeze(np.array([x0]))
         self.objfun = objfun
         self.constraints = constraints
-        self.minimizer_kwargs = minimizer_kwargs.update(
-            {"constraints": self.constraints}
-        )
-        self.optimizer_algorithm = optimizer_algorithm
         self.maxiter = maxiter
         self.maxfeval = maxfeval
         self.u_bounds = u_bounds
+        self.progress_hook = progress_hook
         # self.kwargs = kwargs
 
     def solve(self):
-        pbar = tqdm(total=self.maxfeval * (self.maxiter + 1))
-
-        def update_progress(xk):
-            pbar.update(1)
-
         # wrapper around SciPy optimizer(s)
         # rhobeg is set to 10% of longest euclidean distance
         minimizer_kwargs = dict(
             constraints=self.constraints,
             method="COBYLA",
             tol=1e-5,
-            callback=update_progress,
             options={
                 "rhobeg": 0.1
                 * np.linalg.norm(self.u_bounds[1, :] - self.u_bounds[0, :]),
@@ -218,10 +212,9 @@ class solveOUU:
                 "maxiter": self.maxfeval,
                 "catol": 1e-5,
             },
+            callback=self.progress_hook,
         )
         take_step = RandomDisplacementBounds(self.u_bounds[0, :], self.u_bounds[1, :])
-        # result = basinhopping(self._vrate, u_init, stepsize=stepsize, T=1.5,
-        #                     niter=self.maxiter, minimizer_kwargs=minimizer_kwargs, take_step=take_step, interval=2)
 
         result = basinhopping(
             self.objfun,

@@ -30,6 +30,7 @@ class ModelFixture:
         data_mapping: Dict[str, str] = {},
         data_mapped_to_observable: bool = False,
         optimize_kwargs: Dict[str, Any] = None,
+        has_distributional_parameters: bool = True,
     ):
         self.url = url
         self.important_parameter = important_parameter
@@ -37,6 +38,7 @@ class ModelFixture:
         self.data_mapping = data_mapping
         self.data_mapped_to_observable = data_mapped_to_observable
         self.optimize_kwargs = optimize_kwargs
+        self.has_distributional_parameters = has_distributional_parameters
 
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
@@ -85,7 +87,11 @@ REGNET_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "LV_rabbits_wolves_model03_regnet.json"), "beta"
     ),
-    # ModelFixture(os.path.join(MODELS_PATH, "LV_goat_chupacabra_regnet.json"), "beta"),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "LacOperon.json"),
+        "k_1",
+        has_distributional_parameters=False,
+    ),
 ]
 
 STOCKFLOW_MODELS = [
@@ -95,8 +101,8 @@ STOCKFLOW_MODELS = [
 ]
 
 optkwargs_SIRstockflow_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": param_value_objective(
         param_name=["p_cbeta"],
         param_value=[lambda x: torch.tensor([x])],
@@ -108,8 +114,8 @@ optkwargs_SIRstockflow_param = {
 }
 
 optkwargs_SIRstockflow_time = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_objective(
         param_name=["p_cbeta"],
         param_value=[torch.tensor([0.15])],
@@ -120,8 +126,8 @@ optkwargs_SIRstockflow_time = {
 }
 
 optkwargs_SIRstockflow_time_param = {
-    "qoi": lambda x: obs_nday_average_qoi(x, ["I_state"], 1),
-    "risk_bound": 300.0,
+    "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
+    "risk_bound": [300.0],
     "static_parameter_interventions": start_time_param_value_objective(
         param_name=["p_cbeta"],
     ),
@@ -134,15 +140,15 @@ optkwargs_SIRstockflow_time_param = {
 intervened_params = ["beta_c", "gamma"]
 static_parameter_interventions1 = param_value_objective(
     param_name=[intervened_params[0]],
-    start_time=torch.tensor([10.0]),
+    start_time=[torch.tensor(10.0)],
 )
 static_parameter_interventions2 = start_time_objective(
     param_name=[intervened_params[1]],
-    param_value=torch.tensor([0.45]),
+    param_value=[torch.tensor([0.45])],
 )
 optkwargs_SEIRHD_paramtimeComb_maxQoI = {
-    "qoi": lambda x: obs_max_qoi(x, ["I_state"]),
-    "risk_bound": 3e5,
+    "qoi": [lambda x: obs_max_qoi(x, ["I_state"])],
+    "risk_bound": [3e5],
     "static_parameter_interventions": intervention_func_combinator(
         [static_parameter_interventions1, static_parameter_interventions2],
         [1, 1],
@@ -151,6 +157,22 @@ optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "initial_guess_interventions": [0.35, 5.0],
     "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
     "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+}
+optkwargs_SEIRHD_multipleConstraints = {
+    "qoi": [
+        lambda x: obs_max_qoi(x, ["I_state"]),
+        lambda x: obs_max_qoi(x, ["H_state"]),
+    ],
+    "risk_bound": [3e5, 1e5],
+    "static_parameter_interventions": intervention_func_combinator(
+        [static_parameter_interventions1, static_parameter_interventions2],
+        [1, 1],
+    ),
+    "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
+    "initial_guess_interventions": [0.35, 5.0],
+    "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
+    "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+    "alpha": [0.95, 0.90],
 }
 
 OPT_MODELS = [
@@ -169,6 +191,10 @@ OPT_MODELS = [
     ModelFixture(
         os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
         optimize_kwargs=optkwargs_SEIRHD_paramtimeComb_maxQoI,
+    ),
+    ModelFixture(
+        os.path.join(MODELS_PATH, "SEIRHD_NPI_Type1_petrinet.json"),
+        optimize_kwargs=optkwargs_SEIRHD_multipleConstraints,
     ),
 ]
 

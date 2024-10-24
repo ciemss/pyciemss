@@ -102,7 +102,7 @@ def _compile_param_values_mira(
         elif isinstance(param_value, pyro.distributions.Distribution):
             values[param_name] = pyro.nn.PyroSample(param_value)
         elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
-            values[param_name] = torch.as_tensor(param_value)
+            values[param_name] = torch.as_tensor(param_value, dtype=torch.float32)
         else:
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
@@ -126,7 +126,7 @@ def _eval_deriv_mira(
     dX: State[torch.Tensor] = dict()
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
-        dX[k] = numeric_deriv[..., i]
+        dX[k] = numeric_deriv[..., i].float()
     return dX
 
 
@@ -146,7 +146,7 @@ def _eval_initial_state_mira(
     X: State[torch.Tensor] = dict()
     for i, var in enumerate(src.variables.values()):
         k = get_name(var)
-        X[k] = numeric_initial_state[..., i]
+        X[k] = numeric_initial_state[..., i].float()
     return X
 
 
@@ -179,7 +179,7 @@ def _eval_observables_mira(
     observables: State[torch.Tensor] = dict()
     for i, obs in enumerate(src.observables.values()):
         k = get_name(obs)
-        observables[k] = numeric_observables[..., i]
+        observables[k] = numeric_observables[..., i].float()
 
     return observables
 
