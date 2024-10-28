@@ -16,7 +16,7 @@ from pyciemss.ouu.qoi import obs_max_qoi, obs_nday_average_qoi
 
 T = TypeVar("T")
 
-MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
+MODELS_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models"
 PDE_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/Model-Representations/pde-petri-amrs/petrinet/"
 DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
 
@@ -43,7 +43,18 @@ class ModelFixture:
 
 # See https://github.com/DARPA-ASKEM/Model-Representations/issues/62 for discussion of valid models.
 ACYCLIC_MODELS = [
-    ModelFixture(os.path.join(MODELS_PATH, "hierarchical_sir_model.json"), "beta_mean")
+    ModelFixture(os.path.join(MODELS_PATH, "hierarchical_sir_model.json"), [
+        'gamma_mean',
+        'gamma',
+        'beta_mean',
+        'beta'
+    ]),
+    ModelFixture(os.path.join(MODELS_PATH, "multilevel_sir_nodist_model.json"), [
+        'gamma_mean',
+        'beta_mean',
+        'gamma',
+        'beta'
+    ])
 ]
 CYCLIC_MODELS = [
     ModelFixture(
@@ -53,9 +64,8 @@ CYCLIC_MODELS = [
         os.path.join(MODELS_PATH, "beta_mean_gamma_cycle_sir_model.json"), "beta_mean"
     ),
     ModelFixture(
-        os.path.join(MODELS_PATH, "gamma_mean_beta_mean_cycle_sir_model.json"),
-        "beta_mean",
-    ),
+        os.path.join(MODELS_PATH, "gamma_mean_beta_mean_cycle_sir_model.json"), "beta_mean"
+    )
 ]
 PETRI_MODELS = [
     ModelFixture(

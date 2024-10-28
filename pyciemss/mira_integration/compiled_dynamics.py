@@ -25,7 +25,7 @@ from pyciemss.compiled_dynamics import (
     eval_observables,
     get_name,
 )
-from pyciemss.mira_integration.distributions import mira_distribution_to_pyro
+from pyciemss.mira_integration.distributions import mira_distribution_to_pyro, sort_mira_dependencies
 
 S = TypeVar("S")
 T = TypeVar("T")
@@ -85,8 +85,9 @@ def _compile_param_values_mira(
     src: mira.modeling.Model,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
     values = {}
-    for param_info in src.parameters.values():
-        param_name = get_name(param_info)
+    for param_name in sort_mira_dependencies(src):
+        param_info = src.parameters[param_name]
+        #param_name = get_name(param_info)
 
         if param_info.placeholder:
             continue
@@ -95,7 +96,7 @@ def _compile_param_values_mira(
         if param_dist is None:
             param_value = param_info.value
         else:
-            param_value = mira_distribution_to_pyro(param_dist)
+            param_value = mira_distribution_to_pyro(param_dist, free_symbols=values)
 
         if isinstance(param_value, torch.nn.Parameter):
             values[param_name] = pyro.nn.PyroParam(param_value)
