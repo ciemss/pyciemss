@@ -145,7 +145,39 @@ def mira_bernoulli_to_pyro(
 
 
 def mira_beta_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
-    return pyro.distributions.Beta(alpha=parameters["alpha"], beta=parameters["beta"])
+    """
+    Converts MIRA beta distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA beta distribution.
+        The parameters should contain the following keys:
+            - 'alpha' or 'concentration1'
+            - 'beta' or 'concentration0'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro Beta distribution with specified first and second shape parameters.
+    """
+    if "alpha" in parameters.keys():
+        concentration1 = parameters["alpha"]
+    elif "concentration1" in parameters.keys():
+        concentration1 = parameters["concentration1"]
+    else:
+        raise ValueError(
+            "MIRA Beta distribution requires 'alpha' or 'concentration1' parameter"
+        )
+    if "beta" in parameters.keys():
+        concentration0 = parameters["beta"]
+    elif "concentration0" in parameters.keys():
+        concentration0 = parameters["concentration0"]
+    else:
+        raise ValueError(
+            "MIRA Beta distribution requires 'beta' or 'concentration0' parameter"
+        )
+    return pyro.distributions.Beta(concentration1=concentration1, concentration0=concentration0)
 
 
 def mira_betabinomial_to_pyro(
