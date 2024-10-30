@@ -1,25 +1,27 @@
 import warnings
 from typing import Dict, Optional, Union
-from pyciemss.compiled_dynamics import get_name
+
+import mira.modeling
+from pyciemss.compiled_dynamics import get_name, _sort_dependencies
 import mira
 import mira.metamodel
 import networkx as nx
 import pyro
 import torch
 import sympytorch
-from mira.metamodel.utils import safe_parse_expr, SympyExprStr
-
+from mira.metamodel.utils import SympyExprStr
 ParameterDict = Dict[str, Union[torch.Tensor, SympyExprStr]]
 
 
-def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
+@_sort_dependencies.register(mira.modeling.Model)
+def sort_mira_dependencies(src: mira.modeling.Model) -> list:
     """
     Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
 
     Parameters
     ----------
-    src : mira.metamodel.TemplateModel
-        The MIRA TemplateModel to sort.
+    src : mira.modeling.Model
+        The MIRA Model to sort.
 
     Returns
     -------
@@ -38,7 +40,8 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
                 if isinstance(v, mira.metamodel.utils.SympyExprStr):
                     for free_symbol in v.free_symbols:
                         dependencies.add_edge(str(free_symbol), str(param_name))
-    return  list(nx.topological_sort(dependencies))
+    return list(nx.topological_sort(dependencies))
+
 
 def safe_sympytorch_parse_expr(expr: SympyExprStr, local_dict: Optional[Dict[str, torch.Tensor]]) -> torch.Tensor:
     """
