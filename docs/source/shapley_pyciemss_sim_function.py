@@ -14,16 +14,17 @@ model1 = os.path.join(MODEL_PATH, "SEIRHD_NPI_Type1_petrinet.json")
 start_time = 0.0
 end_time = 100
 logging_step_size = 10.0
-num_samples = 100
+num_samples = 5
 timepoint_focus = 10
 
 # Define the intervention names and generate plausible random/step values for inputs
-intervention_names = ["beta_c", "gamma"]
-beta_values = np.linspace(0.1, 1.0, 10)
-gamma_values = np.linspace(0.1, 1.0, 10)
+intervention_names = ["beta_c", "gamma", "total_population"]
+beta_values = np.linspace(0.1, 1.0, 2)
+gamma_values = np.linspace(0.1, 1.0, 2)
+total_population_values = np.linspace(19340000, 29340000, 2)
 
 # Create input combinations as dictionaries
-input_combinations = list(product(beta_values, gamma_values))
+input_combinations = list(product(beta_values, gamma_values, total_population_values))
 
 # Convert input combinations to DataFrame
 parameters_df = pd.DataFrame([
