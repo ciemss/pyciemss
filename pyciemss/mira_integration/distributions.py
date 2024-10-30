@@ -40,7 +40,7 @@ def sort_mira_dependencies(src: mira.metamodel.TemplateModel) -> list:
                         dependencies.add_edge(str(free_symbol), str(param_name))
     return  list(nx.topological_sort(dependencies))
 
-def safe_sympytorch_parse_expr(expr: SympyExprStr, local_dict: Optional[Dict]) -> torch.Tensor:
+def safe_sympytorch_parse_expr(expr: SympyExprStr, local_dict: Optional[Dict[str, torch.Tensor]]) -> torch.Tensor:
     """
     Converts a sympy expression to a PyTorch tensor.
 
@@ -403,7 +403,7 @@ _TESTED_DISTRIBUTIONS = [
 
 def mira_distribution_to_pyro(
     mira_dist: mira.metamodel.template_model.Distribution,
-    free_symbols=Optional[Dict]
+    free_symbols=Optional[Dict[str, torch.Tensor]]
 ) -> pyro.distributions.Distribution:
     if mira_dist.type not in _MIRA_TO_PYRO.keys():
         raise NotImplementedError(
@@ -415,11 +415,11 @@ def mira_distribution_to_pyro(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution has not been tested."
         )
 
-    parameters = {
-        k: safe_sympytorch_parse_expr(v, local_dict=free_symbols) 
+    distribution_parameters = {
+        k: safe_sympytorch_parse_expr(v, free_symbols) 
         if isinstance(v, SympyExprStr) 
-        else torch.as_tensor(v) 
+        else torch.as_tensor(v, dtype=torch.float32)
         for k, v in mira_dist.parameters.items()
     }
 
-    return _MIRA_TO_PYRO[mira_dist.type](parameters)
+    return _MIRA_TO_PYRO[mira_dist.type](distribution_parameters)
