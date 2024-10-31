@@ -30,7 +30,11 @@ def sort_mira_dependencies(src: mira.modeling.Model) -> list:
     """
     dependencies = nx.DiGraph()
     for param_name, param_info in src.parameters.items():
+        #param_name = get_name(param_info)
+        #if param_info.placeholder:
+        #    continue
         param_dist = getattr(param_info, "distribution", None)
+
         if param_dist is None:
             dependencies.add_node(param_name)
         else:

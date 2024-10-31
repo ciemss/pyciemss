@@ -88,8 +88,9 @@ def _compile_observables_mira(
 def _compile_param_values_mira(
     src: mira.modeling.Model,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
-    values = {}
-    for param_name in _sort_dependencies(src):
+    param_values = {}
+    sorted_dependencies = _sort_dependencies(src)
+    for param_name in sorted_dependencies:
         param_info = src.parameters[param_name]
         if param_info.placeholder:
             continue
@@ -98,18 +99,24 @@ def _compile_param_values_mira(
         if param_dist is None:
             param_value = float(param_info.value)
         else:
-            param_value = mira_distribution_to_pyro(param_dist, free_symbols=values)
+            idx = sorted_dependencies.index(param_name)
+            param_value = lambda self: mira_distribution_to_pyro(param_dist, {
+                k: getattr(self, f"persistent_{k}") for k in sorted_dependencies[:idx]
+                }
+            )
 
         if isinstance(param_value, torch.nn.Parameter):
-            values[param_name] = pyro.nn.PyroParam(param_value)
-        elif isinstance(param_value, pyro.distributions.Distribution):
-            values[param_name] = pyro.sample(param_name, param_value)
+            param_values[param_name] = pyro.nn.PyroParam(param_value)
+        elif isinstance(param_value, pyro.distributions.distribution.Distribution):
+            param_values[param_name] = pyro.nn.PyroSample(param_value)
         elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
-            values[param_name] = torch.as_tensor(param_value, dtype=torch.float32)
+            param_values[param_name] = torch.as_tensor(param_value, dtype=torch.float32)
+        elif isinstance(param_value, Callable):
+            param_values[param_name] = pyro.nn.PyroSample(param_value)
         else:
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
-    return values
+    return param_values
 
 
 @eval_deriv.register(mira.modeling.Model)
