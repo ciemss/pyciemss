@@ -10,8 +10,12 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 from mira.sources.amr import model_from_url
 from pyro.infer.inspect import get_dependencies
 
-from pyciemss.compiled_dynamics import CompiledDynamics
-from pyciemss.mira_integration.distributions import sort_mira_dependencies
+from pyciemss.compiled_dynamics import (
+    CompiledDynamics,
+)
+
+from pyciemss.mira_integration.compiled_dynamics import sort_mira_dependencies
+
 
 from .fixtures import (
     ACYCLIC_MODELS,

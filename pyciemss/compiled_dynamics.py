@@ -21,7 +21,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def __init__(self, src, **kwargs):
         super().__init__()
         self.src = src
-
+        params = _compile_param_values(self.src)
         try:
             params = _compile_param_values(self.src)
         except Exception as e:
