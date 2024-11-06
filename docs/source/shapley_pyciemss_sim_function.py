@@ -16,8 +16,8 @@ num_samples = 10
 timepoint_focus = 2
 focus='H_state'
 intervention_names = ["beta_c", "gamma"]
-beta_values = np.linspace(0.1, 1.0, 2)
-gamma_values = np.linspace(0.1, 0.3, 2)
+beta_values = np.linspace(0.1, 2.0, 10)
+gamma_values = np.linspace(0.1, 2.0, 10)
 
 input_combinations = list(product(beta_values, gamma_values))
 parameters_df = pd.DataFrame([

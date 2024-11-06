@@ -23,8 +23,8 @@ num_samples = 10
 timepoint_focus = 2
 focus = 'H_state'
 intervention_values = {
-    "beta_c": np.linspace(0.1, 2.0,2),
-    "gamma": np.linspace(0.1, 2.0, 2)
+    "beta_c": np.linspace(0.1, 2.0,10),
+    "gamma": np.linspace(0.1, 2.0, 10)
 }
 
 results_filename = os.path.join(os.path.dirname(__file__), f'simulation_results_{current_time}.csv')
@@ -76,40 +76,34 @@ def sim(inputs):
     return np.array(results)
 
 def plot_histograms(inputs, results, min_params, max_params, top_5_percent_params):
-    # Remove duplicates from results
-    unique_results = np.unique(results)
 
-    _, axs = plt.subplots(2, 2, figsize=(15, 12))
-
-    # Plot histogram of the unique results before filtering
-    axs[0, 0].hist(unique_results, bins=30, alpha=0.7, label='Unique Results')
-    axs[0, 0].axvline(np.percentile(unique_results, 95), color='r', linestyle='dashed', linewidth=1, label='95th Percentile')
-    axs[0, 0].set_xlabel('Unique Results')
-    axs[0, 0].set_ylabel('Frequency')
-    axs[0, 0].set_title('Histogram of Unique Results Before Filtering')
-    axs[0, 0].legend()
+    # Plot histogram of the results before filtering
+    plt.figure(figsize=(10, 6))
+    plt.hist(results, bins=10, alpha=0.7, label='Results')
+    plt.axvline(np.percentile(results, 95), color='r', linestyle='dashed', linewidth=1, label='95th Percentile')
+    plt.xlabel('Results')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Results Before Filtering')
+    plt.legend()
+    plt.savefig(os.path.join("output", f"results_histogram_{current_time}.png"))
+    plt.close()
 
     # Plot histogram of the parameters before filtering
-    for i, param in enumerate(intervention_values.keys()):
-        ax = axs[0, 1] if i == 0 else axs[1, 0]
+    for param in intervention_values.keys():
+        plt.figure(figsize=(10, 6))
         hist_data = inputs[param]
         if hist_data.min() == hist_data.max():
             hist_data = hist_data + np.random.normal(0, 0.01, size=hist_data.shape)
-        ax.hist(hist_data, bins=30, alpha=0.7, label=f'{param} values')
-        ax.axvline(min_params[param], color='g', linestyle='dashed', linewidth=3, label='Min Param (Top 5%)')
-        ax.axvline(max_params[param], color='r', linestyle='dashed', linewidth=3, label='Max Param (Top 5%)')
-        ax.set_xlabel(param)
-        ax.set_ylabel('Frequency')
-        ax.set_title(f'Histogram of {param} Before Filtering')
-        ax.legend()
+        plt.hist(hist_data, bins=10, alpha=0.7, label=f'{param} values')
+        plt.axvline(min_params[param], color='g', linestyle='dashed', linewidth=3, label='Min Param (Top 5%)')
+        plt.axvline(max_params[param], color='r', linestyle='dashed', linewidth=3, label='Max Param (Top 5%)')
+        plt.xlabel(param)
+        plt.ylabel('Frequency')
+        plt.title(f'Histogram of {param} Before Filtering')
+        plt.legend()
+        plt.savefig(os.path.join("output", f"{param}_histogram_{current_time}.png"))
+        plt.close()
 
-    # Plot scatter plot of the top 5% parameters
-    pd.plotting.scatter_matrix(top_5_percent_params, alpha=0.2, figsize=(12, 12), diagonal='hist', ax=axs[1, 1])
-    axs[1, 1].set_title('Scatter Matrix of Top 5% Parameters')
-
-    plt.tight_layout()
-    plt.savefig(os.path.join("output", f"combined_plots_{current_time}.png"))
-    plt.close()
     return
 
 
@@ -142,26 +136,26 @@ beta_max = max_params['beta_c'] if min_params['beta_c'] != max_params['beta_c'] 
 gamma_min = min_params['gamma']
 gamma_max = max_params['gamma'] if min_params['gamma'] != max_params['gamma'] else min_params['gamma'] + 0.2
 
-intervention_values["beta_c"] = np.linspace(beta_min, beta_max, 2)
-intervention_values["gamma"] = np.linspace(gamma_min, gamma_max, 2)
+intervention_values["beta_c"] = np.linspace(beta_min, beta_max, 10)
+intervention_values["gamma"] = np.linspace(gamma_min, gamma_max, 10)
 
-# Create a DataFrame directly from the product of intervention values
-parameters_df = pd.DataFrame([
-    dict(zip(intervention_values.keys(), values))
-    for values in product(*intervention_values.values())
-])
+# # Create a DataFrame directly from the product of intervention values
+# parameters_df = pd.DataFrame([
+#     dict(zip(intervention_values.keys(), values))
+#     for values in product(*intervention_values.values())
+# ])
 
-explainer = shap.Explainer(sim, parameters_df)
-shap_values = explainer(parameters_df)
+# explainer = shap.Explainer(sim, parameters_df)
+# shap_values = explainer(parameters_df)
 
-# Convert SHAP values to a DataFrame
-shap_values_df = pd.DataFrame(shap_values.values, columns=intervention_values.keys())
-shap_values_filename = os.path.join(os.path.dirname(__file__), os.path.join("output", f'shap_values_{current_time}.csv'))
-shap_values_df.to_csv(shap_values_filename, index=False)
+# # Convert SHAP values to a DataFrame
+# shap_values_df = pd.DataFrame(shap_values.values, columns=intervention_values.keys())
+# shap_values_filename = os.path.join(os.path.dirname(__file__), os.path.join("output", f'shap_values_{current_time}.csv'))
+# shap_values_df.to_csv(shap_values_filename, index=False)
 
 
-# Create the SHAP summary plot and save it
-plt.figure(figsize=(10, 6))
-shap.summary_plot(shap_values, feature_names=list(intervention_values.keys()), show=False)
-plt.savefig(plot_path)
-plt.close()
+# # Create the SHAP summary plot and save it
+# plt.figure(figsize=(10, 6))
+# shap.summary_plot(shap_values, feature_names=list(intervention_values.keys()), show=False)
+# plt.savefig(plot_path)
+# plt.close()
