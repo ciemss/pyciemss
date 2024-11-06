@@ -14,10 +14,10 @@ model1 = "SEIRHD_NPI_Type1_petrinet.json"
 logging_step_size = 10.0
 num_samples = 10
 timepoint_focus = 2
-focus='H_state'
+focus = 'H_state'
 intervention_names = ["beta_c", "gamma"]
-beta_values = np.linspace(0.1, 1.0, 2)
-gamma_values = np.linspace(0.1, 0.3, 2)
+beta_values = np.linspace(0.1, 2.0, 2)
+gamma_values = np.linspace(0.1, 2.0, 2)
 
 input_combinations = list(product(beta_values, gamma_values))
 parameters_df = pd.DataFrame([
@@ -62,7 +62,32 @@ def sim(inputs):
 
     return np.array(results)
 
-explainer = shap.Explainer(sim, parameters_df)  
+def get_extreme_values(inputs):
+    results = sim(inputs)
+    min_index = np.argmin(results)
+    max_index = np.argmax(results)
+    min_params = inputs.iloc[min_index]
+    max_params = inputs.iloc[max_index]
+
+    print(f"Minimum value params: {min_params}")
+    print(f"Maximum value params: {max_params}")
+
+    return min_params, max_params
+
+# Call the function to get parameters with extreme values
+min_params, max_params = get_extreme_values(parameters_df)
+
+# Use the min_params to set new beta_values and gamma_values
+beta_values = np.linspace(min_params['beta_c'], max_params['beta_c'], 2)
+gamma_values = np.linspace(min_params['gamma'], max_params['gamma'], 2)
+
+input_combinations = list(product(beta_values, gamma_values))
+parameters_df = pd.DataFrame([
+    {name: value for name, value in zip(intervention_names, values)}
+    for values in input_combinations
+])
+
+explainer = shap.Explainer(sim, parameters_df)
 shap_values = explainer(parameters_df)
 results_df = pd.read_csv(results_filename)
 
