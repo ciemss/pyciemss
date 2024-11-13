@@ -113,7 +113,7 @@ def make_var_threshold(var: str, threshold: torch.Tensor):
 
 infection_threshold1 = make_var_threshold("I", torch.tensor(150.0))
 fixed_dynamic_parameter_interventions = {
-    infection_threshold1: {"p_cbeta": torch.tensor(0.3)}
+    infection_threshold1: {"p_tr": torch.tensor(10.0)}
 }
 
 infection_threshold2 = make_var_threshold("I", torch.tensor(400.0))
