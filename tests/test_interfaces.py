@@ -658,6 +658,9 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         num_samples,
         start_time=start_time,
         static_parameter_interventions=opt_intervention,
+        static_state_interventions=fixed_static_state_interventions,
+        dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
+        dynamic_state_interventions=fixed_dynamic_state_interventions,
         solver_method=optimize_kwargs["solver_method"],
         solver_options=optimize_kwargs["solver_options"],
     )["unprocessed_result"]

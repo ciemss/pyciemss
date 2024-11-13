@@ -14,6 +14,7 @@ from pyciemss.integration_utils.intervention_builder import (
     combine_static_parameter_interventions,
 )
 from pyciemss.interruptions import (
+    DynamicParameterIntervention,
     ParameterInterventionTracer,
     StaticParameterIntervention,
 )
