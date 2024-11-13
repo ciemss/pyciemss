@@ -73,7 +73,20 @@ class computeRisk:
         risk_measure: List[Callable] = [lambda z: alpha_superquantile(z, alpha=0.95)],
         num_samples: int = 1000,
         guide=None,
-        fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
+        fixed_static_parameter_interventions: Dict[
+            torch.Tensor, Dict[str, Intervention]
+        ] = {},
+        fixed_static_state_interventions: Dict[
+            torch.Tensor, Dict[str, Intervention]
+        ] = {},
+        fixed_dynamic_state_interventions: Dict[
+            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+            Dict[str, Intervention],
+        ] = {},
+        fixed_dynamic_parameter_interventions: Dict[
+            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+            Dict[str, Intervention],
+        ] = {},
         solver_method: str = "dopri5",
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
@@ -89,6 +102,11 @@ class computeRisk:
         self.end_time = end_time
         self.guide = guide
         self.fixed_static_parameter_interventions = fixed_static_parameter_interventions
+        self.fixed_static_state_interventions = fixed_static_state_interventions
+        self.fixed_dynamic_state_interventions = fixed_dynamic_state_interventions
+        self.fixed_dynamic_parameter_interventions = (
+            fixed_dynamic_parameter_interventions
+        )
         self.solver_method = solver_method
         self.solver_options = solver_options
         self.logging_times = torch.arange(
@@ -143,6 +161,34 @@ class computeRisk:
                     for time, static_intervention_assignment in static_parameter_interventions.items()
                 ]
 
+                static_state_intervention_handlers = [
+                    StaticIntervention(time, dict(**static_intervention_assignment))
+                    for time, static_intervention_assignment in self.fixed_static_state_interventions.items()
+                ]
+
+                dynamic_state_intervention_handlers = [
+                    DynamicIntervention(
+                        event_fn, dict(**dynamic_intervention_assignment)
+                    )
+                    for event_fn, dynamic_intervention_assignment in self.fixed_dynamic_state_interventions.items()
+                ]
+
+                dynamic_parameter_intervention_handlers = [
+                    DynamicParameterIntervention(
+                        event_fn,
+                        dict(**dynamic_intervention_assignment),
+                        is_traced=True,
+                    )
+                    for event_fn, dynamic_intervention_assignment in self.fixed_dynamic_parameter_interventions.items()
+                ]
+
+                intervention_handlers = (
+                    static_state_intervention_handlers
+                    + static_parameter_intervention_handlers
+                    + dynamic_state_intervention_handlers
+                    + dynamic_parameter_intervention_handlers
+                )
+
                 def wrapped_model():
                     with ParameterInterventionTracer():
                         with TorchDiffEq(
@@ -152,7 +198,7 @@ class computeRisk:
                             options=self.solver_options,
                         ):
                             with contextlib.ExitStack() as stack:
-                                for handler in static_parameter_intervention_handlers:
+                                for handler in intervention_handlers:
                                     stack.enter_context(handler)
                                 self.model(
                                     torch.as_tensor(self.start_time),
@@ -161,6 +207,15 @@ class computeRisk:
                                     is_traced=True,
                                 )
 
+                parallel = (
+                    False
+                    if len(
+                        dynamic_parameter_intervention_handlers
+                        + dynamic_state_intervention_handlers
+                    )
+                    > 0
+                    else True
+                )
                 # Sample from intervened model
                 samples = pyro.infer.Predictive(
                     wrapped_model,

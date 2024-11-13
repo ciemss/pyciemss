@@ -627,13 +627,13 @@ def calibrate(
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        static_state_interventions: Dict[float, Dict[str, Intervention]]
+        static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
-        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+        static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
@@ -812,7 +812,18 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
+    fixed_static_parameter_interventions: Dict[
+        torch.Tensor, Dict[str, Intervention]
+    ] = {},
+    fixed_static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    fixed_dynamic_state_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
+    fixed_dynamic_parameter_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
     n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
@@ -870,9 +881,35 @@ def optimize(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]]
-            - A dictionary of fixed static interventions to apply to the model and not optimize for.
+        fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
+            - A dictionary of fixed static parameter interventions to apply to the model and not optimize for.
             - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
+            - A dictionary of static state interventions to apply to the model and not optimize for.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_dynamic_state_interventions: Dict[
+                                        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                        Dict[str, Intervention]
+                                        ]
+            - A dictionary of dynamic interventions to apply to the model and not optimize for.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_dynamic_parameter_interventions: Dict[
+                                            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                            Dict[str, Intervention]
+                                            ]
+            - A dictionary of dynamic interventions to apply to the model and not optimize for.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
@@ -929,6 +966,9 @@ def optimize(
             num_samples=1,
             guide=inferred_parameters,
             fixed_static_parameter_interventions=fixed_static_parameter_interventions,
+            fixed_static_state_interventions=fixed_static_state_interventions,
+            fixed_dynamic_state_interventions=fixed_dynamic_state_interventions,
+            fixed_dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
             solver_method=solver_method,
             solver_options=solver_options,
             u_bounds=bounds_np,
