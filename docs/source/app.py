@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 import logging
 from datetime import datetime
 from pathlib import Path
+import base64
 import pyciemss.visuals.plots as plots
 import pyciemss.visuals.trajectories as trajectories
 from pyciemss.integration_utils.intervention_builder import (
@@ -121,19 +122,13 @@ def index():
         png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
                                    calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
                                    ensemble=True if ensemble else False)
-        return redirect(url_for('show_image', image_path=png_path))
+        
+        with open(png_path, "rb") as image_file:
+            image_data = "data:image/png;base64," + base64.b64encode(image_file.read()).decode('utf-8')
+        
+        return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data)
 
     return render_template('index.html', models=models, datasets=[dataset1, dataset2])
-
-
-@app.route('/image')
-def show_image():
-    image_path = request.args.get('image_path')
-    if not os.path.exists(image_path):
-        logger.error(f"File not found: {image_path}")
-        return "File not found", 404
-    logger.debug(f"Sending file {image_path}")
-    return send_file(image_path, mimetype='image/png')
 
 
 if __name__ == "__main__":
