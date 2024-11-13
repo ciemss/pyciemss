@@ -9,6 +9,7 @@ from itertools import product
 from functools import lru_cache
 from collections import defaultdict
 import logging
+plt.rcParams.update({'font.size': 14})
 
 # Setup logging
 current_time = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
@@ -23,8 +24,8 @@ num_samples = 10
 timepoint_focus = 2
 focus = 'H_state'
 intervention_values = {
-    "beta_c": np.linspace(0.1, 2.0,10),
-    "gamma": np.linspace(0.1, 2.0, 10)
+    "beta_c": np.linspace(0, 3.0, 2),
+    "gamma": np.linspace(0, 3.0, 2)
 }
 
 results_filename = os.path.join(os.path.dirname(__file__), f'simulation_results_{current_time}.csv')
@@ -104,7 +105,24 @@ def plot_histograms(inputs, results, min_params, max_params, top_5_percent_param
         plt.savefig(os.path.join("output", f"{param}_histogram_{current_time}.png"))
         plt.close()
 
-    return
+  
+    # Create scatter plots for each combination of parameters in the top 5% parameters
+    num_params = len(intervention_values.keys())
+    fig, axes = plt.subplots(num_params, num_params, figsize=(15, 15))
+    fig.suptitle('Scatter Plots of Top 5% Parameter Combinations')
+    for i, param1 in enumerate(intervention_values.keys()):
+        for j, param2 in enumerate(intervention_values.keys()):
+            if i < j:
+                axes[i, j].scatter(top_5_percent_params[param1], top_5_percent_params[param2], alpha=0.7)
+                axes[i, j].set_xlabel(param1)
+                axes[i, j].set_ylabel(param2)
+            else:
+                axes[i, j].axis('off')
+
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    scatter_plot_filename = os.path.join("output", f"scatter_plots_top_5_percent_params_{current_time}.png")
+    plt.savefig(scatter_plot_filename)
+    plt.close()
 
 
 def get_extreme_values(inputs):
@@ -135,27 +153,34 @@ beta_min = min_params['beta_c']
 beta_max = max_params['beta_c'] if min_params['beta_c'] != max_params['beta_c'] else min_params['beta_c'] + 0.2
 gamma_min = min_params['gamma']
 gamma_max = max_params['gamma'] if min_params['gamma'] != max_params['gamma'] else min_params['gamma'] + 0.2
-
+print(f"New beta_min: {beta_min}, beta_max: {beta_max}, gamma_min: {gamma_min}, gamma_max: {gamma_max}")
 intervention_values["beta_c"] = np.linspace(beta_min, beta_max, 10)
 intervention_values["gamma"] = np.linspace(gamma_min, gamma_max, 10)
 
-# # Create a DataFrame directly from the product of intervention values
-# parameters_df = pd.DataFrame([
-#     dict(zip(intervention_values.keys(), values))
-#     for values in product(*intervention_values.values())
-# ])
+# Create a DataFrame directly from the product of intervention values
+parameters_df = pd.DataFrame([
+    dict(zip(intervention_values.keys(), values))
+    for values in product(*intervention_values.values())
+])
 
-# explainer = shap.Explainer(sim, parameters_df)
-# shap_values = explainer(parameters_df)
+explainer = shap.Explainer(sim, parameters_df)
+shap_values = explainer(parameters_df)
 
-# # Convert SHAP values to a DataFrame
-# shap_values_df = pd.DataFrame(shap_values.values, columns=intervention_values.keys())
-# shap_values_filename = os.path.join(os.path.dirname(__file__), os.path.join("output", f'shap_values_{current_time}.csv'))
-# shap_values_df.to_csv(shap_values_filename, index=False)
+# Convert SHAP values to a DataFrame
+shap_values_df = pd.DataFrame(shap_values.values, columns=intervention_values.keys())
+shap_values_filename = os.path.join(os.path.dirname(__file__), os.path.join("output", f'shap_values_{current_time}.csv'))
+shap_values_df.to_csv(shap_values_filename, index=False)
+
+# Create the SHAP waterfall plot for the first sample and save it
+plt.figure(figsize=(10, 6))
+shap.plots.waterfall(shap_values[0], show=False)
+waterfall_plot_filename = os.path.join("output", f"shap_waterfall_plot_{current_time}.png")
+plt.savefig(waterfall_plot_filename)
+plt.close()
 
 
-# # Create the SHAP summary plot and save it
-# plt.figure(figsize=(10, 6))
-# shap.summary_plot(shap_values, feature_names=list(intervention_values.keys()), show=False)
-# plt.savefig(plot_path)
-# plt.close()
+# Create the SHAP summary plot and save it
+plt.figure(figsize=(10, 6))
+shap.summary_plot(shap_values, feature_names=list(intervention_values.keys()), show=False)
+plt.savefig(plot_path)
+plt.close()
