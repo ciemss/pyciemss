@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Tuple
 import numpy as np
 import pyro
 import torch
+from chirho.dynamical.handlers import DynamicIntervention, StaticIntervention
 from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
@@ -222,7 +223,7 @@ class computeRisk:
                     wrapped_model,
                     guide=self.guide,
                     num_samples=self.num_samples,
-                    parallel=True,
+                    parallel=parallel,
                 )()
         return samples
 

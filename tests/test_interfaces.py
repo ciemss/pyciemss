@@ -650,6 +650,12 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         opt_intervention = combine_static_parameter_interventions(intervention_list)
     else:
         opt_intervention = opt_intervention_temp
+    if "fixed_static_state_interventions" not in optimize_kwargs:
+        fixed_static_state_interventions = {}
+    if "fixed_dynamic_parameter_interventions" not in optimize_kwargs:
+        fixed_dynamic_parameter_interventions = {}
+    if "fixed_dynamic_state_interventions" not in optimize_kwargs:
+        fixed_dynamic_state_interventions = {}
 
     result_opt = sample(
         model_url,
