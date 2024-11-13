@@ -16,9 +16,13 @@ from pyciemss.integration_utils.intervention_builder import (
     start_time_objective,
 )
 
-
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 app = Flask(__name__)
 _output_root = None
+
+# Define correct output directory
+OUTPUT_BASE_DIR = Path("/Users/oost464/Local_Project/shap/pyciemss/docs/source/output")
 
 MODEL_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/"
 DATA_PATH = "https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/"
@@ -35,30 +39,23 @@ models = [model1, model2, model3]  # Example list of models
 
 def save_result(data, name, ref_ext):
     """Save new reference files"""
-    _output_root.mkdir(parents=True, exist_ok=True)
+    file_path = OUTPUT_BASE_DIR / f"{name}.{ref_ext}"
     mode = "w" if ref_ext == "svg" else "wb"
-    with open(_output_root / f"{name}.{ref_ext}", mode) as f:
+    with open(file_path, mode) as f:
         if ref_ext == "svg":
             json.dump(data, f, indent=4)
         else:
             f.write(data)
+    logger.debug(f"Saved result to {file_path}")
 
 
-def run_simulations(output_dir: Optional[str] = None,
-                    models: Optional[List[str]] = None,
+def run_simulations(models: Optional[List[str]] = None,
                     interventions: Optional[Dict] = None,
                     calibrate_dataset: Optional[str] = None,
                     ensemble: bool = False):
     global _output_root
-
-    if output_dir is None:
-        output_dir = f"output"
-    _output_root = Path(output_dir)
+    _output_root = OUTPUT_BASE_DIR
     _output_root.mkdir(parents=True, exist_ok=True)
-
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-    logger = logging.getLogger()
-    logger.info(f"Output will be saved to {_output_root}")
 
     start_time = 0.0
     end_time = 100.0
@@ -97,6 +94,7 @@ def run_simulations(output_dir: Optional[str] = None,
     schema = plots.trajectories(pd.DataFrame(results["data"]), keep=["infected_observable_state", "hospitalized_observable_state", "dead_observable_state"], relabel=nice_labels)
 
     image = plots.ipy_display(schema, format="PNG").data
+    logger.debug("Generated image from simulation results")
     save_result(image, "results_schema", "png")
     png_name = "results_schema"
     if calibrate_dataset:
@@ -106,7 +104,8 @@ def run_simulations(output_dir: Optional[str] = None,
     if ensemble:
         png_name += "_ensemble"
     save_result(image, png_name, "png")
-    return png_name
+    logger.debug(f"Image saved to {_output_root / png_name}.png")
+    return str(_output_root / f"{png_name}.png")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -114,22 +113,26 @@ def index():
     if request.method == 'POST':
         models_selected = request.form.getlist('models')
         calibrate_dataset = request.form.get('calibrate_dataset')
-        interventions = request.form.get('interventions')
-        ensemble = request.form.get('ensemble')
+        interventions = 'interventions' in request.form
+        ensemble = 'ensemble' in request.form
 
         interventions_dict = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}} if interventions else None
 
-        png_name = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
+        png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
                                    calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
                                    ensemble=True if ensemble else False)
-        return redirect(url_for('show_image', image_name=png_name))
+        return redirect(url_for('show_image', image_path=png_path))
 
     return render_template('index.html', models=models, datasets=[dataset1, dataset2])
 
 
-@app.route('/image/<image_name>')
-def show_image(image_name):
-    image_path = _output_root / f"{image_name}.png"
+@app.route('/image')
+def show_image():
+    image_path = request.args.get('image_path')
+    if not os.path.exists(image_path):
+        logger.error(f"File not found: {image_path}")
+        return "File not found", 404
+    logger.debug(f"Sending file {image_path}")
     return send_file(image_path, mimetype='image/png')
 
 
