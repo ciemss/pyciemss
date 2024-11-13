@@ -11,27 +11,26 @@
         <div>
             <label for="models">Select Models:</label>
             <select name="models" id="models" multiple>
-                <option value="{{ models[0] }}">Model 1</option>
-                <option value="{{ models[1] }}">Model 2</option>
-                <option value="{{ models[2] }}">Model 3</option>
+
+                <option value="">None</option>
+                <option value="https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type1_petrinet.json">Model 1</option>
+                <option value="https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SEIRHD_NPI_Type2_petrinet.json">Model 2</option>
+                <option value="https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/models/SIR_stockflow.json">Model 3</option>
             </select>
         </div>
         <div>
             <label for="calibrate_dataset">Calibrate Dataset:</label>
             <select name="calibrate_dataset" id="calibrate_dataset">
                 <option value="">None</option>
-                <option value="{{ datasets[0] }}">Dataset 1</option>
-                <option value="{{ datasets[1] }}">Dataset 2</option>
+                <option value="https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/SIR_data_case_hosp.csv">Dataset 1</option>
+                <option value="https://raw.githubusercontent.com/DARPA-ASKEM/simulation-integration/main/data/datasets/traditional.csv">Dataset 2</option>
             </select>
         </div>
         <div>
-            <input type="checkbox" name="interventions" id="interventions">
-            <label for="interventions">Use interventions</label>
+            <label for="interventions">Interventions Input:</label>
+            <textarea name="interventions" id="interventions" rows="4" cols="50">example_interventions = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}}</textarea>
         </div>
-        <div>
-            <input type="checkbox" name="ensemble" id="ensemble">
-            <label for="ensemble">Ensemble Models</label>
-        </div>
+   
         <button type="submit">Run Simulation</button>
     </form>
 </body>
