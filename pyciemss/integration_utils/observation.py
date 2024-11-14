@@ -91,3 +91,42 @@ def compile_noise_model(model_str: str, **model_kwargs) -> NoiseModel:
         )
 
     return _STR_TO_OBSERVATION[model_str](**model_kwargs)
+
+
+def identify_nans(data_df, return_labels=False):
+    """
+    Identifies and returns all types of NaNs in the DataFrame:
+    1. Entire rows that are NaN.
+    2. Entire columns that are NaN.
+    3. Individual elements that are NaN.
+
+    Parameters:
+    data_df (pd.DataFrame): The input DataFrame.
+    return_labels (bool): If True, return row and column names; otherwise, return indices.
+
+    Returns:
+    dict: A dictionary containing indices or labels for each type of NaN.
+    """
+    # Identify entire rows that are NaN
+    nan_rows = data_df.index[data_df.isna().all(axis=1)].tolist()
+    nan_row_idx = [data_df.index.get_loc(row) for row in nan_rows]
+
+    # Identify entire columns that are NaN
+    nan_columns = data_df.columns[data_df.isna().all(axis=0)].tolist()
+    nan_columns_idx = [data_df.columns.get_loc(col) for col in nan_columns]
+
+    # Identify individual elements that are NaN
+    nan_elements = [(row, col) 
+                        for row in data_df.index 
+                        for col in data_df.columns 
+                        if col not in nan_columns and
+                         row not in nan_rows and 
+                         pd.isna(data_df.loc[row, col])]
+
+    nan_elements_idx = [(data_df.index.get_loc(row), data_df.columns.get_loc(col)) 
+                            for row, col in nan_elements]
+    return {
+        "nan_rows": nan_rows if return_labels else nan_row_idx,
+        "nan_columns": nan_columns if return_labels else nan_columns_idx,
+        "nan_elements": nan_elements if return_labels else nan_elements_idx
+    }
