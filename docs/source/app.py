@@ -59,7 +59,7 @@ def run_simulations(models: Optional[List[str]] = None,
     _output_root.mkdir(parents=True, exist_ok=True)
 
     start_time = 0.0
-    end_time = 100.0
+    end_time = 30.0
     logging_step_size = 10.0
     num_samples = 3
 
@@ -92,6 +92,7 @@ def run_simulations(models: Optional[List[str]] = None,
         "hospitalized_observable_state": "Hospitalized",
         "infected_observable_state": "Infected",
     }
+    print(pd.DataFrame(results["data"]))
     schema = plots.trajectories(pd.DataFrame(results["data"]), keep=["infected_observable_state", "hospitalized_observable_state", "dead_observable_state"], relabel=nice_labels)
 
     image = plots.ipy_display(schema, format="PNG").data
@@ -130,17 +131,24 @@ def index():
         ensemble = 'ensemble' in request.form
 
         interventions_dict = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}} if interventions else None
-
+        print("Simulations.")
         png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
-                                   calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
-                                   ensemble=True if ensemble else False)
+                       calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
+                       ensemble=True if ensemble else False)
         
         with open(png_path, "rb") as image_file:
             image_data = "data:image/png;base64," + base64.b64encode(image_file.read()).decode('utf-8')
+        
+        print(f"PNG file location: {png_path}")
+        print("Updated.")
     else:
         image_data = None
-    
-    return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data)
+
+    return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data,
+                           selected_models=models_selected if request.method == 'POST' else [],
+                           calibrate_dataset=calibrate_dataset if request.method == 'POST' else '',
+                           interventions=interventions if request.method == 'POST' else False,
+                           ensemble=ensemble if request.method == 'POST' else False)
 
 
 @app.route('/update_max_timestamp', methods=['POST'])
@@ -169,15 +177,12 @@ def get_parameters():
             models_file.save(models_path)
             with open(models_path, 'r') as file:
                 data = json.load(file)
-            print(data)
             parameters = data.get('semantics', {}).get('ode', {}).get('parameters', [])
+            if not isinstance(parameters, list):
+                parameters = []
             app.logger.debug(f"Extracted parameters: {json.dumps(parameters, indent=4)}")
             extracted_parameters = [
-                {
-                    'id': param.get('id'),
-                    'value': param.get('value'),
-                    'distribution_type': param.get('distribution', {}).get('type')
-                }
+                {'id': param.get('id'), 'value': param.get('value')}
                 for param in parameters
             ]
             return jsonify(extracted_parameters)

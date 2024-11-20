@@ -1,5 +1,5 @@
 <h1>Run Simulations</h1>
-<form method="post" enctype="multipart/form-data" onsubmit="return false;">
+<form method="post" enctype="multipart/form-data" action="/">
     <div>
         <label for="models">Upload Models:</label>
         <input type="file" name="models" id="models" multiple onchange="onModelsChange()">
@@ -17,21 +17,24 @@
         <label for="ensemble">Ensemble Models</label>
     </div>
     
-    <input type="hidden" name="max_timestamp" id="max-timestamp" value="{{ max_timestamp }}">
+    <div>
+        <label for="max-timestamp">Max Timestamp:</label>
+        <span id="max-timestamp">{{ max_timestamp }}</span>
+    </div>
 
     <div>
         <label for="param_id">Parameter ID:</label>
-        <input type="text" name="param_id" id="param-id">
+        <select name="param_id" id="param-id"></select>
     </div>
     <div>
         <label for="param_value">Parameter Value:</label>
         <input type="text" name="param_value" id="param-value">
     </div>
     <div>
-        <label for="param_distribution_type">Distribution Type:</label>
-        <input type="text" name="param_distribution_type" id="param-distribution-type">
+        <label for="param_start_time">Parameter Start Time:</label>
+        <input type="text" name="param_start_time" id="param-start-time" value="">
     </div>
-
+  
     <button type="submit">Run Simulation</button>
 </form>
 
@@ -42,7 +45,7 @@
 
 <script>
     function updateMaxTimestamp(newTimestamp) {
-        document.getElementById('max-timestamp').value = newTimestamp;
+        document.getElementById('max-timestamp').innerText = newTimestamp;
     }
 
     function onCalibrationChange() {
@@ -77,14 +80,33 @@
         .then(response => response.json())
         .then(data => {
             console.log('Received data:', data);
+            const paramIdSelect = document.getElementById('param-id');
+            const paramValueInput = document.getElementById('param-value');
+
+            // Clear existing options
+            paramIdSelect.innerHTML = '';
+
+            // Populate dropdown with parameter IDs
+            data.forEach(param => {
+                const option = document.createElement('option');
+                option.value = param.id;
+                option.text = param.id;
+                paramIdSelect.appendChild(option);
+            });
+
+            // Set the value of param-value based on the first parameter
             if (data.length > 0) {
-                const param = data[0]; // Assuming you want to display the first parameter
-                document.getElementById('param-id').value = param.id;
-                document.getElementById('param-value').value = param.value;
-                document.getElementById('param-distribution-type').value = param.distribution_type;
+                const firstParam = data[0];
+                paramValueInput.value = firstParam.value;
             } else {
                 console.log('No parameters received');
             }
+
+            // Update param-value when param-id changes
+            paramIdSelect.addEventListener('change', function() {
+                const selectedParam = data.find(param => param.id === paramIdSelect.value);
+                paramValueInput.value = selectedParam.value;
+            });
         })
         .catch(error => console.error('Error:', error));
     }
