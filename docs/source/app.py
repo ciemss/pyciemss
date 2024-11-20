@@ -111,24 +111,33 @@ def run_simulations(models: Optional[List[str]] = None,
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        models_selected = request.form.getlist('models')
-        calibrate_dataset = request.form.get('calibrate_dataset')
-        interventions = 'interventions' in request.form
-        ensemble = 'ensemble' in request.form
-
-        interventions_dict = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}} if interventions else None
-
-        png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
-                                   calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
-                                   ensemble=True if ensemble else False)
-        
-        with open(png_path, "rb") as image_file:
-            image_data = "data:image/png;base64," + base64.b64encode(image_file.read()).decode('utf-8')
-        
+        if request.method == 'POST':
+            model_files = request.files.getlist('models')
+            models_selected = []
+            for model_file in model_files:
+                model_path = os.path.join(OUTPUT_BASE_DIR, model_file.filename)
+                model_file.save(model_path)
+                models_selected.append(model_path)
+            calibrate_dataset = request.form.get('calibrate_dataset')
+            calibrate_dataset_file = request.files.get('calibrate_dataset')
+            if calibrate_dataset_file:
+                calibrate_dataset_path = os.path.join(OUTPUT_BASE_DIR, calibrate_dataset_file.filename)
+                calibrate_dataset_file.save(calibrate_dataset_path)
+                calibrate_dataset = calibrate_dataset_path
+            interventions = 'interventions' in request.form
+            ensemble = 'ensemble' in request.form
+    
+            interventions_dict = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}} if interventions else None
+    
+            png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
+                           calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
+                           ensemble=True if ensemble else False)
+            
+            with open(png_path, "rb") as image_file:
+                image_data = "data:image/png;base64," + base64.b64encode(image_file.read()).decode('utf-8')
+        else:
+            image_data = None
         return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data)
-
-    return render_template('index.html', models=models, datasets=[dataset1, dataset2])
 
 
 if __name__ == "__main__":
