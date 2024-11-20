@@ -1,4 +1,4 @@
-<h1>Run Simulations</h1>
+<h1>Runge Examples</h1>
 <form method="post" enctype="multipart/form-data" action="/">
     <div>
         <label for="models">Upload Models:</label>
@@ -33,6 +33,30 @@
     <div>
         <label for="param_start_time">Parameter Start Time:</label>
         <input type="text" name="param_start_time" id="param-start-time" value="">
+    </div>
+    <div>
+        <label for="param_id_2">Parameter ID 2:</label>
+        <select name="param_id_2" id="param-id-2"></select>
+    </div>
+    <div>
+        <label for="param_value_2">Parameter Value 2:</label>
+        <input type="text" name="param_value_2" id="param-value-2">
+    </div>
+    <div>
+        <label for="param_start_time_2">Parameter Start Time 2:</label>
+        <input type="text" name="param_start_time_2" id="param-start-time-2" value="">
+    </div>
+    <div>
+        <label for="param_id_3">Parameter ID 3:</label>
+        <select name="param_id_3" id="param-id-3"></select>
+    </div>
+    <div>
+        <label for="param_value_3">Parameter Value 3:</label>
+        <input type="text" name="param_value_3" id="param-value-3">
+    </div>
+    <div>
+        <label for="param_start_time_3">Parameter Start Time 3:</label>
+        <input type="text" name="param_start_time_3" id="param-start-time-3" value="">
     </div>
   
     <button type="submit">Run Simulation</button>
@@ -80,32 +104,59 @@
         .then(response => response.json())
         .then(data => {
             console.log('Received data:', data);
-            const paramIdSelect = document.getElementById('param-id');
-            const paramValueInput = document.getElementById('param-value');
+            const paramIdSelects = [document.getElementById('param-id'), document.getElementById('param-id-2'), document.getElementById('param-id-3')];
+            const paramValueInputs = [document.getElementById('param-value'), document.getElementById('param-value-2'), document.getElementById('param-value-3')];
 
-            // Clear existing options
-            paramIdSelect.innerHTML = '';
+            paramIdSelects.forEach(select => select.innerHTML = '');
 
-            // Populate dropdown with parameter IDs
             data.forEach(param => {
-                const option = document.createElement('option');
-                option.value = param.id;
-                option.text = param.id;
-                paramIdSelect.appendChild(option);
+                paramIdSelects.forEach(select => {
+                    const option = document.createElement('option');
+                    option.value = param.id;
+                    option.text = param.id;
+                    select.appendChild(option);
+                });
             });
 
-            // Set the value of param-value based on the first parameter
             if (data.length > 0) {
                 const firstParam = data[0];
-                paramValueInput.value = firstParam.value;
-            } else {
-                console.log('No parameters received');
+                paramValueInputs.forEach(input => input.value = firstParam.value);
             }
 
-            // Update param-value when param-id changes
-            paramIdSelect.addEventListener('change', function() {
-                const selectedParam = data.find(param => param.id === paramIdSelect.value);
-                paramValueInput.value = selectedParam.value;
+            paramIdSelects.forEach((select, index) => {
+                select.addEventListener('change', function() {
+                    const selectedParam = data.find(param => param.id === select.value);
+                    paramValueInputs[index].value = selectedParam.value;
+                });
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch('/get_model_info', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Received model info:', data);
+            const modelStatesSelect = document.getElementById('model-states');
+            const observablesSelect = document.getElementById('observables');
+
+            modelStatesSelect.innerHTML = '';
+            observablesSelect.innerHTML = '';
+
+            data.model_states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.text = state;
+                modelStatesSelect.appendChild(option);
+            });
+
+            data.observables.forEach(obs => {
+                const option = document.createElement('option');
+                option.value = obs;
+                option.text = obs;
+                observablesSelect.appendChild(option);
             });
         })
         .catch(error => console.error('Error:', error));

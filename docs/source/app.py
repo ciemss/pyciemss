@@ -53,7 +53,7 @@ def save_result(data, name, ref_ext):
 def run_simulations(models: Optional[List[str]] = None,
                     interventions: Optional[Dict] = None,
                     calibrate_dataset: Optional[str] = None,
-                    ensemble: bool = False):
+                    ensemble: bool = False, keep: List[str] = None):
     global _output_root
     _output_root = OUTPUT_BASE_DIR
     _output_root.mkdir(parents=True, exist_ok=True)
@@ -87,15 +87,16 @@ def run_simulations(models: Optional[List[str]] = None,
         logger.debug(f"Sampling from model: {models[0]}")
         results = pyciemss.sample(models[0], end_time, logging_step_size, num_samples, start_time=start_time)
 
-    nice_labels = {
-        "dead_observable_state": "Deceased",
-        "hospitalized_observable_state": "Hospitalized",
-        "infected_observable_state": "Infected",
-    }
-    print(pd.DataFrame(results["data"]))
-    schema = plots.trajectories(pd.DataFrame(results["data"]), keep=["infected_observable_state", "hospitalized_observable_state", "dead_observable_state"], relabel=nice_labels)
 
-    image = plots.ipy_display(schema, format="PNG").data
+    print(pd.DataFrame(results["data"]).columns)
+    print(keep)
+    schema = plots.trajectories(pd.DataFrame(results["data"]), keep = keep)
+
+    try:
+        image = plots.ipy_display(schema, format="PNG").data
+    except ValueError as e:
+        logger.error(f"Vega to PNG conversion failed: {e}")
+        return None
     logger.debug("Generated image from simulation results")
     save_result(image, "results_schema", "png")
     png_name = "results_schema"
@@ -126,30 +127,74 @@ def index():
             calibrate_dataset_path = os.path.join(OUTPUT_BASE_DIR, calibrate_dataset_file.filename)
             calibrate_dataset_file.save(calibrate_dataset_path)
             calibrate_dataset = calibrate_dataset_path
+
+        observables = request.form.getlist('observables')
+        observables = [obs + "_observable_state" for obs in observables]
         
         interventions = 'interventions' in request.form
-        ensemble = 'ensemble' in request.form
 
-        interventions_dict = {torch.tensor(1.): {"gamma": torch.tensor(0.5)}} if interventions else None
+        # Extract parameter IDs and values from the form
+        param_ids = request.form.getlist('param_id')
+        param_values = request.form.getlist('param_value')
+        param_start_times = request.form.getlist('param_start_time')
+
+        param_ids_2 = request.form.getlist('param_id_2')
+        param_values_2 = request.form.getlist('param_value_2')
+        param_start_times_2 = request.form.getlist('param_start_time_2')
+
+        param_ids_3 = request.form.getlist('param_id_3')
+        param_values_3 = request.form.getlist('param_value_3')
+        param_start_times_3 = request.form.getlist('param_start_time_3')
+
+        # Construct the interventions_dict
+        interventions_dict = {}
+        if interventions:
+            for param_id, param_value, param_start_time in zip(param_ids, param_values, param_start_times):
+                if param_id and param_value and param_start_time:
+                    interventions_dict[torch.tensor(float(param_start_time))] = {param_id: torch.tensor(float(param_value))}
+            for param_id, param_value, param_start_time in zip(param_ids_2, param_values_2, param_start_times_2):
+                if param_id and param_value and param_start_time:
+                    interventions_dict[torch.tensor(float(param_start_time))] = {param_id: torch.tensor(float(param_value))}
+            for param_id, param_value, param_start_time in zip(param_ids_3, param_values_3, param_start_times_3):
+                if param_id and param_value and param_start_time:
+                    interventions_dict[torch.tensor(float(param_start_time))] = {param_id: torch.tensor(float(param_value))}
+        
         print("Simulations.")
-        png_path = run_simulations(models=models_selected, interventions=interventions_dict if interventions else None,
-                       calibrate_dataset=calibrate_dataset if calibrate_dataset else None,
-                       ensemble=True if ensemble else False)
-        
+        png_path = run_simulations(
+            models=models_selected,
+            keep=observables,
+            interventions=interventions_dict if interventions else None,
+            calibrate_dataset=calibrate_dataset if calibrate_dataset else None
+        )
+        print(png_path)
         with open(png_path, "rb") as image_file:
-            image_data = "data:image/png;base64," + base64.b64encode(image_file.read()).decode('utf-8')
-        
-        print(f"PNG file location: {png_path}")
-        print("Updated.")
-    else:
-        image_data = None
+            image_data = image_file.read()
 
-    return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data,
-                           selected_models=models_selected if request.method == 'POST' else [],
-                           calibrate_dataset=calibrate_dataset if request.method == 'POST' else '',
-                           interventions=interventions if request.method == 'POST' else False,
-                           ensemble=ensemble if request.method == 'POST' else False)
+        return render_template('index.html', models=models_selected, datasets=[calibrate_dataset], image_data=image_data)
 
+    return render_template('index.html', models=[], datasets=[], image_data=None)
+
+@app.route('/get_model_info', methods=['POST'])
+def get_model_info():
+    models_file = request.files.get('models_file')
+    if models_file:
+        try:
+            models_path = os.path.join(OUTPUT_BASE_DIR, models_file.filename)
+            models_file.save(models_path)
+            with open(models_path, 'r') as file:
+                data = json.load(file)
+            
+            # Extract model states
+            model_states = [state['id'] for state in data.get('model', {}).get('stocks', [])]
+            
+            # Extract observable names
+            observables = [obs['name'] for obs in data.get('semantics', {}).get('ode', {}).get('observables', [])]
+            
+            return jsonify({'model_states': model_states, 'observables': observables})
+        except Exception as e:
+            app.logger.error(f"Error processing file: {e}")
+            return jsonify({'error': str(e)}), 500
+    return jsonify({'model_states': [], 'observables': []}), 400
 
 @app.route('/update_max_timestamp', methods=['POST'])
 def update_max_timestamp():
