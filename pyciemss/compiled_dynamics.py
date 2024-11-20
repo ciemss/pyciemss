@@ -232,13 +232,13 @@ def _get_name_str(name: str) -> str:
 
 
 class LogObservables(pyro.poutine.messenger.Messenger):
-    def __init__(
-        self, times: torch.Tensor, model: CompiledDynamics
-    ):
+    def __init__(self, times: torch.Tensor, model: CompiledDynamics):
         super().__init__()
         self.model = model
         self.observables_names: List[str] = []
-        self.lt = LogTrajectory(times) # This gets around the issue of the LogTrajectory handler blocking `self`
+        self.lt = LogTrajectory(
+            times
+        )  # This gets around the issue of the LogTrajectory handler blocking `self`
 
     def _pyro_simulate_point(self, msg):
         self.lt._pyro_simulate_point(msg)
@@ -250,12 +250,16 @@ class LogObservables(pyro.poutine.messenger.Messenger):
 
     def _pyro_post_simulate(self, msg):
         initial_state = msg["args"][1]
-        # msg["args"][1] = {**initial_state, **self.model.observables(initial_state)}
-        msg["args"] = (msg["args"][0], {**initial_state, **self.model.observables(initial_state)}, msg["args"][2], msg["args"][3])
+        msg["args"] = (
+            msg["args"][0],
+            {**initial_state, **self.model.observables(initial_state)},
+            msg["args"][2],
+            msg["args"][3],
+        )
         self.lt._pyro_post_simulate(msg)
         self.observables = {
-            k: v for k, v in self.trajectory.items() if k in self.observables_names
+            k: v for k, v in self.lt.trajectory.items() if k in self.observables_names
         }
         self.state = {
-            k: v for k, v in self.trajectory.items() if k not in self.observables_names
+            k: v for k, v in self.lt.trajectory.items() if k not in self.observables_names
         }
