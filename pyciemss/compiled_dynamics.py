@@ -261,5 +261,7 @@ class LogObservables(pyro.poutine.messenger.Messenger):
             k: v for k, v in self.lt.trajectory.items() if k in self.observables_names
         }
         self.state = {
-            k: v for k, v in self.lt.trajectory.items() if k not in self.observables_names
+            k: v
+            for k, v in self.lt.trajectory.items()
+            if k not in self.observables_names
         }
