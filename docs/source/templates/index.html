@@ -1,17 +1,10 @@
 <h1>Run Simulations</h1>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" onsubmit="return false;">
     <div>
         <label for="models">Upload Models:</label>
-        <input type="file" name="models" id="models" multiple>
+        <input type="file" name="models" id="models" multiple onchange="onModelsChange()">
     </div>
     <div>
-        <label for="calibration_option">Calibration Option:</label>
-        <select name="calibration_option" id="calibration_option" onchange="toggleCalibrationDataset()">
-            <option value="with_calibration">With Calibration</option>
-            <option value="without_calibration">Without Calibration</option>
-        </select>
-    </div>
-    <div id="calibration_dataset_div"></div>
         <label for="calibrate_dataset">Upload Calibration Dataset:</label>
         <input type="file" name="calibrate_dataset" id="calibrate_dataset" onchange="onCalibrationChange()">
     </div>
@@ -24,52 +17,75 @@
         <label for="ensemble">Ensemble Models</label>
     </div>
     
-    <input name="max_timestamp" id="max-timestamp" value="{{ max_timestamp }}">
+    <input type="hidden" name="max_timestamp" id="max-timestamp" value="{{ max_timestamp }}">
+
+    <div>
+        <label for="param_id">Parameter ID:</label>
+        <input type="text" name="param_id" id="param-id">
+    </div>
+    <div>
+        <label for="param_value">Parameter Value:</label>
+        <input type="text" name="param_value" id="param-value">
+    </div>
+    <div>
+        <label for="param_distribution_type">Distribution Type:</label>
+        <input type="text" name="param_distribution_type" id="param-distribution-type">
+    </div>
 
     <button type="submit">Run Simulation</button>
 </form>
 
-<script>
-    function toggleCalibrationDataset() {
-        const calibrationOption = document.getElementById('calibration_option').value;
-        const calibrationDatasetDiv = document.getElementById('calibration_dataset_div');
-        if (calibrationOption === 'without_calibration') {
-            calibrationDatasetDiv.style.display = 'none';
-        } else {
-            calibrationDatasetDiv.style.display = 'block';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleCalibrationDataset();
-    });
-</script>
 <div>
     <h2>Generated Image</h2>
     <img src="{{ image_data }}" alt="Simulation Result Image">
 </div>
 
 <script>
-    // Function to update the max timestamp
     function updateMaxTimestamp(newTimestamp) {
         document.getElementById('max-timestamp').value = newTimestamp;
     }
 
-    // Function to handle calibration dataset change
     function onCalibrationChange() {
         const calibrateDatasetInput = document.getElementById('calibrate_dataset');
         const formData = new FormData();
         formData.append('calibrate_dataset_file', calibrateDatasetInput.files[0]);
 
-        // Send the calibration dataset file to the server
         fetch('/update_max_timestamp', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            // Update the max timestamp in the hidden input field
-            updateMaxTimestamp(data.max_timestamp);
-        });
+            if (data.error) {
+                console.error('Error:', data.error);
+            } else {
+                updateMaxTimestamp(data.max_timestamp);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function onModelsChange() {
+        const modelsInput = document.getElementById('models');
+        const formData = new FormData();
+        formData.append('models_file', modelsInput.files[0]);
+
+        fetch('/get_parameters', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Received data:', data);
+            if (data.length > 0) {
+                const param = data[0]; // Assuming you want to display the first parameter
+                document.getElementById('param-id').value = param.id;
+                document.getElementById('param-value').value = param.value;
+                document.getElementById('param-distribution-type').value = param.distribution_type;
+            } else {
+                console.log('No parameters received');
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }
 </script>

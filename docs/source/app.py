@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, redirect, url_for
+from flask import Flask, request, render_template, send_file, redirect, url_for, jsonify
 import os
 import json
 import pyciemss
@@ -142,22 +142,49 @@ def index():
     
     return render_template('index.html', models=models, datasets=[dataset1, dataset2], image_data=image_data)
 
+
 @app.route('/update_max_timestamp', methods=['POST'])
 def update_max_timestamp():
     calibrate_dataset_file = request.files.get('calibrate_dataset_file')
     if calibrate_dataset_file:
-        calibrate_dataset_path = os.path.join(OUTPUT_BASE_DIR, calibrate_dataset_file.filename)
-        calibrate_dataset_file.save(calibrate_dataset_path)
-        df = pd.read_csv(calibrate_dataset_path)
-        max_timestamp = df['Timestamp'].max()
-        logger.debug(f"Largest timestamp from calibrate_dataset: {max_timestamp}")
-        return json.dumps({'max_timestamp': max_timestamp})
-    return json.dumps({'max_timestamp': None})
+        try:
+            calibrate_dataset_path = os.path.join(OUTPUT_BASE_DIR, calibrate_dataset_file.filename)
+            calibrate_dataset_file.save(calibrate_dataset_path)
+            df = pd.read_csv(calibrate_dataset_path)
+            max_timestamp = df['Timestamp'].max()
+            app.logger.debug(f"Largest timestamp from calibrate_dataset: {max_timestamp}")
+            return jsonify({'max_timestamp': max_timestamp})
+        except Exception as e:
+            app.logger.error(f"Error processing file: {e}")
+            return jsonify({'error': str(e)}), 500
+    return jsonify({'max_timestamp': None}), 400
 
-@app.route('/get_max_timestamp', methods=['GET'])
-def get_max_timestamp():
-    max_timestamp = request.args.get('max_timestamp')
-    return render_template('index.html', models=models, datasets=[dataset1, dataset2], max_timestamp=max_timestamp)
+@app.route('/get_parameters', methods=['POST'])
+def get_parameters():
+    print("Getting parameters")
+    models_file = request.files.get('models_file')
+    if models_file:
+        try:
+            models_path = os.path.join(OUTPUT_BASE_DIR, models_file.filename)
+            models_file.save(models_path)
+            with open(models_path, 'r') as file:
+                data = json.load(file)
+            print(data)
+            parameters = data.get('semantics', {}).get('ode', {}).get('parameters', [])
+            app.logger.debug(f"Extracted parameters: {json.dumps(parameters, indent=4)}")
+            extracted_parameters = [
+                {
+                    'id': param.get('id'),
+                    'value': param.get('value'),
+                    'distribution_type': param.get('distribution', {}).get('type')
+                }
+                for param in parameters
+            ]
+            return jsonify(extracted_parameters)
+        except Exception as e:
+            app.logger.error(f"Error processing file: {e}")
+            return jsonify({'error': str(e)}), 500
+    return jsonify([]), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
