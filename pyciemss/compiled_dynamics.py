@@ -231,13 +231,17 @@ def _get_name_str(name: str) -> str:
     return name
 
 
-class LogObservables(LogTrajectory):
+class LogObservables(pyro.poutine.messenger.Messenger):
     def __init__(
-        self, times: torch.Tensor, model: CompiledDynamics, is_traced: bool = False
+        self, times: torch.Tensor, model: CompiledDynamics
     ):
-        super().__init__(times, is_traced=is_traced)
+        super().__init__()
         self.model = model
         self.observables_names: List[str] = []
+        self.lt = LogTrajectory(times) # This gets around the issue of the LogTrajectory handler blocking `self`
+
+    def _pyro_simulate_point(self, msg):
+        self.lt._pyro_simulate_point(msg)
 
     def _pyro_post_simulate_trajectory(self, msg):
         observables = self.model.observables(msg["value"])
@@ -245,7 +249,10 @@ class LogObservables(LogTrajectory):
         msg["value"] = {**msg["value"], **observables}
 
     def _pyro_post_simulate(self, msg):
-        super()._pyro_post_simulate(msg)
+        initial_state = msg["args"][1]
+        # msg["args"][1] = {**initial_state, **self.model.observables(initial_state)}
+        msg["args"] = (msg["args"][0], {**initial_state, **self.model.observables(initial_state)}, msg["args"][2], msg["args"][3])
+        self.lt._pyro_post_simulate(msg)
         self.observables = {
             k: v for k, v in self.trajectory.items() if k in self.observables_names
         }
