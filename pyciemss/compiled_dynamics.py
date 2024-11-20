@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar, Union
 
 import mira
 import mira.metamodel
@@ -121,7 +121,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
         self.instantiate_parameters()
 
         if logging_times is not None:
-            with LogTrajectory(logging_times) as lt:
+            with LogObservables(logging_times, self) as lo:
                 try:
                     simulate(self.deriv, self.initial_state(), start_time, end_time)
                 except AssertionError as e:
@@ -135,11 +135,11 @@ class CompiledDynamics(pyro.nn.PyroModule):
                     else:
                         raise e
 
-                state = lt.trajectory
+                state = lo.state
+                observables = lo.observables
         else:
             state = simulate(self.deriv, self.initial_state(), start_time, end_time)
-
-        observables = self.observables(state)
+            observables = self.observables(state)
 
         if is_traced:
             # Add the observables to the trace so that they can be accessed later.
@@ -229,3 +229,26 @@ def get_name(obj) -> str:
 @get_name.register
 def _get_name_str(name: str) -> str:
     return name
+
+
+class LogObservables(LogTrajectory):
+    def __init__(
+        self, times: torch.Tensor, model: CompiledDynamics, is_traced: bool = False
+    ):
+        super().__init__(times, is_traced=is_traced)
+        self.model = model
+        self.observables_names: List[str] = []
+
+    def _pyro_post_simulate_trajectory(self, msg):
+        observables = self.model.observables(msg["value"])
+        self.observables_names = list(observables.keys())
+        msg["value"] = {**msg["value"], **observables}
+
+    def _pyro_post_simulate(self, msg):
+        super()._pyro_post_simulate(msg)
+        self.observables = {
+            k: v for k, v in self.trajectory.items() if k in self.observables_names
+        }
+        self.state = {
+            k: v for k, v in self.trajectory.items() if k not in self.observables_names
+        }
