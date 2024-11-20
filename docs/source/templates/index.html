@@ -1,164 +1,199 @@
-<h1>Runge Examples</h1>
-<form method="post" enctype="multipart/form-data" action="/">
-    <div>
-        <label for="models">Upload Models:</label>
-        <input type="file" name="models" id="models" multiple onchange="onModelsChange()">
-    </div>
-    <div>
-        <label for="calibrate_dataset">Upload Calibration Dataset:</label>
-        <input type="file" name="calibrate_dataset" id="calibrate_dataset" onchange="onCalibrationChange()">
-    </div>
-    <div>
-        <input type="checkbox" name="interventions" id="interventions">
-        <label for="interventions">Use interventions</label>
-    </div>
-    <div>
-        <input type="checkbox" name="ensemble" id="ensemble">
-        <label for="ensemble">Ensemble Models</label>
-    </div>
-    
-    <div>
-        <label for="max-timestamp">Max Timestamp:</label>
-        <span id="max-timestamp">{{ max_timestamp }}</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Simulations</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container, .image-container {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Run Simulations</h1>
+            <form method="post" enctype="multipart/form-data" action="/">
+                <div>
+                    <label for="models">Upload Models:</label>
+                    <input type="file" name="models" id="models" multiple onchange="onModelsChange()">
+                </div>
+                <div>
+                    <label for="calibrate_dataset">Upload Calibration Dataset:</label>
+                    <input type="file" name="calibrate_dataset" id="calibrate_dataset" onchange="onCalibrationChange()">
+                </div>
+                <div>
+                    <input type="checkbox" name="interventions" id="interventions">
+                    <label for="interventions">Use interventions</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="ensemble" id="ensemble">
+                    <label for="ensemble">Ensemble Models</label>
+                </div>
+                
+                <div>
+                    <label for="max-timestamp">Max Timestamp:</label>
+                    <span id="max-timestamp">{{ max_timestamp }}</span>
+                </div>
+
+                <div>
+                    <label for="param_id">Parameter ID:</label>
+                    <select name="param_id" id="param-id"></select>
+                </div>
+                <div>
+                    <label for="param_value">Parameter Value:</label>
+                    <input type="text" name="param_value" id="param-value">
+                </div>
+                <div>
+                    <label for="param_start_time">Parameter Start Time:</label>
+                    <input type="text" name="param_start_time" id="param-start-time" value="">
+                </div>
+                <div>
+                    <label for="param_id_2">Parameter ID 2:</label>
+                    <select name="param_id_2" id="param-id-2"></select>
+                </div>
+                <div>
+                    <label for="param_value_2">Parameter Value 2:</label>
+                    <input type="text" name="param_value_2" id="param-value-2">
+                </div>
+                <div>
+                    <label for="param_start_time_2">Parameter Start Time 2:</label>
+                    <input type="text" name="param_start_time_2" id="param-start-time-2" value="">
+                </div>
+                <div>
+                    <label for="param_id_3">Parameter ID 3:</label>
+                    <select name="param_id_3" id="param-id-3"></select>
+                </div>
+                <div>
+                    <label for="param_value_3">Parameter Value 3:</label>
+                    <input type="text" name="param_value_3" id="param-value-3">
+                </div>
+                <div>
+                    <label for="param_start_time_3">Parameter Start Time 3:</label>
+                    <input type="text" name="param_start_time_3" id="param-start-time-3" value="">
+                </div>
+              
+                <div>
+                    <label for="model-states">Model States:</label>
+                    <select name="model_states" id="model-states"></select>
+                </div>
+                <div>
+                    <label for="observables">Observables:</label>
+                    <select name="observables" id="observables"></select>
+                </div>
+                <button type="submit">Run Simulation</button>
+            </form>
+        </div>
+
+        <div class="image-container">
+            <h2>Generated Image</h2>
+            {% if image_filename %}
+                <img src="{{ url_for('get_image', filename=image_filename) }}" alt="Simulation Result Image">
+            {% else %}
+                <p>No image generated yet.</p>
+            {% endif %}
+        </div>
     </div>
 
-    <div>
-        <label for="param_id">Parameter ID:</label>
-        <select name="param_id" id="param-id"></select>
-    </div>
-    <div>
-        <label for="param_value">Parameter Value:</label>
-        <input type="text" name="param_value" id="param-value">
-    </div>
-    <div>
-        <label for="param_start_time">Parameter Start Time:</label>
-        <input type="text" name="param_start_time" id="param-start-time" value="">
-    </div>
-    <div>
-        <label for="param_id_2">Parameter ID 2:</label>
-        <select name="param_id_2" id="param-id-2"></select>
-    </div>
-    <div>
-        <label for="param_value_2">Parameter Value 2:</label>
-        <input type="text" name="param_value_2" id="param-value-2">
-    </div>
-    <div>
-        <label for="param_start_time_2">Parameter Start Time 2:</label>
-        <input type="text" name="param_start_time_2" id="param-start-time-2" value="">
-    </div>
-    <div>
-        <label for="param_id_3">Parameter ID 3:</label>
-        <select name="param_id_3" id="param-id-3"></select>
-    </div>
-    <div>
-        <label for="param_value_3">Parameter Value 3:</label>
-        <input type="text" name="param_value_3" id="param-value-3">
-    </div>
-    <div>
-        <label for="param_start_time_3">Parameter Start Time 3:</label>
-        <input type="text" name="param_start_time_3" id="param-start-time-3" value="">
-    </div>
-  
-    <button type="submit">Run Simulation</button>
-</form>
+    <script>
+        function updateMaxTimestamp(newTimestamp) {
+            document.getElementById('max-timestamp').innerText = newTimestamp;
+        }
 
-<div>
-    <h2>Generated Image</h2>
-    <img src="{{ image_data }}" alt="Simulation Result Image">
-</div>
+        function onCalibrationChange() {
+            const calibrateDatasetInput = document.getElementById('calibrate_dataset');
+            const formData = new FormData();
+            formData.append('calibrate_dataset_file', calibrateDatasetInput.files[0]);
 
-<script>
-    function updateMaxTimestamp(newTimestamp) {
-        document.getElementById('max-timestamp').innerText = newTimestamp;
-    }
+            fetch('/update_max_timestamp', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                } else {
+                    updateMaxTimestamp(data.max_timestamp);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
 
-    function onCalibrationChange() {
-        const calibrateDatasetInput = document.getElementById('calibrate_dataset');
-        const formData = new FormData();
-        formData.append('calibrate_dataset_file', calibrateDatasetInput.files[0]);
+        function onModelsChange() {
+            const modelsInput = document.getElementById('models');
+            const formData = new FormData();
+            formData.append('models_file', modelsInput.files[0]);
 
-        fetch('/update_max_timestamp', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('Error:', data.error);
-            } else {
-                updateMaxTimestamp(data.max_timestamp);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
+            fetch('/get_parameters', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received data:', data);
+                const paramIdSelects = [document.getElementById('param-id'), document.getElementById('param-id-2'), document.getElementById('param-id-3')];
+                const paramValueInputs = [document.getElementById('param-value'), document.getElementById('param-value-2'), document.getElementById('param-value-3')];
 
-    function onModelsChange() {
-        const modelsInput = document.getElementById('models');
-        const formData = new FormData();
-        formData.append('models_file', modelsInput.files[0]);
+                paramIdSelects.forEach(select => select.innerHTML = '');
 
-        fetch('/get_parameters', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Received data:', data);
-            const paramIdSelects = [document.getElementById('param-id'), document.getElementById('param-id-2'), document.getElementById('param-id-3')];
-            const paramValueInputs = [document.getElementById('param-value'), document.getElementById('param-value-2'), document.getElementById('param-value-3')];
+                data.forEach(param => {
+                    paramIdSelects.forEach(select => {
+                        const option = document.createElement('option');
+                        option.value = param.id;
+                        option.text = param.id;
+                        select.appendChild(option);
+                    });
+                });
 
-            paramIdSelects.forEach(select => select.innerHTML = '');
+                if (data.length > 0) {
+                    const firstParam = data[0];
+                    paramValueInputs.forEach(input => input.value = firstParam.value);
+                }
 
-            data.forEach(param => {
-                paramIdSelects.forEach(select => {
+                paramIdSelects.forEach((select, index) => {
+                    select.addEventListener('change', function() {
+                        const selectedParam = data.find(param => param.id === select.value);
+                        paramValueInputs[index].value = selectedParam.value;
+                    });
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+            fetch('/get_model_info', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received model info:', data);
+                const modelStatesSelect = document.getElementById('model-states');
+                const observablesSelect = document.getElementById('observables');
+
+                modelStatesSelect.innerHTML = '';
+                observablesSelect.innerHTML = '';
+
+                data.model_states.forEach(state => {
                     const option = document.createElement('option');
-                    option.value = param.id;
-                    option.text = param.id;
-                    select.appendChild(option);
+                    option.value = state;
+                    option.text = state;
+                    modelStatesSelect.appendChild(option);
                 });
-            });
 
-            if (data.length > 0) {
-                const firstParam = data[0];
-                paramValueInputs.forEach(input => input.value = firstParam.value);
-            }
-
-            paramIdSelects.forEach((select, index) => {
-                select.addEventListener('change', function() {
-                    const selectedParam = data.find(param => param.id === select.value);
-                    paramValueInputs[index].value = selectedParam.value;
+                data.observables.forEach(obs => {
+                    const option = document.createElement('option');
+                    option.value = obs;
+                    option.text = obs;
+                    observablesSelect.appendChild(option);
                 });
-            });
-        })
-        .catch(error => console.error('Error:', error));
-
-        fetch('/get_model_info', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Received model info:', data);
-            const modelStatesSelect = document.getElementById('model-states');
-            const observablesSelect = document.getElementById('observables');
-
-            modelStatesSelect.innerHTML = '';
-            observablesSelect.innerHTML = '';
-
-            data.model_states.forEach(state => {
-                const option = document.createElement('option');
-                option.value = state;
-                option.text = state;
-                modelStatesSelect.appendChild(option);
-            });
-
-            data.observables.forEach(obs => {
-                const option = document.createElement('option');
-                option.value = obs;
-                option.text = obs;
-                observablesSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-    }
-</script>
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

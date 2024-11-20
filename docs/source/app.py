@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, redirect, url_for, jsonify
+from flask import Flask, request, render_template, send_file, redirect, url_for, jsonify,  send_from_directory
 import os
 import json
 import pyciemss
@@ -52,8 +52,7 @@ def save_result(data, name, ref_ext):
 
 def run_simulations(models: Optional[List[str]] = None,
                     interventions: Optional[Dict] = None,
-                    calibrate_dataset: Optional[str] = None,
-                    ensemble: bool = False, keep: List[str] = None):
+                    calibrate_dataset: Optional[str] = None, keep: List[str] = None):
     global _output_root
     _output_root = OUTPUT_BASE_DIR
     _output_root.mkdir(parents=True, exist_ok=True)
@@ -78,10 +77,6 @@ def run_simulations(models: Optional[List[str]] = None,
         logger.debug(f"Sampling from model with interventions: {interventions}")
         results = pyciemss.sample(models[0], end_time, logging_step_size, num_samples, start_time=start_time, static_parameter_interventions=interventions)
 
-    if ensemble:
-        solution_mappings = [lambda x: x for _ in models]
-        logger.debug(f"Sampling from ensemble of models: {models}")
-        results = pyciemss.ensemble_sample(models, solution_mappings, end_time, logging_step_size, num_samples, start_time=start_time)
 
     if results is None:
         logger.debug(f"Sampling from model: {models[0]}")
@@ -90,7 +85,7 @@ def run_simulations(models: Optional[List[str]] = None,
 
     print(pd.DataFrame(results["data"]).columns)
     print(keep)
-    schema = plots.trajectories(pd.DataFrame(results["data"]), keep = keep)
+    schema = plots.trajectories(pd.DataFrame(results["data"]))
 
     try:
         image = plots.ipy_display(schema, format="PNG").data
@@ -100,16 +95,15 @@ def run_simulations(models: Optional[List[str]] = None,
     logger.debug("Generated image from simulation results")
     save_result(image, "results_schema", "png")
     png_name = "results_schema"
-    if calibrate_dataset:
-        png_name += "_calibrated"
-    if interventions:
-        png_name += "_interventions"
-    if ensemble:
-        png_name += "_ensemble"
     save_result(image, png_name, "png")
     logger.debug(f"Image saved to {_output_root / png_name}.png")
-    return str(_output_root / f"{png_name}.png")
+        # Save the image to a file
 
+    # Save the image to a file
+    image_path = os.path.join(OUTPUT_BASE_DIR, "results_schema.png")
+    with open(image_path, "wb") as f:
+        f.write(image)
+    return "results_schema.png"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -160,20 +154,20 @@ def index():
                     interventions_dict[torch.tensor(float(param_start_time))] = {param_id: torch.tensor(float(param_value))}
         
         print("Simulations.")
-        png_path = run_simulations(
+        png_filename = run_simulations(
             models=models_selected,
             keep=observables,
             interventions=interventions_dict if interventions else None,
             calibrate_dataset=calibrate_dataset if calibrate_dataset else None
         )
-        print(png_path)
-        with open(png_path, "rb") as image_file:
-            image_data = image_file.read()
+        
+        return render_template('index.html', models=models_selected, datasets=[calibrate_dataset], image_filename=png_filename)
 
-        return render_template('index.html', models=models_selected, datasets=[calibrate_dataset], image_data=image_data)
+    return render_template('index.html', models=[], datasets=[], image_filename=None)
 
-    return render_template('index.html', models=[], datasets=[], image_data=None)
-
+@app.route('/get_image/<filename>')
+def get_image(filename):
+    return send_from_directory(OUTPUT_BASE_DIR, filename)
 @app.route('/get_model_info', methods=['POST'])
 def get_model_info():
     models_file = request.files.get('models_file')
