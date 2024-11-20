@@ -1,34 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulation Interface</title>
-</head>
-<body>
-    <h1>Run Simulations</h1>
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <label for="models">Upload Models:</label>
-            <input type="file" name="models" id="models" multiple>
-        </div>
-        <div>
-            <label for="calibrate_dataset">Upload Calibration Dataset:</label>
-            <input type="file" name="calibrate_dataset" id="calibrate_dataset">
-        </div>
-        <div>
-            <input type="checkbox" name="interventions" id="interventions">
-            <label for="interventions">Use interventions</label>
-        </div>
-        <div>
-            <input type="checkbox" name="ensemble" id="ensemble">
-            <label for="ensemble">Ensemble Models</label>
-        </div>
-        <button type="submit">Run Simulation</button>
-    </form>
+<h1>Run Simulations</h1>
+<form method="post" enctype="multipart/form-data">
     <div>
-        <h2>Generated Image</h2>
-        <img src="{{ image_data }}" alt="Simulation Result Image">
+        <label for="models">Upload Models:</label>
+        <input type="file" name="models" id="models" multiple>
     </div>
-</body>
-</html>
+    <div>
+        <label for="calibration_option">Calibration Option:</label>
+        <select name="calibration_option" id="calibration_option" onchange="toggleCalibrationDataset()">
+            <option value="with_calibration">With Calibration</option>
+            <option value="without_calibration">Without Calibration</option>
+        </select>
+    </div>
+    <div id="calibration_dataset_div"></div>
+        <label for="calibrate_dataset">Upload Calibration Dataset:</label>
+        <input type="file" name="calibrate_dataset" id="calibrate_dataset" onchange="onCalibrationChange()">
+    </div>
+    <div>
+        <input type="checkbox" name="interventions" id="interventions">
+        <label for="interventions">Use interventions</label>
+    </div>
+    <div>
+        <input type="checkbox" name="ensemble" id="ensemble">
+        <label for="ensemble">Ensemble Models</label>
+    </div>
+    
+    <input name="max_timestamp" id="max-timestamp" value="{{ max_timestamp }}">
+
+    <button type="submit">Run Simulation</button>
+</form>
+
+<script>
+    function toggleCalibrationDataset() {
+        const calibrationOption = document.getElementById('calibration_option').value;
+        const calibrationDatasetDiv = document.getElementById('calibration_dataset_div');
+        if (calibrationOption === 'without_calibration') {
+            calibrationDatasetDiv.style.display = 'none';
+        } else {
+            calibrationDatasetDiv.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleCalibrationDataset();
+    });
+</script>
+<div>
+    <h2>Generated Image</h2>
+    <img src="{{ image_data }}" alt="Simulation Result Image">
+</div>
+
+<script>
+    // Function to update the max timestamp
+    function updateMaxTimestamp(newTimestamp) {
+        document.getElementById('max-timestamp').value = newTimestamp;
+    }
+
+    // Function to handle calibration dataset change
+    function onCalibrationChange() {
+        const calibrateDatasetInput = document.getElementById('calibrate_dataset');
+        const formData = new FormData();
+        formData.append('calibrate_dataset_file', calibrateDatasetInput.files[0]);
+
+        // Send the calibration dataset file to the server
+        fetch('/update_max_timestamp', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the max timestamp in the hidden input field
+            updateMaxTimestamp(data.max_timestamp);
+        });
+    }
+</script>
