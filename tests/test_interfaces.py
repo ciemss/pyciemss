@@ -857,14 +857,6 @@ def test_observables_change_with_interventions(
             },
         )["data"]
 
-        print(processed_result["beta_param_observable_state"][0])
-        print(
-            processed_result["beta_param_observable_state"][
-                int(end_time / logging_step_size)
-            ]
-        )
-        print(int(end_time / logging_step_size))
-
         # The test will fail if values before and after the intervention are the same
         assert (
             processed_result["beta_param_observable_state"][0]
