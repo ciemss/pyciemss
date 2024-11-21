@@ -249,7 +249,9 @@ class LogObservables(pyro.poutine.messenger.Messenger):
         msg["value"] = {**msg["value"], **observables}
 
     def _pyro_simulate(self, msg):
-        self.initial_observables = _squeeze_time_dim(self.model.observables(msg["args"][1]))
+        self.initial_observables = _squeeze_time_dim(
+            self.model.observables(msg["args"][1])
+        )
 
     def _pyro_post_simulate(self, msg):
         msg["args"] = (
