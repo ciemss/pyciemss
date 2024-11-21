@@ -11,6 +11,7 @@ import mira.sources.amr
 import pyro
 import torch
 from chirho.dynamical.handlers import LogTrajectory
+from chirho.dynamical.internals._utils import _squeeze_time_dim
 from chirho.dynamical.ops import State, simulate
 
 S = TypeVar("S")
@@ -236,9 +237,8 @@ class LogObservables(pyro.poutine.messenger.Messenger):
         super().__init__()
         self.model = model
         self.observables_names: List[str] = []
-        self.lt = LogTrajectory(
-            times
-        )  # This gets around the issue of the LogTrajectory handler blocking `self`
+        # This gets around the issue of the LogTrajectory handler blocking `self`
+        self.lt = LogTrajectory(times)
 
     def _pyro_simulate_point(self, msg):
         self.lt._pyro_simulate_point(msg)
@@ -249,14 +249,18 @@ class LogObservables(pyro.poutine.messenger.Messenger):
         msg["value"] = {**msg["value"], **observables}
 
     def _pyro_post_simulate(self, msg):
+
         initial_state = msg["args"][1]
+        initial_observables = _squeeze_time_dim(self.model.observables(initial_state))
         msg["args"] = (
             msg["args"][0],
-            {**initial_state, **self.model.observables(initial_state)},
+            {**initial_state, **initial_observables},
             msg["args"][2],
             msg["args"][3],
         )
+
         self.lt._pyro_post_simulate(msg)
+
         self.observables = {
             k: v for k, v in self.lt.trajectory.items() if k in self.observables_names
         }
