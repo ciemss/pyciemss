@@ -236,27 +236,35 @@ class LogObservables(pyro.poutine.messenger.Messenger):
     def __init__(self, times: torch.Tensor, model: CompiledDynamics):
         super().__init__()
         self.model = model
-        self.observables_names: List[str] = []
+        self.observables: State[torch.Tensor] = {}
+        self.state: State[torch.Tensor] = {}
+
         # This gets around the issue of the LogTrajectory handler blocking `self`
         self.lt = LogTrajectory(times)
+
+        self.reset()
+
+    def reset(self):
+        self._observables_names: List[str] = []
+        self._initial_observables: State[torch.Tensor] = {}
 
     def _pyro_simulate_point(self, msg):
         self.lt._pyro_simulate_point(msg)
 
     def _pyro_post_simulate_trajectory(self, msg):
         observables = self.model.observables(msg["value"])
-        self.observables_names = list(observables.keys())
+        self._observables_names = list(observables.keys())
         msg["value"] = {**msg["value"], **observables}
 
     def _pyro_simulate(self, msg):
-        self.initial_observables = _squeeze_time_dim(
+        self._initial_observables = _squeeze_time_dim(
             self.model.observables(msg["args"][1])
         )
 
     def _pyro_post_simulate(self, msg):
         msg["args"] = (
             msg["args"][0],
-            {**msg["args"][1], **self.initial_observables},
+            {**msg["args"][1], **self._initial_observables},
             msg["args"][2],
             msg["args"][3],
         )
@@ -264,10 +272,12 @@ class LogObservables(pyro.poutine.messenger.Messenger):
         self.lt._pyro_post_simulate(msg)
 
         self.observables = {
-            k: v for k, v in self.lt.trajectory.items() if k in self.observables_names
+            k: v for k, v in self.lt.trajectory.items() if k in self._observables_names
         }
         self.state = {
             k: v
             for k, v in self.lt.trajectory.items()
-            if k not in self.observables_names
+            if k not in self._observables_names
         }
+
+        self.reset()
