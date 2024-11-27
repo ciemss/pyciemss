@@ -1,4 +1,5 @@
 from typing import Callable, Dict, List
+
 import torch
 from chirho.interventional.ops import Intervention
 
@@ -19,7 +20,7 @@ def param_value_objective(
             function is used.
 
     Returns:
-        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that, 
+        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that,
         when given an input tensor `x` for parameter values, returns a dictionary of interventions at teh specified
         times.
     """
@@ -77,7 +78,7 @@ def start_time_objective(
         param_value (List[torch.Tensor]): A list of parameter values (as tensors) corresponding to the parameters.
 
     Returns:
-        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that, 
+        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that,
         when given an input tensor `x` for start times, returns a dictionary of interventions at those times.
     """
     param_size = len(param_name)
@@ -125,7 +126,7 @@ def start_time_param_value_objective(
             function is used.
 
     Returns:
-        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that, 
+        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A function that,
         when given an input tensor `x`, returns a dictionary of interventions at specific times.
     """
     param_size = len(param_name)
@@ -185,7 +186,7 @@ def intervention_func_combinator(
             by each intervention function.
 
     Returns:
-        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A combined 
+        intervention_generator (Callable[[torch.Tensor], Dict[float, Dict[str, Intervention]]]): A combined
         intervention function that calls each individual function with the appropriate portion of the input tensor.
     """
     assert len(intervention_funcs) == len(intervention_func_lengths), (
@@ -222,11 +223,11 @@ def combine_static_parameter_interventions(
     Combine a list of static parameter interventions into one.
 
     Args:
-        interventions (List[Dict[float, Dict[str, Intervention]]]): A list of static parameter interventions to be 
+        interventions (List[Dict[float, Dict[str, Intervention]]]): A list of static parameter interventions to be
         combined.
 
     Returns:
-        static_parameter_interventions (Dict[float, Dict[str, Intervention]]): A single dictionary containing all 
+        static_parameter_interventions (Dict[float, Dict[str, Intervention]]): A single dictionary containing all
         combined interventions.
     """
     static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {}
