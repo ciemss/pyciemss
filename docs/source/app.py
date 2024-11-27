@@ -152,7 +152,6 @@ def index():
             for param_id, param_value, param_start_time in zip(param_ids_3, param_values_3, param_start_times_3):
                 if param_id and param_value and param_start_time:
                     interventions_dict[torch.tensor(float(param_start_time))] = {param_id: torch.tensor(float(param_value))}
-        
         print("Simulations.")
         png_filename = run_simulations(
             models=models_selected,
