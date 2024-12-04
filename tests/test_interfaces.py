@@ -616,7 +616,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
-        "solver_options": {"step_size": 0.1, "rtol": rtol, "atol": atol},
+        "solver_options": {"step_size": 1, "rtol": rtol, "atol": atol},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -668,20 +668,21 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         fixed_dynamic_state_interventions = optimize_kwargs[
             "fixed_dynamic_state_interventions"
         ]
-    # assert False
-    result_opt = sample(
-        model_url,
-        end_time,
-        logging_step_size,
-        num_samples,
-        start_time=start_time,
-        static_parameter_interventions=opt_intervention,
-        static_state_interventions=fixed_static_state_interventions,
-        dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
-        dynamic_state_interventions=fixed_dynamic_state_interventions,
-        solver_method=optimize_kwargs["solver_method"],
-        solver_options=optimize_kwargs["solver_options"],
-    )["unprocessed_result"]
+        
+    with pyro.poutine.seed(rng_seed=0):
+        result_opt = sample(
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            static_parameter_interventions=opt_intervention,
+            static_state_interventions=fixed_static_state_interventions,
+            dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
+            dynamic_state_interventions=fixed_dynamic_state_interventions,
+            solver_method=optimize_kwargs["solver_method"],
+            solver_options=optimize_kwargs["solver_options"],
+        )["unprocessed_result"]
 
     intervened_result_subset = {
         k: v
