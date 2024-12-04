@@ -131,7 +131,7 @@ optkwargs_SIRstockflow_param = {
     "initial_guess_interventions": 0.15,
     "bounds_interventions": [[0.1], [0.5]],
     "fixed_static_state_interventions": fixed_static_state_interventions,
-    "fixed_dynamic_parameter_interventions": fixed_dynamic_parameter_interventions,
+    # "fixed_dynamic_parameter_interventions": fixed_dynamic_parameter_interventions,
     "fixed_dynamic_state_interventions": fixed_dynamic_state_interventions,
 }
 

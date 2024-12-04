@@ -668,7 +668,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         fixed_dynamic_state_interventions = optimize_kwargs[
             "fixed_dynamic_state_interventions"
         ]
-
+    # assert False
     result_opt = sample(
         model_url,
         end_time,
