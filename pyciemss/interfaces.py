@@ -378,6 +378,7 @@ def sample(
         Dict[str, Intervention],
     ] = {},
     alpha: float = 0.95,
+    qoi: Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]] = None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
