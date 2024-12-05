@@ -616,7 +616,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
-        "solver_options": {"step_size": 0.1, "rtol": rtol, "atol": atol},
+        "solver_options": {"step_size": 1.0, "rtol": rtol, "atol": atol},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -651,7 +651,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     else:
         opt_intervention = opt_intervention_temp
 
-    if optimize_kwargs["alpha"]:
+    if "alpha" in optimize_kwargs:
         alpha = optimize_kwargs["alpha"]
     else:
         alpha = [0.95]

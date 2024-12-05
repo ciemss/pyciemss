@@ -554,9 +554,6 @@ def sample(
             num_samples=num_samples,
             parallel=parallel,
         )()
-        samples = {
-            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
-        }
 
         if not isinstance(alpha, list):
             alpha = [alpha]
@@ -581,6 +578,9 @@ def sample(
                     sq_est = alpha_superquantile(qoi_sample, alpha=alpha[0])
                     risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
+        samples = {
+            k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
+        }
         return {
             **prepare_interchange_dictionary(
                 samples, timepoints=logging_times, time_unit=time_unit
