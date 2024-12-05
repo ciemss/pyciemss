@@ -377,8 +377,10 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
-    alpha: float = 0.95,
-    qoi: Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]] = None,
+    alpha: Union[List[float], float] = [0.95],
+    qoi: Optional[
+        Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]]
+    ] = None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -439,8 +441,11 @@ def sample(
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
-        alpha: float
-            - Risk level for alpha-superquantile outputs in the results dictionary.
+        alpha: Union[List[float], float]
+            - A (list of) risk preference parameter(s) for alpha-superquantile outputs in the results dictionary.
+        qoi: Optional[Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]]]
+            - A (list of) callable function(s) defining the quantity of interest to optimize over.
+            - If not provided, QoIs are assumed to be the value of all states and observables on the last day.
 
     Returns:
         result: Dict[str, Any]
@@ -553,13 +558,29 @@ def sample(
             k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
         }
 
+        
+        if not isinstance(alpha, list):
+            alpha = [alpha]
         risk_results = {}
-        for k, vals in samples.items():
-            if "_state" in k or "_observable" in k:
-                # Note: qoi is assumed to be the last day of simulation
-                qoi_sample = vals.detach().numpy()[:, -1]
-                sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
-                risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
+        if qoi:
+            if not isinstance(qoi, list):
+                qoi = [qoi]
+            assert len(alpha) == len(
+                qoi
+            ), f"Size mismatch between qoi ('{len(qoi)}') and alpha ('{len(alpha)}')"
+            for i in range(len(qoi)):
+                qoi_sample = qoi[i](samples)
+                sq_est = alpha_superquantile(qoi_sample, alpha=alpha[i])
+                risk_results.update(
+                    {"QoI" + str(i): {"risk": [sq_est], "qoi": qoi_sample}}
+                )
+        else:
+            for k, vals in samples.items():
+                if "_state" in k or "_observable" in k:
+                    # Note: qoi is assumed to be the last day of simulation
+                    qoi_sample = vals.detach().numpy()[:, -1]
+                    sq_est = alpha_superquantile(qoi_sample, alpha=alpha[0])
+                    risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
 
         return {
             **prepare_interchange_dictionary(
