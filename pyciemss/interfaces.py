@@ -558,7 +558,6 @@ def sample(
             k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
         }
 
-        
         if not isinstance(alpha, list):
             alpha = [alpha]
         risk_results = {}
