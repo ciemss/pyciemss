@@ -651,6 +651,10 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     else:
         opt_intervention = opt_intervention_temp
 
+    if optimize_kwargs["alpha"]:
+        alpha = optimize_kwargs["alpha"]
+    else:
+        alpha = [0.95]
     result_opt = sample(
         model_url,
         end_time,
@@ -660,6 +664,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
         static_parameter_interventions=opt_intervention,
         solver_method=optimize_kwargs["solver_method"],
         solver_options=optimize_kwargs["solver_options"],
+        alpha=alpha,
+        qoi=optimize_kwargs["qoi"],
     )["unprocessed_result"]
 
     intervened_result_subset = {
