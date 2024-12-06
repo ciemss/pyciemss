@@ -100,6 +100,25 @@ STOCKFLOW_MODELS = [
     ModelFixture(os.path.join(MODELS_PATH, "SEIRHD_stockflow.json"), "p_cbeta"),
 ]
 
+fixed_static_state_interventions = {torch.tensor(5.0): {"I": torch.tensor(20.0)}}
+
+
+# Define the threshold for when the intervention should be applied
+def make_var_threshold(var: str, threshold: torch.Tensor):
+    def var_threshold(time, state):
+        return state[var] - threshold
+
+    return var_threshold
+
+
+infection_threshold1 = make_var_threshold("I", torch.tensor(150.0))
+fixed_dynamic_parameter_interventions = {
+    infection_threshold1: {"p_tr": torch.tensor(10.0)}
+}
+
+infection_threshold2 = make_var_threshold("I", torch.tensor(400.0))
+fixed_dynamic_state_interventions = {infection_threshold2: {"S": torch.tensor(200.0)}}
+
 optkwargs_SIRstockflow_param = {
     "qoi": [lambda x: obs_nday_average_qoi(x, ["I_state"], 1)],
     "risk_bound": [300.0],
@@ -111,6 +130,9 @@ optkwargs_SIRstockflow_param = {
     "objfun": lambda x: np.abs(0.35 - x),
     "initial_guess_interventions": 0.15,
     "bounds_interventions": [[0.1], [0.5]],
+    "fixed_static_state_interventions": fixed_static_state_interventions,
+    "fixed_dynamic_parameter_interventions": fixed_dynamic_parameter_interventions,
+    "fixed_dynamic_state_interventions": fixed_dynamic_state_interventions,
 }
 
 optkwargs_SIRstockflow_time = {
@@ -156,7 +178,9 @@ optkwargs_SEIRHD_paramtimeComb_maxQoI = {
     "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
     "initial_guess_interventions": [0.35, 5.0],
     "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
-    "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+    "fixed_static_parameter_interventions": {
+        torch.tensor(10.0): {"hosp": torch.tensor(0.1)}
+    },
 }
 optkwargs_SEIRHD_multipleConstraints = {
     "qoi": [
@@ -171,7 +195,9 @@ optkwargs_SEIRHD_multipleConstraints = {
     "objfun": lambda x: np.abs(0.35 - x[0]) - x[1],
     "initial_guess_interventions": [0.35, 5.0],
     "bounds_interventions": [[0.1, 1.0], [0.5, 90.0]],
-    "fixed_static_parameter_interventions": {10.0: {"hosp": torch.tensor(0.1)}},
+    "fixed_static_parameter_interventions": {
+        torch.tensor(10.0): {"hosp": torch.tensor(0.1)}
+    },
     "alpha": [0.95, 0.90],
 }
 
