@@ -616,7 +616,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
-        "solver_options": {"step_size": 1, "rtol": rtol, "atol": atol},
+        "solver_options": {"step_size": 1.0, "rtol": rtol, "atol": atol},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -669,6 +669,10 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
             "fixed_dynamic_state_interventions"
         ]
 
+    if "alpha" in optimize_kwargs:
+        alpha = optimize_kwargs["alpha"]
+    else:
+        alpha = [0.95]
     with pyro.poutine.seed(rng_seed=0):
         result_opt = sample(
             model_url,
@@ -682,6 +686,8 @@ def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
             dynamic_state_interventions=fixed_dynamic_state_interventions,
             solver_method=optimize_kwargs["solver_method"],
             solver_options=optimize_kwargs["solver_options"],
+            alpha=alpha,
+            qoi=optimize_kwargs["qoi"],
         )["unprocessed_result"]
 
     intervened_result_subset = {
@@ -848,3 +854,41 @@ def test_intervention_on_constant_param(
             torch.arange(start_time, end_time + logging_step_size, logging_step_size)
         )
         assert processed_result.shape[1] >= 2
+
+
+@pytest.mark.parametrize("sample_method", [sample])
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("start_time", START_TIMES)
+def test_observables_change_with_interventions(
+    sample_method,
+    model_fixture,
+    end_time,
+    logging_step_size,
+    num_samples,
+    start_time,
+):
+    # Assert that sample returns expected result with intervention on constant parameter
+    if "SIR_param" not in model_fixture.url:
+        pytest.skip("Only test 'SIR_param_in_obs' model")
+    else:
+        processed_result = sample_method(
+            model_fixture.url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            static_parameter_interventions={
+                torch.tensor(2.0): {"beta": torch.tensor(0.001)}
+            },
+        )["data"]
+
+        # The test will fail if values before and after the intervention are the same
+        assert (
+            processed_result["beta_param_observable_state"][0]
+            > processed_result["beta_param_observable_state"][
+                int(end_time / logging_step_size)
+            ]
+        )
