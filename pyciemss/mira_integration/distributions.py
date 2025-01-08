@@ -155,6 +155,23 @@ def mira_laplace_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distri
     return pyro.distributions.Laplace(loc=loc, scale=scale)
 
 
+def mira_logistic_normal_to_pyro(
+    parameters: ParameterDict,
+) -> pyro.distributions.Distribution:
+    if "location" in parameters.keys():
+        loc = parameters["location"]
+    elif "mu" in parameters.keys():
+        loc = parameters["mu"]
+
+    if "scale" in parameters.keys():
+        scale = parameters["scale"]
+    elif "sigma" in parameters.keys():
+        scale = parameters["sigma"]
+    elif "tau" in parameters.keys():
+        scale = 1.0 / parameters["tau"]
+    return pyro.distributions.LogisticNormal(loc=loc, scale=scale)
+
+
 def mira_paretotypeI_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
@@ -226,6 +243,7 @@ _MIRA_TO_PYRO = {
     "Gumbel1": mira_gumbel_to_pyro,
     "Laplace1": mira_laplace_to_pyro,
     "Laplace2": mira_laplace_to_pyro,
+    "LogitNormal1": mira_logistic_normal_to_pyro,
     "ParetoTypeI1": mira_paretotypeI_to_pyro,
     "Poisson1": mira_poisson_to_pyro,
     "StudentT1": mira_studentt_to_pyro,
