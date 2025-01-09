@@ -1,20 +1,101 @@
 import warnings
-from typing import Dict
+from typing import Dict, Optional, Union
 
+import mira.modeling
+from pyciemss.compiled_dynamics import get_name, _sort_dependencies
+import mira
 import mira.metamodel
+import networkx as nx
 import pyro
 import torch
+import sympytorch
+from mira.metamodel.utils import SympyExprStr
+ParameterDict = Dict[str, Union[torch.Tensor, SympyExprStr]]
 
-ParameterDict = Dict[str, torch.Tensor]
 
+@_sort_dependencies.register(mira.modeling.Model)
+def sort_mira_dependencies(src: mira.modeling.Model) -> list:
+    """
+    Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
+
+    Parameters
+    ----------
+    src : mira.modeling.Model
+        The MIRA Model to sort.
+
+    Returns
+    -------
+    list
+        A list of parameter names in the order in which they must be evaluated.
+    """
+    dependencies = nx.DiGraph()
+    for param_name, param_info in src.parameters.items():
+        #param_name = get_name(param_info)
+        #if param_info.placeholder:
+        #    continue
+        param_dist = getattr(param_info, "distribution", None)
+
+        if param_dist is None:
+            dependencies.add_node(param_name)
+        else:
+            for k, v in param_dist.parameters.items():
+                # Check to see if the distribution parameters are sympy expressions
+                # and add their free symbols to the dependency graph
+                if isinstance(v, mira.metamodel.utils.SympyExprStr):
+                    for free_symbol in v.free_symbols:
+                        dependencies.add_edge(str(free_symbol), str(param_name))
+    return list(nx.topological_sort(dependencies))
+
+
+def safe_sympytorch_parse_expr(expr: SympyExprStr, local_dict: Optional[Dict[str, torch.Tensor]]) -> torch.Tensor:
+    """
+    Converts a sympy expression to a PyTorch tensor.
+
+    Parameters
+    ----------
+    expr : SympyExprStr
+        The sympy expression to convert to a PyTorch tensor.
+    local_dict : Optional[Dict]
+        A dictionary of free symbols and their variables to use in the sympy expression."""
+    return sympytorch.SymPyModule(expressions=[expr.args[0]])(**local_dict).squeeze()
 
 def mira_uniform_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA uniform distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA uniform distribution.
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro uniform distribution with specified lower and upper bounds.
+    """
     low = parameters["minimum"]
     high = parameters["maximum"]
     return pyro.distributions.Uniform(low=low, high=high)
 
 
 def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA normal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA normal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'mean' and 'stdev'
+            - 'mean' and 'variance'
+            - 'mean' and 'precision'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro normal distribution with specified mean and standard deviation.
+    """
     if "mean" in parameters.keys():
         loc = parameters["mean"]
     if "stdev" in parameters.keys():
@@ -30,6 +111,22 @@ def mira_normal_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distrib
 def mira_lognormal_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
+    """
+    Converts MIRA lognormal distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA lognormal distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'meanLog' and 'stdevLog'
+            - 'meanLog' and 'varLog'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro lognormal distribution with specified mean of the logarithm and standard deviation of the logarithm.
+    """
     if "meanLog" in parameters.keys():
         loc = parameters["meanLog"]
     if "stdevLog" in parameters.keys():
@@ -55,7 +152,39 @@ def mira_bernoulli_to_pyro(
 
 
 def mira_beta_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
-    return pyro.distributions.Beta(alpha=parameters["alpha"], beta=parameters["beta"])
+    """
+    Converts MIRA beta distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA beta distribution.
+        The parameters should contain the following keys:
+            - 'alpha' or 'concentration1'
+            - 'beta' or 'concentration0'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro Beta distribution with specified first and second shape parameters.
+    """
+    if "alpha" in parameters.keys():
+        concentration1 = parameters["alpha"]
+    elif "concentration1" in parameters.keys():
+        concentration1 = parameters["concentration1"]
+    else:
+        raise ValueError(
+            "MIRA Beta distribution requires 'alpha' or 'concentration1' parameter"
+        )
+    if "beta" in parameters.keys():
+        concentration0 = parameters["beta"]
+    elif "concentration0" in parameters.keys():
+        concentration0 = parameters["concentration0"]
+    else:
+        raise ValueError(
+            "MIRA Beta distribution requires 'beta' or 'concentration0' parameter"
+        )
+    return pyro.distributions.Beta(concentration1=concentration1, concentration0=concentration0)
 
 
 def mira_betabinomial_to_pyro(
@@ -129,10 +258,44 @@ def mira_gamma_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribu
 def mira_inversegamma_to_pyro(
     parameters: ParameterDict,
 ) -> pyro.distributions.Distribution:
-    raise NotImplementedError(
-        "Conversion from MIRA InverseGamma distribution to Pyro distribution is not implemented."
+    """
+    Converts MIRA InverseGamma distribution parameters to Pyro distribution.
+
+    Parameters
+    ----------
+    parameters : ParameterDict
+        Dictionary containing the parameters for the MIRA InverseGamma distribution.
+        The parameters should contain one of the following sets of keys:
+            - 'shape' or 'alpha' or 'concentration'
+            - 'rate' or 'scale' or 'beta'
+
+    Returns
+    -------
+    pyro.distributions.Distribution
+        Pyro InverseGamma distribution with specified shape and rate.
+    """
+    if "shape" in parameters.keys():
+        concentration = parameters["shape"]
+    elif "concentration" in parameters.keys():
+        concentration = parameters["concentration"]
+    elif "alpha" in parameters.keys():
+        concentration = parameters["alpha"]
+    else:
+        raise ValueError(
+            "MIRA InverseGamma distribution requires 'shape' or 'concentration' or 'alphaparameter"
+        )
+    if "rate" in parameters.keys():
+        rate = parameters["rate"]
+    elif "scale" in parameters.keys():
+        rate = parameters["scale"]
+    elif "beta" in parameters.keys():
+        rate = parameters["beta"]
+    else:
+        raise ValueError(
+            "MIRA InverseGamma distribution requires 'rate' or 'scale' or 'beta' parameter")      
+    return pyro.distributions.InverseGamma(
+        concentration=concentration, rate=rate
     )
-    # TODO: Map parameters to Pyro distribution parameters
 
 
 def mira_gumbel_to_pyro(parameters: ParameterDict) -> pyro.distributions.Distribution:
@@ -239,14 +402,15 @@ _TESTED_DISTRIBUTIONS = [
     "Uniform1",
     "StandardUniform1",
     "StandardNormal1",
+    "InverseGamma1",
     "Normal1",
     "Normal2",
     "Normal3",
 ]
 
-
 def mira_distribution_to_pyro(
     mira_dist: mira.metamodel.template_model.Distribution,
+    free_symbols=Optional[Dict[str, torch.Tensor]]
 ) -> pyro.distributions.Distribution:
     if mira_dist.type not in _MIRA_TO_PYRO.keys():
         raise NotImplementedError(
@@ -258,6 +422,11 @@ def mira_distribution_to_pyro(
             f"Conversion from MIRA distribution type {mira_dist.type} to Pyro distribution has not been tested."
         )
 
-    parameters = {k: torch.as_tensor(v) for k, v in mira_dist.parameters.items()}
+    distribution_parameters = {
+        k: safe_sympytorch_parse_expr(v, free_symbols) 
+        if isinstance(v, SympyExprStr) 
+        else torch.as_tensor(v, dtype=torch.float32)
+        for k, v in mira_dist.parameters.items()
+    }
 
-    return _MIRA_TO_PYRO[mira_dist.type](parameters)
+    return _MIRA_TO_PYRO[mira_dist.type](distribution_parameters)
