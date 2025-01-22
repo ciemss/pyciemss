@@ -133,6 +133,7 @@ class computeRisk:
         else:
             # Apply intervention and perform forward uncertainty propagation
             samples = self.propagate_uncertainty(x)
+            samples["logging_times"] = self.logging_times
             # Compute quanity of interest
             sample_qoi = [q(samples) for q in self.qoi]
             # Estimate risk
