@@ -120,7 +120,7 @@ def ipy_display(
         return IPython.display.Image(png_data)
 
     elif format in ["svg", "SVG"]:
-        png_data = vl_convert.vega_to_svg(schema, **kwargs)
-        return IPython.display.SVG(png_data)
+        svg_data = vl_convert.vega_to_svg(schema, **kwargs)
+        return IPython.display.SVG(svg_data)
     else:
         raise ValueError(f"Unhandled format requested: {format}")

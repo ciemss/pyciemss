@@ -46,7 +46,7 @@ def load_data(
             raise ValueError("Dataset cannot contain NaN or empty entries.")
 
         # Check that there is no missing data in the form of None type or char values
-        if not data_df.applymap(lambda x: isinstance(x, (int, float))).all().all():
+        if not data_df.map(lambda x: isinstance(x, (int, float))).all().all():
             raise ValueError(
                 "Dataset cannot contain None type or char values. All entries must be of type `int` or `float`."
             )

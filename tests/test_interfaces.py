@@ -87,6 +87,9 @@ CALIBRATE_KWARGS = {
     "num_iterations": 2,
 }
 
+RTOL = [1e-6, 1e-4]
+ATOL = [1e-8, 1e-6]
+
 
 @pytest.mark.parametrize("sample_method", SAMPLE_METHODS)
 @pytest.mark.parametrize("model", MODELS)
@@ -94,22 +97,46 @@ CALIBRATE_KWARGS = {
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("rtol", RTOL)
+@pytest.mark.parametrize("atol", ATOL)
 def test_sample_no_interventions(
-    sample_method, model, start_time, end_time, logging_step_size, num_samples
+    sample_method,
+    model,
+    start_time,
+    end_time,
+    logging_step_size,
+    num_samples,
+    rtol,
+    atol,
 ):
     model_url = model.url
 
     with pyro.poutine.seed(rng_seed=0):
         result1 = sample_method(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            solver_options={"rtol": rtol, "atol": atol},
         )["unprocessed_result"]
     with pyro.poutine.seed(rng_seed=0):
         result2 = sample_method(
-            model_url, end_time, logging_step_size, num_samples, start_time=start_time
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            solver_options={"rtol": rtol, "atol": atol},
         )["unprocessed_result"]
 
     result3 = sample_method(
-        model_url, end_time, logging_step_size, num_samples, start_time=start_time
+        model_url,
+        end_time,
+        logging_step_size,
+        num_samples,
+        start_time=start_time,
+        solver_options={"rtol": rtol, "atol": atol},
     )["unprocessed_result"]
 
     for result in [result1, result2, result3]:
@@ -364,8 +391,10 @@ def test_calibrate_no_kwargs(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("rtol", RTOL)
+@pytest.mark.parametrize("atol", ATOL)
 def test_calibrate_deterministic(
-    model_fixture, start_time, end_time, logging_step_size
+    model_fixture, start_time, end_time, logging_step_size, rtol, atol
 ):
     model_url = model_fixture.url
     (
@@ -381,6 +410,7 @@ def test_calibrate_deterministic(
         "data_mapping": model_fixture.data_mapping,
         "start_time": start_time,
         "deterministic_learnable_parameters": deterministic_learnable_parameters,
+        "solver_options": {"rtol": rtol, "atol": atol},
         **CALIBRATE_KWARGS,
     }
 
@@ -400,7 +430,10 @@ def test_calibrate_deterministic(
         assert torch.allclose(param_value, param_sample_2[param_name])
 
     result = sample(
-        *sample_args, **sample_kwargs, inferred_parameters=inferred_parameters
+        *sample_args,
+        **sample_kwargs,
+        inferred_parameters=inferred_parameters,
+        solver_options={"rtol": rtol, "atol": atol},
     )["unprocessed_result"]
 
     check_result_sizes(result, start_time, end_time, logging_step_size, 1)
@@ -563,7 +596,9 @@ def test_output_format(
 @pytest.mark.parametrize("start_time", START_TIMES)
 @pytest.mark.parametrize("end_time", END_TIMES)
 @pytest.mark.parametrize("num_samples", NUM_SAMPLES)
-def test_optimize(model_fixture, start_time, end_time, num_samples):
+@pytest.mark.parametrize("rtol", RTOL)
+@pytest.mark.parametrize("atol", ATOL)
+def test_optimize(model_fixture, start_time, end_time, num_samples, rtol, atol):
     logging_step_size = 1.0
     model_url = model_fixture.url
 
@@ -581,7 +616,7 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
     optimize_kwargs = {
         **model_fixture.optimize_kwargs,
         "solver_method": "euler",
-        "solver_options": {"step_size": 0.1},
+        "solver_options": {"step_size": 1.0, "rtol": rtol, "atol": atol},
         "start_time": start_time,
         "n_samples_ouu": int(2),
         "maxiter": 1,
@@ -615,17 +650,45 @@ def test_optimize(model_fixture, start_time, end_time, num_samples):
         opt_intervention = combine_static_parameter_interventions(intervention_list)
     else:
         opt_intervention = opt_intervention_temp
+    if "fixed_static_state_interventions" not in optimize_kwargs:
+        fixed_static_state_interventions = {}
+    else:
+        fixed_static_state_interventions = optimize_kwargs[
+            "fixed_static_state_interventions"
+        ]
+    if "fixed_dynamic_parameter_interventions" not in optimize_kwargs:
+        fixed_dynamic_parameter_interventions = {}
+    else:
+        fixed_dynamic_parameter_interventions = optimize_kwargs[
+            "fixed_dynamic_parameter_interventions"
+        ]
+    if "fixed_dynamic_state_interventions" not in optimize_kwargs:
+        fixed_dynamic_state_interventions = {}
+    else:
+        fixed_dynamic_state_interventions = optimize_kwargs[
+            "fixed_dynamic_state_interventions"
+        ]
 
-    result_opt = sample(
-        model_url,
-        end_time,
-        logging_step_size,
-        num_samples,
-        start_time=start_time,
-        static_parameter_interventions=opt_intervention,
-        solver_method=optimize_kwargs["solver_method"],
-        solver_options=optimize_kwargs["solver_options"],
-    )["unprocessed_result"]
+    if "alpha" in optimize_kwargs:
+        alpha = optimize_kwargs["alpha"]
+    else:
+        alpha = [0.95]
+    with pyro.poutine.seed(rng_seed=0):
+        result_opt = sample(
+            model_url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            static_parameter_interventions=opt_intervention,
+            static_state_interventions=fixed_static_state_interventions,
+            dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
+            dynamic_state_interventions=fixed_dynamic_state_interventions,
+            solver_method=optimize_kwargs["solver_method"],
+            solver_options=optimize_kwargs["solver_options"],
+            alpha=alpha,
+            qoi=optimize_kwargs["qoi"],
+        )["unprocessed_result"]
 
     intervened_result_subset = {
         k: v
@@ -791,3 +854,41 @@ def test_intervention_on_constant_param(
             torch.arange(start_time, end_time + logging_step_size, logging_step_size)
         )
         assert processed_result.shape[1] >= 2
+
+
+@pytest.mark.parametrize("sample_method", [sample])
+@pytest.mark.parametrize("model_fixture", MODELS)
+@pytest.mark.parametrize("end_time", END_TIMES)
+@pytest.mark.parametrize("logging_step_size", LOGGING_STEP_SIZES)
+@pytest.mark.parametrize("num_samples", NUM_SAMPLES)
+@pytest.mark.parametrize("start_time", START_TIMES)
+def test_observables_change_with_interventions(
+    sample_method,
+    model_fixture,
+    end_time,
+    logging_step_size,
+    num_samples,
+    start_time,
+):
+    # Assert that sample returns expected result with intervention on constant parameter
+    if "SIR_param" not in model_fixture.url:
+        pytest.skip("Only test 'SIR_param_in_obs' model")
+    else:
+        processed_result = sample_method(
+            model_fixture.url,
+            end_time,
+            logging_step_size,
+            num_samples,
+            start_time=start_time,
+            static_parameter_interventions={
+                torch.tensor(2.0): {"beta": torch.tensor(0.001)}
+            },
+        )["data"]
+
+        # The test will fail if values before and after the intervention are the same
+        assert (
+            processed_result["beta_param_observable_state"][0]
+            > processed_result["beta_param_observable_state"][
+                int(end_time / logging_step_size)
+            ]
+        )

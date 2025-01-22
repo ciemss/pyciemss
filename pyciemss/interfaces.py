@@ -93,7 +93,7 @@ def ensemble_sample(
         - If performance is incredibly slow, we suggest using `euler` to debug.
           If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
           AMR model with the simulation timepoints.
@@ -121,6 +121,10 @@ def ensemble_sample(
     """
     check_solver(solver_method, solver_options)
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     with torch.no_grad():
         if dirichlet_alpha is None:
             dirichlet_alpha = torch.ones(len(model_paths_or_jsons))
@@ -138,7 +142,9 @@ def ensemble_sample(
             raise ValueError("num_samples must be a positive integer")
 
         def wrapped_model():
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 solution = model(
                     torch.as_tensor(start_time),
                     torch.as_tensor(end_time),
@@ -233,7 +239,7 @@ def ensemble_calibrate(
         - If performance is incredibly slow, we suggest using `euler` to debug.
             If using `euler` results in faster simulation, the issue is likely that the model is stiff.
     solver_options: Dict[str, Any]
-        - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+        - Options to pass to the solver (including atol and rtol). See torchdiffeq' `odeint` method for more details.
     start_time: float
         - The start time of the model. This is used to align the `start_state` from the
             AMR model with the simulation timepoints.
@@ -280,6 +286,10 @@ def ensemble_calibrate(
     if not (isinstance(num_iterations, int) and num_iterations > 0):
         raise ValueError("num_iterations must be a positive integer")
 
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
+
     def autoguide(model):
         guide = pyro.infer.autoguide.AutoGuideList(model)
         guide.append(
@@ -314,7 +324,9 @@ def ensemble_calibrate(
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(method=solver_method, options=solver_options):
+        with TorchDiffEq(
+            rtol=rtol, atol=atol, method=solver_method, options=solver_options
+        ):
             solution = model(
                 torch.as_tensor(start_time),
                 torch.as_tensor(data_timepoints[-1]),
@@ -365,7 +377,10 @@ def sample(
         Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
         Dict[str, Intervention],
     ] = {},
-    alpha: float = 0.95,
+    alpha: Union[List[float], float] = [0.95],
+    qoi: Optional[
+        Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]]
+    ] = None,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -384,7 +399,8 @@ def sample(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -425,8 +441,11 @@ def sample(
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
-        alpha: float
-            - Risk level for alpha-superquantile outputs in the results dictionary.
+        alpha: Union[List[float], float]
+            - A (list of) risk preference parameter(s) for alpha-superquantile outputs in the results dictionary.
+        qoi: Optional[Union[List[Callable[[Any], np.ndarray]],Callable[[Any], np.ndarray]]]
+            - A (list of) callable function(s) defining the quantity of interest to optimize over.
+            - If not provided, QoIs are assumed to be the value of all states and observables on the last day.
 
     Returns:
         result: Dict[str, Any]
@@ -448,6 +467,10 @@ def sample(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     with torch.no_grad():
         model = CompiledDynamics.load(model_path_or_json)
@@ -492,7 +515,9 @@ def sample(
 
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(method=solver_method, options=solver_options):
+                with TorchDiffEq(
+                    rtol=rtol, atol=atol, method=solver_method, options=solver_options
+                ):
                     with contextlib.ExitStack() as stack:
                         for handler in intervention_handlers:
                             stack.enter_context(handler)
@@ -529,18 +554,33 @@ def sample(
             num_samples=num_samples,
             parallel=parallel,
         )()
+
+        if not isinstance(alpha, list):
+            alpha = [alpha]
+        risk_results = {}
+        if qoi:
+            if not isinstance(qoi, list):
+                qoi = [qoi]
+            assert len(alpha) == len(
+                qoi
+            ), f"Size mismatch between qoi ('{len(qoi)}') and alpha ('{len(alpha)}')"
+            for i in range(len(qoi)):
+                qoi_sample = qoi[i](samples)
+                sq_est = alpha_superquantile(qoi_sample, alpha=alpha[i])
+                risk_results.update(
+                    {"QoI" + str(i): {"risk": [sq_est], "qoi": qoi_sample}}
+                )
+        else:
+            for k, vals in samples.items():
+                if "_state" in k or "_observable" in k:
+                    # Note: qoi is assumed to be the last day of simulation
+                    qoi_sample = vals.detach().numpy()[:, -1]
+                    sq_est = alpha_superquantile(qoi_sample, alpha=alpha[0])
+                    risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
+
         samples = {
             k: (v.squeeze() if len(v.shape) > 2 else v) for k, v in samples.items()
         }
-
-        risk_results = {}
-        for k, vals in samples.items():
-            if "_state" in k or "_observable" in k:
-                # Note: qoi is assumed to be the last day of simulation
-                qoi_sample = vals.detach().numpy()[:, -1]
-                sq_est = alpha_superquantile(qoi_sample, alpha=alpha)
-                risk_results.update({k: {"risk": [sq_est], "qoi": qoi_sample}})
-
         return {
             **prepare_interchange_dictionary(
                 samples, timepoints=logging_times, time_unit=time_unit
@@ -602,18 +642,19 @@ def calibrate(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         - solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         - start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
             - By default we set the `start_time` to be 0.
-        static_state_interventions: Dict[float, Dict[str, Intervention]]
+        static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
-        static_parameter_interventions: Dict[float, Dict[str, Intervention]]
+        static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
             - A dictionary of static interventions to apply to the model.
             - Each key is the time at which the intervention is applied.
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
@@ -667,6 +708,10 @@ def calibrate(
     """
 
     check_solver(solver_method, solver_options)
+
+    # Get tolerances for solver
+    rtol = solver_options.pop("rtol", 1e-7)  # default = 1e-7
+    atol = solver_options.pop("atol", 1e-9)  # default = 1e-9
 
     pyro.clear_param_store()
 
@@ -740,7 +785,9 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(method=solver_method, options=solver_options):
+            with TorchDiffEq(
+                rtol=rtol, atol=atol, method=solver_method, options=solver_options
+            ):
                 with contextlib.ExitStack() as stack:
                     for handler in intervention_handlers:
                         stack.enter_context(handler)
@@ -786,7 +833,18 @@ def optimize(
     solver_options: Dict[str, Any] = {},
     start_time: float = 0.0,
     inferred_parameters: Optional[pyro.nn.PyroModule] = None,
-    fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]] = {},
+    fixed_static_parameter_interventions: Dict[
+        torch.Tensor, Dict[str, Intervention]
+    ] = {},
+    fixed_static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]] = {},
+    fixed_dynamic_state_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
+    fixed_dynamic_parameter_interventions: Dict[
+        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+        Dict[str, Intervention],
+    ] = {},
     n_samples_ouu: int = int(1e3),
     maxiter: int = 5,
     maxfeval: int = 25,
@@ -834,7 +892,8 @@ def optimize(
             - If performance is incredibly slow, we suggest using `euler` to debug.
               If using `euler` results in faster simulation, the issue is likely that the model is stiff.
         solver_options: Dict[str, Any]
-            - Options to pass to the solver. See torchdiffeq' `odeint` method for more details.
+            - Options to pass to the solver (including atol and rtol).
+              See torchdiffeq' `odeint` method for more details.
         start_time: float
             - The start time of the model. This is used to align the `start_state` from the
               AMR model with the simulation timepoints.
@@ -843,9 +902,35 @@ def optimize(
             - A Pyro module that contains the inferred parameters of the model.
               This is typically the result of `calibrate`.
             - If not provided, we will use the default values from the AMR model.
-        fixed_static_parameter_interventions: Dict[float, Dict[str, Intervention]]
-            - A dictionary of fixed static interventions to apply to the model and not optimize for.
+        fixed_static_parameter_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
+            - A dictionary of fixed static parameter interventions to apply to the model and not optimize for.
             - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_static_state_interventions: Dict[torch.Tensor, Dict[str, Intervention]]
+            - A dictionary of static state interventions to apply to the model and not optimize for.
+            - Each key is the time at which the intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_dynamic_state_interventions: Dict[
+                                        Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                        Dict[str, Intervention]
+                                        ]
+            - A dictionary of dynamic interventions to apply to the model and not optimize for.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
+            - Each value is a dictionary of the form {state_variable_name: intervention_assignment}.
+            - Note that the `intervention_assignment` can be any type supported by
+              :func:`~chirho.interventional.ops.intervene`, including functions.
+        fixed_dynamic_parameter_interventions: Dict[
+                                            Callable[[torch.Tensor, Dict[str, torch.Tensor]], torch.Tensor],
+                                            Dict[str, Intervention]
+                                            ]
+            - A dictionary of dynamic interventions to apply to the model and not optimize for.
+            - Each key is a function that takes in the current state of the model and returns a tensor.
+              When this function crosses 0, the dynamic intervention is applied.
             - Each value is a dictionary of the form {parameter_name: intervention_assignment}.
             - Note that the `intervention_assignment` can be any type supported by
               :func:`~chirho.interventional.ops.intervene`, including functions.
@@ -902,6 +987,9 @@ def optimize(
             num_samples=1,
             guide=inferred_parameters,
             fixed_static_parameter_interventions=fixed_static_parameter_interventions,
+            fixed_static_state_interventions=fixed_static_state_interventions,
+            fixed_dynamic_state_interventions=fixed_dynamic_state_interventions,
+            fixed_dynamic_parameter_interventions=fixed_dynamic_parameter_interventions,
             solver_method=solver_method,
             solver_options=solver_options,
             u_bounds=bounds_np,
