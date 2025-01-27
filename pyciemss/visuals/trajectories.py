@@ -282,7 +282,13 @@ def trajectories(
         schema = vega.set_title(schema, title)
 
     return schema
-
+# - plot title (title): add plot title 
+# - axes labels (x, y): add axes labels 
+# - change colors colors are dictionary of trajectory: color
+# - dashed lines for mean: add type line
+# - legend: change labels: set by scales so to change would chnage with relabel
+# - add vertical dashed line at time 45 for intervention base labels already there, but add type
+# - add horizontal dashed line at I = 3500 for threshold
 
 # Things to check:
 # trajectories(prior_samples, tspan) == [*prior_samples.keys()]

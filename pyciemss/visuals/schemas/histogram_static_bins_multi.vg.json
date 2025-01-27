@@ -4,7 +4,7 @@
   "height": 500,
   "padding": 5,
   "signals": [
-    {"name": "offset", "value": 120},
+    {"name": "offset", "value": 150},
     {"name": "cellHeight", "value": 300},
     {"name": "cellWidth", "value": 200},
     {"name": "width", "update": "3 * (offset + cellWidth)"},
@@ -64,19 +64,6 @@
       ]
     },
     {
-      "name": "binRanges",
-      "source": "binned",
-      "transform": [
-        {
-          "type": "aggregate",
-          "groupby": ["label"],
-          "fields": ["bin0", "bin1"],
-          "ops": ["min", "max"],
-          "as": ["minBin", "maxBin"]
-        }
-      ]
-    },
-    {
       "name": "yref",
       "values": [
         {"label": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
@@ -127,16 +114,7 @@
         }
       },
       "data": [
-        {
-          "name": "xScaleData",
-          "source": "binRanges",
-          "transform": [
-            {
-              "type": "filter",
-              "expr": "datum.label === parent.label"
-            }
-          ]
-        },
+
         {
           "name": "yScaleData",
           "source": "maxCounts",
@@ -236,9 +214,6 @@
               "y": {"scale": "yscale", "field": "count"},
               "y2": {"scale": "yscale", "value": 0},
               "tooltip": {"signal": "{ 'Count': datum.count }"}
-            },
-            "hover": {
-              "fill": {"value": "firebrick"}
             }
           }
         },
