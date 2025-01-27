@@ -3,13 +3,36 @@
   "description": "A small multiples view of histograms for visualizing univariate distributions using static bins.",
   "height": 500,
   "padding": 5,
-
   "signals": [
     {"name": "offset", "value": 40},
+    {"name": "cellHeight", "value": 300},
     {"name": "cellWidth", "value": 200},
-    {"name": "width", "update": "3 * (offset + cellWidth)"}
+    {"name": "width", "update": "3 * (offset + cellWidth)"},
+    {"name": "totalHeight", "update": "cellHeight * 1.2"},
+    {
+      "name": "axisLabels",
+      "value": {
+        "Site 1": {"xaxis": "Beta", "yaxis": "Frequency"},
+        "Site 2": {"xaxis": "Gamma", "yaxis": "Frequency"},
+        "Site 3": {"xaxis": "Alpha", "yaxis": "Frequency"}
+      }
+    },
+    {
+      "name": "yref",
+      "value": {
+        "Site 1": [
+          {"number": 68000, "name": "line1", "color": "black", "type": "dashed"},
+          {"number": 69000, "name": "line2", "color": "red", "type": "solid"}
+        ],
+        "Site 2": [
+          {"number": 70000, "name": "line1", "color": "blue", "type": "dashed"}
+        ],
+        "Site 3": [
+          {"number": 71000, "name": "line1", "color": "green", "type": "solid"}
+        ]
+      }
+    }
   ],
-
   "data": [
     {
       "name": "binned",
@@ -59,9 +82,17 @@
           "as": ["minBin", "maxBin"]
         }
       ]
+    },
+    {
+      "name": "yrefData",
+      "values": [
+        {"site": "Site 1", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
+        {"site": "Site 1", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
+        {"site": "Site 2", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
+        {"site": "Site 3", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
+      ]
     }
   ],
-
   "scales": [
     {
       "name": "gscale",
@@ -75,9 +106,35 @@
       "type": "ordinal",
       "domain": {"data": "binned", "field": "label"},
       "range": {"scheme": "dark2"}
+    },
+    {
+      "name": "lineStyle",
+      "type": "ordinal",
+      "domain": ["dashed", "solid"],
+      "range": [[5, 5], []]
     }
   ],
-
+  "legends": [
+    {
+      "stroke": "color",
+      "strokeDash": "lineStyle",
+      "orient": "right",
+      "title": "Reference Lines",
+      "encode": {
+        "symbols": {
+          "enter": {
+            "stroke": {"field": "color"},
+            "strokeDash": {"field": "type"}
+          }
+        },
+        "labels": {
+          "enter": {
+            "text": {"field": "name"}
+          }
+        }
+      }
+    }
+  ],
   "marks": [
     {
       "name": "siteGroups",
@@ -93,14 +150,14 @@
         "enter": {
           "x": {"scale": "gscale", "field": "site", "offset": {"signal": "offset"}},
           "width": {"signal": "cellWidth"},
-          "height": {"signal": "height"},
+          "height": {"signal": "cellHeight"},
           "stroke": {"value": "#ccc"}
         }
       },
       "data": [
         {
           "name": "xScaleData",
-          "source": "maxCounts",
+          "source": "binRanges",
           "transform": [
             {
               "type": "filter",
@@ -110,7 +167,17 @@
         },
         {
           "name": "yScaleData",
-          "source": "binRanges",
+          "source": "maxCounts",
+          "transform": [
+            {
+              "type": "filter",
+              "expr": "datum.site === parent.site"
+            }
+          ]
+        },
+        {
+          "name": "filteredYrefData",
+          "source": "yrefData",
           "transform": [
             {
               "type": "filter",
@@ -124,16 +191,16 @@
           "name": "xscale",
           "type": "linear",
           "range": [0, {"signal": "cellWidth"}],
-          "domain": {"data": "xScaleData", "field": "maxCount"},
-          "zero": true,
+          "domain": {"data": "xScaleData", "fields": ["minBin", "maxBin"]},
+          "zero": false,
           "nice": true
         },
         {
           "name": "yscale",
           "type": "linear",
-          "range": [0, {"signal": "height"}],
-          "domain": {"data": "yScaleData", "fields": ["minBin", "maxBin"]},
-          "zero": false,
+          "range": [{"signal": "cellHeight"}, 0],
+          "domain": {"data": "yScaleData", "field": "maxCount"},
+          "zero": true,
           "nice": true
         }
       ],
@@ -143,12 +210,15 @@
           "scale": "xscale",
           "zindex": 1,
           "labelOverlap": "parity",
-          "labelSeparation": 20
+          "labelSeparation": 10,
+          "labelAngle": -45,
+          "title": {"signal": "axisLabels[parent.site].xaxis"}
         },
         {
           "orient": "left",
           "scale": "yscale",
-          "zindex": 1
+          "zindex": 1,
+          "title": {"signal": "axisLabels[parent.site].yaxis"}
         }
       ],
       "marks": [
@@ -162,10 +232,10 @@
               "opacity": {"value": 0.7}
             },
             "update": {
-              "x": {"scale": "xscale", "field": "count"},
-              "x2": {"scale": "xscale", "value": 0},
-              "y": {"scale": "yscale", "field": "bin0"},
-              "y2": {"scale": "yscale", "field": "bin1", "offset": -0.5},
+              "x": {"scale": "xscale", "field": "bin0"},
+              "x2": {"scale": "xscale", "field": "bin1", "offset": -0.5},
+              "y": {"scale": "yscale", "field": "count"},
+              "y2": {"scale": "yscale", "value": 0},
               "tooltip": {"signal": "{ 'Count': datum.count }"}
             },
             "hover": {
@@ -177,12 +247,27 @@
           "type": "text",
           "encode": {
             "enter": {
-              "x": { "signal": "cellWidth / 2" },
-              "y": { "value": -10 },
-              "align": { "value": "center" },
-              "fontSize": { "value": 13 },
-              "text": { "signal": "parent.site" },
-              "fontWeight": { "value": "bold" }
+              "x": {"signal": "cellWidth / 2"},
+              "y": {"signal": "-10"},
+              "align": {"value": "center"},
+              "fontSize": {"value": 13},
+              "text": {"signal": "parent.site"},
+              "fontWeight": {"value": "bold"}
+            }
+          }
+        },
+        {
+          "name": "refLines",
+          "type": "rule",
+          "from": {"data": "filteredYrefData"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "xscale", "field": "number"},
+              "y": {"value": 0},
+              "y2": {"signal": "cellHeight"},
+              "stroke": {"field": "color"},
+              "strokeDash": {"scale": "lineStyle", "field": "type"},
+              "tooltip": {"signal": "{ 'Value': datum.name }"}
             }
           }
         }
