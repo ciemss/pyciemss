@@ -24,7 +24,7 @@
       "zero": true,
       "domain": {
         "fields": [
-          {"data": "distributions", "field": "lower"},               
+          {"data": "distributions", "field": "lower"},
           {"data": "distributions", "field": "upper"},
           {"data": "traces", "field": "value"},
           {"data": "points", "field": "value"}
@@ -92,7 +92,7 @@
         }
       ]
     },
-        {
+    {
       "name": "clearData", "value": true,
       "on": [
         {
@@ -111,8 +111,47 @@
           "force":  true
         }
       ]
+    },
+    {
+      "name": "logLegendClick",
+      "value": null,
+      "on": [
+        {
+          "events": "@legendSymbol:click, @legendLabel:click",
+          "update": "{datum: datum}",
+          "force":  true
+        }
+      ]
+    },
+  { "description": "Active datapoint",
+    "name": "activated_datapoint", "value": null,
+    "on": [
+      {
+        "events": "symbol:mouseover",
+        "update": "item()"
+      },
+      {
+        "events": "symbol:mouseout",
+        "update": "null"
+      }
+    ]
+  },
+    {
+      "name": "logAreaClick",
+      "value": null,
+      "on": [
+        {
+          "events": "@area:click",
+          "update": "{datum: datum}",
+          "force":  true
+        }
+      ]
     }
   ],
+
+  "config": {
+    "logLevel": "warn"
+  },
 
   "legends": [
     {
@@ -374,7 +413,6 @@
             ]
           }
         ]}
-
   ],
 
   "data": [
@@ -394,7 +432,14 @@
         {"timepoint": 4, "upper": 0, "lower": 10, "trajectory": "b"},
         {"timepoint": 6, "upper": 30, "lower": 40, "trajectory": "b"}
       ],
-      "transform": [{"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}]
+      "transform": [
+        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}},
+        {
+          "type": "formula",
+          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', upper=' + datum.upper + ', lower=' + datum.lower + ', trajectory=' + datum.trajectory, null)",
+          "as": "debugInfo"
+        }
+      ]
     },
     {
       "name": "traces",
@@ -405,16 +450,29 @@
                  {"timepoint": 6, "value": 40, "trajectory": "d"},
                  {"timepoint": 8, "value": 40, "trajectory": "d"}
                  ],
-      "transform": [{"type": "filter", "expr": "isValid(datum.value)"},
-                    {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}
-            ]
-    },    
+      "transform": [
+        {"type": "filter", "expr": "isValid(datum.value)"},
+        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}},
+        {
+          "type": "formula",
+          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', value=' + datum.value + ', trajectory=' + datum.trajectory, null)",
+          "as": "debugInfo"
+        }
+      ]
+    },
     {
       "name": "points",
       "values": [{"timepoint": 6, "value": 30, "trajectory": "d"},
                  {"timepoint": 10, "value": 40, "trajectory": "d"},
                  {"timepoint": 5, "value": 10, "trajectory": "e"},
-                 {"timepoint": 6, "value": 15, "trajectory": "e"}]
+                 {"timepoint": 6, "value": 15, "trajectory": "e"}],
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', value=' + datum.value + ', trajectory=' + datum.trajectory, null)",
+          "as": "debugInfo"
+        }
+      ]
     },
     {
       "name": "markers_v",
