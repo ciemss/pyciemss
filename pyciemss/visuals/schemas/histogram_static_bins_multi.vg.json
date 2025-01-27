@@ -1,10 +1,10 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "description": "A small multiples view of histograms for visualizing univariate distributions using static bins.",
+  "description": "A small multiples view of histograms with subplot-specific legends and scales.",
   "height": 500,
   "padding": 5,
   "signals": [
-    {"name": "offset", "value": 40},
+    {"name": "offset", "value": 100},
     {"name": "cellHeight", "value": 300},
     {"name": "cellWidth", "value": 200},
     {"name": "width", "update": "3 * (offset + cellWidth)"},
@@ -12,24 +12,9 @@
     {
       "name": "axisLabels",
       "value": {
-        "beta": {"xaxis": "Beta", "yaxis": "Frequency"},
-        "gamma": {"xaxis": "Gamma", "yaxis": "Frequency"},
-        "I0": {"xaxis": "Alpha", "yaxis": "Frequency"}
-      }
-    },
-    {
-      "name": "yref",
-      "value": {
-        "beta": [
-          {"number": 68000, "name": "line1", "color": "black", "type": "dashed"},
-          {"number": 69000, "name": "line2", "color": "red", "type": "solid"}
-        ],
-        "gamma": [
-          {"number": 70000, "name": "line1", "color": "blue", "type": "dashed"}
-        ],
-        "I0": [
-          {"number": 71000, "name": "line1", "color": "green", "type": "solid"}
-        ]
+        "beta": {"xaxis": "beta", "yaxis": "Frequency"},
+        "gamma": {"xaxis": "gamma", "yaxis": "Frequency"},
+        "I0": {"xaxis": "I0", "yaxis": "Frequency"}
       }
     }
   ],
@@ -37,24 +22,24 @@
     {
       "name": "binned",
       "values": [
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "site": "beta"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "site": "beta"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "site": "beta"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "site": "beta"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "site": "beta"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "site": "beta"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 90, "site": "gamma"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 60, "site": "gamma"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 95, "site": "gamma"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 70, "site": "gamma"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 120, "site": "gamma"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 130, "site": "gamma"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 67, "site": "I0"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 80, "site": "I0"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 75, "site": "I0"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 79, "site": "I0"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 140, "site": "I0"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 105, "site": "I0"}
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "label": "beta"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "label": "beta"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "label": "beta"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "label": "beta"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "label": "beta"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "label": "beta"},
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 90, "label": "gamma"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 60, "label": "gamma"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 95, "label": "gamma"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 70, "label": "gamma"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 120, "label": "gamma"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 130, "label": "gamma"},
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 67, "label": "I0"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 80, "label": "I0"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 75, "label": "I0"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 79, "label": "I0"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 140, "label": "I0"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 105, "label": "I0"}
       ]
     },
     {
@@ -63,7 +48,7 @@
       "transform": [
         {
           "type": "aggregate",
-          "groupby": ["site"],
+          "groupby": ["label"],
           "fields": ["count"],
           "ops": ["max"],
           "as": ["maxCount"]
@@ -76,7 +61,7 @@
       "transform": [
         {
           "type": "aggregate",
-          "groupby": ["site"],
+          "groupby": ["label"],
           "fields": ["bin0", "bin1"],
           "ops": ["min", "max"],
           "as": ["minBin", "maxBin"]
@@ -86,10 +71,10 @@
     {
       "name": "yref",
       "values": [
-        {"site": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
-        {"site": "beta", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
-        {"site": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
-        {"site": "I0", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
+        {"label": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
+        {"label": "beta", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
+        {"label": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
+        {"label": "I0", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
       ]
     }
   ],
@@ -99,7 +84,7 @@
       "type": "band",
       "range": [0, {"signal": "width"}],
       "round": true,
-      "domain": {"data": "binned", "field": "site"}
+      "domain": {"data": "binned", "field": "label"}
     },
     {
       "name": "color",
@@ -114,41 +99,20 @@
       "range": [[5, 5], []]
     }
   ],
-  "legends": [
-    {
-      "stroke": "color",
-      "strokeDash": "lineStyle",
-      "orient": "right",
-      "title": "Reference Lines",
-      "encode": {
-        "symbols": {
-          "enter": {
-            "stroke": {"field": "color"},
-            "strokeDash": {"field": "type"}
-          }
-        },
-        "labels": {
-          "enter": {
-            "text": {"field": "name"}
-          }
-        }
-      }
-    }
-  ],
   "marks": [
     {
-      "name": "siteGroups",
+      "name": "labelGroups",
       "type": "group",
       "from": {
         "facet": {
           "data": "binned",
           "name": "facetedData",
-          "groupby": "site"
+          "groupby": "label"
         }
       },
       "encode": {
         "enter": {
-          "x": {"scale": "gscale", "field": "site", "offset": {"signal": "offset"}},
+          "x": {"scale": "gscale", "field": "label", "offset": {"signal": "offset"}},
           "width": {"signal": "cellWidth"},
           "height": {"signal": "cellHeight"},
           "stroke": {"value": "#ccc"}
@@ -161,7 +125,7 @@
           "transform": [
             {
               "type": "filter",
-              "expr": "datum.site === parent.site"
+              "expr": "datum.label === parent.label"
             }
           ]
         },
@@ -171,7 +135,7 @@
           "transform": [
             {
               "type": "filter",
-              "expr": "datum.site === parent.site"
+              "expr": "datum.label === parent.label"
             }
           ]
         },
@@ -181,7 +145,7 @@
           "transform": [
             {
               "type": "filter",
-              "expr": "datum.site === parent.site"
+              "expr": "datum.label === parent.label"
             }
           ]
         }
@@ -202,6 +166,33 @@
           "domain": {"data": "yScaleData", "field": "maxCount"},
           "zero": true,
           "nice": true
+        },
+        {
+          "name": "yrefColorScale",
+          "type": "ordinal",
+          "domain": {"data": "filteredyref", "field": "name"},
+          "range": {"data": "filteredyref", "field": "color"}
+        }
+      ],
+      "legends": [
+        {
+          "stroke": "yrefColorScale",
+          "strokeDash": "lineStyle",
+          "orient": "right",
+          "title": "Reference Lines",
+          "encode": {
+            "symbols": {
+              "enter": {
+                "stroke": {"scale": "yrefColorScale", "field": "label"},
+                "strokeDash": {"scale": "lineStyle", "field": "type"}
+              }
+            },
+            "labels": {
+              "enter": {
+                "text": {"field": "name"}
+              }
+            }
+          }
         }
       ],
       "axes": [
@@ -212,13 +203,13 @@
           "labelOverlap": "parity",
           "labelSeparation": 10,
           "labelAngle": -45,
-          "title": {"signal": "axisLabels[parent.site].xaxis"}
+          "title": {"signal": "axisLabels[parent.label].xaxis"}
         },
         {
           "orient": "left",
           "scale": "yscale",
           "zindex": 1,
-          "title": {"signal": "axisLabels[parent.site].yaxis"}
+          "title": {"signal": "axisLabels[parent.label].yaxis"}
         }
       ],
       "marks": [
@@ -251,7 +242,7 @@
               "y": {"signal": "-10"},
               "align": {"value": "center"},
               "fontSize": {"value": 13},
-              "text": {"signal": "parent.site"},
+              "text": {"signal": "parent.label"},
               "fontWeight": {"value": "bold"}
             }
           }
@@ -265,7 +256,7 @@
               "x": {"scale": "xscale", "field": "number"},
               "y": {"value": 0},
               "y2": {"signal": "cellHeight"},
-              "stroke": {"field": "color"},
+              "stroke": {"scale": "yrefColorScale", "field": "name"},
               "strokeDash": {"scale": "lineStyle", "field": "type"},
               "tooltip": {"signal": "{ 'Value': datum.name }"}
             }
