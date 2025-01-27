@@ -5,7 +5,7 @@
   "padding": 5,
 
   "signals": [
-    {"name": "offset", "value": 15},
+    {"name": "offset", "value": 40},
     {"name": "cellWidth", "value": 200},
     {"name": "width", "update": "3 * (offset + cellWidth)"}
   ],
@@ -138,8 +138,18 @@
         }
       ],
       "axes": [
-        {"orient": "bottom", "scale": "xscale", "zindex": 1},
-        {"orient": "left", "scale": "yscale", "zindex": 1}
+        {
+          "orient": "bottom",
+          "scale": "xscale",
+          "zindex": 1,
+          "labelOverlap": "parity",
+          "labelSeparation": 20
+        },
+        {
+          "orient": "left",
+          "scale": "yscale",
+          "zindex": 1
+        }
       ],
       "marks": [
         {
