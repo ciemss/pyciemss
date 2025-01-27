@@ -172,24 +172,21 @@
               "fill": {"value": "firebrick"}
             }
           }
+        },
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "x": { "signal": "cellWidth / 2" },
+              "y": { "value": -10 },
+              "align": { "value": "center" },
+              "fontSize": { "value": 13 },
+              "text": { "signal": "parent.site" },
+              "fontWeight": { "value": "bold" }
+            }
+          }
         }
       ]
-    },
-    {
-      "type": "text",
-      "from": {"data": "siteGroups"},
-      "encode": {
-        "enter": {
-          "y": {"field": "height", "mult": 0.5},
-          "x": {"field": "width"},
-          "fontSize": {"value": 11},
-          "fontWeight": {"value": "bold"},
-          "text": {"field": "datum.site"},
-          "align": {"value": "center"},
-          "baseline": {"value": "middle"},
-          "fill": {"value": "#000"}
-        }
-      }
     }
   ]
 }
