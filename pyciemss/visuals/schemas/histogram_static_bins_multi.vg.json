@@ -12,22 +12,22 @@
     {
       "name": "axisLabels",
       "value": {
-        "Site 1": {"xaxis": "Beta", "yaxis": "Frequency"},
-        "Site 2": {"xaxis": "Gamma", "yaxis": "Frequency"},
-        "Site 3": {"xaxis": "Alpha", "yaxis": "Frequency"}
+        "beta": {"xaxis": "Beta", "yaxis": "Frequency"},
+        "gamma": {"xaxis": "Gamma", "yaxis": "Frequency"},
+        "I0": {"xaxis": "Alpha", "yaxis": "Frequency"}
       }
     },
     {
       "name": "yref",
       "value": {
-        "Site 1": [
+        "beta": [
           {"number": 68000, "name": "line1", "color": "black", "type": "dashed"},
           {"number": 69000, "name": "line2", "color": "red", "type": "solid"}
         ],
-        "Site 2": [
+        "gamma": [
           {"number": 70000, "name": "line1", "color": "blue", "type": "dashed"}
         ],
-        "Site 3": [
+        "I0": [
           {"number": 71000, "name": "line1", "color": "green", "type": "solid"}
         ]
       }
@@ -37,24 +37,24 @@
     {
       "name": "binned",
       "values": [
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "label": "s30", "site": "Site 1"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "label": "s30", "site": "Site 1"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "label": "s30", "site": "Site 1"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "label": "s30", "site": "Site 1"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "label": "s30", "site": "Site 1"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "label": "s30", "site": "Site 1"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 90, "label": "s40", "site": "Site 2"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 60, "label": "s40", "site": "Site 2"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 95, "label": "s40", "site": "Site 2"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 70, "label": "s40", "site": "Site 2"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 120, "label": "s40", "site": "Site 2"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 130, "label": "s40", "site": "Site 2"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 67, "label": "s50", "site": "Site 3"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 80, "label": "s50", "site": "Site 3"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 75, "label": "s50", "site": "Site 3"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 79, "label": "s50", "site": "Site 3"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 140, "label": "s50", "site": "Site 3"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 105, "label": "s50", "site": "Site 3"}
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "site": "beta"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "site": "beta"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "site": "beta"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "site": "beta"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "site": "beta"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "site": "beta"},
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 90, "site": "gamma"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 60, "site": "gamma"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 95, "site": "gamma"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 70, "site": "gamma"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 120, "site": "gamma"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 130, "site": "gamma"},
+        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 67, "site": "I0"},
+        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 80, "site": "I0"},
+        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 75, "site": "I0"},
+        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 79, "site": "I0"},
+        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 140, "site": "I0"},
+        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 105, "site": "I0"}
       ]
     },
     {
@@ -84,12 +84,12 @@
       ]
     },
     {
-      "name": "yrefData",
+      "name": "yref",
       "values": [
-        {"site": "Site 1", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
-        {"site": "Site 1", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
-        {"site": "Site 2", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
-        {"site": "Site 3", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
+        {"site": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
+        {"site": "beta", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
+        {"site": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
+        {"site": "I0", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
       ]
     }
   ],
@@ -176,8 +176,8 @@
           ]
         },
         {
-          "name": "filteredYrefData",
-          "source": "yrefData",
+          "name": "filteredyref",
+          "source": "yref",
           "transform": [
             {
               "type": "filter",
@@ -259,7 +259,7 @@
         {
           "name": "refLines",
           "type": "rule",
-          "from": {"data": "filteredYrefData"},
+          "from": {"data": "filteredyref"},
           "encode": {
             "enter": {
               "x": {"scale": "xscale", "field": "number"},

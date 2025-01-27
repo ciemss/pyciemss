@@ -113,12 +113,9 @@ def histogram_multi(
 
     schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
 
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]
-    )
 
     schema["data"] = vega.replace_named_with(
-        schema["data"], "yref", ["values"], [{"count": v} for v in yrefs]
+        schema["data"], "yref", ["values"], yrefs
     )
 
     if return_bins:
