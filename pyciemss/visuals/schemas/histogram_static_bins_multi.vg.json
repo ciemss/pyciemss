@@ -4,7 +4,7 @@
   "height": 500,
   "padding": 5,
   "signals": [
-    {"name": "offset", "value": 100},
+    {"name": "offset", "value": 120},
     {"name": "cellHeight", "value": 300},
     {"name": "cellWidth", "value": 200},
     {"name": "width", "update": "3 * (offset + cellWidth)"},
@@ -15,6 +15,14 @@
         "beta": {"xaxis": "beta", "yaxis": "Frequency"},
         "gamma": {"xaxis": "gamma", "yaxis": "Frequency"},
         "I0": {"xaxis": "I0", "yaxis": "Frequency"}
+      }
+    },
+    {
+      "name": "range",
+      "value": {
+        "beta": {"min": 70000, "max": 80000},
+        "gamma": {"min": 70000, "max": 80000},
+        "I0": {"min": 70000, "max": 80000}
       }
     }
   ],
@@ -155,7 +163,7 @@
           "name": "xscale",
           "type": "linear",
           "range": [0, {"signal": "cellWidth"}],
-          "domain": {"data": "xScaleData", "fields": ["minBin", "maxBin"]},
+          "domain": {"signal": "[range[parent.label].min, range[parent.label].max]"},
           "zero": false,
           "nice": true
         },

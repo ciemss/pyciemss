@@ -36,30 +36,16 @@ def histogram_multi(
     )
 
 
-@overload
-def histogram_multi(
-    *,
-    xrefs: List[Number] = [],
-    yrefs: List[Number] = [],
-    bin_rule: Callable = sturges_bin,
-    return_bins: Literal[False],
-    **data,
-) -> vega.VegaSchema:
-    return histogram_multi(
-        xrefs=xrefs,
-        yrefs=yrefs,
-        bin_rule=bin_rule,
-        return_bins=return_bins,
-        **data,
-    )
 
 
 def histogram_multi(
     *,
     xrefs: List[Number] = [],
     yrefs: List[Number] = [],
-    bin_rule: Callable = sturges_bin,
+    axis_labels: List[str] = [],
+    bins: int = 30,  # Specify the number of bins directly
     return_bins: bool = False,
+    range: List[str] = [],
     **data,
 ) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, pd.DataFrame]]:
     """
@@ -72,11 +58,11 @@ def histogram_multi(
           representation more interpretable
 
     **data -- Datasets, name will be used to build labels.
-    bin_rule -- Determines bins width using this function.
-                Will received a joint dataframe of all data passed
+    bins - Number of bins to divide into
     xrefs - List of values in the bin-range to highlight as vertical lines
     yrefs - List of values in the count-range to highlight as horizontal lines
-    bins - Number of bins to divide into
+    axis_labels - List of labels for the axes
+    range - Dictionary specifying the min and max values for each label
     """
 
     schema = vega.load_schema("histogram_static_bins_multi.vg.json")
@@ -104,25 +90,31 @@ def histogram_multi(
 
     data = {k: as_value_list(subset) for k, subset in data.items()}
 
-    joint = pd.DataFrame(data)
-    bins_count = bin_rule(joint)
-    _, edges = np.histogram(joint, bins=bins_count)
+    hists = {}
+    for k, subset in data.items():
+        _, edges = np.histogram(subset, bins=bins)  # Calculate histogram edges for each subset individually
+        hists[k] = hist(k, subset, edges)
 
-    hists = {k: hist(k, subset, edges) for k, subset in data.items()}
     desc = [item for sublist in hists.values() for item in sublist]
 
     schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
 
-
     schema["data"] = vega.replace_named_with(
         schema["data"], "yref", ["values"], yrefs
     )
+    schema["signals"] = vega.replace_named_with(
+        schema["signals"], "axisLabels", ["value"], axis_labels
+    )
 
+    if range is not None:
+        schema["signals"] = vega.replace_named_with(
+            schema["signals"], "range", ["value"], range
+        )
+    
     if return_bins:
         return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
     else:
         return schema
-
 
 def heatmap_scatter(
     points: pd.DataFrame,
