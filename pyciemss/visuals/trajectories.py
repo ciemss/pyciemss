@@ -127,8 +127,8 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
-    base_markers_v: Optional[Dict[str, Number]] = None,
-    base_markers_h: Optional[Dict[str, Number]] = None,
+    base_markers_v,
+    base_markers_h,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict] = None,
     qlow: float = 0.05,
@@ -137,6 +137,7 @@ def trajectories(
     logy: bool = False,
     limit: Optional[Integral] = None,
     title: Optional[str] = None,
+    axis_labels
 ) -> vega.VegaSchema:
     """_summary_
 
@@ -229,15 +230,11 @@ def trajectories(
     else:
         points = []
 
-    if base_markers_v is not None:
-        markers_v = [{"axis_value": v, "label": k} for k, v in base_markers_v.items()]
-    else:
-        markers_v = []
+    if base_markers_v is  None:
+        base_markers_v = []
 
-    if base_markers_h is not None:
-        markers_h = [{"axis_value": v, "label": k} for k, v in base_markers_h.items()]
-    else:
-        markers_h = []
+    if base_markers_h is None:
+        base_markers_h = []
 
     schema = vega.load_schema("trajectories.vg.json")
     schema["data"] = vega.replace_named_with(
@@ -251,10 +248,14 @@ def trajectories(
         schema["data"], "traces", ["values"], _clean_nans(traces)
     )
     schema["data"] = vega.replace_named_with(
-        schema["data"], "markers_v", ["values"], _clean_nans(markers_v)
+        schema["data"], "markers_v", ["values"], base_markers_v
     )
     schema["data"] = vega.replace_named_with(
-        schema["data"], "markers_h", ["values"], _clean_nans(markers_h)
+        schema["data"], "markers_h", ["values"], base_markers_h
+    )
+
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "axis_labels", ["values"], axis_labels
     )
 
     if colors is not None:

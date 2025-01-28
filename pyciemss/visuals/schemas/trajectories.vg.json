@@ -377,27 +377,6 @@
               "opacity": {"value": 1}
             }
           }
-        },
-        {
-          "type": "text",
-          "name": "_marker_v flags",
-          "from": {"data": "_marker_v text"},
-          "encode": {
-            "enter": {
-              "text": {"field": "datum.label"},
-              "y": {"value": 0},
-              "fontSize": {"value": 8}
-            }
-          },
-          "transform": [
-            {
-              "type": "label",
-              "lineAnchor": "start",
-              "as": ["x", "_y", "opacity", "align", "baseline"],
-              "offset": [1],
-              "size": {"signal": "[width, height]"}
-            }
-          ]
         }
       ]
     },
@@ -418,27 +397,6 @@
               "opacity": {"value": 1}
             }
           }
-        },
-        {
-          "type": "text",
-          "name": "_marker_h flags",
-          "from": {"data": "_marker_h text"},
-          "encode": {
-            "enter": {
-              "text": {"field": "datum.label"},
-              "x": {"signal": "width+20"},
-              "fontSize": {"value": 8}
-            }
-          },
-          "transform": [
-            {
-              "type": "label",
-              "lineAnchor": "start",
-              "as": ["_x", "y", "opacity", "align", "baseline"],
-              "offset": [1],
-              "size": {"signal": "[width, height]"}
-            }
-          ]
         }
       ]
     }
