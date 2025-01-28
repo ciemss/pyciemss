@@ -127,17 +127,17 @@ def trajectories(
     points: Optional[pd.DataFrame] = None,
     keep: Union[str, list, Literal["all"]] = "all",
     drop: Union[str, list, None] = None,
-    base_markers_v,
-    base_markers_h,
+    base_markers_v: Optional[Dict[str, Number]] = None,
+    base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
-    colors: Optional[Dict] = None,
+    colors: Optional[Dict[str, str]] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     join_points: bool = True,
     logy: bool = False,
     limit: Optional[Integral] = None,
     title: Optional[str] = None,
-    axis_labels
+    axis_labels: Optional[Dict[str, str]] = None,
 ) -> vega.VegaSchema:
     """_summary_
 
@@ -149,7 +149,7 @@ def trajectories(
            These will be plotted as spans based on the qlow/qhigh parameters
         traces (None, pd.DataFrame): Example trajectories to plot.
         points (None, pd.DataFrame): Example points to plot (joined by lines)
-        base_markers (None, Dict[str, Number]): Timepoint markers. Key is the label, value is the timepoint
+        base_markers_v (None, Dict[str, Number]): Timepoint markers. Key is the label, value is the timepoint
         base_markers_h (None, Dict[str, Number]): Horizontal markers. Key is the label, value is the horizonal value
         keep (str, list, "all"): Only keep some of the 'distributions' based on keys/values.
            - Default is the string "all", and it keeps all columns
@@ -230,11 +230,14 @@ def trajectories(
     else:
         points = []
 
-    if base_markers_v is  None:
+    if base_markers_v is None:
         base_markers_v = []
 
     if base_markers_h is None:
         base_markers_h = []
+
+    if axis_labels is None:
+        axis_labels = {}
 
     schema = vega.load_schema("trajectories.vg.json")
     schema["data"] = vega.replace_named_with(
@@ -274,7 +277,6 @@ def trajectories(
         schema["marks"] = vega.replace_named_with(
             schema["marks"], "_points", ["marks"], simplified_marks
         )
-        schema
 
     if logy:
         schema = vega.rescale(schema, "yscale", "log")

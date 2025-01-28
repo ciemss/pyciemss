@@ -32,10 +32,16 @@
       }
     },
     {
-      "name": "markerscale",
+      "name": "markerscale_v",
       "type": "ordinal",
       "domain": {"data": "markers_v", "field": "label"},
       "range": {"data": "markers_v", "field": "new_color"}
+    },
+    {
+      "name": "markerscale_h",
+      "type": "ordinal",
+      "domain": {"data": "markers_h", "field": "label"},
+      "range": {"data": "markers_h", "field": "new_color"}
     },
     {
       "name": "color",
@@ -191,11 +197,37 @@
       }
     },
     {
-      "name": "marker_color_legend",
-      "fill": "markerscale",
+      "name": "marker_color_legend_v",
+      "fill": "markerscale_v",
       "encode": {
         "symbols": {
-          "name": "markerLegendSymbol",
+          "name": "markerLegendSymbol_v",
+          "interactive": true,
+          "update": {
+            "size": {"value": 100},
+            "shape": {"value": "square"},
+            "stroke": {"value": "transparent"},
+            "opacity": {"value": 1}
+          }
+        },
+        "labels": {
+          "name": "markerLegendLabel",
+          "interactive": true,
+          "update": {
+            "text": {"field": "label"},
+            "fill": {"value": "black"},
+            "opacity": {"value": 1}
+          }
+        }
+      }
+    },
+
+    {
+      "name": "marker_color_legend_h",
+      "fill": "markerscale_h",
+      "encode": {
+        "symbols": {
+          "name": "markerLegendSymbol_h",
           "interactive": true,
           "update": {
             "size": {"value": 100},
@@ -369,7 +401,7 @@
           "name": "_marker_v text",
           "from": {"data": "markers_v"},
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale", "field": "label"}},
+            "enter": {"stroke": {"scale": "markerscale_v", "field": "label"}},
             "update": {
               "x": {"scale": "xscale", "field": "axis_value"},
               "y2": {"value": 0},
@@ -389,7 +421,7 @@
           "name": "_marker_h text",
           "from": {"data": "markers_h"},
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale", "field": "label"}},
+            "enter": {"stroke": {"scale": "markerscale_h", "field": "label"}},
             "update": {
               "y": {"scale": "yscale", "field": "axis_value"},
               "x2": {"value": 0},
