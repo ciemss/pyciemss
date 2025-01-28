@@ -231,13 +231,13 @@ def trajectories(
         points = []
 
     if base_markers_v is None:
-        base_markers_v = []
+        base_markers_v = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
 
     if base_markers_h is None:
-        base_markers_h = []
+        base_markers_h = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
 
     if axis_labels is None:
-        axis_labels = {}
+        axis_labels = {"xaxis_label": "", "yaxis_label": ""}
 
     schema = vega.load_schema("trajectories.vg.json")
     schema["data"] = vega.replace_named_with(
@@ -256,7 +256,7 @@ def trajectories(
     schema["data"] = vega.replace_named_with(
         schema["data"], "markers_h", ["values"], base_markers_h
     )
-
+    
     schema["data"] = vega.replace_named_with(
         schema["data"], "axis_labels", ["values"], axis_labels
     )

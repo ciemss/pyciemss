@@ -55,6 +55,12 @@
          ],
          "sort": {"order": "ascending"}
       }
+    },
+    {
+      "name": "lineStyle",
+      "type": "ordinal",
+      "domain": ["dashed", "solid"],
+      "range": [[5, 5], []]
     }
   ],
 
@@ -401,7 +407,8 @@
           "name": "_marker_v text",
           "from": {"data": "markers_v"},
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale_v", "field": "label"}},
+            "enter": {"stroke": {"scale": "markerscale_v", "field": "label"},
+            "strokeDash": {"scale": "lineStyle", "field": "type"}},
             "update": {
               "x": {"scale": "xscale", "field": "axis_value"},
               "y2": {"value": 0},
@@ -421,7 +428,8 @@
           "name": "_marker_h text",
           "from": {"data": "markers_h"},
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale_h", "field": "label"}},
+            "enter": {"stroke": {"scale": "markerscale_h", "field": "label"},
+            "strokeDash": {"scale": "lineStyle", "field": "type"}},
             "update": {
               "y": {"scale": "yscale", "field": "axis_value"},
               "x2": {"value": 0},
@@ -499,15 +507,13 @@
     {
       "name": "markers_v",
       "values": [
-        {"axis_value": 3, "label": "Low marker", "new_color": "red"},
-        {"axis_value": 7, "label": "High marker", "new_color": "blue"}
+        {"axis_value": 3, "label": "", "new_color": "", "type": ""}
       ]
     },
     {
       "name": "markers_h",
       "values": [
-        {"axis_value": 10, "label": "Low marker", "new_color": "green"},
-        {"axis_value": 37, "label": "High marker 2", "new_color": "orange"}
+        {"axis_value": 3, "label": "", "new_color": "", "type": ""}
       ]
     },
     {
