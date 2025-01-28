@@ -1,251 +1,131 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "description": "A small multiples view of histograms with subplot-specific legends and scales.",
-  "height": 500,
+  "description": "Histogram for visualizing a univariate distribution using static bins.",
+  "width": 500,
+  "height": 100,
   "padding": 5,
-  "signals": [
-    {"name": "offset", "value": 150},
-    {"name": "cellHeight", "value": 300},
-    {"name": "cellWidth", "value": 200},
-    {"name": "width", "update": "3 * (offset + cellWidth)"},
-    {"name": "totalHeight", "update": "cellHeight * 1.2"},
-    {
-      "name": "axisLabels",
-      "value": {
-        "beta": {"xaxis": "beta", "yaxis": "Frequency"},
-        "gamma": {"xaxis": "gamma", "yaxis": "Frequency"},
-        "I0": {"xaxis": "I0", "yaxis": "Frequency"}
-      }
-    },
-    {
-      "name": "range",
-      "value": {
-        "beta": {"min": 70000, "max": 80000},
-        "gamma": {"min": 70000, "max": 80000},
-        "I0": {"min": 70000, "max": 80000}
-      }
-    }
-  ],
   "data": [
+      {
+         "name": "binned",
+         "values": [
+            {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "label": "s30"},
+            {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "label": "s30"},
+            {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "label": "s30"},
+            {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "label": "s30"},
+            {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "label": "s30"},
+            {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "label": "s30"}
+         ]
+      },
+      {
+         "name": "xref",
+         "values": [
+            {"value": 10000},
+            {"value": 74000}
+         ]
+      },
+      {
+         "name": "yref",
+         "values": [
+          {"value": 100},
+          {"value": 400}
+         ]
+      },
     {
-      "name": "binned",
-      "values": [
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 77, "label": "beta"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 65, "label": "beta"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 68, "label": "beta"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 81, "label": "beta"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 590, "label": "beta"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 123, "label": "beta"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 90, "label": "gamma"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 60, "label": "gamma"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 95, "label": "gamma"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 70, "label": "gamma"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 120, "label": "gamma"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 130, "label": "gamma"},
-        {"bin0": 68577.46875, "bin1": 70759.6796875, "count": 67, "label": "I0"},
-        {"bin0": 70759.6796875, "bin1": 72941.890625, "count": 80, "label": "I0"},
-        {"bin0": 72941.890625, "bin1": 75124.1015625, "count": 75, "label": "I0"},
-        {"bin0": 75124.1015625, "bin1": 77306.3125, "count": 79, "label": "I0"},
-        {"bin0": 77306.3125, "bin1": 79488.5234375, "count": 140, "label": "I0"},
-        {"bin0": 79488.5234375, "bin1": 81670.734375, "count": 105, "label": "I0"}
-      ]
-    },
-    {
-      "name": "maxCounts",
-      "source": "binned",
+      "name": "_ranges",
+      "source": ["binned"],
       "transform": [
         {
           "type": "aggregate",
-          "groupby": ["label"],
-          "fields": ["count"],
-          "ops": ["max"],
-          "as": ["maxCount"]
+          "fields": ["bin0", "bin1"],
+          "ops": ["min", "max"],
+          "as": ["min", "max"]
         }
-      ]
-    },
-    {
-      "name": "yref",
-      "values": [
-        {"label": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
-        {"label": "beta", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
-        {"label": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
-        {"label": "I0", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
       ]
     }
   ],
+  "legends": [
+    {"fill": "color"}
+  ],      
   "scales": [
     {
-      "name": "gscale",
-      "type": "band",
-      "range": [0, {"signal": "width"}],
+      "name": "xscale",
+      "type": "linear",
+      "range": "width",
+      "domain": {"data": "_ranges", "fields": ["min", "max"]}
+    },
+    {
+      "name": "yscale",
+      "type": "linear",
+      "range": "height",
       "round": true,
-      "domain": {"data": "binned", "field": "label"}
+      "domain": {"data": "binned", "field": "count"},
+      "zero": true,
+      "nice": true
     },
     {
       "name": "color",
       "type": "ordinal",
       "domain": {"data": "binned", "field": "label"},
       "range": {"scheme": "dark2"}
-    },
-    {
-      "name": "lineStyle",
-      "type": "ordinal",
-      "domain": ["dashed", "solid"],
-      "range": [[5, 5], []]
     }
   ],
+  "axes": [
+    {"orient": "bottom", "scale": "xscale", "zindex": 1},
+    {"orient": "left", "scale": "yscale", "tickCount": 5, "zindex": 1}
+  ],
+  "title": {
+    "text": "Histogram",
+    "orient": "top",
+    "anchor": "start",
+    "frame": "group"
+  },
   "marks": [
     {
-      "name": "labelGroups",
-      "type": "group",
-      "from": {
-        "facet": {
-          "data": "binned",
-          "name": "facetedData",
-          "groupby": "label"
-        }
-      },
+      "name": "bins",
+      "type": "rect",
+      "from": {"data": "binned"},
       "encode": {
-        "enter": {
-          "x": {"scale": "gscale", "field": "label", "offset": {"signal": "offset"}},
-          "width": {"signal": "cellWidth"},
-          "height": {"signal": "cellHeight"},
-          "stroke": {"value": "#ccc"}
-        }
-      },
-      "data": [
-
-        {
-          "name": "yScaleData",
-          "source": "maxCounts",
-          "transform": [
-            {
-              "type": "filter",
-              "expr": "datum.label === parent.label"
-            }
-          ]
+        "update": {
+          "x": {"scale": "xscale", "field": "bin0"},
+          "x2": {"scale": "xscale", "field": "bin1", "offset": -0.5},
+          "y": {"scale": "yscale", "field": "count"},
+          "y2": {"scale": "yscale", "value": 0},
+          "tooltip": {"field": "count"},
+          "fill": {"scale": "color", "field": "label"},
+          "opacity": {"value": 0.7}
         },
-        {
-          "name": "filteredyref",
-          "source": "yref",
-          "transform": [
-            {
-              "type": "filter",
-              "expr": "datum.label === parent.label"
-            }
-          ]
+        "hover": {"fill": {"value": "firebrick"}}
+      }
+    },
+    {
+      "name": "x_highlights",
+      "type": "rule",
+      "clip": true,
+      "from": {"data": "xref"},
+      "encode": {
+        "enter": {"stroke": {"value": "red"}},
+        "update": {
+          "x": {"scale": "xscale", "field": "value"},
+          "y2": {"value": 0},
+          "y": {"signal": "height"},
+          "opacity": {"value": 1}
         }
-      ],
-      "scales": [
-        {
-          "name": "xscale",
-          "type": "linear",
-          "range": [0, {"signal": "cellWidth"}],
-          "domain": {"signal": "[range[parent.label].min, range[parent.label].max]"},
-          "zero": false,
-          "nice": true
-        },
-        {
-          "name": "yscale",
-          "type": "linear",
-          "range": [{"signal": "cellHeight"}, 0],
-          "domain": {"data": "yScaleData", "field": "maxCount"},
-          "zero": true,
-          "nice": true
-        },
-        {
-          "name": "yrefColorScale",
-          "type": "ordinal",
-          "domain": {"data": "filteredyref", "field": "name"},
-          "range": {"data": "filteredyref", "field": "color"}
+      }
+    },
+    {
+      "name": "y_highlights",
+      "type": "rule",
+      "clip": true,
+      "from": {"data": "yref"},
+      "encode": {
+        "enter": {"stroke": {"value": "red"}},
+        "update": {
+          "y": {"scale": "yscale", "field": "value"},
+          "x2": {"value": 0},
+          "x": {"signal": "width"},
+          "opacity": {"value": 1}
         }
-      ],
-      "legends": [
-        {
-          "stroke": "yrefColorScale",
-          "strokeDash": "lineStyle",
-          "orient": "right",
-          "title": "Reference Lines",
-          "encode": {
-            "symbols": {
-              "enter": {
-                "stroke": {"scale": "yrefColorScale", "field": "label"},
-                "strokeDash": {"scale": "lineStyle", "field": "type"}
-              }
-            },
-            "labels": {
-              "enter": {
-                "text": {"field": "name"}
-              }
-            }
-          }
-        }
-      ],
-      "axes": [
-        {
-          "orient": "bottom",
-          "scale": "xscale",
-          "zindex": 1,
-          "labelOverlap": "parity",
-          "labelSeparation": 10,
-          "labelAngle": -45,
-          "title": {"signal": "axisLabels[parent.label].xaxis"}
-        },
-        {
-          "orient": "left",
-          "scale": "yscale",
-          "zindex": 1,
-          "title": {"signal": "axisLabels[parent.label].yaxis"}
-        }
-      ],
-      "marks": [
-        {
-          "name": "bins",
-          "type": "rect",
-          "from": {"data": "facetedData"},
-          "encode": {
-            "enter": {
-              "fill": {"scale": "color", "field": "label"},
-              "opacity": {"value": 0.7}
-            },
-            "update": {
-              "x": {"scale": "xscale", "field": "bin0"},
-              "x2": {"scale": "xscale", "field": "bin1", "offset": -0.5},
-              "y": {"scale": "yscale", "field": "count"},
-              "y2": {"scale": "yscale", "value": 0},
-              "tooltip": {"signal": "{ 'Count': datum.count }"}
-            }
-          }
-        },
-        {
-          "type": "text",
-          "encode": {
-            "enter": {
-              "x": {"signal": "cellWidth / 2"},
-              "y": {"signal": "-10"},
-              "align": {"value": "center"},
-              "fontSize": {"value": 13},
-              "text": {"signal": "parent.label"},
-              "fontWeight": {"value": "bold"}
-            }
-          }
-        },
-        {
-          "name": "refLines",
-          "type": "rule",
-          "from": {"data": "filteredyref"},
-          "encode": {
-            "enter": {
-              "x": {"scale": "xscale", "field": "number"},
-              "y": {"value": 0},
-              "y2": {"signal": "cellHeight"},
-              "stroke": {"scale": "yrefColorScale", "field": "name"},
-              "strokeDash": {"scale": "lineStyle", "field": "type"},
-              "tooltip": {"signal": "{ 'Value': datum.name }"}
-            }
-          }
-        }
-      ]
+      }
     }
   ]
 }

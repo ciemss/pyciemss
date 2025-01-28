@@ -24,9 +24,9 @@ def histogram_multi(
     xrefs: List[Number] = [],
     yrefs: List[Number] = [],
     bin_rule: Callable = sturges_bin,
-    return_bins: Literal[True],
+    return_bins: Literal[False],
     **data,
-) -> Tuple[vega.VegaSchema, pd.DataFrame]:
+) -> vega.VegaSchema:
     return histogram_multi(
         xrefs=xrefs,
         yrefs=yrefs,
@@ -36,16 +36,89 @@ def histogram_multi(
     )
 
 
-
-
 def histogram_multi(
     *,
     xrefs: List[Number] = [],
     yrefs: List[Number] = [],
-    axis_labels: List[str] = [],
-    bins: int = 30,  # Specify the number of bins directly
+    bin_rule: Callable = sturges_bin,
     return_bins: bool = False,
-    range: List[str] = [],
+    **data,
+) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, pd.DataFrame]]:
+    """
+    Create a histogram with server-side binning.
+
+    TODO: Maybe compute overlap in bins explicitly and visualize as stacked?
+          Limits (practically) to two distributions, but legend is more clear.
+
+    TODO: Need to align histogram bin size between groups to make the visual
+          representation more interpretable
+
+    **data -- Datasets, name will be used to build labels.
+    bin_rule -- Determines bins width using this function.
+                Will received a joint dataframe of all data passed
+    xrefs - List of values in the bin-range to highlight as vertical lines
+    yrefs - List of values in the count-range to highlight as horizontal lines
+    bins - Number of bins to divide into
+    """
+
+    schema = vega.load_schema("histogram_static_bins_multi.vg.json")
+
+    def hist(label, subset, edges):
+        assignments = np.digitize(subset, edges) - 1
+        counts = np.bincount(assignments)
+        spans = [*(zip(edges, edges[1:]))]
+        desc = [
+            {
+                "bin0": l.item(),
+                "bin1": h.item(),
+                "count": c.item(),
+                "label": label,
+            }
+            for ((l, h), c) in zip(spans, counts)
+        ]
+        return desc
+
+    def as_value_list(data):
+        if len(data.shape) > 1:
+            data = data.ravel()
+
+        return pd.Series(data)
+
+    data = {k: as_value_list(subset) for k, subset in data.items()}
+
+    joint = pd.DataFrame(data)
+    bins_count = bin_rule(joint)
+    _, edges = np.histogram(joint, bins=bins_count)
+
+    hists = {k: hist(k, subset, edges) for k, subset in data.items()}
+    desc = [item for sublist in hists.values() for item in sublist]
+
+    schema["data"] = vega.replace_named_with(schema["data"], "binned", ["values"], desc)
+
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "xref", ["values"], [{"value": v} for v in xrefs]
+    )
+
+    schema["data"] = vega.replace_named_with(
+        schema["data"], "yref", ["values"], [{"count": v} for v in yrefs]
+    )
+
+    if return_bins:
+        return schema, pd.DataFrame(desc).set_index(["bin0", "bin1"])
+    else:
+        return schema
+
+
+
+
+
+def histogram_subplots(
+    *,
+    yrefs: List[dict] = [],
+    axis_labels: dict = {},
+    bins: int = 30, 
+    return_bins: bool = False,
+    range: dict = {},
     **data,
 ) -> Union[vega.VegaSchema, Tuple[vega.VegaSchema, pd.DataFrame]]:
     """
@@ -60,12 +133,12 @@ def histogram_multi(
     **data -- Datasets, name will be used to build labels.
     bins - Number of bins to divide into
     xrefs - List of values in the bin-range to highlight as vertical lines
-    yrefs - List of values in the count-range to highlight as horizontal lines
-    axis_labels - List of labels for the axes
+    yrefs - List of dictionaries specifying the horizontal lines
+    axis_labels - Dictionary of labels for the axes
     range - Dictionary specifying the min and max values for each label
     """
 
-    schema = vega.load_schema("histogram_static_bins_multi.vg.json")
+    schema = vega.load_schema("histogram_subplots.vg.json")
 
     def hist(label, subset, edges):
         assignments = np.digitize(subset, edges) - 1
@@ -108,7 +181,7 @@ def histogram_multi(
 
     if range is not None:
         schema["signals"] = vega.replace_named_with(
-            schema["signals"], "range", ["value"], range
+            schema["signals"], "manual_range", ["value"], range
         )
     
     if return_bins:
