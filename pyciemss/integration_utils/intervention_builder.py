@@ -217,7 +217,7 @@ def intervention_func_combinator(
 
 
 def combine_static_parameter_interventions(
-    interventions: List[Dict[float, Dict[str, Intervention]]]
+    interventions: List[Dict[float, Dict[str, Intervention]]],
 ) -> Dict[float, Dict[str, Intervention]]:
     """
     Combine a list of static parameter interventions into one.
