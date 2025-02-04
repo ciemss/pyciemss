@@ -48,3 +48,4 @@ with StaticIntervention(intervention_time, {"S": intervention_assignment}):
     end_state = sir_model(start_time, end_time)
 ```
 
+TEST
