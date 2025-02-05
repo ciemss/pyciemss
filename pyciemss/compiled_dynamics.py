@@ -121,26 +121,25 @@ class CompiledDynamics(pyro.nn.PyroModule):
     ):
         self.instantiate_parameters()
 
-        if logging_times is not None:
-            with LogObservables(logging_times, self) as lo:
-                try:
+        try:
+            if logging_times is not None:
+                with LogObservables(logging_times, self) as lo:
                     simulate(self.deriv, self.initial_state(), start_time, end_time)
-                except AssertionError as e:
-                    if str(e) == "AssertionError: underflow in dt nan":
-                        raise AssertionError(
-                            "Underflow in the adaptive time step size. "
-                            "This is likely due to a stiff system of ODEs. "
-                            "Try changing the (distribution on) parameters, the rate laws, "
-                            "the initial state, or the time span."
-                        ) from e
-                    else:
-                        raise e
-
-                state = lo.state
-                observables = lo.observables
-        else:
-            state = simulate(self.deriv, self.initial_state(), start_time, end_time)
-            observables = self.observables(state)
+                    state = lo.state
+                    observables = lo.observables
+            else:
+                state = simulate(self.deriv, self.initial_state(), start_time, end_time)
+                observables = self.observables(state)
+        except AssertionError as e:
+            if "underflow in dt nan" in str(e):
+                raise AssertionError(
+                    "Underflow in the adaptive time step size. "
+                    "This is likely due to a stiff system of ODEs. "
+                    "Try changing the (distribution on) parameters, the rate laws, "
+                    "the initial state, or the time span."
+                ) from e
+            else:
+                raise e
 
         if is_traced:
             # Add the observables to the trace so that they can be accessed later.
@@ -153,7 +152,17 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 for name, value in observables.items()
             ]
 
-        return {**state, **observables}
+        result = {**state, **observables}
+
+        for k, v in result.items():
+            if torch.isnan(v).any():
+                raise ValueError(
+                    f"""
+NaN value detected in '{k}'. This suggests an issue with the model configuration.
+Please check your model equations, parameter values, initial conditions, and solver step size."""
+                )
+
+        return result
 
     @functools.singledispatchmethod
     @classmethod
