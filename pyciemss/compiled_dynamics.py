@@ -169,7 +169,9 @@ class CompiledDynamics(pyro.nn.PyroModule):
         for k, v in result.items():
             if torch.isnan(v).any():
                 raise ValueError(
-                    f"NaN value detected in '{k}'. This suggests an issue with the model configuration, please check your model equations, parameter values, initial conditions, and solver step size."
+                    f"""
+NaN value detected in '{k}'. This suggests an issue with the model configuration.
+Please check your model equations, parameter values, initial conditions, and solver step size."""
                 )
 
         return result
