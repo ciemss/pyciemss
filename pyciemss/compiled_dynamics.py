@@ -126,7 +126,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 try:
                     simulate(self.deriv, self.initial_state(), start_time, end_time)
                 except AssertionError as e:
-                    if str(e) == "AssertionError: underflow in dt nan":
+                    if "underflow in dt nan" in str(e):
                         raise AssertionError(
                             "Underflow in the adaptive time step size. "
                             "This is likely due to a stiff system of ODEs. "
@@ -139,7 +139,18 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 state = lo.state
                 observables = lo.observables
         else:
-            state = simulate(self.deriv, self.initial_state(), start_time, end_time)
+            try:
+                state = simulate(self.deriv, self.initial_state(), start_time, end_time)
+            except AssertionError as e:
+                if "underflow in dt nan" in str(e):
+                    raise AssertionError(
+                        "Underflow in the adaptive time step size. "
+                        "This is likely due to a stiff system of ODEs. "
+                        "Try changing the (distribution on) parameters, the rate laws, "
+                        "the initial state, or the time span."
+                    ) from e
+                else:
+                    raise e
             observables = self.observables(state)
 
         if is_traced:
@@ -153,7 +164,15 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 for name, value in observables.items()
             ]
 
-        return {**state, **observables}
+        result = {**state, **observables}
+
+        for k, v in result.items():
+            if torch.isnan(v).any():
+                raise ValueError(
+                    f"NaN value detected in '{k}'. This suggests an issue with the model configuration, please check your model equations, parameter values, initial conditions, and solver step size."
+                )
+
+        return result
 
     @functools.singledispatchmethod
     @classmethod
