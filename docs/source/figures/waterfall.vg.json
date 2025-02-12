@@ -1,0 +1,111 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "description": "Mean Shapley Values Bar Plot with Accumulated Bars.",
+    "width": 500,
+    "height": 500,
+    "padding": 5,
+    "data": [
+      {
+        "name": "table",
+        "values": [
+          {"Column": "Age", "Mean Shapley Value": -0.6932834614},
+          {"Column": "Workclass", "Mean Shapley Value": 0.0160077181},
+          {"Column": "Education-Num", "Mean Shapley Value": 0.1593687901}
+        ],
+        "transform": [
+          {
+            "type": "formula",
+            "expr": "round(datum['Mean Shapley Value'] * 100) / 100",
+            "as": "Rounded Mean Shapley Value"
+          },
+          {
+            "type": "window",
+            "sort": [{"field": "Column"}],
+            "ops": ["sum"],
+            "fields": ["Rounded Mean Shapley Value"],
+            "as": ["cumulative_sum"],
+            "frame": [null, 0]
+          },
+          {
+            "type": "formula",
+            "expr": "datum.cumulative_sum - datum['Rounded Mean Shapley Value']",
+            "as": "start"
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "yscale",
+        "type": "band",
+        "domain": {"data": "table", "field": "Column"},
+        "range": "height",
+        "padding": 0.1
+      },
+      {
+        "name": "xscale",
+        "type": "linear",
+        "domain": {
+          "data": "table",
+          "fields": ["start", "cumulative_sum"]
+        },
+        "range": "width",
+        "nice": true,
+        "zero": true
+      }
+    ],
+    "axes": [
+      {"orient": "left", "scale": "yscale", "title": "Column"},
+      {"orient": "bottom", "scale": "xscale", "title": "Mean Shapley Value"}
+    ],
+    "marks": [
+      {
+        "type": "rule",
+        "encode": {
+          "enter": {
+            "x": {"scale": "xscale", "value": 0},
+            "y": {"value": 0},
+            "y2": {"signal": "height"},
+            "strokeWidth": {"value": 1.5},
+            "stroke": {"value": "black"}
+          }
+        }
+      },
+      {
+        "type": "rect",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "y": {"scale": "yscale", "field": "Column"},
+            "height": {"scale": "yscale", "band": 1},
+            "x": {"scale": "xscale", "field": "start"},
+            "x2": {"scale": "xscale", "field": "cumulative_sum"}
+          },
+          "update": {
+            "fill": [
+              {"test": "datum['Rounded Mean Shapley Value'] < 0", "value": "red"},
+              {"test": "datum['Rounded Mean Shapley Value'] >= 0", "value": "blue"}
+            ]
+          },
+          "hover": {
+            "fill": {"value": "lightgrey"}
+          }
+        }
+      },
+      {
+        "type": "text",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "y": {"scale": "yscale", "field": "Column", "band": 0.5},
+            "x": {"scale": "xscale", "signal": "(datum.start + datum.cumulative_sum) / 2"},
+            "align": {"value": "center"},
+            "baseline": {"value": "middle"},
+            "text": {"field": "Rounded Mean Shapley Value"},
+            "fill": {"value": "grey"}
+          }
+        }
+      }
+    ]
+  }
+  

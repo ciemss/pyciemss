@@ -1,0 +1,104 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "description": "Mean Shapley Values Bar Plot with Rounded Numbers, Vertical Line at 0, and Arrow-like Bar Endpoints",
+    "width": 500,
+    "height": 500,
+    "padding": 5,
+    "data": [
+      {
+        "name": "table",
+        "values": [
+          {"Column": "Age", "Mean Shapley Value": -0.6932834614},
+          {"Column": "Workclass", "Mean Shapley Value": 0.0160077181},
+          {"Column": "Education-Num", "Mean Shapley Value": 0.1593687901},
+          {"Column": "Marital Status", "Mean Shapley Value": -0.1227975013},
+          {"Column": "Occupation", "Mean Shapley Value": -1.0234673973},
+          {"Column": "Relationship", "Mean Shapley Value": -0.7476020132},
+          {"Column": "Race", "Mean Shapley Value": 0.0314027765},
+          {"Column": "Sex", "Mean Shapley Value": -0.7228710756},
+          {"Column": "Capital Gain", "Mean Shapley Value": -0.0245469017},
+          {"Column": "Capital Loss", "Mean Shapley Value": 0.0},
+          {"Column": "Hours per week", "Mean Shapley Value": -0.2196676876},
+          {"Column": "Country", "Mean Shapley Value": 0.0074794674}
+        ],
+        "transform": [
+          {
+            "type": "formula",
+            "expr": "round(datum['Mean Shapley Value'] * 100) / 100",
+            "as": "Rounded Mean Shapley Value"
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "yscale",
+        "type": "band",
+        "domain": {"data": "table", "field": "Column", "sort": "-x"},
+        "range": "height",
+        "padding": 0.1
+      },
+      {
+        "name": "xscale",
+        "type": "linear",
+        "domain": {"data": "table", "field": "Rounded Mean Shapley Value"},
+        "range": "width",
+        "nice": true,
+        "zero": true
+      }
+    ],
+    "axes": [
+      {"orient": "left", "scale": "yscale", "title": "Column"},
+      {"orient": "bottom", "scale": "xscale", "title": "Mean Shapley Value"}
+    ],
+    "marks": [
+      {
+        "type": "rule",
+        "encode": {
+          "enter": {
+            "x": {"scale": "xscale", "value": 0},
+            "y": {"value": 0},
+            "y2": {"value": {"signal": "height"}},
+            "strokeWidth": {"value": 1.5},
+            "stroke": {"value": "black"}
+          }
+        }
+      },
+      {
+        "type": "rect",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "y": {"scale": "yscale", "field": "Column"},
+            "height": {"scale": "yscale", "band": 1},
+            "x": {"scale": "xscale", "field": "Rounded Mean Shapley Value"},
+            "x2": {"scale": "xscale", "value": 0}
+          },
+          "update": {
+            "fill": [
+              {"test": "datum['Rounded Mean Shapley Value'] < 0", "value": "red"},
+              {"test": "datum['Rounded Mean Shapley Value'] >= 0", "value": "blue"}
+            ]
+          },
+          "hover": {
+            "fill": {"value": "lightgrey"}
+          }
+        }
+      },
+      {
+        "type": "text",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "y": {"scale": "yscale", "field": "Column", "band": 0.5},
+            "x": {"scale": "xscale", "field": "Rounded Mean Shapley Value", "offset": 5},
+            "align": {"value": "left"},
+            "baseline": {"value": "middle"},
+            "text": {"field": "Rounded Mean Shapley Value"},
+            "fill": {"value": "grey"}
+          }
+        }
+      }
+    ]
+  }
+  
