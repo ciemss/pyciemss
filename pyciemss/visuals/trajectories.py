@@ -183,6 +183,8 @@ def trajectories(
     if colors:
         keep = [k for k in distributions.columns if colors.get(k, None) is not None]
         distributions = distributions.filter(items=keep)
+        keep = [k for k in traces.columns if colors.get(k, None) is not None]
+        traces = traces.filter(items=keep)
 
     point_trajectories = points.columns.tolist() if points is not None else []
     trace_trajectories = traces.columns.tolist() if traces is not None else []
@@ -231,10 +233,10 @@ def trajectories(
         points = []
 
     if base_markers_v is None:
-        base_markers_v = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
+        base_markers_v = [{"axis_value": 0, "label": "", "new_color": "", "type": ""}]
 
     if base_markers_h is None:
-        base_markers_h = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
+        base_markers_h = [{"axis_value": 0, "label": "", "new_color": "", "type": ""}]
 
     if axis_labels is None:
         axis_labels = {"xaxis_label": "", "yaxis_label": ""}
