@@ -273,6 +273,15 @@ def trajectories(
             schema["scales"], "color", ["range"], [*colors.values()]
         )
 
+# Modify to make the `_traces` lines dashed
+    for mark in schema["marks"]:
+        if "name" in mark and mark["name"] == "_traces":
+            for sub_mark in mark["marks"]:
+                if "type" in sub_mark and sub_mark["type"] == "line":
+                    if "encode" in sub_mark and "update" in sub_mark["encode"]:
+                        sub_mark["encode"]["update"]["strokeDash"] = {"value": [6, 2, 1, 2]}
+                        sub_mark["encode"]["update"]["strokeOpacity"] = {"value": 0.8}
+
     if not join_points:
         marks = vega.find_keyed(schema["marks"], "name", "_points")["marks"]
         simplified_marks = vega.delete_named(marks, "_points_line")
