@@ -277,12 +277,12 @@
             "update": {
               "x": {"scale": "xscale", "field": "timepoint"},
               "y": {"scale": "yscale", "field": "value"},
-              "size": {"value": 35},
-              "strokeWidth": {"value": 2},
+              "size": {"value": 20},
+              "strokeWidth": {"value": 1},
               "fill": {"scale": "color", "field": "trajectory"},
               "stroke": {"scale": "color", "field": "trajectory"},
               "fillOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.5},
+                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.4},
                 {"value": 0.15}
               ],
               "strokeOpacity": [
