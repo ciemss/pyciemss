@@ -131,7 +131,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 state = simulate(self.deriv, self.initial_state(), start_time, end_time)
                 observables = self.observables(state)
         except AssertionError as e:
-            if "underflow in dt nan" in str(e):
+            if "underflow in dt" in str(e):
                 raise AssertionError(
                     "Underflow in the adaptive time step size. "
                     "This is likely due to a stiff system of ODEs. "
