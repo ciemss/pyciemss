@@ -8,13 +8,20 @@
     {
       "name": "table",
       "values": [
-        {"Column": "Age", "Shapley_Value": -0.6932834614, "individual": 1},
-        {"Column": "Workclass", "Shapley_Value": 0.0160077181, "individual": 1},
-        {"Column": "Education-Num", "Shapley_Value": 0.1593687901, "individual": 1},
-        {"Column": "Age", "Shapley_Value": -0.8932834614, "individual": 2},
-        {"Column": "Workclass", "Shapley_Value": 0.020077181, "individual": 2},
-        {"Column": "Education-Num", "Shapley_Value": 0.33687901, "individual": 2}
-      ]},
+        {"Column": "Age", "Shapley_Value": -0.6932834614, "individual": 1, "expected_value": 0.5},
+        {"Column": "Workclass", "Shapley_Value": 0.0160077181, "individual": 1, "expected_value": 0.5},
+        {"Column": "Education-Num", "Shapley_Value": 0.1593687901, "individual": 1, "expected_value": 0.5},
+        {"Column": "Age", "Shapley_Value": 0.8932834614, "individual": 2, "expected_value": 0.5},
+        {"Column": "Workclass", "Shapley_Value": 0.020077181, "individual": 2, "expected_value": 0.5},
+        {"Column": "Education-Num", "Shapley_Value": -0.33687901, "individual": 2, "expected_value": 0.5},
+        {"Column": "Age", "Shapley_Value": 0.5232834614, "individual": 3, "expected_value": 0.5},
+        {"Column": "Workclass", "Shapley_Value": 0.0180077181, "individual": 3, "expected_value": 0.5},
+        {"Column": "Education-Num", "Shapley_Value": 0.2503687901, "individual": 3, "expected_value": 0.5},
+        {"Column": "Age", "Shapley_Value": -0.7832834614, "individual": 4, "expected_value": 0.5},
+        {"Column": "Workclass", "Shapley_Value": 0.022077181, "individual": 4, "expected_value": 0.5},
+        {"Column": "Education-Num", "Shapley_Value": 0.43987901, "individual": 4, "expected_value": 0.5}
+      ]
+    },
     {
       "name": "data_agg",
       "source": "table",
@@ -45,27 +52,31 @@
       "name": "data_sorted",
       "source": "table",
       "transform": [
-              {
-        "type": "lookup",
-        "from": "data_agg",
-        "key": "Column",
-        "fields": ["Column"],
-  "values": ["rank"],
-        "as": ["rank"]
-      },
+        {
+          "type": "lookup",
+          "from": "data_agg",
+          "key": "Column",
+          "fields": ["Column"],
+          "values": ["rank", "avg_Shapley_Value"],
+          "as": ["rank", "avg_Shapley_Value"]
+        },
         {
           "type": "window",
-          "sort":  {"field": "rank", "order": "ascending"},
+          "sort": {"field": "rank", "order": "ascending"},
           "groupby": ["individual"],
           "ops": ["sum"],
           "fields": ["Shapley_Value"],
           "as": ["cumulative_sum"],
           "frame": [null, 0]
         },
-          {"type": "formula", "as": "cumulative_sum_expected_value", "expr": "datum.cumulative_sum - .5"},
         {
           "type": "formula",
-          "expr": " datum.cumulative_sum_expected_value - datum.Shapley_Value",
+          "as": "cumulative_sum_expected_value",
+          "expr": "datum.cumulative_sum - datum.expected_value"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.cumulative_sum_expected_value - datum.Shapley_Value",
           "as": "start"
         }
       ]
@@ -93,13 +104,14 @@
     {
       "name": "color",
       "type": "linear",
-      "domain": {"data": "data_sorted", "field": "cumulative_sum_expected_value"},
+      "domain": {"data": "data_sorted", "field": "avg_Shapley_Value"},
       "range": {"scheme": "viridis"}
     }
   ],
   "axes": [
-    {"orient": "left", "scale": "yscale", "title": "Column"},
-    {"orient": "bottom", "scale": "xscale", "title": "Shapley Value"}
+    {"orient": "left", "scale": "yscale"},
+    {"orient": "bottom", "scale": "xscale", "title": "Shapley Value"},
+    {"orient": "top", "scale": "xscale", "title": "Shapley Value"}
   ],
   "marks": [
     {
@@ -120,7 +132,7 @@
               "x": {"scale": "xscale", "field": "start"},
               "x2": {"scale": "xscale", "field": "cumulative_sum_expected_value"},
               "y": {"scale": "yscale", "field": "Column", "band": 0.5},
-              "stroke": {"scale": "color", "field": "cumulative_sum_expected_value"},
+              "stroke": {"scale": "color", "field": "avg_Shapley_Value"},
               "strokeWidth": {"value": 2}
             }
           }
