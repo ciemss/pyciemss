@@ -51,3 +51,4 @@ jobs:
         shell: bash
         run: |
           pytest tests/ -s -n auto
+          python -c "import chirho_diffeqpy"
