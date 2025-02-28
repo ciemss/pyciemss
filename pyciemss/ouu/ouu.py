@@ -1,13 +1,13 @@
 import contextlib
 import warnings
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Type
 
 import numpy as np
 import pyro
 import torch
 from chirho.dynamical.handlers import DynamicIntervention, StaticIntervention
-from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
 from chirho.interventional.ops import Intervention
 from scipy.optimize import basinhopping
 
@@ -93,6 +93,7 @@ class computeRisk:
         solver_options: Dict[str, Any] = {},
         u_bounds: np.ndarray = np.atleast_2d([[0], [1]]),
         risk_bound: List[float] = [0.0],
+        SolverBackend: Type[Solver] = TorchDiffEq,
     ):
         self.model = model
         self.interventions = interventions
@@ -116,6 +117,7 @@ class computeRisk:
         )
         self.u_bounds = u_bounds
         self.risk_bound = risk_bound  # used for defining penalty
+        self.SolverBackend = SolverBackend
         warnings.simplefilter("always", UserWarning)
         self.rtol = self.solver_options.pop("rtol", 1e-7)  # default = 1e-7
         self.atol = self.solver_options.pop("atol", 1e-9)  # default = 1e-9
@@ -193,7 +195,7 @@ class computeRisk:
 
                 def wrapped_model():
                     with ParameterInterventionTracer():
-                        with TorchDiffEq(
+                        with self.SolverBackend(
                             rtol=self.rtol,
                             atol=self.atol,
                             method=self.solver_method,
