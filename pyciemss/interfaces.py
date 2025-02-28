@@ -999,6 +999,7 @@ def optimize(
             solver_options=solver_options,
             u_bounds=bounds_np,
             risk_bound=risk_bound,
+            SolverBackend=SolverBackend,
         )
 
         # Run one sample to estimate model evaluation time
