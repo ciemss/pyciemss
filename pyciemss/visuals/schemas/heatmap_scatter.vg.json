@@ -1,180 +1,68 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "width": 300,
+  "description": "An area chart showing the monthly stock prices of AAPL over the past few years.",
+  "width": 500,
   "height": 200,
-    "signals": [
-    {
-      "name": "max_x_bins", "value": 3,
-      "description": "Max number X bins",
-      "bind": {"input": "range", "min": 1, "max": 100, "step": 1}
-     },
-    {
-      "name": "max_y_bins", "value": 3,
-      "description": "Max number Y bins",
-      "bind": {"input": "range", "min": 1, "max": 100, "step": 1}
-     },
-    { "name": "x_name", "value": "x_value"},
-    { "name": "y_name", "value": "y_value"}
-  ],
-  "data": [
-      {
-      "name": "points",
-      "values": [
-          {"x_value": 2, "y_value": 10},
-          {"x_value": 3, "y_value": 5},
-          {"x_value": 3, "y_value": 5},
-          {"x_value": 10, "y_value": 6},
-          {"x_value": 2, "y_value": 3},
-          {"x_value": 4, "y_value": 10},
-          {"x_value": 3, "y_value": 1}
-        ]
-      },
-    {
-      "name": "heatmap_bins",
-      "source": "points",
-      "transform": [
+  "padding": 5,
 
-        {
-          "type": "extent",
-          "field": {"signal": "x_name"},
-          "signal": "x_extent"
-        },
-        {
-          "type": "bin",
-          "field": {"signal": "x_name"},
-          "as": [
-            "x_start",
-            "x_end"
-          ],
-          "signal": "x_bins",
-          "extent": {"signal": "x_extent"},
-          "maxbins": {"signal": "max_x_bins"}
-        },
-        {
-          "type": "extent",
-          "field": {"signal": "y_name"},
-          "signal": "y_extent"
-        },
-        {
-          "type": "bin",
-          "field": {"signal": "y_name"},
-          "as": [
-            "y_start",
-            "y_end"
-          ],
-          "signal": "y_bins",
-          "extent": {"signal": "y_extent"},
-          "maxbins": {"signal": "max_y_bins"}
-        },
-        {
-          "type": "aggregate",
-          "groupby": [
-            "x_start",
-            "x_end",
-            "y_start",
-            "y_end"
-          ],
-          "ops": ["count"],
-          "as": ["__count"]
-        }
+  "data": [
+    {
+      "name": "stocks",
+      "url": "https://vega.github.io/vega-lite/data/stocks.csv",
+      "format": {"type": "csv"},
+      "transform": [
+        { "type": "filter", "expr": "datum.symbol === 'AAPL'" },
+        { "type": "formula", "as": "date", "expr": "toDate(datum.date)"}
       ]
     }
   ],
-  "marks": [
-    {
-      "name": "marks",
-      "type": "rect",
-      "style": ["rect"],
-      "from": {"data": "heatmap_bins"},
-      "encode": {
-        "update": {
-          "fill": {"scale": "color", "field": "__count"},
-          "x2": {
-            "scale": "x",
-            "field": "x_start"
-          },
-          "x": {
-            "scale": "x",
-            "field": "x_end"
-          },
-          "y2": {
-            "scale": "y",
-            "field": "y_start"
-          },
-          "y": {
-            "scale": "y",
-            "field": "y_end"
-          }
-        }
-      }
-    },
-        {
-      "type": "symbol",
-      "from": {"data": "points"},
-      "encode": {
-        "enter": {
-          "fillOpacity": {"value": 1},
-          "fill": {"value": "black"}
-        },
-        "update": {
-          "x": {"scale": "x", "field" : {"signal": "x_name"}},
-          "y": {"scale": "y", "field" : {"signal": "y_name"}},
-          "size": {"value": 10}
-        }
-      }
-    }
-  ],
+
   "scales": [
     {
-      "name": "x",
-      "type": "linear",
-      "domain": {
-        "signal": "[x_bins.start, x_bins.stop]"
-      },
-      "range": [0, {"signal": "width"}],
-      "bins": {"signal": "x_bins"},
-      "zero": false
+      "name": "xscale",
+      "type": "time",
+      "domain": {"data": "stocks", "field": "date"},
+      "range": "width"
     },
     {
-      "name": "y",
+      "name": "yscale",
       "type": "linear",
-      "domain": {
-        "signal": "[y_bins.start, y_bins.stop]"
-      },
-      "range": [{"signal": "height"}, 0],
-      "bins": {"signal": "y_bins"},
-      "zero": false
+      "domain": {"data": "stocks", "field": "price"},
+      "range": "height"
     },
     {
-      "name": "color",
-      "type": "linear",
-      "domain": {"data": "heatmap_bins", "field": "__count"},
-      "range": "heatmap",
-      "interpolate": "hcl",
-      "zero": true
+      "name": "pattern",
+      "type": "ordinal",
+      "range": ["url(#diagonal-stripe-2)", "url(#circles-1)"],
+      "domain": ["AAPL"]
     }
   ],
+
   "axes": [
-    {
-      "scale": "x",
-      "orient": "bottom",
-      "title": {"signal": "x_name"},
-      "labelOverlap": true,
-      "tickCount": {"signal": "ceil(width/3)"}
-    },
-    {
-      "scale": "y",
-      "orient": "left",
-      "title": {"signal": "y_name"},
-      "labelOverlap": true,
-      "tickCount": {"signal": "ceil(height/3)"}
-    }
+    {"orient": "bottom", "scale": "xscale", "grid": true, "title": "Date"},
+    {"orient": "left", "scale": "yscale", "grid": true, "title": "Price"}
   ],
-  "legends": [
+
+  "marks": [
     {
-      "fill": "color",
-      "gradientLength": {"signal": "height - 16"},
-      "title": "Count of Records"
+      "type": "area",
+      "from": {"data": "stocks"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "xscale", "field": "date"},
+          "y": {"scale": "yscale", "field": "price"},
+          "y2": {"scale": "yscale", "value": 0},
+          "fill": {"scale": "pattern", "field": "symbol"},
+          "stroke": {"value": "black"},
+          "strokeWidth": {"value": 1}
+        },
+        "update": {
+          "fillOpacity": {"value": 0.5}
+        },
+        "hover": {
+          "fillOpacity": {"value": 0.8}
+        }
+      }
     }
   ]
 }

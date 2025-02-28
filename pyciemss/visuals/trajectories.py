@@ -131,6 +131,7 @@ def trajectories(
     base_markers_h: Optional[Dict[str, Number]] = None,
     relabel: Optional[Dict[str, str]] = None,
     colors: Optional[Dict[str, str]] = None,
+    fill_pattern: Optional[Dict[str, str]] = None,
     qlow: float = 0.05,
     qhigh: float = 0.95,
     join_points: bool = True,
@@ -165,6 +166,9 @@ def trajectories(
         relabel (None, Dict[str, str]): Relabel elements for rendering.  Happens
             after keep & drop.
         colors: Use the specified colors as a post-relable keyed dictionary to vega-valid color.
+           Mapping to None or not includding a mapping will drop that sequence
+        
+        fill_pattern: Use the specified pattern and color as a post-relable keyed dictionary to vega-valid color.
            Mapping to None or not includding a mapping will drop that sequence
         qlow (float): Lower percentile to use in obsersvation distributions
         qhigh (float): Higher percentile to use in obsersvation distributions
@@ -271,6 +275,15 @@ def trajectories(
             schema["scales"], "color", ["range"], [*colors.values()]
         )
 
+    if fill_pattern is not None:
+        fill_pattern = {k: v for k, v in fill_pattern.items() if k in all_trajectories}
+
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "fillScale", ["domain"], [*fill_pattern.keys()]
+        )
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "fillScale", ["range"], [*fill_pattern.values()]
+        )
     if not join_points:
         marks = vega.find_keyed(schema["marks"], "name", "_points")["marks"]
         simplified_marks = vega.delete_named(marks, "_points_line")
