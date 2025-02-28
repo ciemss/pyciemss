@@ -16,6 +16,7 @@ from chirho.dynamical.handlers.solver import TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from chirho.observational.ops import observe
+from chirho_diffeqpy import DiffEqPy
 
 from pyciemss.compiled_dynamics import CompiledDynamics
 from pyciemss.ensemble.compiled_dynamics import EnsembleCompiledDynamics
@@ -35,6 +36,9 @@ from pyciemss.ouu.ouu import computeRisk, solveOUU
 from pyciemss.ouu.risk_measures import alpha_superquantile
 
 warnings.simplefilter("always", UserWarning)
+
+
+_SOLVER_BACKEND_MAP = {"torchdiffeq": TorchDiffEq, "diffeqpy": DiffEqPy}
 
 
 @pyciemss_logging_wrapper
@@ -57,6 +61,7 @@ def ensemble_sample(
     time_unit: Optional[str] = None,
     alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
     stacking_order: str = "timepoints",
+    solver_backend: str = "torchdiffeq",
 ) -> Dict[str, Any]:
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -141,8 +146,10 @@ def ensemble_sample(
         if not (isinstance(num_samples, int) and num_samples > 0):
             raise ValueError("num_samples must be a positive integer")
 
+        Solver = _SOLVER_BACKEND_MAP[solver_backend]
+
         def wrapped_model():
-            with TorchDiffEq(
+            with Solver(
                 rtol=rtol, atol=atol, method=solver_method, options=solver_options
             ):
                 solution = model(
@@ -201,6 +208,7 @@ def ensemble_calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
+    solver_backend: str = "torchdiffeq",
 ) -> Dict[str, Any]:
     """
     Infer parameters for an ensemble of DynamicalSystem models conditional on data.
@@ -321,12 +329,12 @@ def ensemble_calibrate(
 
     _data = {f"{k}_noisy": v for k, v in data.items()}
 
+    Solver = _SOLVER_BACKEND_MAP[solver_backend]
+
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(
-            rtol=rtol, atol=atol, method=solver_method, options=solver_options
-        ):
+        with Solver(rtol=rtol, atol=atol, method=solver_method, options=solver_options):
             solution = model(
                 torch.as_tensor(start_time),
                 torch.as_tensor(data_timepoints[-1]),
@@ -381,6 +389,7 @@ def sample(
     qoi: Optional[
         Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]]
     ] = None,
+    solver_backend: str = "torchdiffeq",
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -513,9 +522,11 @@ def sample(
             + dynamic_parameter_intervention_handlers
         )
 
+        Solver = _SOLVER_BACKEND_MAP[solver_backend]
+
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(
+                with Solver(
                     rtol=rtol, atol=atol, method=solver_method, options=solver_options
                 ):
                     with contextlib.ExitStack() as stack:
@@ -616,6 +627,7 @@ def calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
+    solver_backend: str = "torchdiffeq",
 ) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -781,11 +793,13 @@ def calibrate(
 
     _data = {f"{k}_noisy": v for k, v in data.items()}
 
+    Solver = _SOLVER_BACKEND_MAP[solver_backend]
+
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(
+            with Solver(
                 rtol=rtol, atol=atol, method=solver_method, options=solver_options
             ):
                 with contextlib.ExitStack() as stack:
@@ -851,6 +865,7 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
     progress_hook: Callable[[torch.Tensor], None] = lambda x: None,
+    solver_backend: str = "torchdiffeq",
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
