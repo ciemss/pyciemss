@@ -284,6 +284,15 @@ def trajectories(
         schema["scales"] = vega.replace_named_with(
             schema["scales"], "fillScale", ["range"], [*fill_pattern.values()]
         )
+    elif colors is not None:
+        colors = {k: v for k, v in colors.items() if k in all_trajectories}
+
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "fillScale", ["domain"], [*colors.keys()]
+        )
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "fillScale", ["range"], [*colors.values()]
+        )
     if not join_points:
         marks = vega.find_keyed(schema["marks"], "name", "_points")["marks"]
         simplified_marks = vega.delete_named(marks, "_points_line")
