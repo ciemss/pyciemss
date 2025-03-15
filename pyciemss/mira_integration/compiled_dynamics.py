@@ -3,6 +3,7 @@ from __future__ import annotations
 import numbers
 from typing import Callable, Dict, Optional, Tuple, TypeVar, Union
 
+import networkx as nx
 import mira
 import mira.metamodel
 import mira.modeling
@@ -10,6 +11,7 @@ import mira.sources
 import mira.sources.amr
 import numpy
 import pyro
+import pyro.nn
 import sympy
 import sympytorch
 import torch
@@ -20,16 +22,50 @@ from pyciemss.compiled_dynamics import (
     _compile_initial_state,
     _compile_observables,
     _compile_param_values,
+    _sort_dependencies,
     eval_deriv,
     eval_initial_state,
     eval_observables,
     get_name,
 )
+
 from pyciemss.mira_integration.distributions import mira_distribution_to_pyro
 
 S = TypeVar("S")
 T = TypeVar("T")
 
+@_sort_dependencies.register(mira.modeling.Model)
+def sort_mira_dependencies(src: mira.modeling.Model) -> list:
+    """
+    Sort the model parameters of a MIRA TemplateModel by their distribution parameter dependencies.
+
+    Parameters
+    ----------
+    src : mira.modeling.Model
+        The MIRA Model to sort.
+
+    Returns
+    -------
+    list
+        A list of parameter names in the order in which they must be evaluated.
+    """
+    dependencies = nx.DiGraph()
+    for param_name, param_info in src.parameters.items():
+        param_name = get_name(param_info)
+        #if param_info.placeholder:
+        #    continue
+        param_dist = getattr(param_info, "distribution", None)
+
+        if param_dist is None:
+            dependencies.add_node(param_name)
+        else:
+            for k, v in param_dist.parameters.items():
+                # Check to see if the distribution parameters are sympy expressions
+                # and add their free symbols to the dependency graph
+                if isinstance(v, mira.metamodel.utils.SympyExprStr):
+                    for free_symbol in v.free_symbols:
+                        dependencies.add_edge(str(free_symbol), str(param_name))
+    return list(nx.topological_sort(dependencies))
 
 @_compile_deriv.register(mira.modeling.Model)
 def _compile_deriv_mira(src: mira.modeling.Model) -> Callable[..., Tuple[torch.Tensor]]:
@@ -84,29 +120,39 @@ def _compile_observables_mira(
 def _compile_param_values_mira(
     src: mira.modeling.Model,
 ) -> Dict[str, Union[torch.Tensor, pyro.nn.PyroParam, pyro.nn.PyroSample]]:
-    values = {}
-    for param_info in src.parameters.values():
-        param_name = get_name(param_info)
-
+    param_values = {}
+    sorted_dependencies = _sort_dependencies(src)
+    for param_name in sorted_dependencies:
+        param_info = src.parameters[param_name]
         if param_info.placeholder:
             continue
-
+            
         param_dist = getattr(param_info, "distribution", None)
         if param_dist is None:
-            param_value = param_info.value
+            param_value = float(param_info.value)
         else:
-            param_value = mira_distribution_to_pyro(param_dist)
+            idx = sorted_dependencies.index(param_name)
+            upstream_dependencies = sorted_dependencies[:idx]
+            
+            def param_value(model: pyro.nn.PyroModule) -> torch.Tensor:
+                return mira_distribution_to_pyro(
+                    param_dist, {
+                        k: getattr(model, f"persistent_{k}")
+                        for k in upstream_dependencies
+                    })
 
         if isinstance(param_value, torch.nn.Parameter):
-            values[param_name] = pyro.nn.PyroParam(param_value)
-        elif isinstance(param_value, pyro.distributions.Distribution):
-            values[param_name] = pyro.nn.PyroSample(param_value)
+            param_values[param_name] = pyro.nn.PyroParam(param_value)
+        elif isinstance(param_value, (pyro.distributions.distribution.Distribution, Callable)):
+            param_values[param_name] = pyro.nn.PyroSample(param_value)
         elif isinstance(param_value, (numbers.Number, numpy.ndarray, torch.Tensor)):
-            values[param_name] = torch.as_tensor(param_value, dtype=torch.float32)
+            param_values[param_name] = torch.as_tensor(param_value, dtype=torch.float32)
+        elif isinstance(param_value, Callable):
+            param_values[param_name] = pyro.nn.PyroSample(param_value)
         else:
             raise TypeError(f"Unknown parameter type: {type(param_value)}")
 
-    return values
+    return param_values
 
 
 @eval_deriv.register(mira.modeling.Model)
@@ -198,6 +244,9 @@ def _get_name_mira_transition(trans: mira.modeling.Transition) -> str:
 def _get_name_mira_modelparameter(param: mira.modeling.ModelParameter) -> str:
     return str(param.key)
 
+@get_name.register
+def _get_name_mira_metamodel_parameter(param: mira.metamodel.Parameter) -> str:
+    return str(param.name)
 
 @get_name.register
 def _get_name_mira_model_observable(obs: mira.modeling.ModelObservable) -> str:
