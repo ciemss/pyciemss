@@ -47,11 +47,18 @@ def check_geoscale(schema):
                     geoscale = True
     return geoscale
 
+def add_svg_patterns(svg_str, patterns_str):
+    # Find the end of the <svg> tag
+    svg_tag_end = svg_str.index(">") + 1
+    # Insert the patterns just after the <svg> tag
+    updated_svg = svg_str[:svg_tag_end] + patterns_str + svg_str[svg_tag_end:]
+    return updated_svg
 
 def ipy_display(
     schema: Dict[str, Any],
     *,
     format: Literal["png", "svg", "PNG", "SVG", "interactive", "INTERACTIVE"] = "png",
+    patterns: Optional[str] = None,
     force_clear: bool = False,
     dpi: Optional[int] = None,
     output_root: Union[str, Path, None] = None,
@@ -121,6 +128,8 @@ def ipy_display(
 
     elif format in ["svg", "SVG"]:
         svg_data = vl_convert.vega_to_svg(schema, **kwargs)
+        if patterns:
+            svg_data = add_svg_patterns(svg_data, patterns)
         return IPython.display.SVG(svg_data)
     else:
         raise ValueError(f"Unhandled format requested: {format}")
