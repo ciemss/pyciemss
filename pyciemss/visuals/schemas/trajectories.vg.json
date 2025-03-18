@@ -73,6 +73,10 @@
       "type": "ordinal",
       "domain": ["dashed", "solid"],
       "range": [[5, 5], []]
+    }, 
+    {
+      "name": "trajectoryOrder",
+      "type": "ordinal"
     }
   ],
 
@@ -375,9 +379,10 @@
         "facet": {
           "name": "trajectory_split",
           "data": "distributions",
-          "groupby": "trajectory"
+          "groupby": "trajectory_order"
         }
       },
+      "sort": {"field": "datum.trajectory_order", "order": "ascending"},
       "marks": [
         {
           "type": "area",
@@ -472,11 +477,7 @@
       ],
       "transform": [
         {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}},
-        {
-          "type": "formula",
-          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', upper=' + datum.upper + ', lower=' + datum.lower + ', trajectory=' + datum.trajectory, null)",
-          "as": "debugInfo"
-        }
+        {"type": "formula", "expr": "scale('trajectoryOrder', datum.trajectory)", "as": "trajectory_order"}
       ]
     },
     {
@@ -491,12 +492,7 @@
       ],
       "transform": [
         {"type": "filter", "expr": "isValid(datum.value)"},
-        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}},
-        {
-          "type": "formula",
-          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', value=' + datum.value + ', trajectory=' + datum.trajectory, null)",
-          "as": "debugInfo"
-        }
+        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}
       ]
     },
     {
@@ -506,13 +502,6 @@
         {"timepoint": 10, "value": 40, "trajectory": "d"},
         {"timepoint": 5, "value": 10, "trajectory": "e"},
         {"timepoint": 6, "value": 15, "trajectory": "e"}
-      ],
-      "transform": [
-        {
-          "type": "formula",
-          "expr": "warn('DEBUG: timepoint=' + datum.timepoint + ', value=' + datum.value + ', trajectory=' + datum.trajectory, null)",
-          "as": "debugInfo"
-        }
       ]
     },
     {

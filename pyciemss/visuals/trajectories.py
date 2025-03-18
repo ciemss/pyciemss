@@ -59,63 +59,53 @@ def select_traces(
         # first column is the column to compare to
         # not sure what maxlag value to use
         # return ssr-based-F test p value
-        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[
-            10
-        ][0]["ssr_ftest"][1]
+        granger_value = grangercausalitytests(x[["mean_value", "value"]], maxlag=[10])[10][0]["ssr_ftest"][1]
         return granger_value
 
     # all data, melted
     melt_all = traces_df.melt(ignore_index=False, var_name="trajectory").reset_index()
     # add value of average line to original df as column
-    merged_all_mean = pd.merge(
-        melt_all, examplary_line_df, on=["trajectory", "timepoint"]
-    ).rename(columns={"value_x": "value", "value_y": "mean_value"})
-    # get distance from average line for each sample/timepoint/trajectory
-    merged_all_mean["distance_mean"] = abs(
-        merged_all_mean["mean_value"] - merged_all_mean["value"]
+    merged_all_mean = pd.merge(melt_all, examplary_line_df, on=["trajectory", "timepoint"]).rename(
+        columns={"value_x": "value", "value_y": "mean_value"}
     )
+    # get distance from average line for each sample/timepoint/trajectory
+    merged_all_mean["distance_mean"] = abs(merged_all_mean["mean_value"] - merged_all_mean["value"])
     # get sum of distance from mean for all timepoints in sample/trajectory
-    group_examplary = merged_all_mean.set_index(
-        ["trajectory", "timepoint", "sample_id"], append=True
-    ).groupby(level=["trajectory", "sample_id"])
+    group_examplary = merged_all_mean.set_index(["trajectory", "timepoint", "sample_id"], append=True).groupby(
+        level=["trajectory", "sample_id"]
+    )
 
     # get sum and variable of each trajectory (rabbit or wolf) and sample id group
     if select_by == "mean":
         sum_examplary = (
             group_examplary.mean().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
-        ][["sample_id", "trajectory"]]
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_mean.idxmin()][
+            ["sample_id", "trajectory"]
+        ]
 
     elif select_by == "var":
         sum_examplary = (
             group_examplary.var().reset_index()
         )  # get only min distance from each trajectory type (rabbit or worlf) back
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").distance_mean.idxmin()
-        ][["sample_id", "trajectory"]]
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").distance_mean.idxmin()][
+            ["sample_id", "trajectory"]
+        ]
 
     elif select_by == "granger":
         granger_examplary = group_examplary.apply(lambda x: granger_fun(x))
         sum_examplary = pd.DataFrame({"granger": granger_examplary})
         sum_examplary = sum_examplary.reset_index()
-        best_sample_id = sum_examplary.loc[
-            sum_examplary.groupby("trajectory").granger.idxmin()
-        ][["sample_id", "trajectory"]]
+        best_sample_id = sum_examplary.loc[sum_examplary.groupby("trajectory").granger.idxmin()][
+            ["sample_id", "trajectory"]
+        ]
 
     # only keep sample id's from 'best' lines
-    only_examplary_line = pd.merge(
-        melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right"
-    )
+    only_examplary_line = pd.merge(melt_all, best_sample_id, on=["sample_id", "trajectory"], how="right")
 
     # get into dataframe in correct foramt for trajectories traces argument
-    only_examplary_line = only_examplary_line.drop(
-        columns=["sample_id"], errors="ignore"
-    )
-    examplary_line = only_examplary_line.pivot_table(
-        values="value", index="timepoint", columns="trajectory"
-    )
+    only_examplary_line = only_examplary_line.drop(columns=["sample_id"], errors="ignore")
+    examplary_line = only_examplary_line.pivot_table(values="value", index="timepoint", columns="trajectory")
     examplary_line["timepoint_id"] = examplary_line.index
     return examplary_line
 
@@ -158,6 +148,7 @@ def trajectories(
              Matches are kept.
            - Otherwise, assumed to be a list-like of columns to keep
            If keep is specified, the color scale ordering follows the kept order.
+           If keep is specified as a list-like, z-order of trajectories will follow that order with first item on bottom.
         drop (str, list, None): Drop specific columns from 'distributions' (applied AFTER keep)
           - Default is 'None', keeping all columns
           - If a string is present, it is treated as a regex and matched against the columns. Matches are dropped.
@@ -167,7 +158,7 @@ def trajectories(
             after keep & drop.
         colors: Use the specified colors as a post-relable keyed dictionary to vega-valid color.
            Mapping to None or not includding a mapping will drop that sequence
-        
+
         fill_pattern: Use the specified pattern and color as a post-relable keyed dictionary to vega-valid color.
            Mapping to None or not includding a mapping will drop that sequence
         qlow (float): Lower percentile to use in obsersvation distributions
@@ -190,9 +181,7 @@ def trajectories(
 
     point_trajectories = points.columns.tolist() if points is not None else []
     trace_trajectories = traces.columns.tolist() if traces is not None else []
-    distributions_traj = (
-        distributions.columns.tolist() if distributions is not None else []
-    )
+    distributions_traj = distributions.columns.tolist() if distributions is not None else []
     all_trajectories = distributions_traj + trace_trajectories + point_trajectories
 
     def _quantiles(g):
@@ -217,20 +206,12 @@ def trajectories(
         distributions = []
 
     if traces is not None:
-        traces = (
-            traces.melt(ignore_index=False, var_name="trajectory")
-            .reset_index()
-            .to_dict(orient="records")
-        )
+        traces = traces.melt(ignore_index=False, var_name="trajectory").reset_index().to_dict(orient="records")
     else:
         traces = []
 
     if points is not None:
-        points = (
-            points.melt(ignore_index=False, var_name="trajectory")
-            .reset_index()
-            .to_dict(orient="records")
-        )
+        points = points.melt(ignore_index=False, var_name="trajectory").reset_index().to_dict(orient="records")
     else:
         points = []
 
@@ -244,61 +225,40 @@ def trajectories(
         axis_labels = {"xaxis_label": "", "yaxis_label": ""}
 
     schema = vega.load_schema("trajectories.vg.json")
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "distributions", ["values"], _clean_nans(distributions)
-    )
+    schema["data"] = vega.replace_named_with(schema["data"], "distributions", ["values"], _clean_nans(distributions))
 
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "points", ["values"], _clean_nans(points)
-    )
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "traces", ["values"], _clean_nans(traces)
-    )
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "markers_v", ["values"], base_markers_v
-    )
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "markers_h", ["values"], base_markers_h
-    )
-    
-    schema["data"] = vega.replace_named_with(
-        schema["data"], "axis_labels", ["values"], axis_labels
-    )
+    schema["data"] = vega.replace_named_with(schema["data"], "points", ["values"], _clean_nans(points))
+    schema["data"] = vega.replace_named_with(schema["data"], "traces", ["values"], _clean_nans(traces))
+    schema["data"] = vega.replace_named_with(schema["data"], "markers_v", ["values"], base_markers_v)
+    schema["data"] = vega.replace_named_with(schema["data"], "markers_h", ["values"], base_markers_h)
+
+    schema["data"] = vega.replace_named_with(schema["data"], "axis_labels", ["values"], axis_labels)
 
     if colors is not None:
         colors = {k: v for k, v in colors.items() if k in all_trajectories}
 
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "color", ["domain"], [*colors.keys()]
-        )
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "color", ["range"], [*colors.values()]
-        )
+        schema["scales"] = vega.replace_named_with(schema["scales"], "color", ["domain"], [*colors.keys()])
+        schema["scales"] = vega.replace_named_with(schema["scales"], "color", ["range"], [*colors.values()])
 
     if fill_pattern is not None:
         fill_pattern = {k: v for k, v in fill_pattern.items() if k in all_trajectories}
 
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "fillScale", ["domain"], [*fill_pattern.keys()]
-        )
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "fillScale", ["range"], [*fill_pattern.values()]
-        )
+        schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["domain"], [*fill_pattern.keys()])
+        schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["range"], [*fill_pattern.values()])
     elif colors is not None:
         colors = {k: v for k, v in colors.items() if k in all_trajectories}
 
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "fillScale", ["domain"], [*colors.keys()]
-        )
-        schema["scales"] = vega.replace_named_with(
-            schema["scales"], "fillScale", ["range"], [*colors.values()]
-        )
+        schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["domain"], [*colors.keys()])
+        schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["range"], [*colors.values()])
     if not join_points:
         marks = vega.find_keyed(schema["marks"], "name", "_points")["marks"]
         simplified_marks = vega.delete_named(marks, "_points_line")
-        schema["marks"] = vega.replace_named_with(
-            schema["marks"], "_points", ["marks"], simplified_marks
-        )
+        schema["marks"] = vega.replace_named_with(schema["marks"], "_points", ["marks"], simplified_marks)
+
+    if keep is not None:
+        scale = vega.find_named(schema["scales"], "trajectoryOrder")
+        scale["domain"] = all_trajectories
+        scale["range"] = [*range(0, len(all_trajectories))]
 
     if logy:
         schema = vega.rescale(schema, "yscale", "log")
@@ -307,8 +267,10 @@ def trajectories(
         schema = vega.set_title(schema, title)
 
     return schema
-# - plot title (title): add plot title 
-# - axes labels (x, y): add axes labels 
+
+
+# - plot title (title): add plot title
+# - axes labels (x, y): add axes labels
 # - change colors colors are dictionary of trajectory: color
 # - dashed lines for mean: add type line
 # - legend: change labels: set by scales so to change would chnage with relabel
@@ -340,15 +302,11 @@ def _nice_df(df):
     if "timepoint_id" not in df.columns:
         df = df.assign(timepoint_id=range(len(df)))
 
-    timepoint_cols = [
-        c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"
-    ]
+    timepoint_cols = [c for c in df.columns if c.startswith("timepoint_") and c != "timepoint_id"]
     if len(timepoint_cols) == 0:
         df = df.assign(timepoint=df.timepoint_id)
     elif len(timepoint_cols) > 1:
-        raise ValueError(
-            f"Cannot work with multiple timepoint formats. Found {timepoint_cols}"
-        )
+        raise ValueError(f"Cannot work with multiple timepoint formats. Found {timepoint_cols}")
     else:
         df = df.assign(timepoint=df[timepoint_cols[0]]).drop(columns=timepoint_cols)
 
@@ -356,9 +314,7 @@ def _nice_df(df):
     return df
 
 
-def _clean_nans(
-    entries: List[Dict], *, parent: bool = True, replace: Optional[Any] = None
-) -> List[Dict]:
+def _clean_nans(entries: List[Dict], *, parent: bool = True, replace: Optional[Any] = None) -> List[Dict]:
     """Internal Utlitiy. Clean list of entries for json serailizazation.
     ONLY LOOKS ONE LEVEL DOWN.
 
@@ -440,8 +396,4 @@ def _keep_drop_rename(df, keep, drop, relabel):
 
     relabel = {} if relabel is None else relabel
 
-    return (
-        df.filter(items=keep)
-        .drop(columns=drop, errors="ignore")
-        .rename(columns=relabel)
-    )
+    return df.filter(items=keep).drop(columns=drop, errors="ignore").rename(columns=relabel)
