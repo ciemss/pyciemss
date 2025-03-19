@@ -1,0 +1,85 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "An area chart showing the monthly stock prices of AAPL over the past few years.",
+  "width": 500,
+  "height": 200,
+  "padding": 5,
+
+  "data": [
+    {
+      "name": "stocks",
+      "url": "https://vega.github.io/vega-lite/data/stocks.csv",
+      "format": {"type": "csv"},
+      "transform": [
+        { "type": "filter", "expr": "datum.symbol === 'AAPL'" },
+        { "type": "formula", "as": "date", "expr": "toDate(datum.date)"}
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "time",
+      "domain": {"data": "stocks", "field": "date"},
+      "range": "width"
+    },
+    {
+      "name": "yscale",
+      "type": "linear",
+      "domain": {"data": "stocks", "field": "price"},
+      "range": "height"
+    },
+    {
+      "name": "pattern",
+      "type": "ordinal",
+      "range": ["url(#circles-1)", "url(#diagonal-stripe-2)"],
+      "domain": ["AAPL"]
+    }
+  ],
+
+  "axes": [
+    {"orient": "bottom", "scale": "xscale", "grid": true, "title": "Date"},
+    {"orient": "left", "scale": "yscale", "grid": true, "title": "Price"}
+  ],
+
+  "legends": [
+    {
+      "fill": "pattern",
+      "title": "Stock Symbol",
+      "type": "symbol",
+      "symbolType": "square",
+      "symbolSize": 200,
+      "encode": {
+        "symbols": {
+          "enter": {
+            "fill": {"scale": "pattern", "field": "label"}
+          }
+        }
+      }
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "area",
+      "from": {"data": "stocks"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "xscale", "field": "date"},
+          "y": {"scale": "yscale", "field": "price"},
+          "y2": {"scale": "yscale", "value": 0},
+          "fill": {"scale": "pattern", "field": "symbol"},
+          "stroke": {"value": "black"},
+          "strokeWidth": {"value": 1}
+        },
+        "update": {
+          "fillOpacity": {"value": 0.5}
+        },
+        "hover": {
+          "fillOpacity": {"value": 0.8}
+        }
+      }
+    }
+  ]
+}
