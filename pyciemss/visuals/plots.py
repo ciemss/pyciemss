@@ -11,6 +11,7 @@ from .calibration import calibration
 from .graphs import attributed_graph, spring_force_graph
 from .histogram import heatmap_scatter, histogram_multi, map_heatmap
 from .trajectories import trajectories
+from .shapley import shapley_decision_plot
 from .vega import VegaSchema, orient_legend, pad, rescale, resize, set_title
 
 __all__ = [
@@ -28,6 +29,7 @@ __all__ = [
     "spring_force_graph",
     "heatmap_scatter",
     "map_heatmap",
+    "shapley_decision_plot",
 ]
 
 

@@ -28,7 +28,7 @@ def calculate_mean_shapley(json_data):
         result["values"].append({
             "Column": column,
             "Mean Shapley Value": mean_value,
-            "expected_value": expected_value[column] * len(values)
+            "expected_value": expected_value[column][0]
         })
     
     return result
@@ -42,9 +42,6 @@ def process_explainer_output(explainer_output, return_mean_shapley=False):
     )
     print("Are all base_values the same?", are_base_values_constant)
 
-    # Check if expected_value is scalar or vector
-    if expected_value.ndim == 0:  # This is for scalar value
-        expected_value = [expected_value]
 
     # Create DataFrames for SHAP values and data
     shap_values_df = pd.DataFrame(
@@ -64,7 +61,7 @@ def process_explainer_output(explainer_output, return_mean_shapley=False):
             })
     if return_mean_shapley:
         json_data = calculate_mean_shapley(json_data)
-    return json_data
+    return json_data['values']
 
 
 
@@ -83,18 +80,3 @@ def shapley_decision_plot(explainer_output) -> vega.VegaSchema:
     )
     return schema
 
-
-import xgboost
-import shap
-import pandas as pd
-import numpy as np
-# Train XGBoost model
-X, y = shap.datasets.adult(n_points=100)
-model = xgboost.XGBClassifier().fit(X, y)
-
-# Compute SHAP values
-explainer = shap.Explainer(model, X)
-shap_values = explainer(X)
-
-
-new_schema = shapley_decision_plot(shap_values)
