@@ -8,7 +8,7 @@
     {
       "name": "table",
       "values": [
-        {"Column": "Age", "Shapley_Value": -0.6932834614, "individual": 1, "expected_value": 0.5},
+        {"Column": "Age", "Shapley_Value": -5.932834614, "individual": 1, "expected_value": 0.5},
         {"Column": "Workclass", "Shapley_Value": 0.0160077181, "individual": 1, "expected_value": 0.5},
         {"Column": "Education-Num", "Shapley_Value": 0.1593687901, "individual": 1, "expected_value": 0.5},
         {"Column": "Age", "Shapley_Value": 0.8932834614, "individual": 2, "expected_value": 0.5},
@@ -34,15 +34,20 @@
           "as": ["avg_Shapley_Value"]
         },
         {
+          "type": "formula",
+          "expr": "abs(datum.avg_Shapley_Value)",
+          "as": "abs_avg_Shapley_Value"
+        },
+        {
           "type": "collect",
           "sort": {
-            "field": "avg_Shapley_Value",
+            "field": "abs_avg_Shapley_Value",
             "order": "descending"
           }
         },
         {
           "type": "window",
-          "sort": {"field": "avg_Shapley_Value", "order": "descending"},
+          "sort": {"field": "abs_avg_Shapley_Value", "order": "ascending"},
           "ops": ["row_number"],
           "as": ["rank"]
         }
@@ -78,6 +83,10 @@
           "type": "formula",
           "expr": "datum.cumulative_sum_expected_value - datum.Shapley_Value",
           "as": "start"
+        },
+        {
+          "type": "collect",
+          "sort": {"field": "rank"}
         }
       ]
     }
@@ -86,7 +95,11 @@
     {
       "name": "yscale",
       "type": "band",
-      "domain": {"data": "table", "field": "Column"},
+      "domain": {
+        "data": "data_sorted",
+        "field": "Column",
+        "sort": {"field": "rank", "op": "min", "order":"descending"}
+      },
       "range": "height",
       "paddingInner": 0.1
     },
@@ -109,7 +122,7 @@
     }
   ],
   "axes": [
-    {"orient": "left", "scale": "yscale"},
+    {"orient": "left", "scale": "yscale", "title": "Column"},
     {"orient": "bottom", "scale": "xscale", "title": "Shapley Value"},
     {"orient": "top", "scale": "xscale", "title": "Shapley Value"}
   ],
@@ -129,7 +142,7 @@
           "from": {"data": "individualSeries"},
           "encode": {
             "enter": {
-              "x": {"scale": "xscale", "field": "start"},
+              "x": {"scale": "xscale", "field": "cumulative_sum_expected_value"},
               "x2": {"scale": "xscale", "field": "cumulative_sum_expected_value"},
               "y": {"scale": "yscale", "field": "Column", "band": 0.5},
               "stroke": {"scale": "color", "field": "avg_Shapley_Value"},
