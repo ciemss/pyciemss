@@ -86,7 +86,7 @@
         "Resistant_State"
       ],
       "range": [
-        "url(#circles-1)",
+        "purple",
         "url(#diagonal-stripe-2)",
         "green",
         "purple"
@@ -96,7 +96,7 @@
       "name": "color",
       "type": "ordinal",
       "range": [
-        "pink",
+        "purple",
         "blue",
         "green",
         "purple"
@@ -109,19 +109,27 @@
       ]
     },
     {
-      "name": "lineStyle",
+      "name": "lineStyle_v",
       "type": "ordinal",
-      "domain": [
-        "dashed",
-        "solid"
-      ],
-      "range": [
-        [
-          5,
-          5
-        ],
-        []
-      ]
+      "domain": {
+        "data": "markers_v",
+        "field": "label"
+      },
+      "range": {
+        "data": "markers_v",
+        "field": "type"
+      }},
+    {
+      "name": "lineStyle_h",
+      "type": "ordinal",
+      "domain": {
+        "data": "markers_h",
+        "field": "label"
+      },
+      "range": {
+        "data": "markers_h",
+        "field": "type"
+      }
     },
     {
       "name": "trajectoryOrder",
@@ -256,130 +264,120 @@
     "logLevel": "warn"
   },
   "legends": [
-    {
-      "name": "color_legend",
-      "stroke": "color",
-      "encode": {
-        "symbols": {
-          "name": "legendSymbol",
-          "interactive": true,
-          "update": {
-            "fill": {
-              "value": "transparent"
+      {
+        "name": "color_legend",
+        "fill": "fillScale",
+        "stroke": "color",
+        "title": "Trajectory States",
+        "type": "symbol",
+        "symbolType": "square",
+        "symbolSize": 200,
+        "encode": {
+          "symbols": {
+            "enter": {
+              "shape": {"value": "square"},
+              "size": {"value": 200},
+              "fill": {"scale": "fillScale", "field": "trajectory"},
+              "stroke": {"scale": "color", "field": "trajectory"},
+              "strokeWidth": {"value": 2}
             },
-            "strokeWidth": {
-              "value": 2
-            },
-            "opacity": [
-              {
-                "test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)",
-                "value": 0.7
+            "update": {
+              "opacity": [
+                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory) || indata('selectedData', 'value', datum.trajectory)", "value": 0.7},
+                {"value": 0.15}
+              ]
+            }
+          },
+          "labels": {
+            "update": {
+              "opacity": [
+                {"test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.trajectory)", "value": 1},
+                {"value": 0.25}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "name": "marker_color_legend_v",
+        "stroke": "markerscale_v",
+        "strokeDash": "lineStyle_v",
+        "title": {"signal": "length(data('markers_v')) > 1 ? 'Vertical Markers' : ''"},
+        "interactive": true,
+        "encode": {
+          "symbols": {
+            "enter": {
+            "shape": {"value": "square"},
+            "stroke": {"scale": "markerscale_v", "field": "label"},
+              "strokeDash": {
+                "scale": "lineStyle_v",
+                "field": "type"
               },
-              {
-                "value": 0.15
-              }
-            ],
-            "size": {
-              "value": 64
+            "strokeWidth": {"value": 1},
+              "size": {"value": 200},
+            "opacity": {"value": 1}
+            },
+            "update": {
+              "opacity": [
+                {"test": "length(data('markers_v')) > 1", "value": 1},
+                {"value": 0}
+              ]
+            }
+          },
+          "labels": {
+            "update": {
+              "text": {"field": "label"},
+              "fill": {"value": "black"},
+              "opacity": [
+                {"test": "length(data('markers_v')) > 1", "value": 1},
+                {"value": 0}
+              ]
             }
           }
-        },
-        "labels": {
-          "name": "legendLabel",
-          "interactive": true,
-          "update": {
-            "opacity": [
-              {
-                "test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.value)",
-                "value": 1
+        }
+      },
+      {
+        "name": "marker_color_legend_h",
+        "stroke": "markerscale_h",
+        "strokeDash": "lineStyle_h",
+        "title": {"signal": "length(data('markers_h')) > 1 ? 'Vertical Markers' : ''"},
+        "interactive": true,
+        "encode": {
+          "symbols": {
+            "enter": {
+            "shape": {"value": "square"},
+            "stroke": {"scale": "markerscale_v", "field": "label"},
+              "strokeDash": {
+                "scale": "lineStyle_h",
+                "field": "type"
               },
-              {
-                "value": 0.25
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "name": "marker_color_legend_v",
-      "fill": "markerscale_v",
-      "encode": {
-        "symbols": {
-          "name": "markerLegendSymbol_v",
-          "interactive": true,
-          "update": {
-            "size": {
-              "value": 100
+            "strokeWidth": {"value": 1},
+              "size": {"value": 200},
+            "opacity": {"value": 1}
             },
-            "shape": {
-              "value": "square"
-            },
-            "stroke": {
-              "value": "transparent"
-            },
-            "opacity": {
-              "value": 1
+            "update": {
+              "opacity": [
+                {"test": "length(data('markers_h')) > 1", "value": 1},
+                {"value": 0}
+              ]
             }
-          }
-        },
-        "labels": {
-          "name": "markerLegendLabel",
-          "interactive": true,
-          "update": {
-            "text": {
-              "field": "label"
-            },
-            "fill": {
-              "value": "black"
-            },
-            "opacity": {
-              "value": 1
+          },
+          "labels": {
+            "update": {
+              "text": {"field": "label"},
+              "fill": {"value": "black"},
+              "opacity": [
+                {"test": "length(data('markers_h')) > 1", "value": 1},
+                {"value": 0}
+              ]
             }
           }
         }
-      }
-    },
-    {
-      "name": "marker_color_legend_h",
-      "fill": "markerscale_h",
-      "encode": {
-        "symbols": {
-          "name": "markerLegendSymbol_h",
-          "interactive": true,
-          "update": {
-            "size": {
-              "value": 100
-            },
-            "shape": {
-              "value": "square"
-            },
-            "stroke": {
-              "value": "transparent"
-            },
-            "opacity": {
-              "value": 1
-            }
-          }
-        },
-        "labels": {
-          "name": "markerLegendLabel",
-          "interactive": true,
-          "update": {
-            "text": {
-              "field": "label"
-            },
-            "fill": {
-              "value": "black"
-            },
-            "opacity": {
-              "value": 1
-            }
-          }
-        }
-      }
-    }
-  ],
+      },
+    ]
+  
+
+,
   "marks": [
     {
       "type": "group",
@@ -654,8 +652,8 @@
                 "field": "label"
               },
               "strokeDash": {
-                "scale": "lineStyle",
-                "field": "type"
+                "scale": "lineStyle_v",
+                "field": "label"
               }
             },
             "update": {
@@ -694,8 +692,8 @@
                 "field": "label"
               },
               "strokeDash": {
-                "scale": "lineStyle",
-                "field": "type"
+                "scale": "lineStyle_h",
+                "field": "label"
               }
             },
             "update": {
@@ -781,13 +779,13 @@
           "axis_value": 3,
           "label": "Low marker",
           "new_color": "red",
-          "type": "dashed"
+          "type": [4,5]
         },
         {
           "axis_value": 7,
           "label": "High marker",
           "new_color": "blue",
-          "type": "dashed"
+          "type": [4,5]
         }
       ]
     },
@@ -795,16 +793,16 @@
       "name": "markers_h",
       "values": [
         {
-          "axis_value": 4,
-          "label": "Low marker 2",
-          "new_color": "#E6E6FA",
-          "type": "solid"
+          "axis_value": 3,
+          "label": "Low marker",
+          "new_color": "red",
+          "type": [1,5]
         },
         {
           "axis_value": 7,
-          "label": "High marker 2",
-          "new_color": "blue",
-          "type": "dashed"
+          "label": "High marker",
+          "new_color": "purple",
+          "type": [1,0]
         }
       ]
     },

@@ -8,6 +8,7 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 from . import vega
 
+CATEGORY_COLORS = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
 
 def select_traces(
     traces,
@@ -216,10 +217,10 @@ def trajectories(
         points = []
 
     if base_markers_v is None:
-        base_markers_v = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
+        base_markers_v = []
 
     if base_markers_h is None:
-        base_markers_h = [{"axis_value": 3, "label": "", "new_color": "", "type": ""}]
+        base_markers_h = []
 
     if axis_labels is None:
         axis_labels = {"xaxis_label": "", "yaxis_label": ""}
@@ -250,6 +251,15 @@ def trajectories(
 
         schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["domain"], [*colors.keys()])
         schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["range"], [*colors.values()])
+    else:
+        schema["scales"] = vega.replace_named_with(schema["scales"], "fillScale", ["domain"], all_trajectories)
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "fillScale", ["range"], CATEGORY_COLORS[: len(all_trajectories)]
+        )
+        schema["scales"] = vega.replace_named_with(schema["scales"], "color", ["domain"], all_trajectories)
+        schema["scales"] = vega.replace_named_with(
+            schema["scales"], "color", ["range"], CATEGORY_COLORS[: len(all_trajectories)]
+        )
     if not join_points:
         marks = vega.find_keyed(schema["marks"], "name", "_points")["marks"]
         simplified_marks = vega.delete_named(marks, "_points_line")
