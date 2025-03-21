@@ -10,10 +10,19 @@
       "zero": false,
       "domain": {
         "fields": [
-          {"data": "distributions", "field": "timepoint"},
-          {"data": "traces", "field": "timepoint"},
-          {"data": "points", "field": "timepoint"}
-         ]
+          {
+            "data": "distributions",
+            "field": "timepoint"
+          },
+          {
+            "data": "traces",
+            "field": "timepoint"
+          },
+          {
+            "data": "points",
+            "field": "timepoint"
+          }
+        ]
       }
     },
     {
@@ -24,80 +33,135 @@
       "zero": true,
       "domain": {
         "fields": [
-          {"data": "distributions", "field": "lower"},
-          {"data": "distributions", "field": "upper"},
-          {"data": "traces", "field": "value"},
-          {"data": "points", "field": "value"}
-         ]
+          {
+            "data": "distributions",
+            "field": "lower"
+          },
+          {
+            "data": "distributions",
+            "field": "upper"
+          },
+          {
+            "data": "traces",
+            "field": "value"
+          },
+          {
+            "data": "points",
+            "field": "value"
+          }
+        ]
       }
     },
     {
       "name": "markerscale_v",
       "type": "ordinal",
-      "domain": {"data": "markers_v", "field": "label"},
-      "range": {"data": "markers_v", "field": "new_color"}
+      "domain": {
+        "data": "markers_v",
+        "field": "label"
+      },
+      "range": {
+        "data": "markers_v",
+        "field": "new_color"
+      }
     },
     {
       "name": "markerscale_h",
       "type": "ordinal",
-      "domain": {"data": "markers_h", "field": "label"},
-      "range": {"data": "markers_h", "field": "new_color"}
+      "domain": {
+        "data": "markers_h",
+        "field": "label"
+      },
+      "range": {
+        "data": "markers_h",
+        "field": "new_color"
+      }
     },
     {
       "name": "fillScale",
       "type": "ordinal",
-      "domain": {
-        "fields": [
-          {"data": "distributions", "field": "trajectory"},
-          {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
-         ]
-      },
-      "range": [ "#1f77b4", "#ff7f0e", "#2ca02c"]
+      "domain": [
+        "Susceptible_State",
+        "Infected_State",
+        "Exposed_State",
+        "Resistant_State"
+      ],
+      "range": [
+        "url(#circles-1)",
+        "url(#diagonal-stripe-2)",
+        "green",
+        "purple"
+      ]
     },
     {
       "name": "color",
       "type": "ordinal",
-      "range": "category",
-      "domain": {
-        "fields": [
-          {"data": "distributions", "field": "trajectory"},
-          {"data": "traces", "field": "trajectory"},
-          {"data": "points", "field": "trajectory"}
-         ],
-         "sort": {"order": "ascending"}
-      }
+      "range": [
+        "pink",
+        "blue",
+        "green",
+        "purple"
+      ],
+      "domain": [
+        "Susceptible_State",
+        "Infected_State",
+        "Exposed_State",
+        "Resistant_State"
+      ]
     },
     {
       "name": "lineStyle",
       "type": "ordinal",
-      "domain": ["dashed", "solid"],
-      "range": [[5, 5], []]
-    }, 
+      "domain": [
+        "dashed",
+        "solid"
+      ],
+      "range": [
+        [
+          5,
+          5
+        ],
+        []
+      ]
+    },
     {
       "name": "trajectoryOrder",
-      "type": "ordinal"
+      "type": "ordinal",
+      "domain": [
+        "Susceptible_State",
+        "Infected_State",
+        "Exposed_State",
+        "Resistant_State"
+      ],
+      "range": [
+        0,
+        1,
+        2,
+        3
+      ]
     }
   ],
-
   "axes": [
     {
       "orient": "bottom",
-      "scale": "xscale", 
+      "scale": "xscale",
       "zindex": 100,
-      "title": {"signal": "data('axis_labels')[0].xaxis_label"}
+      "title": {
+        "signal": "data('axis_labels')[0].xaxis_label"
+      }
     },
     {
-      "orient": "left", 
-      "scale": "yscale", 
+      "orient": "left",
+      "scale": "yscale",
       "zindex": 100,
-      "title": {"signal": "data('axis_labels')[0].yaxis_label"}
+      "title": {
+        "signal": "data('axis_labels')[0].yaxis_label"
+      }
     }
   ],
-
   "signals": [
     {
-      "name": "clear", "value": true,
+      "name": "clear",
+      "value": true,
       "on": [
         {
           "events": "mouseup[!event.item]",
@@ -107,7 +171,8 @@
       ]
     },
     {
-      "name": "shift", "value": false,
+      "name": "shift",
+      "value": false,
       "on": [
         {
           "events": "@legendSymbol:click, @legendLabel:click",
@@ -117,7 +182,8 @@
       ]
     },
     {
-      "name": "clicked", "value": null,
+      "name": "clicked",
+      "value": null,
       "on": [
         {
           "events": "@legendSymbol:click, @legendLabel:click",
@@ -127,7 +193,8 @@
       ]
     },
     {
-      "name": "clearData", "value": true,
+      "name": "clearData",
+      "value": true,
       "on": [
         {
           "events": "mouseup[!event.item]",
@@ -137,7 +204,8 @@
       ]
     },
     {
-      "name": "clickedData", "value": null,
+      "name": "clickedData",
+      "value": null,
       "on": [
         {
           "events": "@area:click",
@@ -159,7 +227,8 @@
     },
     {
       "description": "Active datapoint",
-      "name": "activated_datapoint", "value": null,
+      "name": "activated_datapoint",
+      "value": null,
       "on": [
         {
           "events": "symbol:mouseover",
@@ -183,11 +252,9 @@
       ]
     }
   ],
-
   "config": {
     "logLevel": "warn"
   },
-
   "legends": [
     {
       "name": "color_legend",
@@ -197,13 +264,24 @@
           "name": "legendSymbol",
           "interactive": true,
           "update": {
-            "fill": {"value": "transparent"},
-            "strokeWidth": {"value": 2},
+            "fill": {
+              "value": "transparent"
+            },
+            "strokeWidth": {
+              "value": 2
+            },
             "opacity": [
-              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)", "value": 0.7},
-              {"value": 0.15}
+              {
+                "test": "!length(data('selected')) || indata('selected', 'value', datum.value) || indata('selectedData', 'value', datum.value)",
+                "value": 0.7
+              },
+              {
+                "value": 0.15
+              }
             ],
-            "size": {"value": 64}
+            "size": {
+              "value": 64
+            }
           }
         },
         "labels": {
@@ -211,8 +289,13 @@
           "interactive": true,
           "update": {
             "opacity": [
-              {"test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.value)", "value": 1},
-              {"value": 0.25}
+              {
+                "test": "!length(data('selectedData')) || indata('selectedData', 'value', datum.value)",
+                "value": 1
+              },
+              {
+                "value": 0.25
+              }
             ]
           }
         }
@@ -226,24 +309,37 @@
           "name": "markerLegendSymbol_v",
           "interactive": true,
           "update": {
-            "size": {"value": 100},
-            "shape": {"value": "square"},
-            "stroke": {"value": "transparent"},
-            "opacity": {"value": 1}
+            "size": {
+              "value": 100
+            },
+            "shape": {
+              "value": "square"
+            },
+            "stroke": {
+              "value": "transparent"
+            },
+            "opacity": {
+              "value": 1
+            }
           }
         },
         "labels": {
           "name": "markerLegendLabel",
           "interactive": true,
           "update": {
-            "text": {"field": "label"},
-            "fill": {"value": "black"},
-            "opacity": {"value": 1}
+            "text": {
+              "field": "label"
+            },
+            "fill": {
+              "value": "black"
+            },
+            "opacity": {
+              "value": 1
+            }
           }
         }
       }
     },
-
     {
       "name": "marker_color_legend_h",
       "fill": "markerscale_h",
@@ -252,25 +348,38 @@
           "name": "markerLegendSymbol_h",
           "interactive": true,
           "update": {
-            "size": {"value": 100},
-            "shape": {"value": "square"},
-            "stroke": {"value": "transparent"},
-            "opacity": {"value": 1}
+            "size": {
+              "value": 100
+            },
+            "shape": {
+              "value": "square"
+            },
+            "stroke": {
+              "value": "transparent"
+            },
+            "opacity": {
+              "value": 1
+            }
           }
         },
         "labels": {
           "name": "markerLegendLabel",
           "interactive": true,
           "update": {
-            "text": {"field": "label"},
-            "fill": {"value": "black"},
-            "opacity": {"value": 1}
+            "text": {
+              "field": "label"
+            },
+            "fill": {
+              "value": "black"
+            },
+            "opacity": {
+              "value": 1
+            }
           }
         }
       }
     }
   ],
-
   "marks": [
     {
       "type": "group",
@@ -287,50 +396,106 @@
         {
           "type": "symbol",
           "name": "_points_symbol",
-          "from": {"data": "points_split"},
+          "from": {
+            "data": "points_split"
+          },
           "zindex": 3,
           "encode": {
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
-              "y": {"scale": "yscale", "field": "value"},
-              "size": {"value": 35},
-              "strokeWidth": {"value": 2},
-              "stroke": {"scale": "color", "field": "trajectory"},
+              "x": {
+                "scale": "xscale",
+                "field": "timepoint"
+              },
+              "y": {
+                "scale": "yscale",
+                "field": "value"
+              },
+              "size": {
+                "value": 35
+              },
+              "strokeWidth": {
+                "value": 2
+              },
+              "stroke": {
+                "scale": "color",
+                "field": "trajectory"
+              },
               "fillOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.5},
-                {"value": 0.15}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.5
+                },
+                {
+                  "value": 0.15
+                }
               ],
               "strokeOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.75},
-                {"value": 0.15}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.75
+                },
+                {
+                  "value": 0.15
+                }
               ],
-              "tooltip": {"field": "value"}
+              "tooltip": {
+                "field": "value"
+              }
             },
             "hover": {
-              "fillOpacity": {"value": 0.9}
+              "fillOpacity": {
+                "value": 0.9
+              }
             }
           }
         },
         {
           "type": "line",
           "name": "_points_line",
-          "from": {"data": "points_split"},
+          "from": {
+            "data": "points_split"
+          },
           "zindex": 3,
           "encode": {
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
-              "y": {"scale": "yscale", "field": "value"},
-              "strokeWidth": {"value": 2},
-              "stroke": {"scale": "color", "field": "trajectory"},
-              "interpolate": {"value": "linear"},
-              "strokeDash": {"value": [5, 3]},
+              "x": {
+                "scale": "xscale",
+                "field": "timepoint"
+              },
+              "y": {
+                "scale": "yscale",
+                "field": "value"
+              },
+              "strokeWidth": {
+                "value": 2
+              },
+              "stroke": {
+                "scale": "color",
+                "field": "trajectory"
+              },
+              "interpolate": {
+                "value": "linear"
+              },
+              "strokeDash": {
+                "value": [
+                  5,
+                  3
+                ]
+              },
               "strokeOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.3},
-                {"value": 0.1}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.3
+                },
+                {
+                  "value": 0.1
+                }
               ]
             },
             "hover": {
-              "fillOpacity": {"value": 0.9}
+              "fillOpacity": {
+                "value": 0.9
+              }
             }
           }
         }
@@ -351,21 +516,43 @@
         {
           "type": "line",
           "name": "_traces_lines",
-          "from": {"data": "traces_split"},
+          "from": {
+            "data": "traces_split"
+          },
           "encode": {
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
-              "y": {"scale": "yscale", "field": "value"},
-              "strokeWidth": {"value": 2},
-              "stroke": {"scale": "color", "field": "trajectory"},
-              "interpolate": {"value": "linear"},
+              "x": {
+                "scale": "xscale",
+                "field": "timepoint"
+              },
+              "y": {
+                "scale": "yscale",
+                "field": "value"
+              },
+              "strokeWidth": {
+                "value": 2
+              },
+              "stroke": {
+                "scale": "color",
+                "field": "trajectory"
+              },
+              "interpolate": {
+                "value": "linear"
+              },
               "strokeOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.75},
-                {"value": 0.15}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.75
+                },
+                {
+                  "value": 0.15
+                }
               ]
             },
             "hover": {
-              "fillOpacity": {"value": 0.9}
+              "fillOpacity": {
+                "value": 0.9
+              }
             }
           }
         }
@@ -382,33 +569,69 @@
           "groupby": "trajectory_order"
         }
       },
-      "sort": {"field": "datum.trajectory_order", "order": "ascending"},
+      "sort": {
+        "field": "datum.trajectory_order",
+        "order": "ascending"
+      },
       "marks": [
         {
           "type": "area",
           "name": "area",
           "interactive": true,
-          "from": {"data": "trajectory_split"},
+          "from": {
+            "data": "trajectory_split"
+          },
           "encode": {
             "update": {
-              "x": {"scale": "xscale", "field": "timepoint"},
-              "y": {"scale": "yscale", "field": "upper"},
-              "y2": {"scale": "yscale", "field": "lower"},
-              "interpolate": {"value": "linear"},
-              "strokeWidth": {"value": 2},
-              "fill": {"scale": "fillScale", "field": "trajectory"},
-              "stroke": {"scale": "color", "field": "trajectory"},
+              "x": {
+                "scale": "xscale",
+                "field": "timepoint"
+              },
+              "y": {
+                "scale": "yscale",
+                "field": "upper"
+              },
+              "y2": {
+                "scale": "yscale",
+                "field": "lower"
+              },
+              "interpolate": {
+                "value": "linear"
+              },
+              "strokeWidth": {
+                "value": 2
+              },
+              "fill": {
+                "scale": "fillScale",
+                "field": "trajectory"
+              },
+              "stroke": {
+                "scale": "color",
+                "field": "trajectory"
+              },
               "fillOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.5},
-                {"value": 0.15}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.5
+                },
+                {
+                  "value": 0.15
+                }
               ],
               "strokeOpacity": [
-                {"test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)", "value": 0.75},
-                {"value": 0.15}
+                {
+                  "test": "!length(data('selected')) || indata('selected', 'value', datum.trajectory)",
+                  "value": 0.75
+                },
+                {
+                  "value": 0.15
+                }
               ]
             },
             "hover": {
-              "fillOpacity": {"value": 0.9}
+              "fillOpacity": {
+                "value": 0.9
+              }
             }
           }
         }
@@ -421,15 +644,34 @@
         {
           "type": "rule",
           "name": "_marker_v text",
-          "from": {"data": "markers_v"},
+          "from": {
+            "data": "markers_v"
+          },
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale_v", "field": "label"},
-            "strokeDash": {"scale": "lineStyle", "field": "type"}},
+            "enter": {
+              "stroke": {
+                "scale": "markerscale_v",
+                "field": "label"
+              },
+              "strokeDash": {
+                "scale": "lineStyle",
+                "field": "type"
+              }
+            },
             "update": {
-              "x": {"scale": "xscale", "field": "axis_value"},
-              "y2": {"value": 0},
-              "y": {"signal": "height"},
-              "opacity": {"value": 1}
+              "x": {
+                "scale": "xscale",
+                "field": "axis_value"
+              },
+              "y2": {
+                "value": 0
+              },
+              "y": {
+                "signal": "height"
+              },
+              "opacity": {
+                "value": 1
+              }
             }
           }
         }
@@ -442,83 +684,136 @@
         {
           "type": "rule",
           "name": "_marker_h text",
-          "from": {"data": "markers_h"},
+          "from": {
+            "data": "markers_h"
+          },
           "encode": {
-            "enter": {"stroke": {"scale": "markerscale_h", "field": "label"},
-            "strokeDash": {"scale": "lineStyle", "field": "type"}},
+            "enter": {
+              "stroke": {
+                "scale": "markerscale_h",
+                "field": "label"
+              },
+              "strokeDash": {
+                "scale": "lineStyle",
+                "field": "type"
+              }
+            },
             "update": {
-              "y": {"scale": "yscale", "field": "axis_value"},
-              "x2": {"value": 0},
-              "x": {"signal": "width"},
-              "opacity": {"value": 1}
+              "y": {
+                "scale": "yscale",
+                "field": "axis_value"
+              },
+              "x2": {
+                "value": 0
+              },
+              "x": {
+                "signal": "width"
+              },
+              "opacity": {
+                "value": 1
+              }
             }
           }
         }
       ]
     }
   ],
-
   "data": [
-    {
-      "name": "distributions",
-      "values": [
-        {"timepoint": 1, "upper": 10, "lower": 10, "trajectory": "a"},
-        {"timepoint": 2, "upper": 20, "lower": 25, "trajectory": "a"},
-        {"timepoint": 4, "upper": 20, "lower": 50, "trajectory": "a"},
-        {"timepoint": 6, "upper": 0, "lower": 10, "trajectory": "a"},
-        {"timepoint": 1, "upper": -30, "lower": -20, "trajectory": "b"},
-        {"timepoint": 5, "upper": 10, "lower": 20, "trajectory": "a"},
-        {"timepoint": 2, "upper": -40, "lower": -10, "trajectory": "b"},
-        {"timepoint": 3, "upper": -20, "lower": 0, "trajectory": "b"},
-        {"timepoint": 3, "upper": 30, "lower": 40, "trajectory": "a"},
-        {"timepoint": 5, "upper": 10, "lower": 20, "trajectory": "b"},
-        {"timepoint": 4, "upper": 0, "lower": 10, "trajectory": "b"},
-        {"timepoint": 6, "upper": 30, "lower": 40, "trajectory": "b"}
-      ],
+    
+{
+  "name": "distributions",
+  "values": [
+    {"trajectory": "Susceptible_State", "timepoint": 1, "lower": 1, "upper": 5},
+    {"trajectory": "Susceptible_State", "timepoint": 2, "lower": 2, "upper": 6},
+    {"trajectory": "Susceptible_State", "timepoint": 3, "lower": 2.5, "upper": 6.5},
+    {"trajectory": "Susceptible_State", "timepoint": 4, "lower": 3, "upper": 7},
+    {"trajectory": "Susceptible_State", "timepoint": 5, "lower": 4, "upper": 8},
+    {"trajectory": "Exposed_State", "timepoint": 1, "lower": 4, "upper": 8},
+    {"trajectory": "Exposed_State", "timepoint": 2, "lower": 4.5, "upper": 8.5},
+    {"trajectory": "Exposed_State", "timepoint": 3, "lower": 5, "upper": 9},
+    {"trajectory": "Exposed_State", "timepoint": 4, "lower": 5.5, "upper": 9.5},
+    {"trajectory": "Exposed_State", "timepoint": 5, "lower": 6, "upper": 10}
+  ],
       "transform": [
-        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}},
-        {"type": "formula", "expr": "scale('trajectoryOrder', datum.trajectory)", "as": "trajectory_order"}
+        {
+          "type": "collect",
+          "sort": {
+            "field": [
+              "trajectory",
+              "timepoint"
+            ]
+          }
+        },
+        {
+          "type": "formula",
+          "expr": "scale('trajectoryOrder', datum.trajectory)",
+          "as": "trajectory_order"
+        }
       ]
     },
     {
       "name": "traces",
-      "values": [
-        {"timepoint": 6, "value": 30, "trajectory": "c"},
-        {"timepoint": 9, "value": 20, "trajectory": "c"},
-        {"timepoint": 3, "value": 20, "trajectory": "c"},
-        {"timepoint": 7, "value": 30, "trajectory": "d"},
-        {"timepoint": 6, "value": 40, "trajectory": "d"},
-        {"timepoint": 8, "value": 40, "trajectory": "d"}
-      ],
+      "values": [],
       "transform": [
-        {"type": "filter", "expr": "isValid(datum.value)"},
-        {"type": "collect", "sort": {"field": ["trajectory", "timepoint"]}}
+        {
+          "type": "filter",
+          "expr": "isValid(datum.value)"
+        },
+        {
+          "type": "collect",
+          "sort": {
+            "field": [
+              "trajectory",
+              "timepoint"
+            ]
+          }
+        }
       ]
     },
     {
       "name": "points",
-      "values": [
-        {"timepoint": 6, "value": 30, "trajectory": "d"},
-        {"timepoint": 10, "value": 40, "trajectory": "d"},
-        {"timepoint": 5, "value": 10, "trajectory": "e"},
-        {"timepoint": 6, "value": 15, "trajectory": "e"}
-      ]
+      "values": []
     },
     {
       "name": "markers_v",
       "values": [
-        {"axis_value": 3, "label": "", "new_color": "", "type": ""}
+        {
+          "axis_value": 3,
+          "label": "Low marker",
+          "new_color": "red",
+          "type": "dashed"
+        },
+        {
+          "axis_value": 7,
+          "label": "High marker",
+          "new_color": "blue",
+          "type": "dashed"
+        }
       ]
     },
     {
       "name": "markers_h",
       "values": [
-        {"axis_value": 3, "label": "", "new_color": "", "type": ""}
+        {
+          "axis_value": 4,
+          "label": "Low marker 2",
+          "new_color": "#E6E6FA",
+          "type": "solid"
+        },
+        {
+          "axis_value": 7,
+          "label": "High marker 2",
+          "new_color": "blue",
+          "type": "dashed"
+        }
       ]
     },
     {
       "name": "axis_labels",
-      "values": [{"xaxis_label": "count", "yaxis_label": "trajectory"}]
+      "values": {
+        "xaxis_label": "Time (days)",
+        "yaxis_label": "Population"
+      }
     },
     {
       "name": "selected",
