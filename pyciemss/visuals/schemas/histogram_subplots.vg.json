@@ -66,10 +66,10 @@
     {
       "name": "yref",
       "values": [
-        {"label": "beta", "number": 68000, "name": "line1", "color": "black", "type": "dashed"},
-        {"label": "beta", "number": 69000, "name": "line2", "color": "red", "type": "solid"},
-        {"label": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": "dashed"},
-        {"label": "I0", "number": 71000, "name": "line1", "color": "green", "type": "solid"}
+        {"label": "beta", "number": 68000, "name": "line1", "color": "black", "type": [2,2]},
+        {"label": "beta", "number": 69000, "name": "line2", "color": "red", "type": [1,0]},
+        {"label": "gamma", "number": 70000, "name": "line1", "color": "blue", "type": [2,2]},
+        {"label": "I0", "number": 71000, "name": "line1", "color": "green", "type": [1,0]}
       ]
     }
   ],
@@ -90,8 +90,36 @@
     {
       "name": "lineStyle",
       "type": "ordinal",
-      "domain": ["dashed", "solid"],
-      "range": [[5, 5], []]
+      "domain": {
+        "data": "yref",
+        "field": "label"
+      },
+      "range": {
+        "data": "yref",
+        "field": "type"
+      }
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "orient": "right",
+      "title": "Histogram Colors",
+      "encode": {
+        "symbols": {
+          "enter": {
+            "shape": {"value": "square"},
+            "fill": {"scale": "color", "field": "label"},
+            "size": {"value": 200},
+            "opacity": {"value": 1}
+          }
+        },
+        "labels": {
+          "enter": {
+            "text": {"field": "label"}
+          }
+        }
+      }
     }
   ],
   "marks": [
@@ -168,8 +196,15 @@
           "encode": {
             "symbols": {
               "enter": {
+                "shape": {"value": "square"},
                 "stroke": {"scale": "yrefColorScale", "field": "label"},
-                "strokeDash": {"scale": "lineStyle", "field": "type"}
+                "strokeDash": {
+                  "scale": "lineStyle",
+                  "field": "type"
+                },
+                "strokeWidth": {"value": 1},
+                "size": {"value": 200},
+                "opacity": {"value": 1}
               }
             },
             "labels": {
