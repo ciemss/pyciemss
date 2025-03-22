@@ -116,7 +116,7 @@ def histogram_subplots(
     *,
     yrefs: List[dict] = [],
     axis_labels: dict = {},
-    bins: int = 30, 
+    bins: int = 10, 
     return_bins: bool = False,
     range: dict = {},
     **data,
