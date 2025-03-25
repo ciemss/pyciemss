@@ -4,52 +4,11 @@
   "width": 500,
   "height": 500,
   "padding": 5,
-  "data": [
-    {
-      "name": "expected_value",
-      "values": [
-        {"Column": "expected_value", "Mean Shapley Value": 4}
-      ]
-    },
-    {
-      "name": "table",
-      "values": [
-        {"Column": "Age", "Mean Shapley Value": -1,  "expected_value": 4},
-        {"Column": "Workclass", "Mean Shapley Value": 2,  "expected_value": 4},
-        {"Column": "Education-Num", "Mean Shapley Value": 3,  "expected_value": 4}
-      ],
-      "transform": [
-        {
-          "type": "formula",
-          "expr": "round(datum['Mean Shapley Value'] * 100) / 100",
-          "as": "Rounded Mean Shapley Value"
-        },
-        {
-          "type": "window",
-          "sort": {"field": "Column"},
-          "ops": ["sum"],
-          "fields": ["Rounded Mean Shapley Value"],
-          "as": ["cumulative_sum"],
-          "frame": [null, 0]
-        },
-        {
-          "type": "formula",
-          "expr": "datum.cumulative_sum - datum['Rounded Mean Shapley Value'] + datum.expected_value",
-          "as": "cumulative_sum_with_expected_value"
-        },
-        {
-          "type": "formula",
-          "expr": "datum.cumulative_sum + datum.expected_value",
-          "as": "end"
-        }
-      ]
-    }
-  ],
   "scales": [
     {
       "name": "yscale",
       "type": "band",
-      "domain": {"data": "table", "field": "Column"},
+      "domain": {"data": "table", "field": "variable"},
       "range": "height",
       "padding": 0.1
     },
@@ -62,11 +21,11 @@
       },
       "range": "width",
       "nice": true,
-      "zero": true
+      "zero": false
     }
   ],
   "axes": [
-    {"orient": "left", "scale": "yscale", "title": "Column"},
+    {"orient": "left", "scale": "yscale", "title": "variable"},
     {"orient": "bottom", "scale": "xscale", "title": "Mean Shapley Value"}
   ],
   "marks": [
@@ -90,7 +49,7 @@
       "from": {"data": "table"},
       "encode": {
         "enter": {
-          "y": {"scale": "yscale", "field": "Column"},
+          "y": {"scale": "yscale", "field": "variable"},
           "height": {"scale": "yscale", "band": 1},
           "x": {"scale": "xscale", "field": "cumulative_sum_with_expected_value"},
           "x2": {"scale": "xscale", "field": "end"}
@@ -112,7 +71,7 @@
       "encode": {
         "enter": {
           "y": {"scale": "yscale", 
-          "field": "Column", 
+          "field": "variable", 
           "band": 0.5,
             "offset": {
               "signal": "-10"
@@ -144,7 +103,7 @@
       "from": {"data": "table"},
       "encode": {
         "enter": {
-          "y": {"scale": "yscale", "field": "Column", "band": 0.5},
+          "y": {"scale": "yscale", "field": "variable", "band": 0.5},
           "x": {"scale": "xscale", "field": "end"},
           "path": {
             "signal": "datum['Rounded Mean Shapley Value'] < 0 ? 'M-1,-5 L-1,5 L-10,0 Z' : 'M1,-5 L1,5 L10,0 Z'"
@@ -153,5 +112,40 @@
         }
       }
     }
-  ]
+  ],
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {"variable": "Age", "Mean Shapley Value": -1,  "expected_value": 4},
+        {"variable": "Workclass", "Mean Shapley Value": 2,  "expected_value": 4},
+        {"variable": "Education-Num", "Mean Shapley Value": 3,  "expected_value": 4}
+      ],
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "round(datum['Mean Shapley Value'] * 100) / 100",
+          "as": "Rounded Mean Shapley Value"
+        },
+        {
+          "type": "window",
+          "sort": {"field": "variable"},
+          "ops": ["sum"],
+          "fields": ["Rounded Mean Shapley Value"],
+          "as": ["cumulative_sum"],
+          "frame": [null, 0]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.cumulative_sum - datum['Rounded Mean Shapley Value'] + datum.expected_value",
+          "as": "cumulative_sum_with_expected_value"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.cumulative_sum + datum.expected_value",
+          "as": "end"
+        }
+      ]
+    }
+  ]  
 }
