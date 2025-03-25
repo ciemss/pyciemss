@@ -7,8 +7,30 @@ import pyciemss
 import random
 import warnings
 
+"""
+Shapley values are a tool to explain the contribution of different variables to an outcome.
+They were originally developed in economics, and have been applied to general machine learning.
 
-# SHAP inspired plots
+In the original formulation, Shapley values are computed over coallitions of players to determine
+what impact having/removing a player from from a coalition will have on a "payoff" function.  In
+the context of pyciemss simulations, a "player" is a specific input variable value and the
+"payoff" is another variables value.  So a model with two integer inputs ranging from 1-10 and an output
+would have twenty possible players (10 for each variable) in 100 different coalitions.
+
+The gist of interpreting Shapley values is they allow you to rank the importance of different
+parameter values to the outcome.  They do not directly indicate the magnitude of the change,
+but a variable with a higher shapley value will generally give a larger change than a variable
+with a lower shapley value.More details on how to interpet Shapley values can be
+found at: christophm.github.io/interpretable-ml-book/shapley.html.
+
+This package includes methods or *estimating* shapley values on pyciemss models (exact calculation
+is combintoric in the number of stats) and communicating the results of those estimations.  The
+visualizations are based on those in the SHAP package (shap.readthedocs.io).
+
+
+"""
+
+# SHAP inspired plots (https://shap.readthedocs.io/en/latest/)
 
 
 def shapley_decision_plot(deltas: pd.DataFrame, players, payout) -> vega.VegaSchema:
@@ -88,7 +110,7 @@ def shapley_waterfall(deltas: pd.DataFrame, players, payout) -> vega.VegaSchema:
 
 
 # Compute Shapley Values ---------------------------
-class RandomCombination:
+class Sampler:
     def __init__(self, target_inputs):
         self.target_inputs = target_inputs
 
@@ -100,7 +122,7 @@ def choose(values):
     return lambda: random.choice(values)
 
 
-def discretized(*, n, center, step):
+def random_discretized(*, n, center, step):
     """Create a sequence of n sample points centered on center the given step-size"""
     low = [*reversed([center - (step * i) for i in range(1, n + 1)])]
     high = [center + (step * i) for i in range(n + 1)]
@@ -140,13 +162,23 @@ def neyman_method(
     calibrated_model -- Model that has been calibrated to an objective function
     parameter_estimates -- Full set of calibrated inputs
     players -- Tripples of (input var name, sampling strategy, output var name)
-    payout -- Which *single* output parameter is of interest?
+        - The "input var name" is the name of the variable in the model.
+        - The "output var name" is the name of the variable in the pyciemss
+          dataframe the corresponds to the input var name.
+        - The "sampling strategy" is a function of zero variables (e.g., a thunk)
+          that produce an single input value when invoked.
+          The sampling strategy may randomly generate values or it may iterate over them,
+          but it should always return exactly
+          one value when invoked.  It is essentially "picking a player" and invoking the
+          sampling strategy for each variable builds the coalition being tested.
+    payout -- Which *single* output parameter is of interest?  This is a name of a variable in the output dataframe,
+       similar tot he "output var name" in the players definition, but for a field corresponding to an output variable
+       in the model.
 
     #TODO: Make 'payout' a function fo the result (not just a single column).  This could
     #       be done with a callable that combines several columns into one
 
     budget -- Number of seconds to keep sampling
-
 
     Returns an list of "observations".  Each observation is a timeseries dataframe representing a single simulation.
       It only includes the "player" variable values and payout.
@@ -164,7 +196,7 @@ def neyman_method(
             warnings.warn("Could not import tqdm, running as-if silent=True.")
             progress = TQDM_noop()
 
-    input_gen = RandomCombination([p[:2] for p in players])
+    input_gen = Sampler([p[:2] for p in players])
     output_names = [p[2] for p in players] + [payout]
     observations = []
 
