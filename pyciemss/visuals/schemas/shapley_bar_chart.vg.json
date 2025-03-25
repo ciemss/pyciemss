@@ -62,7 +62,7 @@
         "enter": {
           "x": {"scale": "xscale", "value": 0},
           "y": {"value": 0},
-          "y2": {"value": {"signal": "height"}},
+          "y2": {"signal": "height"},
           "strokeWidth": {"value": 1.5},
           "stroke": {"value": "black"}
         }

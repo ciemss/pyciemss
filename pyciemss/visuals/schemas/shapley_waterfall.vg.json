@@ -26,7 +26,7 @@
         },
         {
           "type": "window",
-          "sort": [{"field": "Column"}],
+          "sort": {"field": "Column"},
           "ops": ["sum"],
           "fields": ["Rounded Mean Shapley Value"],
           "as": ["cumulative_sum"],
