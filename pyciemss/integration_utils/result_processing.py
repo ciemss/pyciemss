@@ -187,6 +187,26 @@ def make_quantiles(
     if alpha_qs is not None:
         num_quantiles = len(alpha_qs)
 
+        ### Convert cumulative to incident
+        def calculate_incident_hosp(cumulative_hosp):
+            """
+            Function to calculate incident hospitalizations from cumulative hospitalizations array.
+            """
+            incident_hosp = []
+            for cum in cumulative_hosp:
+                incident = np.diff(cum, prepend=cum[0])
+                incident_hosp.append(incident)
+            return np.array(incident_hosp)
+
+        # Assuming pyciemss_results is your dictionary
+        cumulative_hosp_state = pyciemss_results["states"]["cumulative_hosp_state"]
+
+        # Calculate incident hospitalizations
+        incident_hosp_state = calculate_incident_hosp(cumulative_hosp_state)
+
+        # Add the incident_hosp_state to the states dictionary
+        pyciemss_results["states"]["incident_hosp_state"] = incident_hosp_state
+
         # Solution (state variables)
         for k, v in pyciemss_results["states"].items():
             q_vals = np.quantile(v, alpha_qs, axis=0)
