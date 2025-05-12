@@ -340,7 +340,7 @@
         "name": "marker_color_legend_h",
         "stroke": "markerscale_h",
         "strokeDash": "lineStyle_h",
-        "title": {"signal": "length(data('markers_h')) > 1 ? 'Vertical Markers' : ''"},
+        "title": {"signal": "length(data('markers_h')) > 1 ? 'Horizontal Markers' : ''"},
         "interactive": true,
         "encode": {
           "symbols": {
