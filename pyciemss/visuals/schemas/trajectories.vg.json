@@ -374,7 +374,7 @@
           }
         }
       }
-],
+  ],
   "marks": [
     {
       "type": "group",
@@ -533,6 +533,9 @@
               },
               "interpolate": {
                 "value": "linear"
+              },
+              "strokeDash": {
+                "value": [5, 3]
               },
               "strokeOpacity": [
                 {
@@ -714,21 +717,20 @@
     }
   ],
   "data": [
-    
-{
-  "name": "distributions",
-  "values": [
-    {"trajectory": "Susceptible_State", "timepoint": 1, "lower": 1, "upper": 5},
-    {"trajectory": "Susceptible_State", "timepoint": 2, "lower": 2, "upper": 6},
-    {"trajectory": "Susceptible_State", "timepoint": 3, "lower": 2.5, "upper": 6.5},
-    {"trajectory": "Susceptible_State", "timepoint": 4, "lower": 3, "upper": 7},
-    {"trajectory": "Susceptible_State", "timepoint": 5, "lower": 4, "upper": 8},
-    {"trajectory": "Exposed_State", "timepoint": 1, "lower": 4, "upper": 8},
-    {"trajectory": "Exposed_State", "timepoint": 2, "lower": 4.5, "upper": 8.5},
-    {"trajectory": "Exposed_State", "timepoint": 3, "lower": 5, "upper": 9},
-    {"trajectory": "Exposed_State", "timepoint": 4, "lower": 5.5, "upper": 9.5},
-    {"trajectory": "Exposed_State", "timepoint": 5, "lower": 6, "upper": 10}
-  ],
+    {
+      "name": "distributions",
+      "values": [
+        {"trajectory": "Susceptible_State", "timepoint": 1, "lower": 1, "upper": 5},
+        {"trajectory": "Susceptible_State", "timepoint": 2, "lower": 2, "upper": 6},
+        {"trajectory": "Susceptible_State", "timepoint": 3, "lower": 2.5, "upper": 6.5},
+        {"trajectory": "Susceptible_State", "timepoint": 4, "lower": 3, "upper": 7},
+        {"trajectory": "Susceptible_State", "timepoint": 5, "lower": 4, "upper": 8},
+        {"trajectory": "Exposed_State", "timepoint": 1, "lower": 4, "upper": 8},
+        {"trajectory": "Exposed_State", "timepoint": 2, "lower": 4.5, "upper": 8.5},
+        {"trajectory": "Exposed_State", "timepoint": 3, "lower": 5, "upper": 9},
+        {"trajectory": "Exposed_State", "timepoint": 4, "lower": 5.5, "upper": 9.5},
+        {"trajectory": "Exposed_State", "timepoint": 5, "lower": 6, "upper": 10}
+      ],
       "transform": [
         {
           "type": "collect",
