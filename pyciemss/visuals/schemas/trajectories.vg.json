@@ -302,7 +302,7 @@
         "name": "marker_color_legend_v",
         "stroke": "markerscale_v",
         "strokeDash": "lineStyle_v",
-        "title": {"signal": "length(data('markers_v')) > 1 ? 'Vertical Markers' : ''"},
+        "title": {"signal": "length(data('markers_v')) >= 1 ? 'Vertical Markers' : ''"},
         "interactive": true,
         "encode": {
           "symbols": {
@@ -319,7 +319,7 @@
             },
             "update": {
               "opacity": [
-                {"test": "length(data('markers_v')) > 1", "value": 1},
+                {"test": "length(data('markers_v')) >= 1", "value": 1},
                 {"value": 0}
               ]
             }
@@ -329,7 +329,7 @@
               "text": {"field": "label"},
               "fill": {"value": "black"},
               "opacity": [
-                {"test": "length(data('markers_v')) > 1", "value": 1},
+                {"test": "length(data('markers_v')) >= 1", "value": 1},
                 {"value": 0}
               ]
             }
@@ -340,7 +340,7 @@
         "name": "marker_color_legend_h",
         "stroke": "markerscale_h",
         "strokeDash": "lineStyle_h",
-        "title": {"signal": "length(data('markers_h')) > 1 ? 'Horizontal Markers' : ''"},
+        "title": {"signal": "length(data('markers_h')) >= 1 ? 'Horizontal Markers' : ''"},
         "interactive": true,
         "encode": {
           "symbols": {
@@ -357,7 +357,7 @@
             },
             "update": {
               "opacity": [
-                {"test": "length(data('markers_h')) > 1", "value": 1},
+                {"test": "length(data('markers_h')) >= 1", "value": 1},
                 {"value": 0}
               ]
             }
@@ -367,7 +367,7 @@
               "text": {"field": "label"},
               "fill": {"value": "black"},
               "opacity": [
-                {"test": "length(data('markers_h')) > 1", "value": 1},
+                {"test": "length(data('markers_h')) >= 1", "value": 1},
                 {"value": 0}
               ]
             }
