@@ -2,7 +2,7 @@ import contextlib
 import time
 import warnings
 from math import ceil
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
 import pyro
@@ -12,7 +12,7 @@ from chirho.dynamical.handlers import (
     StaticBatchObservation,
     StaticIntervention,
 )
-from chirho.dynamical.handlers.solver import TorchDiffEq
+from chirho.dynamical.handlers.solver import Solver, TorchDiffEq
 from chirho.interventional.ops import Intervention
 from chirho.observational.handlers import condition
 from chirho.observational.ops import observe
@@ -57,6 +57,7 @@ def ensemble_sample(
     time_unit: Optional[str] = None,
     alpha_qs: Optional[List[float]] = DEFAULT_ALPHA_QS,
     stacking_order: str = "timepoints",
+    SolverBackend: Type[Solver] = TorchDiffEq,
 ) -> Dict[str, Any]:
     """
     Load a collection of models from files, compile them into an ensemble probabilistic program,
@@ -142,7 +143,7 @@ def ensemble_sample(
             raise ValueError("num_samples must be a positive integer")
 
         def wrapped_model():
-            with TorchDiffEq(
+            with SolverBackend(
                 rtol=rtol, atol=atol, method=solver_method, options=solver_options
             ):
                 solution = model(
@@ -201,6 +202,7 @@ def ensemble_calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
+    SolverBackend: Type[Solver] = TorchDiffEq,
 ) -> Dict[str, Any]:
     """
     Infer parameters for an ensemble of DynamicalSystem models conditional on data.
@@ -324,7 +326,7 @@ def ensemble_calibrate(
     def wrapped_model():
         obs = condition(data=_data)(_noise_model)
 
-        with TorchDiffEq(
+        with SolverBackend(
             rtol=rtol, atol=atol, method=solver_method, options=solver_options
         ):
             solution = model(
@@ -381,6 +383,7 @@ def sample(
     qoi: Optional[
         Union[List[Callable[[Any], np.ndarray]], Callable[[Any], np.ndarray]]
     ] = None,
+    SolverBackend: Type[Solver] = TorchDiffEq,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and sample from it.
@@ -515,7 +518,7 @@ def sample(
 
         def wrapped_model():
             with ParameterInterventionTracer():
-                with TorchDiffEq(
+                with SolverBackend(
                     rtol=rtol, atol=atol, method=solver_method, options=solver_options
                 ):
                     with contextlib.ExitStack() as stack:
@@ -616,6 +619,7 @@ def calibrate(
     num_particles: int = 1,
     deterministic_learnable_parameters: List[str] = [],
     progress_hook: Callable = lambda i, loss: None,
+    SolverBackend: Type[Solver] = TorchDiffEq,
 ) -> Dict[str, Any]:
     """
     Infer parameters for a DynamicalSystem model conditional on data.
@@ -785,7 +789,7 @@ def calibrate(
         obs = condition(data=_data)(_noise_model)
 
         with StaticBatchObservation(data_timepoints, observation=obs):
-            with TorchDiffEq(
+            with SolverBackend(
                 rtol=rtol, atol=atol, method=solver_method, options=solver_options
             ):
                 with contextlib.ExitStack() as stack:
@@ -851,6 +855,7 @@ def optimize(
     verbose: bool = False,
     roundup_decimal: int = 4,
     progress_hook: Callable[[torch.Tensor], None] = lambda x: None,
+    SolverBackend: Type[Solver] = TorchDiffEq,
 ) -> Dict[str, Any]:
     r"""
     Load a model from a file, compile it into a probabilistic program, and optimize under uncertainty with risk-based
@@ -994,6 +999,7 @@ def optimize(
             solver_options=solver_options,
             u_bounds=bounds_np,
             risk_bound=risk_bound,
+            SolverBackend=SolverBackend,
         )
 
         # Run one sample to estimate model evaluation time
