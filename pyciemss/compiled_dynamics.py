@@ -22,7 +22,7 @@ class CompiledDynamics(pyro.nn.PyroModule):
     def __init__(self, src, **kwargs):
         super().__init__()
         self.src = src
-
+        params = _compile_param_values(self.src)
         try:
             params = _compile_param_values(self.src)
         except Exception as e:
@@ -30,7 +30,8 @@ class CompiledDynamics(pyro.nn.PyroModule):
                 "The model parameters could not be compiled. Please check the model definition."
             ) from e
 
-        for k, v in params.items():
+        for k in _sort_dependencies(self.src):
+            v = params[get_name(k)]
             if hasattr(self, get_name(k)):
                 continue
 
@@ -196,6 +197,11 @@ Please check your model equations, parameter values, initial conditions, and sol
 
 @functools.singledispatch
 def _compile_deriv(src) -> Callable[..., Tuple[torch.Tensor]]:
+    raise NotImplementedError
+
+
+@functools.singledispatch
+def _sort_dependencies(src) -> list:
     raise NotImplementedError
 
 
