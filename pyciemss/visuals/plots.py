@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, Literal, Optional, Union
 
 import IPython.display
-import vl_convert
+#import vl_convert
 
 from .barycenter import triangle_contour
 from .calibration import calibration
